@@ -11,4 +11,70 @@
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>edu.regis.dptuapp.DpTuApp</exec.mainClass>
     </properties>
+        <repositories>
+        <repository>
+          <id>CronApp</id>
+          <name>CronApp Repository</name>
+          <url>	https://artifactory.cronapp.io/public-release/</url>
+        </repository>
+    </repositories>
+    <build>
+        <resources>
+        <resource>
+            <directory>
+                src/main/java/resources
+            </directory>
+        </resource>
+        </resources>
+    
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.1</version>
+                
+            </plugin>
+        </plugins>
+    
+    </build>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson-extras -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson-extras</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core</artifactId>
+            <version>2.0.9</version> <!-- Use the latest version available -->
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 </project>
