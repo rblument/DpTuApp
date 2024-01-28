@@ -100,7 +100,7 @@ public class SplashFrame extends JFrame {
      * Create and layout the child components in this Spalsh JFrame.
      */
     private SplashFrame() {
-        super("ShaTu");
+        super("DpTu");
         
         setMinimumSize(new Dimension(875,650));
         

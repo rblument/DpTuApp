@@ -70,7 +70,7 @@ public class MainFrame extends JFrame implements WindowListener {
      * Initialize and layout the child components displayed in this frame.
      */
     private MainFrame() {
-        super("ShaTut");
+        super("DpTu");
 
         Dimension screenSize = Toolkit. getDefaultToolkit(). getScreenSize();
         screenSize.width = screenSize.width - SCREEN_SIZE_INSET ;
