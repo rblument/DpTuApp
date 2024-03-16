@@ -32,6 +32,12 @@ public class Task extends TitledModel {
     private TaskKind taskType = TaskKind.PROBLEM;
     
     /**
+     * The type of this task, which can be used to determine the appropriate
+     * view to display, if different from each of its steps.
+     */
+    private ExampleType type;
+    
+    /**
      * The scaffolding support for this task.
      */
     private ScaffoldLevel scaffolding = ScaffoldLevel.EXTREME;
@@ -98,6 +104,14 @@ public class Task extends TitledModel {
     public void setTaskType(TaskKind type) {
         this.taskType = type;
     }
+    
+    public ExampleType getType() {
+        return type;
+    }
+
+    public void setType(ExampleType type) {
+        this.type = type;
+    }
 
     public ScaffoldLevel getScaffolding() {
         return scaffolding;
@@ -154,11 +168,8 @@ public class Task extends TitledModel {
      * 
      * @param step the Step that was completed by the student.
      */
-    public void completedStep(Step step) {
-        StepCompletion completion = new StepCompletion();
-        completion.setStepId(step.getId());
-        
-        step.setIsCompleted(true);
+    public void completedStep(StepCompletion completion) {
+        completion.getStep().setIsCompleted(true);
         
         state.addStepCompletion(completion);
     }

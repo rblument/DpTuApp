@@ -39,6 +39,16 @@ public enum StepSubType {
     COMPLETE_CELL("Complete Cell"),
     
     /**
+     * Initialized the entire first row.
+     */
+    COMPLETE_FIRST_ROW("Complete First Row"),
+    
+    /**
+     * Initialized the entire first col.
+     */
+    COMPLETE_FIRST_COL("Complete First Col"),
+    
+    /**
      * The initial default value in a NewExampleRequest
      */
     DEFAULT("Unknown");
