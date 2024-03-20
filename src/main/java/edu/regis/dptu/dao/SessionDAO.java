@@ -22,7 +22,6 @@ import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.svc.SessionSvc;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -54,7 +53,7 @@ public class SessionDAO implements SessionSvc {
        
         String userId = session.getAccount().getUserId();
         
-        String fileName = fullyQualifedFileName(userId);
+        String fileName = fullyQualifiedFileName(userId);
         
         File file = new File(fileName);
         
@@ -87,21 +86,18 @@ public class SessionDAO implements SessionSvc {
      * {@inheritDoc}
      */
     @Override
-    public TutoringSession retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
+    public TutoringSession retrieve(String userId) throws ObjNotFoundException{
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
-        Path path = Paths.get(fullyQualifedFileName(userId));
+        Path path = Paths.get(fullyQualifiedFileName(userId));
      
         try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();
    
             return gson.fromJson(jsonObj, TutoringSession.class);
 
-        } catch (FileNotFoundException ex) {
-            throw new ObjNotFoundException(String.valueOf(userId));
         } catch (IOException ex) {
-            String errMsg = "find user: " + userId;
-            throw new NonRecoverableException(errMsg, ex);
+            throw new ObjNotFoundException(String.valueOf(userId));
         }
     }
     
@@ -116,7 +112,7 @@ public class SessionDAO implements SessionSvc {
     public void update(TutoringSession session) throws ObjNotFoundException, NonRecoverableException {
         String userId = session.getAccount().getUserId();
         
-        String fileName = fullyQualifedFileName(userId);
+        String fileName = fullyQualifiedFileName(userId);
         File file = new File(fileName);
         File absFile = new File(file.getAbsolutePath());
         
@@ -140,7 +136,7 @@ public class SessionDAO implements SessionSvc {
             Logger.getLogger(SessionDAO.class.getName()).log(Level.SEVERE, msg, ex);
             
             // Set the name back to the original session name before the update
-            fileName = fullyQualifedFileName(userId);
+            fileName = fullyQualifiedFileName(userId);
             file = new File(fileName);
             File originalAbsFile = new File(file.getAbsolutePath());
             absFile.renameTo(originalAbsFile);
@@ -154,7 +150,7 @@ public class SessionDAO implements SessionSvc {
      */
     @Override
     public void delete(String userId) throws NonRecoverableException {
-        String fileName = fullyQualifedFileName(userId);
+        String fileName = fullyQualifiedFileName(userId);
         
         File file = new File(fileName);
         
@@ -179,7 +175,7 @@ public class SessionDAO implements SessionSvc {
      * @param userId the id of the user whose session file name is returned.
      * @return a String specifying a fully qualified file name.
      */
-    private String fullyQualifedFileName(String userId) {
+    private String fullyQualifiedFileName(String userId) {
         return DATA_DIRECTORY + "Session_" + userId.replace('@', '_').replace('.', '_') + ".json";
     }
 }

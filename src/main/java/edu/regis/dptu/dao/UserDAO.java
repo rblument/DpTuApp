@@ -58,7 +58,7 @@ public class UserDAO implements UserSvc {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
         String userId = acct.getUserId();
-        String fileName = fullyQualifedFileName(userId); 
+        String fileName = fullyQualifiedFileName(userId); 
         File file = new File(fileName);
         File absFile = new File(file.getAbsolutePath());
 
@@ -91,10 +91,10 @@ public class UserDAO implements UserSvc {
      * {@inheritDoc}
      */
     @Override
-    public User retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
+    public User retrieve(String userId) throws ObjNotFoundException {
         Gson gson = new Gson();
        
-        String fileName = fullyQualifedFileName(userId);
+        String fileName = fullyQualifiedFileName(userId);
         
         Path path = Paths.get(fileName);
      
@@ -103,12 +103,10 @@ public class UserDAO implements UserSvc {
             
             return gson.fromJson(jsonObj, User.class);
 
-        } catch (FileNotFoundException ex) {
-            // This not necessarily an error since the user may have a typo
+        } catch (IOException ex) { // If username is not found
+            //String errMsg = "find user: " + userId;
             throw new ObjNotFoundException(String.valueOf(userId));
-        } catch (IOException ex) {
-            String errMsg = "find user: " + userId;
-            throw new NonRecoverableException(errMsg, ex);
+
         }
     }
 
@@ -127,7 +125,7 @@ public class UserDAO implements UserSvc {
      * @param userId the id of the user whose session file name is returned.
      * @return a String specifying a fully qualified file name.
      */
-    private String fullyQualifedFileName(String userId) {
+    private String fullyQualifiedFileName(String userId) {
         return DATA_DIRECTORY + "User_" + userId.replace('@', '_').replace('.', '_') + ".json";
     }
 }

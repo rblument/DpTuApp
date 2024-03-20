@@ -88,7 +88,7 @@ public class StudentDAO implements StudentSvc {
      * {@inheritDoc}
      */
     @Override
-    public Student retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
+    public Student retrieve(String userId) throws ObjNotFoundException {
        // ToDo: add funcationality
        throw new UnsupportedOperationException("Not supported yet.");
     }

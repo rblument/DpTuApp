@@ -225,12 +225,12 @@ public class DpTuTutor implements TutorSvc {
 
             }
 
-        } catch (ObjNotFoundException e) {
+        } catch (ObjNotFoundException e) { //If user not found
             return new TutorReply("UnknownUser");
 
         } catch (NonRecoverableException ex) {
             Logger.getLogger(DpTuTutor.class
-                    .getName()).log(Level.SEVERE, null, ex);
+                  .getName()).log(Level.SEVERE, null, ex);
             return new TutorReply();
 
         }
