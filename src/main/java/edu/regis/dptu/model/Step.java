@@ -84,6 +84,12 @@ public class Step extends TitledModel {
     private String data;
     
     /**
+     * The integer value of the correct solution for this step when that solution
+     * is an integer.
+     */
+    private int intSolution;
+    
+    /**
      * Instantiate this step with the given information.
      * 
      * @param id
@@ -107,6 +113,24 @@ public class Step extends TitledModel {
         
     }
 
+    public Step(int id, int sequenceID, StepSubType subType, int solution){
+        super(id);
+        
+        this.sequenceId = sequenceId;
+
+        timeout = null;
+
+        exercisedComponentIds = new ArrayList<>();
+        
+        hints = new ArrayList<>();
+           
+        isCompleted = false;
+        
+        this.subType = subType;
+        
+        this.intSolution = solution;
+    }
+    
     public StepSubType getSubType() {
         return subType;
     }
@@ -199,5 +223,22 @@ public class Step extends TitledModel {
     public void setData(String data) {
         this.data = data;
     }
+    
+    public int getIntSolution(){
+        return intSolution;
+    }
+    
+    /**
+     * Return boolean value whether the given integer is the solution to this step
+     * 
+     * @param x Integer solution being checked
+     * @return True if 'x' is the solution to the Step, else false
+     */
+    public boolean checkSolution(int x){
+        if(x == intSolution){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
-
