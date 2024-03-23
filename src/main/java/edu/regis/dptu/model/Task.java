@@ -31,6 +31,12 @@ public class Task extends TitledModel {
      */
     private TaskKind taskType = TaskKind.PROBLEM;
     
+        /**
+     * The type of this task, which can be used to determine the appropriate
+     * view to display, if different from each of its steps.
+     */
+    private ExampleType type;
+    
     /**
      * The scaffolding support for this task.
      */
@@ -83,7 +89,7 @@ public class Task extends TitledModel {
      */
     public Task(int id) {
         super(id);
-             
+        
         this.steps = new ArrayList<>();
         
         exercisedComponentIds = new ArrayList<>();
@@ -134,6 +140,14 @@ public class Task extends TitledModel {
 
     public void setTaskType(TaskKind type) {
         this.taskType = type;
+    }
+    
+    public ExampleType getType() {
+        return type;
+    }
+
+    public void setType(ExampleType type) {
+        this.type = type;
     }
 
     public ScaffoldLevel getScaffolding() {

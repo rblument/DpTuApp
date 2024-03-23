@@ -38,7 +38,7 @@ public enum StepSubType {
      */
     COMPLETE_CELL("Complete Cell"),
     
-        /**
+    /**
      * Initialized the entire first row.
      */
     COMPLETE_FIRST_ROW("Complete First Row"),
