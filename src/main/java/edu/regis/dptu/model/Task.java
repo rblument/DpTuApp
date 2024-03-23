@@ -31,7 +31,7 @@ public class Task extends TitledModel {
      */
     private TaskKind taskType = TaskKind.PROBLEM;
     
-    /**
+        /**
      * The type of this task, which can be used to determine the appropriate
      * view to display, if different from each of its steps.
      */
@@ -96,6 +96,43 @@ public class Task extends TitledModel {
         
         state = new TaskState();
     }
+    
+    /**
+     * Task constructor for LCS problem. Accepts the category of task being 
+     * constructed and the two Strings making up the LCS task. 
+     * 
+     * @param id database id of this task
+     * @param kind the category of task being created (TypeKind)
+     * @param s1 String #1 of the LCS problem 
+     * @param s2 
+     */
+    public Task(int id, TaskKind kind, String s1, String s2){
+        super(id);
+        
+        switch(kind) {
+            case CREATE_TABLE:
+                this.taskType = TaskKind.CREATE_TABLE;
+                this.steps = createTableSteps(s1, s2);
+                break;
+            case SOLUTION_PATH:
+                this.taskType = TaskKind.SOLUTION_PATH;
+                this.steps = createPathSteps(s1, s2);
+                break;
+            case SOLVE:
+                this.taskType = TaskKind.SOLVE;
+                this.steps = createSolveSteps(s1, s2);
+                break;
+            default:
+                this.steps = new ArrayList<>();
+                break;    
+        }
+        
+        exercisedComponentIds = new ArrayList<>();
+        
+        state = new TaskState();
+    }
+    
+    
     
     public TaskKind getTaskType() {
         return taskType;
@@ -222,5 +259,97 @@ public class Task extends TitledModel {
 
     public void setExercisedComponentIds(ArrayList<Integer> componentIds) {
         this.exercisedComponentIds = componentIds;
+    }
+    
+    /**
+     * Generates the array list of steps to create the dynamic programming table
+     * for Strings s1 and s2. Each step has a solution (the correct value the cell
+     * should have) and a SubType based on how the student would arrive at that 
+     * solution. 
+     * 
+     * Because an ArrayList is 1-dimensional, the cells are stored in a 
+     * left-to-right + top-to-bottom fashion. Use the CellTranslate methods to
+     * move between 1D and 2D values. 
+     * 
+     * @param s1 String 1 in the dynamic programming LCS problem 
+     * @param s2 String 2 in the dynamic programming LCS problem 
+     * @return The ArrayList containing each step to create the solution table.
+     */
+    private ArrayList<Step> createTableSteps(String s1, String s2){
+        ArrayList<Step> stepsList = new ArrayList<>();
+        int n = s1.length() + 1;
+        int m = s2.length() + 1;
+        int stepCount = 0;
+        
+        /*
+        The first "n" cells (the top row) are all zero by default
+        
+        TO DO: establish how 'id' number is generated?
+        */
+        for(int i = 0; i < n; i++){
+            Step step = new Step(1, stepCount, StepSubType.DEFAULT_ZERO, 0);
+            stepsList.add(step);
+            stepCount++;
+        }
+        
+        /**
+         * For all remaining rows... standard dynamic programming table algorithm
+         * 
+         * i = current row index
+         * j = current column index
+         * n = row length
+         * m = column length
+         */
+        
+        //Proceed through every row except for the first (already created above)
+        for(int i = 1; i < n; i++){
+            
+            //For each row, proceed through every column
+            for(int j = 0; j < m; j++){
+                Step step = null;
+                
+                //Value in column 0 is always zero by default
+                if(j == 0){
+                    step = new Step(1, stepCount, StepSubType.DEFAULT_ZERO, 0);
+                }
+                
+                //If the character matches in the n[i] and m[j] indices...
+                else if(s1.charAt(i - 1) == s2.charAt(j - 1)){
+                    //Get the solution at the diagonal index and add one for this solution
+                    int diagPos = stepCount - (n + 1);
+                    int solution = 1 + stepsList.get(diagPos).getIntSolution();
+                    step = new Step(1, stepCount, StepSubType.INCREASE_DIAGONAL, solution);
+                }
+                //No character match. Use the left or upper cell, whichever is larger
+                else{
+                    int indexLeft = stepCount - 1;
+                    int indexUp = stepCount - n;
+                    int valueLeft = stepsList.get(indexLeft).getIntSolution();
+                    int valueUp = stepsList.get(indexUp).getIntSolution();
+                    
+                    if(valueLeft >= valueUp){
+                        step = new Step(1, stepCount, StepSubType.USE_LEFT, valueLeft);
+                        
+                    }else{
+                        step = new Step(1, stepCount, StepSubType.USE_UPPER, valueUp);
+                    }
+                }
+                stepsList.add(step);
+                stepCount++;
+            }
+        }
+        return stepsList;
+    }
+    
+    private ArrayList<Step> createPathSteps(String s1, String s2){
+        ArrayList<Step> steps = new ArrayList<>();
+        
+        return steps;
+    }
+    
+    private ArrayList<Step> createSolveSteps(String s1, String s2){
+        ArrayList<Step> steps = new ArrayList<>();
+        
+        return steps;
     }
 }

@@ -21,13 +21,28 @@ public enum TaskKind {
     /**
      * A task requiring a Student to complete a Problem.
      */
-    PROBLEM("Problem");
+    PROBLEM("Problem"),
+    
+    /**
+     * The task of generating the table for a dynamic programming problem
+     */
+    CREATE_TABLE("Create Table"),
+    
+    /**
+     * The task of tracing a path through the dynamic programming table to 
+     * identify the solution
+     */
+    SOLUTION_PATH("Solution Path"), 
+    
+    /**
+     * The task of producing a solution using a generated solution path
+     */
+    SOLVE("Solve");
     
     /**
      * A GUI displayable string identifying this task kind.
      */
     private final String title;
-
     /**
      * Initialize this task kind with its title.
      * 
