@@ -25,61 +25,73 @@ import javax.swing.JLabel;
  * @author rickb
  */
 public class TutoringSessionView extends GPanel {
-    /**
-     * The tutoring session model displayed in this view.
-     */
-    private TutoringSession model;
-    
-    private JLabel test;
 
-    /**
-     * Initialize this view including creating and laying out its child components.
-     */
-    public TutoringSessionView() {
-        initializeComponents();
-        layoutComponents();
-    }
+   /**
+    * The tutoring session model displayed in this view.
+    */
+   private TutoringSession model;
 
-    /**
-     * Return the model currently displayed in this view.
-     *
-     * @return a TutoringSession
-     */
-    public TutoringSession getModel() {
-        return model;
-    }
+   private JLabel test;
+   
+   // defining variables view
+   private VariablesView variablesView;
 
-    /**
-     * Display the given model in this view.
-     *
-     * @param model a TutoringSession.
-     */
-    public void setModel(TutoringSession model) {
-        this.model = model;
+   /**
+    * Initialize this view including creating and laying out its child
+    * components.
+    */
+   public TutoringSessionView() {
+      initializeComponents();
+      layoutComponents();
+   }
 
-        updateView();
-    }
+   /**
+    * Return the model currently displayed in this view.
+    *
+    * @return a TutoringSession
+    */
+   public TutoringSession getModel() {
+      return model;
+   }
 
-    /**
-     * Create the child GUI components appearing in this frame.
-     */
-    private void initializeComponents() {
-        test = new JLabel("Test");
-    }
+   /**
+    * Display the given model in this view.
+    *
+    * @param model a TutoringSession.
+    */
+   public void setModel(TutoringSession model) {
+      this.model = model;
 
-    /**
-     * Layout the child components in this view
-     */
-    private void layoutComponents() {
-        addc(test, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-    }
+      updateView();
 
-    /**
-     * Display the current model in our child components.
-     */
-    private void updateView() {
+   }
+
+   /**
+    * Create the child GUI components appearing in this frame.
+    */
+   private void initializeComponents() {
+      test = new JLabel("Test");
+      
+      // Plewinski initializing variables view
+     variablesView = new VariablesView();
+   }
+
+   /**
+    * Layout the child components in this view
+    */
+   private void layoutComponents() {
+      addc(test, 0, 0, 1, 1, 0.0, 0.0,
+            GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+            5, 5, 5, 5);
+
+      // add the VariablesView
+      add(variablesView);
+   }
+
+   /**
+    * Display the current model in our child components.
+    */
+   public void updateView() {
 
     }
 }

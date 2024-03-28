@@ -1,61 +1,54 @@
 package edu.regis.dptu.view;
 
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
+import javax.swing.*;
+import java.awt.*;
 
 /**
- * Displays variable names as context for the tutoring session. This view is
- * intended to show variable names only.
- *
- * @author Your Name
+ * 
+ * @author bplewinski
  */
-public class VariablesView extends GPanel {
-   
-   private JLabel variable1Label;
-   private JLabel variable2Label;
+public class VariablesView extends JPanel {
 
-   /**
-    * Initialize this view including creating and laying out its child
-    * components.
-    */
+   // Labels for displaying variable names and their values
+   private JLabel labelSequenceId;
+   private JLabel labelCurrentStepIndex;
+
+   // Text fields to display the values of the variables
+   private JTextField textFieldSequenceId;
+   private JTextField textFieldCurrentStepIndex;
+
    public VariablesView() {
-      initializeComponents();
-      layoutComponents();
+      
+      initComponents();
    }
 
-   /**
-    * Create the child GUI components appearing in this view.
-    */
-   private void initializeComponents() {
-      // Initialize JLabels
-      variable1Label = new JLabel("variable1:");
-      variable2Label = new JLabel("variable2:");
-      // Initialize more JLabels for additional variables as needed
+   private void initComponents() {
+      setLayout(new GridLayout(2, 2)); // 2 rows, 2 columns
+
+      // Initialize labels for variable names
+      labelSequenceId = new JLabel("Sequence ID:");
+      labelCurrentStepIndex = new JLabel("Current Step Index:");
+
+      // Initialize text fields for variable values
+      textFieldSequenceId = new JTextField();
+      textFieldCurrentStepIndex = new JTextField();
+
+      // Make text fields uneditable
+      textFieldSequenceId.setEditable(false);
+      textFieldCurrentStepIndex.setEditable(false);
+
+      // Add labels and text fields to the panel
+      add(labelSequenceId);
+      add(textFieldSequenceId);
+      add(labelCurrentStepIndex);
+      add(textFieldCurrentStepIndex);
    }
 
-   /**
-    * Layout the child components in this view
-    */
-   private void layoutComponents() {
-      // Add JLabels to the layout as needed
-      // For simplicity, you can use a vertical layout (one variable per row)
-      addc(variable1Label, 0, 0, 1, 1, 0.0, 0.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-            5, 5, 5, 5);
-      addc(variable2Label, 1, 0, 1, 1, 0.0, 0.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-            5, 5, 5, 5);
-      // Add more JLabels for additional variables as needed
-   }
-
-   /**
-    * Update the view with variable names. This method can be called whenever
-    * the view needs to be updated.
-    */
-   public void updateVariablesView(String[] variableNames) {
-      // Update JLabels with variable names
-      variable1Label.setText(variableNames[0]);
-      variable2Label.setText(variableNames[1]);
-      // Update more JLabels for additional variables as needed
+   // Method to update the values of variables displayed in the view
+   public void updateVariables(int sequenceId, int currentStepIndex) {
+      // Update the text fields with the provided variables
+      textFieldSequenceId.setText(String.valueOf(sequenceId));
+      textFieldCurrentStepIndex.setText(String.valueOf(currentStepIndex));
    }
 }
+
