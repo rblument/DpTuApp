@@ -1,1 +1,5 @@
+edu\regis\dptu\view\StepCompletionReplyView.class
+edu\regis\dptu\model\Task$1.class
+edu\regis\dptu\model\StepCompletionReply.class
 edu\regis\dptu\view\act\BackAction.class
+edu\regis\dptu\model\ExampleType.class
