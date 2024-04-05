@@ -17,16 +17,11 @@ import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 
 /**
- * Displays a tutoring session (the top-level GUI view for the application).
- *
- * Various aspects of the tutoring session are displayed in the child components
- * of this view.
  *
  * @author rickb
  */
-public class TutoringSessionView extends GPanel {
-
-   /**
+public class CodeView extends GPanel {
+     /**
     * The tutoring session model displayed in this view.
     */
    private TutoringSession model;
@@ -35,14 +30,12 @@ public class TutoringSessionView extends GPanel {
    
    // defining variables view
    private VariablesView variablesView;
-   
-   private CodeView codeView;
 
    /**
     * Initialize this view including creating and laying out its child
     * components.
     */
-   public TutoringSessionView() {
+   public CodeView() {
       initializeComponents();
       layoutComponents();
    }
@@ -72,26 +65,14 @@ public class TutoringSessionView extends GPanel {
     * Create the child GUI components appearing in this frame.
     */
    private void initializeComponents() {
-      test = new JLabel("Primary Table View Here");
-      
-      // Plewinski initializing variables view
-     variablesView = new VariablesView();
-     
-     codeView = new CodeView();
+      test = new JLabel("Code View Test");
    }
 
    /**
     * Layout the child components in this view
     */
    private void layoutComponents() {
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
-            5, 5, 5, 5);
-        addc(test, 1, 0, 1, 1, 1.0, 1.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-            5, 5, 5, 5);
-        
-        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
+      addc(test, 0, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
             5, 5, 5, 5);
    }
