@@ -37,6 +37,8 @@ public class TutoringSessionView extends GPanel {
    private VariablesView variablesView;
    
    private CodeView codeView;
+   
+   private TableView tableView;
 
    /**
     * Initialize this view including creating and laying out its child
@@ -74,6 +76,8 @@ public class TutoringSessionView extends GPanel {
    private void initializeComponents() {
       test = new JLabel("Primary Table View Here");
       
+      tableView = new TableView();
+      
       // Plewinski initializing variables view
      variablesView = new VariablesView();
      
@@ -87,7 +91,8 @@ public class TutoringSessionView extends GPanel {
         addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
             GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
             5, 5, 5, 5);
-        addc(test, 1, 0, 1, 1, 1.0, 1.0,
+        
+        addc(tableView, 1, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
             5, 5, 5, 5);
         
