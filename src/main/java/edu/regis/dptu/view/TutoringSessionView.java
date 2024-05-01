@@ -88,8 +88,8 @@ public class TutoringSessionView extends GPanel {
     * Layout the child components in this view
     */
    private void layoutComponents() {
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+        addc(codeView, 0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
             5, 5, 5, 5);
         
         addc(tableView, 1, 0, 1, 1, 1.0, 1.0,

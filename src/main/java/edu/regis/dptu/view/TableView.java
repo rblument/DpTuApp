@@ -93,6 +93,7 @@ public class TableView extends GPanel {
 
         //create the table
         tableModel = new DefaultTableModel((rows), (cols)) {
+            @Override
             public boolean isCellEditable(int row, int column) {
                 if (row == 0 || column == 0) {
                     return false;
