@@ -139,12 +139,12 @@ public class TutoringSession {
     }
     
     public void removeTask(Task task) {
-        tasks.remove(task);
+        tasks.remove(task); 
     }
     
     public void removeTask(int taskId) {
         for (Task task : tasks) 
-            if (task.getId() == taskId)
+            if (task.getId() == taskId) 
                 removeTask(task);
     }
 }

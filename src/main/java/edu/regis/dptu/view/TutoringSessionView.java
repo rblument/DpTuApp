@@ -32,12 +32,9 @@ public class TutoringSessionView extends GPanel {
    private TutoringSession model;
 
    private JLabel test;
-   
-   // defining variables view
-   private VariablesView variablesView;
-   
+
    private CodeView codeView;
-   
+
    private TableView tableView;
 
    /**
@@ -75,30 +72,24 @@ public class TutoringSessionView extends GPanel {
     */
    private void initializeComponents() {
       test = new JLabel("Primary Table View Here");
-      
+
       tableView = new TableView();
-      
-      // Plewinski initializing variables view
-     variablesView = new VariablesView();
-     
-     codeView = new CodeView();
+
+      codeView = new CodeView();
    }
 
    /**
     * Layout the child components in this view
     */
    private void layoutComponents() {
-        addc(codeView, 0, 0, 1, 1, 1.0, 1.0,
+      addc(codeView, 0, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
             5, 5, 5, 5);
-        
-        addc(tableView, 1, 0, 1, 1, 1.0, 1.0,
+
+      addc(tableView, 1, 0, 1, 1, 1.0, 1.0,
             GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
             5, 5, 5, 5);
-        
-        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-            5, 5, 5, 5);
+
    }
 
    /**
@@ -106,5 +97,5 @@ public class TutoringSessionView extends GPanel {
     */
    public void updateView() {
 
-    }
+   }
 }
