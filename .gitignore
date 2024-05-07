@@ -1,4 +1,4 @@
-target/
+DpTuApp/target
 .DS_Store
-nproject/
-src/main/java/resources/Data/
+/DpTuApp/nproject/
+/DpTuApp/src/main/java/resources/Data/
