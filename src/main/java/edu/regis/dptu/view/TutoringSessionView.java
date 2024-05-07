@@ -25,77 +25,61 @@ import javax.swing.JLabel;
  * @author rickb
  */
 public class TutoringSessionView extends GPanel {
+    /**
+     * The tutoring session model displayed in this view.
+     */
+    private TutoringSession model;
+    
+    private JLabel test;
 
-   /**
-    * The tutoring session model displayed in this view.
-    */
-   private TutoringSession model;
+    /**
+     * Initialize this view including creating and laying out its child components.
+     */
+    public TutoringSessionView() {
+        initializeComponents();
+        layoutComponents();
+    }
 
-   private JLabel test;
+    /**
+     * Return the model currently displayed in this view.
+     *
+     * @return a TutoringSession
+     */
+    public TutoringSession getModel() {
+        return model;
+    }
 
-   private CodeView codeView;
+    /**
+     * Display the given model in this view.
+     *
+     * @param model a TutoringSession.
+     */
+    public void setModel(TutoringSession model) {
+        this.model = model;
 
-   private TableView tableView;
+        updateView();
+    }
 
-   /**
-    * Initialize this view including creating and laying out its child
-    * components.
-    */
-   public TutoringSessionView() {
-      initializeComponents();
-      layoutComponents();
-   }
+    /**
+     * Create the child GUI components appearing in this frame.
+     */
+    private void initializeComponents() {
+        test = new JLabel("Test");
+    }
 
-   /**
-    * Return the model currently displayed in this view.
-    *
-    * @return a TutoringSession
-    */
-   public TutoringSession getModel() {
-      return model;
-   }
+    /**
+     * Layout the child components in this view
+     */
+    private void layoutComponents() {
+        addc(test, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+    }
 
-   /**
-    * Display the given model in this view.
-    *
-    * @param model a TutoringSession.
-    */
-   public void setModel(TutoringSession model) {
-      this.model = model;
+    /**
+     * Display the current model in our child components.
+     */
+    private void updateView() {
 
-      updateView();
-
-   }
-
-   /**
-    * Create the child GUI components appearing in this frame.
-    */
-   private void initializeComponents() {
-      test = new JLabel("Primary Table View Here");
-
-      tableView = new TableView();
-
-      codeView = new CodeView();
-   }
-
-   /**
-    * Layout the child components in this view
-    */
-   private void layoutComponents() {
-      addc(codeView, 0, 0, 1, 1, 1.0, 1.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-            5, 5, 5, 5);
-
-      addc(tableView, 1, 0, 1, 1, 1.0, 1.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-            5, 5, 5, 5);
-
-   }
-
-   /**
-    * Display the current model in our child components.
-    */
-   public void updateView() {
-
-   }
+    }
 }

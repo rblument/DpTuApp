@@ -13,6 +13,10 @@
 package edu.regis.dptu.model;
 
 import java.util.ArrayList;
+import edu.regis.dptu.model.Step;
+import static edu.regis.dptu.model.TaskKind.CREATE_TABLE;
+import static edu.regis.dptu.model.TaskKind.SOLUTION_PATH;
+import static edu.regis.dptu.model.TaskKind.SOLVE;
 
 /**
  * A multi-minute activity that can be skipped or interchanged with other tasks,
@@ -223,6 +227,103 @@ public class Task extends TitledModel {
                 return false;
         
         return true;
+    }
+    
+    /**
+     * Method that checks if the table initialization was successful
+     * It does this by checking if the createTableSteps method returned
+     * a full ArrayList, if so the table was created
+     * 
+     * @return true if initialized, false if not
+     */
+    public boolean checkTableSteps(String s1, String s2) {
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Area of thinking, if the createTableSteps returned
+        // an ArrayList at all, then it's safe to assume the table
+        // was initialized
+        if (!stepsList.isEmpty())
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * Method that checks if the table has the correct size
+     * It does this by measuring the strings, and the expected amount of steps
+     * that the complete table should have, if the actual amount and expected 
+     * amount of steps are the same, then the size has been initialized.
+     * 
+     * @return true if the step values align, false if not
+     */
+    public boolean checkSize(String s1, String s2) {
+        int n = s1.length();
+        int m = s2.length();
+        
+        int expectedSteps = n * m;
+        
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Checks if expected steps and actual steps align
+        if (expectedSteps == stepsList.size())
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * Method that checks if all columns and rows have been initialized
+     * 
+     * @return true if no value is null, false if a cell is null
+     */
+    public boolean checkValues(String s1, String s2) {
+        boolean init = false;
+        
+        int n = s1.length();
+        int m = s2.length();
+        
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Iterate through each row and step to locate if all cells are
+        // associated with values
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int index = i * m + j;
+                if (stepsList.get(index) != null)
+                    init = true;
+                else
+                    init = false;
+            }
+        }
+        
+        return init;
+    }
+    
+    /**
+     * Checks if the first column of the table is initialized
+     * 
+     * @return true if it is, false if not 
+     */
+    public boolean checkFirstCol(String s1, String s2) {
+        boolean init = false;
+        
+        int n = s1.length();
+        int m = s2.length();
+        
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Go through the first row, but proceed through all column cells
+        // to check if they have default zero values
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (stepsList.get(j).equals(0))
+                    init = true;
+                else
+                    init = false;
+            }
+        }
+        
+        return init;
     }
 
     public Problem getProblem() {

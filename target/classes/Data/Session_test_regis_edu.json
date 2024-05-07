@@ -1,0 +1,87 @@
+{
+  "securityToken": "aff045a2bc776af9888913f7eddd681735d95057a709b200b28879870911a251",
+  "account": {
+    "userId": "test@regis.edu",
+    "password": "36f9ddba5d5523949b946df7e94dc15652857b57612d6e39ee1aec1b3b091314",
+    "firstName": "Testy",
+    "lastName": "McTest"
+  },
+  "course": {
+    "title": "Dynamic Programming",
+    "description": "\n        Familiarizes students with the operation of the Dynamic Programming\n        algorithm.\n    ",
+    "id": 2
+  },
+  "unit": {
+    "title": "Dynamic Programming: See One",
+    "description": "\n            In this unit, the student will see an example of how each primary\n            step of the Dynamic Programming algorithm is performed. It also exposes the\n            student to the general operation of the DpTu application.\n        ",
+    "id": 0
+  },
+  "isActive": true,
+  "tasks": [
+    {
+      "taskType": "PROBLEM",
+      "scaffolding": "EXTREME",
+      "sequenceId": 0,
+      "currentStepIndex": 0,
+      "steps": [
+        {
+          "scaffolding": "EXTREME",
+          "subType": "INFO_MESSAGE",
+          "sequenceId": 0,
+          "currentHintIndex": 0,
+          "hints": [
+            {
+              "text": "\n                   Acknowledge this message by pressing the \u0027Acknowledged\u0027 button.\n                ",
+              "sequenceId": 0,
+              "id": 0
+            }
+          ],
+          "notifyTutor": false,
+          "isCompleted": false,
+          "exercisedComponentIds": [
+            1
+          ],
+          "data": "{\n  \"msg\": \"\\n                  Welcome, I\\u0027m DpTu. I\\u0027ll begin by showing you how this\\n                  application works by demonstrating how Dynamic Programming\\n                  works.\\\\n\\\\n\\n                  When I send you an information message, like this one, all you\\n                  have to do is acknowledge it by pressing the \\u0027Acknowledged\\u0027\\n                  button.                \\n                \"\n}",
+          "title": "Acknowledge Welcome",
+          "description": "",
+          "id": 0
+        },
+        {
+          "scaffolding": "EXTREME",
+          "subType": "INFO_MESSAGE",
+          "sequenceId": 1,
+          "currentHintIndex": 0,
+          "hints": [
+            {
+              "text": "\n                   Acknowledge this message by pressing the \u0027Acknowledged\u0027 button.\n                ",
+              "sequenceId": 0,
+              "id": 0
+            }
+          ],
+          "notifyTutor": false,
+          "isCompleted": false,
+          "exercisedComponentIds": [
+            1
+          ],
+          "data": "{\n  \"msg\": \"\\n                  Before I have you practice the operations associated with\\n                  a Dynamic Programming algorithm, I\\u0027m going to show you how these \\n                  operations work. Along the way, we\\u0027ll demonstrate some of the\\n                  actions you can perform in this application including how\\n                  you can interact with me. BTW, I\\u0027m a dumb AI, so don\\u0027t expect\\n                  too much. Once again, this is an information message, so \\n                  please move on by pressing the \\u0027Acknowledged\\u0027 button.  \\n                \"\n}",
+          "title": "See One Overview",
+          "description": "",
+          "id": 2
+        }
+      ],
+      "state": {
+        "currentTask": 0,
+        "currentStep": 0,
+        "currentHint": 0,
+        "completedSteps": []
+      },
+      "exercisedComponentIds": [
+        1,
+        1
+      ],
+      "title": "Welcome",
+      "description": "Let\u0027s get started",
+      "id": 0
+    }
+  ]
+}
