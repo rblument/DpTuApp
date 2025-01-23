@@ -177,7 +177,7 @@ public class SplashPanel extends GPanel {
             GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
             5,5,5,5);
         
-        JLabel copyright = new JLabel("(C) 2019-2024 Johanna and Richard Blumenthal. All Rights Reserved");
+        JLabel copyright = new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         addc(copyright, 0,3, 2,1, 1.0,1.0,
 		GridBagConstraints.NORTH,  GridBagConstraints.CENTER,
