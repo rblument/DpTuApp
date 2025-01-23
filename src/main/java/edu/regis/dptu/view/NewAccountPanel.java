@@ -15,6 +15,7 @@ package edu.regis.dptu.view;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;
+import edu.regis.dptu.view.act.BackAction;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -75,6 +76,7 @@ public class NewAccountPanel extends GPanel {
 
     protected JButton signInBut;
     protected JButton createAcctBut;
+    protected JButton backBut;
 
     public NewAccountPanel() {
         super();
@@ -182,10 +184,12 @@ public class NewAccountPanel extends GPanel {
         signInBut.setEnabled(true);
 
         createAcctBut = new JButton(CreateAcctAction.instance());
-
         createAcctBut.setEnabled(false);
         MainFrame.instance().getRootPane().setDefaultButton(createAcctBut);
 
+        backBut = new JButton(BackAction.instance());
+        backBut.setEnabled(true);
+        
         strength = new JLabel("(Strength: very poor)");
         strength.setForeground(Color.RED);
         strength.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -220,6 +224,7 @@ public class NewAccountPanel extends GPanel {
     private GPanel createHeader() {
         GPanel panel = new GPanel();
         panel.setBackground(new Color(223, 242, 245));
+        
 
         JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
         ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
@@ -228,6 +233,15 @@ public class NewAccountPanel extends GPanel {
         panel.addc(ccis, 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
+        
+        panel.addc(backBut, 2,0, 1,1, 0.0,0.0,
+		   GridBagConstraints.EAST, GridBagConstraints.NONE,
+		   5,5,5,5);	
+
+        msg = new JLabel("");
+        msg.setLabelFor(backBut);
+        msg.setFont(new Font("Dialog", Font.PLAIN, 10));
+        msg.setForeground(Color.RED);
 
         return panel;
     }

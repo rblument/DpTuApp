@@ -21,6 +21,9 @@ import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Course;
 import edu.regis.dptu.model.KnowledgeComponent;
 import edu.regis.dptu.model.Step;
+import edu.regis.dptu.model.StepCompletion;
+import edu.regis.dptu.model.StepCompletionReply;
+import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TutoringSession;
@@ -225,12 +228,12 @@ public class DpTuTutor implements TutorSvc {
 
             }
 
-        } catch (ObjNotFoundException e) {
+        } catch (ObjNotFoundException e) { //If user not found
             return new TutorReply("UnknownUser");
 
         } catch (NonRecoverableException ex) {
             Logger.getLogger(DpTuTutor.class
-                    .getName()).log(Level.SEVERE, null, ex);
+                  .getName()).log(Level.SEVERE, null, ex);
             return new TutorReply();
 
         }
@@ -253,9 +256,86 @@ public class DpTuTutor implements TutorSvc {
         return new TutorReply();
     }
 
-    public TutorReply completedStep(String stepInfo) {
-        return new TutorReply();
+     /**
+     * 
+     * 
+     * @param jsonObj a JSon encoded StepCompletion object
+     * @return 
+     */
+    public TutorReply completedStep(String jsonObj) {
+        StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
+        
+        Step step = completion.getStep();
+        
+        switch (step.getSubType()) {
+            case INFO_MESSAGE:
+                return completeInfoMsgStep(completion);
+                
+            case COMPLETE_CELL:
+                return completeCellStep(completion);
+                
+            case COMPLETE_FIRST_ROW:
+                return completeFirstRowStep(completion);
+                
+            case COMPLETE_FIRST_COL:
+                return completeFirstColStep(completion);
+                
+            default:
+                return createError("Unknown step completion: " + step.getSubType(), null);         
+        }
     }
+    
+    public TutorReply completeInfoMsgStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+    
+    // TO_DO: this is stubbed in
+    public TutorReply completeCellStep(StepCompletion completion) {
+         TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        // As adding one bit doesn't require any additional information,
+        // the data is the string with one '1' bit added. 
+        String data = completion.getData();
+        
+        // TO_DO: look up the problem given to the student , then check if one bit
+        // added
+        
+        StepCompletionReply stepReply = new StepCompletionReply();
+        
+        // TO_DO: Use Student Model
+        // ultimately, we'll probably only practice adding '1' bit twice
+        // so this would correspond to the first replay
+        
+        stepReply.setIsCorrect(true);
+        stepReply.setIsNewStep(true);
+        stepReply.setIsNewTask(false);
+        stepReply.setIsRepeatStep(false);
+        
+        // TO_DO: keep track of next step id and sequence id
+        // this is really a new example at this point
+        Step nextStep = new Step(10, 10, StepSubType.COMPLETE_CELL);
+        
+        stepReply.setData(gson.toJson(nextStep));
+        
+        reply.setData(gson.toJson(stepReply));
+        
+        return reply;
+    }
+    
+    public TutorReply completeFirstRowStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+        
+    public TutorReply completeFirstColStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+    
 
     public TutorReply completedTask(String taskInfo) {
         return new TutorReply();

@@ -19,43 +19,50 @@ package edu.regis.dptu.model;
  */
 public class StepCompletion {
     /**
-     * The database id of the step that was completed.
+     * The step that was completed.
      */
-    private int stepId = Model.DEFAULT_ID;
-    
+    private Step step;
+
     /**
      * The date the associated step was completed (time in milliseconds).
      */
     private long date;
     
+    /**
+     * Whether the step timed out.
+     */
     private boolean timeoutOccur;
     
+    /**
+     * The number of hints given in the GUI for this step.
+     */
     private int hintsGiven;
     
     /**
-     * Initialize this completion with the current date and time.
+     * A JSon encoded objects corresponding to the example step type.
      */
-    public StepCompletion() {
+    private String data;
+    
+    public StepCompletion(Step step, String data) {
         date = System.currentTimeMillis();
+        
+        this.data = data;
+    }
+    
+    public Step getStep() {
+        return step;
     }
 
-    /**
-     * Return the database id of the step associated with this completion.
-     * 
-     * @return int id
-     */
-    public int getStepId() {
-        return stepId;
+    public void setStep(Step step) {
+        this.step = step;
     }
 
-    /**
-     * Set the id of the step associated with this step completion (to only be
-     * used by the database when this step completion is being restored).
-     * 
-     * @param stepId int id of the associated step.
-     */
-    public void setStepId(int stepId) {
-        this.stepId = stepId;
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     /**

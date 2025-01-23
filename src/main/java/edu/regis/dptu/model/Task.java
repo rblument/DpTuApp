@@ -13,6 +13,10 @@
 package edu.regis.dptu.model;
 
 import java.util.ArrayList;
+import edu.regis.dptu.model.Step;
+import static edu.regis.dptu.model.TaskKind.CREATE_TABLE;
+import static edu.regis.dptu.model.TaskKind.SOLUTION_PATH;
+import static edu.regis.dptu.model.TaskKind.SOLVE;
 
 /**
  * A multi-minute activity that can be skipped or interchanged with other tasks,
@@ -30,6 +34,12 @@ public class Task extends TitledModel {
      * Indicates the type of task the student trying to complete.
      */
     private TaskKind taskType = TaskKind.PROBLEM;
+    
+        /**
+     * The type of this task, which can be used to determine the appropriate
+     * view to display, if different from each of its steps.
+     */
+    private ExampleType type;
     
     /**
      * The scaffolding support for this task.
@@ -91,12 +101,57 @@ public class Task extends TitledModel {
         state = new TaskState();
     }
     
+    /**
+     * Task constructor for LCS problem. Accepts the category of task being 
+     * constructed and the two Strings making up the LCS task. 
+     * 
+     * @param id database id of this task
+     * @param kind the category of task being created (TypeKind)
+     * @param s1 String #1 of the LCS problem 
+     * @param s2 
+     */
+    public Task(int id, TaskKind kind, String s1, String s2){
+        super(id);
+        
+        switch(kind) {
+            case CREATE_TABLE:
+                this.taskType = TaskKind.CREATE_TABLE;
+                this.steps = createTableSteps(s1, s2);
+                break;
+            case SOLUTION_PATH:
+                this.taskType = TaskKind.SOLUTION_PATH;
+                this.steps = createPathSteps(s1, s2);
+                break;
+            case SOLVE:
+                this.taskType = TaskKind.SOLVE;
+                this.steps = createSolveSteps(s1, s2);
+                break;
+            default:
+                this.steps = new ArrayList<>();
+                break;    
+        }
+        
+        exercisedComponentIds = new ArrayList<>();
+        
+        state = new TaskState();
+    }
+    
+    
+    
     public TaskKind getTaskType() {
         return taskType;
     }
 
     public void setTaskType(TaskKind type) {
         this.taskType = type;
+    }
+    
+    public ExampleType getType() {
+        return type;
+    }
+
+    public void setType(ExampleType type) {
+        this.type = type;
     }
 
     public ScaffoldLevel getScaffolding() {
@@ -154,11 +209,8 @@ public class Task extends TitledModel {
      * 
      * @param step the Step that was completed by the student.
      */
-    public void completedStep(Step step) {
-        StepCompletion completion = new StepCompletion();
-        completion.setStepId(step.getId());
-        
-        step.setIsCompleted(true);
+    public void completedStep(StepCompletion completion) {
+        completion.getStep().setIsCompleted(true);
         
         state.addStepCompletion(completion);
     }
@@ -175,6 +227,103 @@ public class Task extends TitledModel {
                 return false;
         
         return true;
+    }
+    
+    /**
+     * Method that checks if the table initialization was successful
+     * It does this by checking if the createTableSteps method returned
+     * a full ArrayList, if so the table was created
+     * 
+     * @return true if initialized, false if not
+     */
+    public boolean checkTableSteps(String s1, String s2) {
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Area of thinking, if the createTableSteps returned
+        // an ArrayList at all, then it's safe to assume the table
+        // was initialized
+        if (!stepsList.isEmpty())
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * Method that checks if the table has the correct size
+     * It does this by measuring the strings, and the expected amount of steps
+     * that the complete table should have, if the actual amount and expected 
+     * amount of steps are the same, then the size has been initialized.
+     * 
+     * @return true if the step values align, false if not
+     */
+    public boolean checkSize(String s1, String s2) {
+        int n = s1.length();
+        int m = s2.length();
+        
+        int expectedSteps = n * m;
+        
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Checks if expected steps and actual steps align
+        if (expectedSteps == stepsList.size())
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * Method that checks if all columns and rows have been initialized
+     * 
+     * @return true if no value is null, false if a cell is null
+     */
+    public boolean checkValues(String s1, String s2) {
+        boolean init = false;
+        
+        int n = s1.length();
+        int m = s2.length();
+        
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Iterate through each row and step to locate if all cells are
+        // associated with values
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int index = i * m + j;
+                if (stepsList.get(index) != null)
+                    init = true;
+                else
+                    init = false;
+            }
+        }
+        
+        return init;
+    }
+    
+    /**
+     * Checks if the first column of the table is initialized
+     * 
+     * @return true if it is, false if not 
+     */
+    public boolean checkFirstCol(String s1, String s2) {
+        boolean init = false;
+        
+        int n = s1.length();
+        int m = s2.length();
+        
+        ArrayList<Step> stepsList = createTableSteps(s1, s2);
+        
+        // Go through the first row, but proceed through all column cells
+        // to check if they have default zero values
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (stepsList.get(j).equals(0))
+                    init = true;
+                else
+                    init = false;
+            }
+        }
+        
+        return init;
     }
 
     public Problem getProblem() {
@@ -211,5 +360,97 @@ public class Task extends TitledModel {
 
     public void setExercisedComponentIds(ArrayList<Integer> componentIds) {
         this.exercisedComponentIds = componentIds;
+    }
+    
+    /**
+     * Generates the array list of steps to create the dynamic programming table
+     * for Strings s1 and s2. Each step has a solution (the correct value the cell
+     * should have) and a SubType based on how the student would arrive at that 
+     * solution. 
+     * 
+     * Because an ArrayList is 1-dimensional, the cells are stored in a 
+     * left-to-right + top-to-bottom fashion. Use the CellTranslate methods to
+     * move between 1D and 2D values. 
+     * 
+     * @param s1 String 1 in the dynamic programming LCS problem 
+     * @param s2 String 2 in the dynamic programming LCS problem 
+     * @return The ArrayList containing each step to create the solution table.
+     */
+    private ArrayList<Step> createTableSteps(String s1, String s2){
+        ArrayList<Step> stepsList = new ArrayList<>();
+        int n = s1.length() + 1;
+        int m = s2.length() + 1;
+        int stepCount = 0;
+        
+        /*
+        The first "n" cells (the top row) are all zero by default
+        
+        TO DO: establish how 'id' number is generated?
+        */
+        for(int i = 0; i < n; i++){
+            Step step = new Step(1, stepCount, StepSubType.DEFAULT_ZERO, 0);
+            stepsList.add(step);
+            stepCount++;
+        }
+        
+        /**
+         * For all remaining rows... standard dynamic programming table algorithm
+         * 
+         * i = current row index
+         * j = current column index
+         * n = row length
+         * m = column length
+         */
+        
+        //Proceed through every row except for the first (already created above)
+        for(int i = 1; i < n; i++){
+            
+            //For each row, proceed through every column
+            for(int j = 0; j < m; j++){
+                Step step = null;
+                
+                //Value in column 0 is always zero by default
+                if(j == 0){
+                    step = new Step(1, stepCount, StepSubType.DEFAULT_ZERO, 0);
+                }
+                
+                //If the character matches in the n[i] and m[j] indices...
+                else if(s1.charAt(i - 1) == s2.charAt(j - 1)){
+                    //Get the solution at the diagonal index and add one for this solution
+                    int diagPos = stepCount - (n + 1);
+                    int solution = 1 + stepsList.get(diagPos).getIntSolution();
+                    step = new Step(1, stepCount, StepSubType.INCREASE_DIAGONAL, solution);
+                }
+                //No character match. Use the left or upper cell, whichever is larger
+                else{
+                    int indexLeft = stepCount - 1;
+                    int indexUp = stepCount - n;
+                    int valueLeft = stepsList.get(indexLeft).getIntSolution();
+                    int valueUp = stepsList.get(indexUp).getIntSolution();
+                    
+                    if(valueLeft >= valueUp){
+                        step = new Step(1, stepCount, StepSubType.USE_LEFT, valueLeft);
+                        
+                    }else{
+                        step = new Step(1, stepCount, StepSubType.USE_UPPER, valueUp);
+                    }
+                }
+                stepsList.add(step);
+                stepCount++;
+            }
+        }
+        return stepsList;
+    }
+    
+    private ArrayList<Step> createPathSteps(String s1, String s2){
+        ArrayList<Step> steps = new ArrayList<>();
+        
+        return steps;
+    }
+    
+    private ArrayList<Step> createSolveSteps(String s1, String s2){
+        ArrayList<Step> steps = new ArrayList<>();
+        
+        return steps;
     }
 }

@@ -39,6 +39,42 @@ public enum StepSubType {
     COMPLETE_CELL("Complete Cell"),
     
     /**
+     * Initialized the entire first row.
+     */
+    COMPLETE_FIRST_ROW("Complete First Row"),
+    
+    /**
+     * Initialized the entire first col.
+     */
+    COMPLETE_FIRST_COL("Complete First Col"),
+    
+    /**
+     * A type of dynamic programming cell step in which the cell value defaults
+     * to zero because of it's position in row or column index -1
+     */
+    DEFAULT_ZERO("Cell Step: Default Zero"),
+    
+    /**
+     * A type of dynamic programming cell step in which the cell value is the
+     * upper-left diagonal value due to a match in the String characters
+     */
+    INCREASE_DIAGONAL("Cell Step: Increase Diagonal Value + 1"),
+    
+    /**
+     * A type of dynamic programming cell step in which the cell value is equal
+     * to the cell located to the left (column position - 1) because of no String
+     * match, and the left cell is higher value than the upper cell
+     */
+    USE_LEFT("Cell Step: Use value of cell to the left."),
+    
+    /**
+     * A type of dynamic programming cell step in which the cell value is equal
+     * to the cell located above (row position - 1) because of no String
+     * match, and the upper is higher value than the cell to the left
+     */
+    USE_UPPER("Cell Step: Use value of cell above."),
+    
+    /**
      * The initial default value in a NewExampleRequest
      */
     DEFAULT("Unknown");
