@@ -24,14 +24,25 @@ public class InformationStep {
      */
     private String msg;
     
+    /**
+     * Public constructor for the InformationStep. Sets message to blank string
+     */
     public InformationStep() {
         msg = "";
     }
 
+    /**
+     * Gets message to be presented to the student
+     * @return String
+     */
     public String getMsg() {
         return msg;
     }
 
+    /**
+     * Sets message to be presented to the student
+     * @param msg (String)
+     */
     public void setMsg(String msg) {
         this.msg = msg;
     }
