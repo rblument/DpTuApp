@@ -23,6 +23,10 @@ import javax.swing.JMenuItem;
  * @author rickb
  */
 public class DpTuMenuBar extends JMenuBar {
+    /**
+    * Constructor for the DpTuMenuBar class.
+    * Initializes the menu bar by creating the File menu.
+    */
     public DpTuMenuBar() {
         createFileMenu();
     }
