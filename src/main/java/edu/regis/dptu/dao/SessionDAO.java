@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * 
  * @author rickb
  */
-public class SessionDAO implements SessionSvc {
+public class SessionDAO implements SessionSvc { // ToDo: Convert to MySql
     /**
      * Data directory containing student session files.
      */
@@ -51,7 +51,7 @@ public class SessionDAO implements SessionSvc {
     public void create(TutoringSession session) throws IllegalArgException, NonRecoverableException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
-        String userId = session.getAccount().getUserId();
+        String userId = session.getStudent().getAccount().getUserId();
         
         String fileName = fullyQualifiedFileName(userId);
         
@@ -110,7 +110,7 @@ public class SessionDAO implements SessionSvc {
      */
     @Override
     public void update(TutoringSession session) throws ObjNotFoundException, NonRecoverableException {
-        String userId = session.getAccount().getUserId();
+        String userId = session.getStudent().getAccount().getUserId();
         
         String fileName = fullyQualifiedFileName(userId);
         File file = new File(fileName);
