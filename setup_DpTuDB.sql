@@ -30,3 +30,17 @@ GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON DpTuDB.* TO 'DpTuTs'@'localhost
 
 # Switch to the DpTuDB
 USE DpTuDB;
+
+# Create Tables
+
+# Create the User Account Table
+CREATE TABLE Account (
+   UserId VARCHAR(256),
+   Password VARCHAR(256) NOT NULL,
+   FirstName VARCHAR(256),
+   LastName VARCHAR(256),
+   Question int,
+   Answer VARCHAR(256),
+   IsStudent tinyint DEFAULT 0,
+   PRIMARY KEY (UserId)
+);

@@ -41,9 +41,9 @@ public class ResourceMgr {
     private static final ResourceMgr SINGLETON;
     
     /**
-     * Location of the DICE.properties file on the CLASSPATH.
+     * Location of the DpTu.properties file on the CLASSPATH.
      */
-    private static final String PROPERTY_FILE_PATH = "/ShaTu.properties";
+    private static final String PROPERTY_FILE_PATH = "/DpTu.properties";
     
     /**
      * Name of the property in the DICE.properties filed specifying the default
@@ -82,12 +82,12 @@ public class ResourceMgr {
     }
     
     /**
-     * Local cache of properties loaded from the ShaTu.properties file.
+     * Local cache of properties loaded from the DpTu.properties file.
      */
     private final Properties properties;
     
     /**
-     * The current locale, as specified in the ShaTu.properties file
+     * The current locale, as specified in the DpTu.properties file
      */
     private Locale locale;
     
@@ -152,7 +152,7 @@ public class ResourceMgr {
     /**
      * Load and cache the properties found in the given properties file.
      * 
-     * @param path location of property file, e.g. "./ShaTu.properties"
+     * @param path location of property file, e.g. "./DpTu.properties"
      */
     private void loadProps(String path) {
 	try {

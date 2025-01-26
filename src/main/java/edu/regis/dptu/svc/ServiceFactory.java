@@ -12,10 +12,9 @@
  */
 package edu.regis.dptu.svc;
 
+import edu.regis.dptu.dao.AccountDAO;
 import edu.regis.dptu.dao.CourseDAO;
 import edu.regis.dptu.dao.SessionDAO;
-import edu.regis.dptu.dao.StudentDAO;
-import edu.regis.dptu.dao.UserDAO;
 
 /**
  * A singleton providing a concrete implementation of the service factory used
@@ -27,6 +26,15 @@ import edu.regis.dptu.dao.UserDAO;
  * @author rickb
  */
 public class ServiceFactory {
+    /**
+     * Return a reference to the user service.
+     * 
+     * @return AccountSvc
+     */
+    public static AccountSvc findAccountSvc() {
+        return new AccountDAO();
+    }
+    
     /**
      * Return a reference to the course service.
      * 
@@ -50,16 +58,8 @@ public class ServiceFactory {
      * 
      * @return StudentSvc
      */
-    public static StudentSvc findStudentSvc() {
-        return new StudentDAO();
-    }
-    
-    /**
-     * Return a reference to the user service.
-     * 
-     * @return UserSvc
-     */
-    public static UserSvc findUserSvc() {
-        return new UserDAO();
-    }
+    // ToDo: add this support ala ShaTu
+    //public static StudentModelSvc findStudentModelSvc() {
+    //    return new StudentModelDAO();
+    //}
 }

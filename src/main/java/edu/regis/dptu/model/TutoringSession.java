@@ -20,7 +20,12 @@ import java.util.GregorianCalendar;
  * 
  * @author rickb
  */
-public class TutoringSession {   
+public class TutoringSession {
+    /**
+     * The id of this session in the database.
+     */
+    private int id;
+    
     /**
      * An SHA-256 encrypted security token that must be communicated to the
      * tutor/server in all subsequent requests after signing in.
@@ -30,7 +35,7 @@ public class TutoringSession {
     /**
      * The student being tutored in this session.
      */
-    private Account account;
+    private Student student;
     
     /**
      * A summary of the course currently being taught in this session.
@@ -60,13 +65,24 @@ public class TutoringSession {
      * remaining tasks are pending. Multiple tasks occur when a student 
      * overrides the task proposed by the tutor.
      */
-    private ArrayList<Task> tasks;
+    private ArrayList<Task> tasks; // ToDo: Change to PendingTask
 
     /**
      * Initialize this session with default information.
+     * 
+     * @param student the Student being tutored in this session.
      */
-    public TutoringSession() {
+    public TutoringSession(Student student) {
+        this.student = student;
         tasks = new ArrayList<>();
+    }
+    
+     public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getSecurityToken() {
@@ -82,12 +98,12 @@ public class TutoringSession {
      * 
      * @return a Student
      */
-    public Account getAccount() {
-        return account;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public CourseDigest getCourse() {
@@ -126,6 +142,7 @@ public class TutoringSession {
         return tasks.get(0);
     }
     
+    //ToDo: change to PendingTask
     public void addTask(Task task) {
         tasks.add(task);
     }
