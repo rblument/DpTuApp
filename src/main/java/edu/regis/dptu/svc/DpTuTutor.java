@@ -149,13 +149,13 @@ public class DpTuTutor implements TutorSvc {
         } catch (NoSuchMethodException ex) {
             return createError("Tutor received an unknown request type: " + request.getRequestType().getRequestName(), ex);
         } catch (SecurityException ex) {
-            return createError("ShaTuTutor_ERR_2", ex);
+            return createError("DpTuTutor_ERR_2", ex);
         } catch (IllegalAccessException ex) {
-            return createError("ShaTuTutor_ERR_3", ex);
+            return createError("DpTuTutor_ERR_3", ex);
         } catch (IllegalArgumentException ex) {
-            return createError("ShaTuTutor_ERR_4", ex);
+            return createError("DpTuTutor_ERR_4", ex);
         } catch (InvocationTargetException ex) {
-            return createError("ShaTuTutor_ERR_5", ex);
+            return createError("DpTuTutor_ERR_5", ex);
         }
     }
 
@@ -176,18 +176,20 @@ public class DpTuTutor implements TutorSvc {
         try {
             ServiceFactory.findAccountSvc().create(acct);
 
-            try {
-                Course course = ServiceFactory.findCourseSvc().retrieve(courseId);
-
+//            try {
+                //Course course = ServiceFactory.findCourseSvc().retrieve(courseId);
+                //TODO: Update source to use DB for the Course
+                Course course = new Course(courseId);
+                
                 student = createStudent(acct, course);
 
                 createSession(student, course);
 
                 return new TutorReply("Created");
 
-            } catch (ObjNotFoundException ex) {
-                return createError("Unknown course: " + courseId, null);
-            }
+//            } catch (ObjNotFoundException ex) {
+//                return createError("Unknown course: " + courseId, null);
+//            }
 
         } catch (IllegalArgException ex) { // The account already exists
             return new TutorReply("IllegalUserId");
@@ -362,9 +364,9 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutoringSession createSession(Student student, Course course) throws NonRecoverableException {
         TutoringSession tSession = new TutoringSession(student);
-        tSession.setStartDate(new GregorianCalendar());
-        tSession.setCourse(course.getDigest());
-        tSession.setUnit(course.currentUnit().getDigest());
+//        tSession.setStartDate(new GregorianCalendar());
+  //      tSession.setCourse(course.getDigest());
+    //    tSession.setUnit(course.currentUnit().getDigest());
         
         // ToDo add support for pending task following ShTu
         /*
