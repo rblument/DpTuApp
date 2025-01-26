@@ -125,7 +125,7 @@ public class CreateAcctAction extends DpTuGuiAction {
             break;
             
             default: // "ERR" Error should have been logged in tutor.
-                msg = "An unexpected error occurred. Please contact ShaTu support";
+                msg = "An unexpected error occurred. Please contact DpTu support";
                 JOptionPane.showMessageDialog(null, msg, "Error",
                                               JOptionPane.ERROR_MESSAGE);
         }

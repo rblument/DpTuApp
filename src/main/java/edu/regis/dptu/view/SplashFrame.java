@@ -158,7 +158,7 @@ public class SplashFrame extends JFrame {
             
         } else {
             String msg = "You exceeded the max number of sign in attempts\n" +
-                         "Please contact the ShaTu administrator";
+                         "Please contact the DpTu administrator";
             
             JOptionPane.showMessageDialog(this, msg, "SignIn Error", JOptionPane.ERROR_MESSAGE);
 
