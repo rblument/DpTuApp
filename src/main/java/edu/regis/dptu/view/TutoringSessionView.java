@@ -64,7 +64,7 @@ public class TutoringSessionView extends GPanel {
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        test = new JLabel("Test");
+        test = new JLabel("You have successfully signed in");
     }
 
     /**
