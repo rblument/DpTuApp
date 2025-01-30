@@ -76,49 +76,103 @@ public class KnowledgeComponent extends TitledModel {
     public BloomLevel getBloomLevel() {
         return bloomLevel;
     }
-
+    
+    /**
+     * Set the bloom level with the given bloomLevel.
+     * 
+     * @param bloomLevel an BloomLevel data type.
+     */
     public void setBloomLevel(BloomLevel bloomLevel) {
         this.bloomLevel = bloomLevel;
     }
 
+    /**
+     * Return the granularity of this outcome.
+     * 
+     * @return a Granularity
+     */
     public OutcomeGranularity getGranularity() {
         return granularity;
     }
 
+    /**
+     * Set the Granularity with the given granularity.
+     * 
+     * @param granularity an OutcomeGranularity data type.
+     */
     public void setGranularity(OutcomeGranularity granularity) {
         this.granularity = granularity;
     }
 
+    /**
+     * Return the pedagogy of this outcome.
+     * 
+     * @return a Pedagogy
+     */
     public TaskSelectionKind getPedagogy() {
         return pedagogy;
     }
 
+    /**
+     * Set the pedagogy with the given pedagogy.
+     * 
+     * @param pegadody an TaskSelectionKind data type.
+     */
     public void setPedagogy(TaskSelectionKind pedagogy) {
         this.pedagogy = pedagogy;
     }
 
+    /**
+     * Return the true or false of whether domain focus.
+     * 
+     * @return a isDomainFocus
+     */
     public boolean isDomainFocus() {
         return isDomainFocus;
     }
     
+    /**
+     * Return the domain focus of this outcome.
+     * 
+     * @return a DomainFocus
+     */
     public boolean getIsDomainFocus() {
         return isDomainFocus();
     }
 
+    /**
+     * Set the domain focus with the given isDomainFocus.
+     * 
+     * @param isDomainFocus a boolean isDomainFocus data type.
+     */
     public void setIsDomainFocus(boolean isDomainFocus) {
         this.isDomainFocus = isDomainFocus;
     }
     
+    /**
+     * Add the location to the exersisingLocations arrayList.
+     * 
+     * @param location a ExercisingLocation data type.
+     */
     public void addExercisingLocation(ExercisingLocation location) {
         exercisingLocations.add(location);
     }
-    
+
+    /**
+     * Return the exercisingLocations of this outcome.
+     * 
+     * @return a ArrayList that holds ExistingLocation
+     */
     public ArrayList<ExercisingLocation> getExercisingLocations() {
         return exercisingLocations;
     }
     
+    /**
+     * Set the exercising locations with the given exercisingLocations.
+     * 
+     * @param exercisingLocations an ArrayList data type that holds exercising location.
+     */
     public void setExercisingLocations(ArrayList<ExercisingLocation> exercisingLocations) {
         this.exercisingLocations = exercisingLocations;
     }
 }
-
