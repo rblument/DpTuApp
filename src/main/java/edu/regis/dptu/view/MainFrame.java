@@ -112,14 +112,6 @@ public class MainFrame extends JFrame implements WindowListener {
         
         this.model = model;
     }
-    
-   // public int getSessionId() {
-     //   return model.getId();
-   // }
-
-   // public void setSessionId(int sessionId) {
-     //   model.setId(sessionId);
-    //}
 
     @Override
     public void windowOpened(WindowEvent e) {
