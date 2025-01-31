@@ -81,6 +81,9 @@ public class NewAccountPanel extends GPanel {
     protected JButton createAcctBut;
     protected JButton backBut;
 
+    /**
+     * Constructor for the NewAccountPanel class
+     */
     public NewAccountPanel() {
         super();
 
@@ -115,10 +118,18 @@ public class NewAccountPanel extends GPanel {
         updateDisplay();
     }
 
+    /**
+     * Returns the JTextField component associated with the user ID.
+     * @return the user ID JTextField component
+     */
     public JTextField getUserIdComp() {
         return userId;
     }
 
+    /**
+     * Requests focus for the first name input field in the window.
+     * This method sets the focus to the 'fName' text field.
+     */
     public void updateFocus() {
         fName.requestFocusInWindow();
     }
@@ -211,6 +222,9 @@ public class NewAccountPanel extends GPanel {
         strength.setFont(new Font("Dialog", Font.PLAIN, 10));
     }
 
+    /**
+     * Layout the panel by setting the background, preferred size, adding necessary components and necessary layout constraints
+     */
     private void layoutPanel() {
         setBackground(Color.WHITE);
 
@@ -237,6 +251,10 @@ public class NewAccountPanel extends GPanel {
         setSize(490, 400);
     }
 
+    /**
+     * Creates and returns a header panel containing the title and header components.
+     * @return a GPanel object representing the header section.
+     */
     private GPanel createHeader() {
         GPanel panel = new GPanel();
         panel.setBackground(new Color(223, 242, 245));
@@ -253,6 +271,10 @@ public class NewAccountPanel extends GPanel {
         return panel;
     }
 
+    /**
+     * Creates and returns an overview panel that provides introductory information and instructions.
+     * @return a GPanel object representing the overview section.
+     */
     private GPanel createOverview() {
         GPanel panel = new GPanel();
         panel.setBackground(Color.WHITE);
@@ -305,6 +327,10 @@ public class NewAccountPanel extends GPanel {
         return panel;
     }
 
+    /**
+     * Creates and returns a login panel containing all login-related components such as text fields, labels, and buttons.
+     * @return a GPanel object representing the login section.
+     */
     private GPanel createLogin() {
                GPanel panel = new GPanel();
         panel.setBackground(new Color(241,196,0));
@@ -417,6 +443,9 @@ public class NewAccountPanel extends GPanel {
         return panel;
     }
 
+    /**
+     * Evaluates the strength of the password entered in the password field and updates the strength indicator accordingly.
+     */
     private void checkStrength() {
 
         int points = 0;
@@ -473,6 +502,10 @@ public class NewAccountPanel extends GPanel {
 
     }
 
+    /**
+     * Compares the passwords entered in the two password fields to determine if they are identical.
+     * @return {@code True} if both password fields contain the same characters; {@code False} otherwise.
+     */
     private boolean samePasswords() {
         char[] text1 = pass1.getPassword();
         char[] text2 = pass2.getPassword();
