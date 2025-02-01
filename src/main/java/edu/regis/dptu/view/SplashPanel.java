@@ -81,8 +81,9 @@ public class SplashPanel extends GPanel {
 	initializeComponents();
 	layoutComponents();
         
-        // ToDo: TMP DEBUGGING (saves me typing), remove this for real
-        userId.setText("");
+        //ToDo: Temp for easy login while in development
+        userId.setText("test@regis.edu");
+        password.setText("TestP@ss");
     }
     
     /**
