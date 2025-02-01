@@ -100,16 +100,14 @@ public class SignInAction extends DpTuGuiAction {
 
         switch (reply.getStatus()) {
             case "Authenticated":
-                MainFrame frame = MainFrame.instance();
-
                 TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
+    
+                // Initialize and show dashboard
+                SplashFrame.instance().initializeDashboard(session);
 
-                SplashFrame.instance().setVisible(false);
-
-                frame.setVisible(true);
-
+                // Hide main frame until needed
+                MainFrame frame = MainFrame.instance();
                 frame.setModel(session);
-
                 break;
 
             case "InvalidPassword":
