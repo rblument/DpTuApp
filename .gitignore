@@ -1,4 +1,4 @@
 target/
 .DS_Store
-nproject/
+nbproject/
 src/main/java/resources/Data/
