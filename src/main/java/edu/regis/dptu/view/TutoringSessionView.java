@@ -25,26 +25,27 @@ import javax.swing.JLabel;
  * @author rickb
  */
 public class TutoringSessionView extends GPanel {
+
     /**
      * The tutoring session model displayed in this view.
      */
     private TutoringSession model;
-    
+
     /**
-     * Declares each of the views used in the tutorings session view. 
-     * 
-     * TODO- Each subview currently is a JLabel, 
-     * change it to the view class once it is created.
-     * Use CodeView as an example.
-     * Go to next TODO to adjust the initializeComponent method.
+     * Declares each of the views used in the tutorings session view.
+     *
+     * TODO- Each subview currently is a JLabel, change it to the view class
+     * once it is created. Use CodePanel as an example. Go to next TODO to 
+     * adjust the initializeComponent method.
      */
     private JLabel variablesView;
     private JLabel subproblemView;
     private JLabel xView;
-    private CodeView codeView;
+    private CodePanel codePanel;
 
     /**
-     * Initialize this view including creating and laying out its child components.
+     * Initialize this view including creating and laying out its child
+     * components.
      */
     public TutoringSessionView() {
         initializeComponents();
@@ -73,26 +74,26 @@ public class TutoringSessionView extends GPanel {
 
     /**
      * Create the child GUI components appearing in this frame.
-     * 
-     * TODO- Adjust the JLable to instead be your view, 
-     * use CodeView as an example.
+     *
+     * TODO- Adjust the JLabel to instead be your view, use CodePanel as an
+     * example.
      */
     private void initializeComponents() {
         variablesView = new JLabel("VariablesView");
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
-        codeView = new CodeView();
+        codePanel = new CodePanel();
     }
 
     /**
      * Layout the child components in this view
-     * 
+     *
      */
     private void layoutComponents() {
         addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
+        addc(codePanel, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         addc(subproblemView, 1, 0, 1, 2, 0.0, 0.0,
