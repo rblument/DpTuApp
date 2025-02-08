@@ -44,3 +44,23 @@ CREATE TABLE Account (
    IsStudent tinyint DEFAULT 0,
    PRIMARY KEY (UserId)
 );
+
+#
+# Course related Tables
+
+# Create the Course Table
+CREATE TABLE Course(
+   CourseId INT NOT NULL AUTO_INCREMENT,
+   Title VARCHAR(256),
+   PrimaryPedagogy ENUM(
+      'Student Choice',
+      'Fixed Sequence',
+      'Mastery Learning',
+      'Microadaptation',
+      'Other',
+      'Error'
+   ),
+   Description VARCHAR(256),
+
+   PRIMARY KEY (CourseId)
+);
