@@ -64,3 +64,26 @@ CREATE TABLE Course(
 
    PRIMARY KEY (CourseId)
 );
+
+# Create the Unit Table
+# All Units belong to a course (hence not null CourseId)
+CREATE TABLE Unit (
+   UnitId INT NOT NULL AUTO_INCREMENT,
+   CourseId INT NOT NULL,
+   Title VARCHAR(256),
+   Description VARCHAR(256),
+   SequenceIndex INT DEFAULT 0,
+   Pedagogy ENUM(
+      'Student Choice',
+      'Fixed Sequence',
+      'Mastery Learning',
+      'Microadaptation',
+      'Other',
+      'Error'
+   ),
+
+   PRIMARY KEY(UnitId),
+   FOREIGN KEY (CourseId)
+      REFERENCES Course(CourseId)
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
