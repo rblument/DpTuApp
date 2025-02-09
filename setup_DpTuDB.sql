@@ -53,12 +53,12 @@ CREATE TABLE Course(
    CourseId INT NOT NULL AUTO_INCREMENT,
    Title VARCHAR(256),
    PrimaryPedagogy ENUM(
-      'Student Choice',
-      'Fixed Sequence',
-      'Mastery Learning',
-      'Microadaptation',
-      'Other',
-      'Error'
+      'STUDENT_CHOICE',
+      'FIXED_SEQUENCE',
+      'MASTERY_LEARNING',
+      'MICROADAPTATION',
+      'OTHER',
+      'ERROR'
    ),
    Description VARCHAR(256),
 
@@ -74,12 +74,12 @@ CREATE TABLE Unit (
    Description VARCHAR(256),
    SequenceIndex INT DEFAULT 0,
    Pedagogy ENUM(
-      'Student Choice',
-      'Fixed Sequence',
-      'Mastery Learning',
-      'Microadaptation',
-      'Other',
-      'Error'
+      'STUDENT_CHOICE',
+      'FIXED_SEQUENCE',
+      'MASTERY_LEARNING',
+      'MICROADAPTATION',
+      'OTHER',
+      'ERROR'
    ),
 
    PRIMARY KEY(UnitId),
@@ -93,7 +93,7 @@ CREATE TABLE Unit (
 # Session is one-to-one with Account and Course
 CREATE TABLE TutoringSession (
    SessionId INT NOT NULL AUTO_INCREMENT,
-   SecurityToken CHAR(256) NOT NULL,
+   SecurityToken CHAR(255) NOT NULL,
    UserId VARCHAR(256) NOT NULL,
    CourseId INT NOT NULL,
    UnitId INT NOT NULL,
