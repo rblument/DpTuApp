@@ -45,7 +45,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      */
     @Override
     public void create(TutoringSession session) throws IllegalArgException, NonRecoverableException {
-        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate) VALUES (?,?,?,?,?,?,CURRENT_TIMESTAMP())";
+        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP())";
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -120,7 +120,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      */
     @Override
     public void update(TutoringSession session) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "UPDATE TutoringSession SET SecurityToken, CourseId, UnitId, IsActive Stu WHERE SessionId = ?";
+        final String sql = "UPDATE TutoringSession SET SecurityToken = ?, CourseId = ?, UnitId = ?, IsActive = ? WHERE SessionId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -165,6 +165,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             conn = DriverManager.getConnection(URL);
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userId);
 
             int rows = stmt.executeUpdate();
 
