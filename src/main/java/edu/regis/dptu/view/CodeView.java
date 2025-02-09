@@ -25,7 +25,7 @@ import javax.swing.JLabel;
  *
  * @author cadencea
  */
-public class CodePanel extends GPanel {
+public class CodeView extends GPanel {
 
     /**
      * Declares the CodeView model displayed in this view along with the
@@ -40,7 +40,7 @@ public class CodePanel extends GPanel {
      * Initialize this view including creating and laying out its child
      * components.
      */
-    public CodePanel() {
+    public CodeView() {
         initializeComponents();
         layoutComponents();
     }
