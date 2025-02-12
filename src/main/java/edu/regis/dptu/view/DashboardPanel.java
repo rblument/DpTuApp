@@ -5,6 +5,9 @@ package edu.regis.dptu.view;
 
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
+import edu.regis.dptu.view.act.PracticeAction;
+import edu.regis.dptu.view.act.QuizMeAction;
+import edu.regis.dptu.view.act.TeachMeAction;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -94,16 +97,14 @@ public class DashboardPanel extends GPanel {
         quizMeProgressBar.setString("0%");
         quizMeProgressBar.setStringPainted(true);
 
-        // Initialize buttons
-        teachMeButton = new JButton("Teach Me");
+        // Initialize buttons with new actions
+        teachMeButton = new JButton(TeachMeAction.instance());
         teachMeButton.setFocusPainted(false);
-        teachMeButton.addActionListener(e -> teachMeButtonActionPerformed(e));
 
-        practiceButton = new JButton("Practice");
+        practiceButton = new JButton(PracticeAction.instance());
         practiceButton.setFocusPainted(false);
-        practiceButton.addActionListener(e -> practiceButtonActionPerformed(e));
 
-        quizMeButton = new JButton("Quiz Me");
+        quizMeButton = new JButton(QuizMeAction.instance());
         quizMeButton.setFocusPainted(false);
     }
 
