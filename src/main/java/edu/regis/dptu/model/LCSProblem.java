@@ -265,9 +265,84 @@ public class LCSProblem {
     /**
      * Undo the execution of the previous statement in the algorithm taking
      * the problem back to the previous state.
+     * 
+     * @author EverettCV
      */
     public void stepBack() {
-        // ToDo: implement this
+        //System.out.println("\n=== stepBack() Called ===");
+        //System.out.println("Before stepBack: ExecutionState = " + executionState);
+        //System.out.println("r=" + r + ", c=" + c + ", i=" + i + ", j=" + j);
+    
+        switch (executionState) {
+            case POST:
+                executionState = EXECUTION_STATE.J_LOOP;
+                i = n;
+                j = m;
+                //System.out.println("Inside case: Post - " + executionState + ", i = " + i + ", n = " + n + ", j = " + j + ", m = " + m);
+
+
+                break;
+
+            case J_LOOP:
+                if (j > 0) {
+                    //System.out.println("Changing value at " + i + ", " + j);
+                    subproblemL[i][j] = -1; // Resetting cell value to -1 (Starting value when unvisited)
+                    j--;
+                } else {
+                    //System.out.println("Inside case J_LOOP: else statement; Current values: " + executionState + ", i = " + i + ", n = " + n + ", j = " + j + ", m = " + m);
+                    //System.out.println("Setting state to I_LOOP");
+                    executionState = EXECUTION_STATE.I_LOOP;
+                }
+                break;
+
+            case I_LOOP:
+                if (i > 1) {
+                    //System.out.println("Decrementing i by 1");
+                    i--;
+                    //System.out.println("Resetting j to m");
+                    j = m;
+
+                    //System.out.println("After resetting j to m - " + executionState + ", i = " + i + ", n = " + n + ", j = " + j + ", m = " + m);
+
+                    //System.out.println("Setting state to J_LOOP");
+                    executionState = EXECUTION_STATE.J_LOOP;
+                } else {
+                    i = -1;
+                    j = -1;
+                    //System.out.println("Inside case I_LOOP: else statement; Current values: " + executionState + ", i =" + i + ", n = " + n + ", j = " + j + ", m = " + m);
+                    executionState = EXECUTION_STATE.C_LOOP;
+                }
+                break;
+
+            case C_LOOP:
+                if (c == 1) {
+                    executionState = EXECUTION_STATE.R_LOOP;
+                    c = -1;
+                } else {
+                    c--;
+                    subproblemL[0][c] = -1;
+
+                }
+                break;
+
+            case R_LOOP:
+                if (r == 0) {
+                    executionState = EXECUTION_STATE.PRE;
+                    r = -1;
+                } else {
+                    r--;
+                    subproblemL[r][0] = -1;
+                }
+                break;
+
+            case PRE:
+                System.out.println("Shouldn't stepBack() in PRE state");
+                break;
+            
+            default: // Should never get here
+                System.out.println("Unknown execution state: " + executionState);
+                break;
+        }
     }
     
     /**

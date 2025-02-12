@@ -137,4 +137,131 @@ public class LCSProblemTest {
         problem.prettyPrint();
   
     }
+
+    /**
+     * Test the stepBack() functionality following testAll() structure.
+     * 
+     * @author EverettCV
+     */
+    @Test
+    public void testStepBack() {
+        System.out.println("\nPerforming testStepBack() method:\n\n");
+
+        String x = "skullandbones";
+        String y = "lullabybabies";
+    
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
+
+        assertEquals(x.length(), problem.getN());
+        assertEquals(y.length(), problem.getM());
+        assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
+
+        problem.step(); // advance r_loop from Java index -1 to 0;
+       
+        assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
+    
+        // Finish the r loop
+        for (int i = 0; i <= problem.getN() + 1; i++)
+            problem.step();
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
+       
+        // advance c from Java index -1 to 1 since c_loop starts at DP cell 0
+        problem.step(); 
+        
+       
+        // finish the c loop
+        for (int i = 2; i <= problem.getM() + 1; i++)
+            problem.step();
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+       
+        // i == -1 and j == -1, step will assign i = 1 and j = 0
+        problem.step();
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        
+        for (int s = 1; s <= problem.getM(); s++) 
+            problem.step();
+        
+        
+        problem.step(); // forces exit of j_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        problem.step(); // begin second iteration of i_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        
+        // i == 2 and j = 0
+        for (int s = 1; s <= problem.getM(); s++)
+            problem.step();
+
+        problem.step(); // forces exit of j_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        problem.step(); // begin third iteration of i_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        
+        // i == 3 and j = 0
+        for (int s = 1; s <= problem.getM(); s++)
+            problem.step();
+
+        for (int row = 4; row < problem.getM(); row++) {
+            problem.step(); // forces exit of j_loop
+            assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+            problem.step(); // begin next iteration of i_loop
+            assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+            
+            for (int s = 1; s <= problem.getM(); s++) 
+                problem.step();
+        } 
+        
+       
+        problem.step(); // forces exit of j_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        
+        problem.step(); // begin last iteration of i_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        
+        for (int s = 1; s <= problem.getM(); s++) 
+            problem.step();
+        
+        problem.step(); // forces exit of j_loop
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        
+        problem.step(); // forces exit of i_loop
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
+
+        problem.prettyPrint();
+
+        // Begin stepBack() method test
+        System.out.println();
+        System.out.println("--Now beginning stepBack() test--");
+
+        System.out.println("--- Simulating stepBack() until reaching state 'C_LOOP' - Printing table at the end.");
+
+        while (problem.getExecutionState() != LCSProblem.EXECUTION_STATE.C_LOOP) {
+            problem.stepBack();
+        }
+
+        problem.prettyPrint();
+
+        System.out.println("--- Simulating stepBack() until reaching state 'R_LOOP' - Printing table at the end.");
+        while (problem.getExecutionState() != LCSProblem.EXECUTION_STATE.R_LOOP) {
+            problem.stepBack();
+        }
+
+        problem.prettyPrint();
+
+        System.out.println("--- Simulating stepBack() until reaching state 'PRE'.");
+        while (problem.getExecutionState() != LCSProblem.EXECUTION_STATE.PRE) {
+            problem.stepBack();
+        }
+
+        System.out.println("Finished executing stepBack() to Execution State 'PRE'.");
+
+        problem.prettyPrint();
+
+
+    }
+    
 }
