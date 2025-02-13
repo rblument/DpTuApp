@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Random;
 
 /**
  *
@@ -139,7 +140,7 @@ public class LCSProblemTest {
     }
 
     /**
-     * Test the stepBack() functionality following testAll() structure.
+     * Test the stepBack() functionality.
      * 
      * @author EverettCV
      */
@@ -261,6 +262,60 @@ public class LCSProblemTest {
 
         problem.prettyPrint();
 
+
+    }
+
+    /**
+     * Test method for stepRLoop() method.
+     * 
+     * @author EverettCV
+     */
+    @Test
+    public void testRLoop() {
+        System.out.println("\nPerforming testRLoop() method:\n\n");
+
+        String x = "skullandbones";
+        String y = "lullabybabies";
+    
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
+
+        Random rand = new Random();
+
+        int stepCount = rand.nextInt(14);
+
+        System.out.println(stepCount);
+
+        problem.stepRLoop(stepCount);
+
+        problem.prettyPrint();
+
+    }
+
+        /**
+     * Test method for stepRLoop() method.
+     * 
+     * @author EverettCV
+     */
+    @Test
+    public void testCLoop() {
+        System.out.println("\nPerforming testRLoop() method:\n\n");
+
+        String x = "skullandbones";
+        String y = "lullabybabies";
+    
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
+
+        Random rand = new Random();
+
+        int stepCount = rand.nextInt(14);
+
+        System.out.println(stepCount);
+
+        problem.stepCLoop(stepCount);
+
+        problem.prettyPrint();
 
     }
     

@@ -352,7 +352,17 @@ public class LCSProblem {
      * @param step number of iterations of the r-loop to execute.
      */
     public void stepRLoop(int step) {
-        // ToDo: implement this
+        reset();
+        executionState = EXECUTION_STATE.R_LOOP;
+        if (step > m + 1) {
+            System.out.println("Invalid step count of: " + step + ". Maximum step count is: " + (m + 1) + ".");
+        } else {
+            r = 0;
+            for (int i = 0; i < step; i++) {
+                subproblemL[r][0] = 0;
+                r++;
+            }
+        }
     }
     
     /**
@@ -362,7 +372,28 @@ public class LCSProblem {
      * @param step number of iterations of the c-loop to execute.
      */
     public void stepCLoop(int step) {
-        // ToDo: implement this
+        reset();
+        executionState = EXECUTION_STATE.R_LOOP;
+        r = 0;
+
+        while (executionState == EXECUTION_STATE.R_LOOP) {
+            subproblemL[r][0] = 0;
+            r++;
+            
+            if (r == m + 1) {
+                executionState = EXECUTION_STATE.C_LOOP;
+                c = 0;
+            }
+        }
+        if (step > n + 1) {
+            System.out.println("Invalid step count of: " + step + ". Maximum step count is: " + (n + 1) + ".");
+        } else {
+            for (int i = 0; i < step; i++) {
+                subproblemL[0][c] = 0;
+                c++;
+            }
+        }
+
     }
     
     /**
@@ -375,7 +406,31 @@ public class LCSProblem {
      *              iteration of the given i-loop.
      */
     public void stepIJLoop(int stepI, int stepJ) {
-        // ToDo: implement this
+        reset();
+        executionState = EXECUTION_STATE.R_LOOP;
+        r = 0;
+
+        while(executionState == EXECUTION_STATE.R_LOOP) {
+            subproblemL[r][0] = 0;
+            r++;
+
+            if (r == m + 1) {
+                executionState = EXECUTION_STATE.C_LOOP;
+                c = 0;
+            }
+        }
+
+        while (executionState == EXECUTION_STATE.C_LOOP) {
+            subproblemL[0][c] = 0;
+            c++;
+
+            if (c == n + 1) {
+                executionState = EXECUTION_STATE.I_LOOP;
+                i = 1;
+            }
+        }
+
+        //ToDo - Finish I and J iterations.
     }
     
     /**
