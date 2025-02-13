@@ -178,6 +178,14 @@ public class LCSProblem {
         return j;
     }
     
+    public int getCurrentValue() {
+        return subproblemL[i][j];
+    }
+    
+    public int getValueAt(int row, int column) {
+        return subproblemL[row][column];
+    }
+    
     public EXECUTION_STATE getExecutionState() {
         return executionState;
     }
