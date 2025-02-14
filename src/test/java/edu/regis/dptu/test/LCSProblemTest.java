@@ -238,6 +238,21 @@ public class LCSProblemTest {
         System.out.println();
         System.out.println("--Now beginning stepBack() test--");
 
+        System.out.println("Simulating stepBack() once, then 5 more times, then 10 more times.");
+
+        problem.stepBack(); // stepBack once
+        problem.prettyPrint(); // Print after one stepBack
+
+        for (int i = 0; i < 5; i++) { // stepBack 5 times
+            problem.stepBack();
+        }
+        problem.prettyPrint(); // Print after 5 stepBacks
+
+        for (int i = 0; i < 10; i++) { // stepBack 10 times
+            problem.stepBack();
+        }
+        problem.prettyPrint(); // Print after 10 stepBacks
+
         System.out.println("--- Simulating stepBack() until reaching state 'C_LOOP' - Printing table at the end.");
 
         while (problem.getExecutionState() != LCSProblem.EXECUTION_STATE.C_LOOP) {
@@ -284,7 +299,7 @@ public class LCSProblemTest {
 
         int stepCount = rand.nextInt(14);
 
-        System.out.println(stepCount);
+        System.out.println("stepCount = " + stepCount);
 
         problem.stepRLoop(stepCount);
 
@@ -292,14 +307,14 @@ public class LCSProblemTest {
 
     }
 
-        /**
+    /**
      * Test method for stepRLoop() method.
      * 
      * @author EverettCV
      */
     @Test
     public void testCLoop() {
-        System.out.println("\nPerforming testRLoop() method:\n\n");
+        System.out.println("\nPerforming testCLoop() method:\n\n");
 
         String x = "skullandbones";
         String y = "lullabybabies";
@@ -311,12 +326,39 @@ public class LCSProblemTest {
 
         int stepCount = rand.nextInt(14);
 
-        System.out.println(stepCount);
+        System.out.println("stepCount = " + stepCount);
 
         problem.stepCLoop(stepCount);
 
         problem.prettyPrint();
 
     }
-    
+
+    /**
+     * Test method for stepIJLoop() method.
+     * 
+     * @author EverettCV
+     */
+    @Test
+    public void testIJLoop() {
+        System.out.println("\nPerforming testIJLoop() method:\n\n");
+
+        String x = "skullandbones";
+        String y = "lullabybabies";
+
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
+
+        Random rand = new Random();
+
+        int stepCountI = rand.nextInt(y.length());
+        int stepCountJ = rand.nextInt(x.length());
+
+        System.out.println("stepCountI = " + stepCountI);
+        System.out.println("stepCountJ = " + stepCountJ);
+
+        problem.stepIJLoop(stepCountI, stepCountJ);
+
+        problem.prettyPrint();
+    }
 }
