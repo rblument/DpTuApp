@@ -344,8 +344,6 @@ public class LCSProblemTest {
             Thread.currentThread().interrupt();
         }
     }
- 
-    }
 
     /**
      * Test method for stepRLoop() method.
