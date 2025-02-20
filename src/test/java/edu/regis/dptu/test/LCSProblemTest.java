@@ -13,11 +13,13 @@
 package edu.regis.dptu.test;
 
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.view.SubproblemTableView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import javax.swing.JFrame;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Random;
 
@@ -136,7 +138,6 @@ public class LCSProblemTest {
         assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
         
         problem.prettyPrint();
-  
     }
 
     /**
@@ -157,30 +158,15 @@ public class LCSProblemTest {
         assertEquals(x.length(), problem.getN());
         assertEquals(y.length(), problem.getM());
         assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
+  
+          for (int i = 0; i <= problem.getN() + 1; i++)
+            problem.step();
+      
+   for (int i = 2; i <= problem.getM() + 1; i++)
+            problem.step();
 
-        problem.step(); // advance r_loop from Java index -1 to 0;
-       
-        assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
-    
-        // Finish the r loop
-        for (int i = 0; i <= problem.getN() + 1; i++)
-            problem.step();
-        
-        assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
-       
-        // advance c from Java index -1 to 1 since c_loop starts at DP cell 0
-        problem.step(); 
-        
-       
-        // finish the c loop
-        for (int i = 2; i <= problem.getM() + 1; i++)
-            problem.step();
-        
-        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-       
-        // i == -1 and j == -1, step will assign i = 1 and j = 0
-        problem.step();
-        
+      
+             
         assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
         
         for (int s = 1; s <= problem.getM(); s++) 
@@ -277,7 +263,88 @@ public class LCSProblemTest {
 
         problem.prettyPrint();
 
+    }
 
+    
+    /*
+    Test the SubproblemTableView. Creates the LCS problem and steps through
+    while setting the i,j value in the table. Finally checks table values against
+    the LCS problem values and displays the table for a short time to visually
+    see that it is working. 
+    */
+    @Test
+    public void testTable() {
+        String x = "skullandbones";
+        String y = "lullabybabies";
+        
+        LCSProblem problem = new LCSProblem(x, y);
+        SubproblemTableView subProblemTable = new SubproblemTableView(x, y);
+        
+        JFrame frame = new JFrame();
+        
+        frame.setSize(1000, 1000);
+        
+        frame.add(subProblemTable);
+        
+        frame.setVisible(true);
+        
+        problem.reset();
+        
+
+        problem.step(); // advance r_loop from Java index -1 to 0;
+       
+        assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
+    
+        // Finish the r loop
+
+
+
+        for (int i = 0; i <= problem.getN() + 1; i++) {
+            problem.step();
+        }
+
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
+       
+        // advance c from Java index -1 to 1 since c_loop starts at DP cell 0
+        problem.step(); 
+        
+       
+        // finish the c loop
+
+        for (int i = 2; i <= problem.getM() + 1; i++) {
+            problem.step();
+            
+        }
+
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+       
+        // i == -1 and j == -1, step will assign i = 1 and j = 0
+        problem.step();
+      
+              assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        
+        while (problem.getExecutionState() != LCSProblem.EXECUTION_STATE.POST) {
+            problem.step();
+            if (problem.getI() <= problem.getN() && problem.getJ() <= problem.getM()) {
+                subProblemTable.updateCellValue(problem.getI(), problem.getJ(), problem.getCurrentValue());
+            } 
+        }
+        
+        for (int i = 0; i <= problem.getN(); i++) {
+            for (int j = 0; j <= problem.getM(); j++) {
+                assertEquals(problem.getValueAt(i, j), subProblemTable.getCellValue(i, j));
+            }
+        }
+//        
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+ 
     }
 
     /**
@@ -361,4 +428,5 @@ public class LCSProblemTest {
 
         problem.prettyPrint();
     }
+
 }

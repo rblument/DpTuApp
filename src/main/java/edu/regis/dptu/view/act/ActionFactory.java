@@ -26,6 +26,8 @@ public class ActionFactory {
         NewUserAction.instance();
         SaveSessionAction.instance();
         SignInAction.instance();
-        
+        TeachMeAction.instance();
+        PracticeAction.instance();
+        QuizMeAction.instance();
     }
 }
