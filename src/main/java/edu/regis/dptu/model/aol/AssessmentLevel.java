@@ -18,7 +18,7 @@ package edu.regis.dptu.model.aol;
  * @author rickb
  */
 public enum AssessmentLevel {
-    /**
+     /**
      * Indicates a student hasn't been exposed to an Outcome.
      */
     VERY_LOW("Very Low"),
@@ -54,7 +54,12 @@ public enum AssessmentLevel {
     /**
      * Indicates a student has completed an Outcome.
      */
-    COMPLETED("Completed");
+    COMPLETED("Completed"),
+    
+    /**
+     * Indicates the student hasn't seen the associated outcome (knowledge component).
+     */
+    NOT_STARTED("Not Started");
     
     /**
      * A GUI displayable string identifying this assessment level.
@@ -67,5 +72,19 @@ public enum AssessmentLevel {
     
     public String title() {
         return title;
+    }
+    
+     /**
+     * Return the corresponding enum value for the given title
+     * @param title
+     * @return the matching enum value (If null is returned, you called
+     *   this method with an unknown title, fix the call).
+     */
+    public static AssessmentLevel fromString(String title) {
+        for (AssessmentLevel enumVal : AssessmentLevel.values())
+            if (enumVal.title().equalsIgnoreCase(title))
+                return enumVal;
+            
+        return null;
     }
 }

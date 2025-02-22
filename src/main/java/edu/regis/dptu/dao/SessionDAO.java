@@ -15,6 +15,12 @@ package edu.regis.dptu.dao;
 import edu.regis.dptu.err.IllegalArgException;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.Student;
+import edu.regis.dptu.model.Task;
+import edu.regis.dptu.model.TaskKind;
+import static edu.regis.dptu.model.TaskKind.LCS_PROBLEM;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.svc.SessionSvc;
 import java.sql.Connection;
@@ -22,6 +28,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 /**
@@ -45,7 +52,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      */
     @Override
     public void create(TutoringSession session) throws IllegalArgException, NonRecoverableException {
-        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP())";
+        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemKind, ProblemId) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?)";
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -67,6 +74,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt.setInt(3, session.getCourse().getId());
             stmt.setInt(4, session.getUnit().getId());
             stmt.setBoolean(5, session.isIsActive());
+            
+            Problem prob = session.getProblem();
+            stmt.setString(6, prob.getKind().toString());
+            stmt.setInt(7, prob.getId());
 
             stmt.execute();
         } catch(SQLException e) {
@@ -80,16 +91,17 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      * {@inheritDoc}
      */
     @Override
-    public TutoringSession retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "SELECT SessionId, SecurityToken, StartDate, IsActive FROM TutoringSession WHERE UserId = ?";
+    public TutoringSession retrieve(Student student) throws ObjNotFoundException, NonRecoverableException {
+        final String sql = "SELECT SessionId, SecurityToken, StartDate, IsActive, ProblemKind, ProblemId FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = DriverManager.getConnection(URL);
-
             stmt = conn.prepareStatement(sql);
+            
+            String userId = student.getAccount().getUserId();
             stmt.setString(1, userId);
 
             ResultSet rs = stmt.executeQuery();
@@ -103,6 +115,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 date.setTime(rs.getDate(3));
                 session.setStartDate(date);
                 session.setIsActive(rs.getBoolean(4));
+                
+                TaskKind kind = TaskKind.valueOf(rs.getString(5));
+                
+                session.setProblem(retrieveProblem(kind, rs.getInt(6), conn));
 
                 return session;
             } else {
@@ -112,6 +128,37 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             throw new NonRecoverableException("Retrieve Session Error", e);
         } finally {
             close(stmt);
+        }
+    }
+    
+     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String retrieveSecurityToken(String userId) throws ObjNotFoundException, NonRecoverableException {
+         final String sql = "SELECT SecurityToken FROM TutoringSession WHERE UserId = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, userId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString(1);
+
+            } else {
+                throw new ObjNotFoundException("User Id:" + userId);
+            }
+        } catch (SQLException e) {
+            throw new NonRecoverableException("SessionDAO-ERR-5" + e.toString(), e);
+        } finally {
+            close(conn, stmt);
         }
     }
     
@@ -204,6 +251,51 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             throw new NonRecoverableException("Exists Session Error", e);
         } finally {
             close(stmt);
+        }
+    }
+    
+    private Problem retrieveProblem(TaskKind kind, int kindId, Connection conn) 
+        throws NonRecoverableException {
+        switch (kind) {
+            case LCS_PROBLEM:
+                return retrieveLCSProblem(kindId, conn);
+                
+            default:
+                return null;
+        }
+    }
+    
+    private LCSProblem retrieveLCSProblem(int kindId, Connection conn) throws NonRecoverableException {
+         final String sql = "SELECT Title,Description,Sequence1,Sequence2 FROM LCSProblem WHERE Id = ?";
+
+        ArrayList<Task> tasks = new ArrayList<>();
+    
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, kindId);
+  
+
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                LCSProblem prob = new LCSProblem(rs.getString(3), rs.getString(4));
+                prob.setId(kindId);
+                prob.setTitle(rs.getString(1));
+                prob.setDescription(rs.getString(2));
+                
+                return prob;
+                
+            } else {
+                throw new NonRecoverableException("Inconsisted DB LCSProb: " + kindId);
+            }
+            
+        } catch (SQLException e) {
+            throw new NonRecoverableException("CourseDAO-ERR-10" + e.toString(), e);
+        } finally {
+            close(stmt); // Don't close the connection, retrieve(courseId) will
         }
     }
 }

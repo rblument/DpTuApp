@@ -105,7 +105,7 @@ public class Unit extends TitledModel {
      */
     public Task findTaskBySequence(int sequence) {
         for (Task task : tasks)
-            if (task.getSequenceId() == sequence)
+            if (task.getSequenceIndex() == sequence)
                 return task;
         
         return null;

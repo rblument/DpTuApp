@@ -20,9 +20,44 @@ package edu.regis.dptu.model.aol;
  * @author rickb
  */
 public enum OutcomeGranularity {
-    COURSE,
+       COURSE("Course"),
     
-    KNOWLEDGE_COMPONENT,
+    KNOWLEDGE_COMPONENT("Knowledge Component"),
     
-    UNIT;
+    UNIT("Unit"),
+    
+    ERROR("Error");
+    
+    /**
+     * A GUI displayable string identifying this granularity.
+     */
+    private final String title;
+    
+    OutcomeGranularity(String title) {
+        this.title = title;
+    }
+     
+    /**
+     * Return the granularity
+     * 
+     * @return aString
+     */
+    public String title() {
+        return title;
+    }
+    
+    /**
+     * Return the enum value for the given title.
+     * 
+     * @param aTitle
+     * @return 
+     */
+    public static OutcomeGranularity findValue(String aTitle) {
+        for (OutcomeGranularity kind : values()) {
+            if (kind.title().equalsIgnoreCase(aTitle))
+                return kind;
+        }
+        
+        return ERROR;
+    }
 }

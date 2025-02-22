@@ -35,7 +35,7 @@ public class NonRecoverableException extends DpTuException {
 	super(msg);
 
         Logger.getLogger(NonRecoverableException.class.getName())
-            .log(Level.SEVERE, "ShaTuException: {0}", msg);
+            .log(Level.SEVERE, "DpTuException: {0}", msg);
         
       }
 

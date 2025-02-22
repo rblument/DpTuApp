@@ -20,6 +20,8 @@ import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Course;
 import edu.regis.dptu.model.KnowledgeComponent;
+import edu.regis.dptu.model.PendingStep;
+import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepCompletion;
 import edu.regis.dptu.model.StepCompletionReply;
@@ -51,7 +53,7 @@ public class DpTuTutor implements TutorSvc {
     /**
      * The id of the default course taught by the this tutor (Dynamic Programming).
      */
-    private static final int DEFAULT_COURSE_ID = 2;
+    private static final int DEFAULT_COURSE_ID = 1;
     /**
      * The maximum number of characters allowed for encoding a example ASCII
      * encoding request from the student.
@@ -121,20 +123,42 @@ public class DpTuTutor implements TutorSvc {
             case "completedTask":
             case "newExample":
             case "requestHint":
+                String userId = request.getUserId();
                 try {
-                session = verifySession(request.getUserId(), request.getSessionId());
+                    if (verifySession(userId, request.getSecurityToken())) {
 
-            } catch (ObjNotFoundException ex) {
-                return createError("No session exists for user: " + request.getUserId(), ex);
-            } catch (IllegalArgException ex) {
-                return createError("Illegal session token sent for user: " + request.getUserId(), ex);
-            } catch (NonRecoverableException ex) {
-                return createError(ex.toString(), ex);
-            }
+                        Account account = ServiceFactory.findAccountSvc().retrieve(userId);
+                        student = new Student(account);
+                        
+                        try {
+                            StudentModelSvc stuModSvc = ServiceFactory.findStudentModelSvc();
+                            studentModel = stuModSvc.retrieve(userId);
+                            student.setStudentModel(studentModel);
+                    
+                        } catch (ObjNotFoundException ex) {
+                            TutorReply reply = new TutorReply(":ERR");
+                            reply.setData("Student model not found for: " + userId );
+                            return reply;
+                        }
+    
+                        
+                        session = ServiceFactory.findSessionSvc().retrieve(student);
+        
+                    } else {
+                        TutorReply reply = new TutorReply(":ERR");
+                        reply.setData("Illegal Security Token");
+                        return reply;
+                    }
 
-            String msg = "Session verified for " + request.getUserId();
-            Logger.getLogger(DpTuTutor.class.getName()).log(Level.INFO, msg);
-            break;
+                } catch (ObjNotFoundException ex) {
+                    return createError("No session exists for user: " + userId, ex);
+                } catch (NonRecoverableException ex) {
+                    return createError(ex.toString(), ex);
+                }
+
+                String msg = "Session verified for " + request.getUserId();
+                Logger.getLogger(DpTuTutor.class.getName()).log(Level.INFO, msg);
+                break;
 
             default: // e.g., signIn itself, newAccount
                 Logger.getLogger(DpTuTutor.class.getName()).log(Level.INFO, "No token verification required");
@@ -176,10 +200,8 @@ public class DpTuTutor implements TutorSvc {
         try {
             ServiceFactory.findAccountSvc().create(acct);
 
-//            try {
-                //Course course = ServiceFactory.findCourseSvc().retrieve(courseId);
-                //TODO: Update source to use DB for the Course
-                Course course = new Course(courseId);
+            try {
+                Course course = ServiceFactory.findCourseSvc().retrieve(courseId);
                 
                 student = createStudent(acct, course);
 
@@ -187,9 +209,9 @@ public class DpTuTutor implements TutorSvc {
 
                 return new TutorReply("Created");
 
-//            } catch (ObjNotFoundException ex) {
-//                return createError("Unknown course: " + courseId, null);
-//            }
+            } catch (ObjNotFoundException ex) {
+                return createError("Unknown course: " + courseId, null);
+            }
 
         } catch (IllegalArgException ex) { // The account already exists
             return new TutorReply("IllegalUserId");
@@ -216,8 +238,6 @@ public class DpTuTutor implements TutorSvc {
                 student = new Student(dbAcct);
                 String userId = dbAcct.getUserId();
                 
-                // ToDo: add student model and session suppor ala ShaTu
-                /*
                 try {
                     StudentModelSvc stuModSvc = ServiceFactory.findStudentModelSvc();
                     studentModel = stuModSvc.retrieve(userId);
@@ -231,8 +251,7 @@ public class DpTuTutor implements TutorSvc {
 
                 SessionSvc svc = ServiceFactory.findSessionSvc();
                 TutoringSession session = svc.retrieve(student);
-                */
-                TutoringSession session = new TutoringSession(student); // ToDo: tmp
+              
                 TutorReply reply = new TutorReply("Authenticated");
 
                 reply.setData(gson.toJson(session));
@@ -363,17 +382,22 @@ public class DpTuTutor implements TutorSvc {
      * @return the new TutoringSession
      */
     private TutoringSession createSession(Student student, Course course) throws NonRecoverableException {
-        TutoringSession tSession = new TutoringSession(student);
-//        tSession.setStartDate(new GregorianCalendar());
-  //      tSession.setCourse(course.getDigest());
-    //    tSession.setUnit(course.currentUnit().getDigest());
+        Account account = student.getAccount();
         
-        // ToDo add support for pending task following ShTu
-        /*
+        TutoringSession tSession = new TutoringSession(student);
+        tSession.setStartDate(new GregorianCalendar());
+        tSession.setCourse(course.getDigest());
+        tSession.setUnit(course.currentUnit().getDigest());
+        
+
         Task task = getFirstTask(course);
         PendingTask pendingTask = new PendingTask(task);
         pendingTask.setCurrentStep(new PendingStep(task.getCurrentStep()));   
         tSession.addTask(pendingTask);
+        
+        //ToDo: This is really a kludge since the first task may not be the
+        // problem task. Will/should every task represent the problem??
+        tSession.setProblem(task.getProblem());
    
         // Generate the security token for this tutoring session.
         Random rnd = new Random();
@@ -382,14 +406,14 @@ public class DpTuTutor implements TutorSvc {
 
         try {
             ServiceFactory.findSessionSvc().create(tSession);
-*/
+
             return tSession;
 
-/*
+
         } catch (IllegalArgException ex) {
             throw new NonRecoverableException("Session already exists", ex);
         }
-        */
+     
     }
 
     /**
@@ -430,17 +454,13 @@ public class DpTuTutor implements TutorSvc {
      * @return the current TutoringSession associated with the given user id and
      * session id
      */
-    private TutoringSession verifySession(String userId, String sessionId)
-            throws ObjNotFoundException, IllegalArgException, NonRecoverableException {
+    private boolean verifySession(String userId, String sessionId) 
+        throws ObjNotFoundException, NonRecoverableException {
 
         SessionSvc svc = ServiceFactory.findSessionSvc();
-        TutoringSession locSession = svc.retrieve(userId);
+        String dbToken = svc.retrieveSecurityToken(userId);
 
-        if (locSession.getSecurityToken().equals(sessionId)) {
-            return locSession;
-        } else {
-            throw new IllegalArgException("Illegal session id for user: " + userId);
-        }
+        return dbToken.equals(sessionId);
     }
 
     /**
@@ -450,7 +470,7 @@ public class DpTuTutor implements TutorSvc {
      * @return a Task that should be completed first.
      * @throws IllegalArgException see the message text.
      */
-    private Task getFirstTask(Course course) throws IllegalArgException {
+    private Task getFirstTask(Course course) throws NonRecoverableException {
         switch (course.getPrimaryPedagogy()) {
             case STUDENT_CHOICE:
                 return null; // ToDo
@@ -459,13 +479,13 @@ public class DpTuTutor implements TutorSvc {
                 Unit unit = course.findUnitBySequenceId(0);
 
                 if (unit == null) {
-                    throw new IllegalArgException("Unit 0 not found in course: " + course.getId());
+                    throw new NonRecoverableException("Unit 0 not found in course: " + course.getId());
                 }
 
                 Task task = unit.findTaskBySequence(0);
 
                 if (task == null) {
-                    throw new IllegalArgException("Task 0 not found in Unit 0 of course: " + course.getId());
+                    throw new NonRecoverableException("Task 0 not found in Unit 0 of course: " + course.getId());
                 }
 
                 return task;
@@ -477,7 +497,7 @@ public class DpTuTutor implements TutorSvc {
                 return null; // ToDo
 
             default:
-                throw new IllegalArgException("Unknwon task selection in course: " + course.getId());
+                throw new NonRecoverableException("Unknwon task selection in course: " + course.getId());
         }
     }
 

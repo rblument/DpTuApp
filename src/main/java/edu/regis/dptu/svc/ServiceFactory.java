@@ -15,6 +15,7 @@ package edu.regis.dptu.svc;
 import edu.regis.dptu.dao.AccountDAO;
 import edu.regis.dptu.dao.CourseDAO;
 import edu.regis.dptu.dao.SessionDAO;
+import edu.regis.dptu.dao.StudentModelDAO;
 
 /**
  * A singleton providing a concrete implementation of the service factory used
@@ -59,7 +60,7 @@ public class ServiceFactory {
      * @return StudentSvc
      */
     // ToDo: add this support ala ShaTu
-    //public static StudentModelSvc findStudentModelSvc() {
-    //    return new StudentModelDAO();
-    //}
+    public static StudentModelSvc findStudentModelSvc() {
+        return new StudentModelDAO();
+    }
 }

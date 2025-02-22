@@ -57,6 +57,11 @@ public class TutoringSession {
      * The date and time when this session was initially created.
      */
     private GregorianCalendar startDate;
+    
+    /**
+     * The overall problem being solved in this session.
+     */
+    private Problem problem;
  
      /**
      * The current task list.
@@ -65,7 +70,7 @@ public class TutoringSession {
      * remaining tasks are pending. Multiple tasks occur when a student 
      * overrides the task proposed by the tutor.
      */
-    private ArrayList<Task> tasks; // ToDo: Change to PendingTask
+    private ArrayList<PendingTask> tasks; // ToDo: Change to PendingTask
 
     /**
      * Initialize this session with default information.
@@ -137,31 +142,41 @@ public class TutoringSession {
     public void setStartDate(GregorianCalendar startDate) {
         this.startDate = startDate;
     }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
+    }
     
-    public Task currentTask() {
+    
+    
+    public PendingTask currentTask() {
         return tasks.get(0);
     }
     
     //ToDo: change to PendingTask
-    public void addTask(Task task) {
+    public void addTask(PendingTask task) {
         tasks.add(task);
     }
 
-    public ArrayList<Task> getTasks() {
+    public ArrayList<PendingTask> getTasks() {
         return tasks;
     }
 
-    public void setTasks(ArrayList<Task> tasks) {
+    public void setTasks(ArrayList<PendingTask> tasks) {
         this.tasks = tasks;
     }
     
-    public void removeTask(Task task) {
+    public void removeTask(PendingTask task) {
         tasks.remove(task);
     }
     
     public void removeTask(int taskId) {
-        for (Task task : tasks) 
-            if (task.getId() == taskId)
+        for (PendingTask task : tasks) 
+            if (task.getTask().getId() == taskId)
                 removeTask(task);
     }
 }
