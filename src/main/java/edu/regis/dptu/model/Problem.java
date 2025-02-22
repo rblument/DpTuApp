@@ -23,22 +23,9 @@ package edu.regis.dptu.model;
  * 
  * @author rickb
  */
-public abstract class Problem extends Model {
-    protected int problemId;
+public abstract class Problem extends TitledModel {
     
-    /**
-     * A brief informative description of this problem, which may be displayed 
-     * in the GUI.
-     */
-    protected String title;
-    
-    /**
-     * An informative overview of this problem.
-     */
-    protected String description;
-    
-    // ToDo:
-    //public abstract ArrayList<Task> getTasks();
+    protected TaskKind kind;
     
     public Problem() {
         this(DEFAULT_ID);
@@ -46,30 +33,18 @@ public abstract class Problem extends Model {
     
     public Problem(int id) {
         super(id);
-        
-        title = "";
-        description = "";
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public TaskKind getKind() {
+        return kind;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return title;
+    public void setKind(TaskKind kind) {
+        this.kind = kind;
     }
 }
 

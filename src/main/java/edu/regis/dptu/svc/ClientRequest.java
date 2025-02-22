@@ -32,6 +32,11 @@ public class ClientRequest {
     private String userId;
     
     /**
+     * The sing-in security token associated with the user making this request.
+     */
+    private String securityToken;
+    
+    /**
      * The sing-in session id associated with the user making this request.
      */
     private String sessionId;
@@ -69,6 +74,14 @@ public class ClientRequest {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+    
+     public String getSecurityToken() {
+        return securityToken;
+    }
+
+    public void setSecurityToken(String sessionId) {
+        this.securityToken = sessionId;
     }
 
     public String getSessionId() {

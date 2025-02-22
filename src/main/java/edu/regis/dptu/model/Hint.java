@@ -29,7 +29,7 @@ public class Hint extends Model {
      * The order in which this hint should be displayed (when multiple hints
      * are available).
      */
-    private int sequenceId = 1;
+    private int sequenceIndex = 1;
 
     /**
      * Initialize this hint with a default id.
@@ -55,12 +55,12 @@ public class Hint extends Model {
         this.text = text;
     }   
 
-    public int getSequenceId() {
-        return sequenceId;
+    public int getSequenceIndex() {
+        return sequenceIndex;
     }
 
-    public void setSequenceId(int sequenceId) {
-        this.sequenceId = sequenceId;
+    public void setSequenceIndex(int sequenceIndex) {
+        this.sequenceIndex = sequenceIndex;
     }
 }
 

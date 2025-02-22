@@ -12,24 +12,8 @@
  */
 package edu.regis.dptu.model.aol;
 
-import edu.regis.dptu.model.*;
-import edu.regis.dptu.err.NonRecoverableException;
-import static edu.regis.dptu.model.Model.DEFAULT_ID;
 import edu.regis.dptu.model.ScaffoldLevel;
-import edu.regis.dptu.util.XmlMgr;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import javax.xml.parsers.DocumentBuilder; 
-import javax.xml.parsers.DocumentBuilderFactory; 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer; 
-import javax.xml.transform.TransformerFactory; 
-import javax.xml.transform.dom.DOMSource; 
-import javax.xml.transform.stream.StreamResult; 
-import org.w3c.dom.Document; 
-import org.w3c.dom.Element; 
-import org.w3c.dom.NodeList;
 
 /**
  * Captures the current assessment for each learning outcome in a course, as 
@@ -38,7 +22,7 @@ import org.w3c.dom.NodeList;
  * @author rickb
  */
 public class StudentModel {
-    /**
+      /**
      * Convenience reference to the user id (email) of the student associated
      * with this student model.
      */
@@ -56,14 +40,14 @@ public class StudentModel {
     private ScaffoldLevel scaffoldLevel = ScaffoldLevel.EXTREME;
     
     /**
-     * Instantiate this student model with default information.
+     * Create a student model for the given user id and with default information.
      * 
      * @param userId the user id of the student whose model is being created.
      */
     public StudentModel(String userId) {
         this.userId = userId;
         
-        assessments = new HashMap<>();
+        assessments = new HashMap<>();   
     }
 
     public String getUserId() {
@@ -75,7 +59,12 @@ public class StudentModel {
     }
     
     public void addAssessment(int knowledgeComponentId, Assessment assessment) {
+        System.out.println("***** StuMod.addAssess: id: " + knowledgeComponentId);
         assessments.put(knowledgeComponentId, assessment);
+    }
+    
+    public void addAssessment(Assessment assessment) {
+        addAssessment(assessment.getOutcome().getId(), assessment);
     }
 
     /**
@@ -97,6 +86,10 @@ public class StudentModel {
      */
     public Assessment findAssessment(int knowledgeComponentId) {
         return assessments.get(knowledgeComponentId);
+    }
+    
+    public HashMap<Integer, Assessment> getAssessments() {
+        return assessments;
     }
     
     /**

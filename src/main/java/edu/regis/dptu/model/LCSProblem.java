@@ -32,7 +32,7 @@ package edu.regis.dptu.model;
  * 
  * @author rickb
  */
-public class LCSProblem {
+public class LCSProblem extends Problem {
     /**
      * Current state of execution capturing which of the loops are current.
      * Note if the corresponding iteration index for a loop is -1, the loop
@@ -124,6 +124,8 @@ public class LCSProblem {
         subproblemL = new int[n+1][m+1];
         
         executionState = EXECUTION_STATE.PRE;
+        
+        kind = TaskKind.LCS_PROBLEM;
     }
 
     /**
