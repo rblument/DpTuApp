@@ -45,7 +45,7 @@ public class StepCompletion {
     
     public StepCompletion(Step step, String data) {
         date = System.currentTimeMillis();
-        
+        this.step = step;
         this.data = data;
     }
     
@@ -82,5 +82,25 @@ public class StepCompletion {
      */
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public boolean isTimeoutOccur() {
+        return timeoutOccur;
+    }
+
+    public void setTimeoutOccur(boolean timeoutOccur) {
+        this.timeoutOccur = timeoutOccur;
+    }
+
+    public int getHintsGiven() {
+        return hintsGiven;
+    }
+
+    public void setHintsGiven(int hintsGiven) {
+        this.hintsGiven = hintsGiven;
+    }
+
+    public void incrementHints() {
+        hintsGiven++;
     }
 }
