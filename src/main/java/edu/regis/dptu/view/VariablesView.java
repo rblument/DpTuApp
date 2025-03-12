@@ -76,15 +76,15 @@ public class VariablesView extends GPanel{
     }
     
     public int[][] updateView() {
-        int c = colColumn(stringY);
+        int c = colColumn(stringX);
         int r = rowColumn(stringY);
-        int[][] L = new int[i][j];
+        int[][] L = new int[r][c];
        
         for(i = 1; i < c - 1; i++){ //c = n
-            L[i][-1] = 0;
+            L[i][0] = 0;
         }
         for(j = 0; i < r - 1; i++){ //r = m
-            L[-1][j] = 0;
+            L[0][j] = 0;
         }
         for(i = 0; i < c - 1; i++){ //c = n
             for(j = 0; i < r - 1; i++){ //r = m
