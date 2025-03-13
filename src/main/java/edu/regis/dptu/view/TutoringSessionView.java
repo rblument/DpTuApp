@@ -42,6 +42,7 @@ public class TutoringSessionView extends GPanel {
     private JLabel subproblemView;
     private JLabel xView;
     private CodeView codeView;
+    private SubproblemTableView tableView;
 
     /**
      * Initialize this view including creating and laying out its child
@@ -83,6 +84,7 @@ public class TutoringSessionView extends GPanel {
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
         codeView = new CodeView();
+        tableView = new SubproblemTableView("skullandbones", "lullabybabies");
     }
 
     /**
@@ -96,10 +98,13 @@ public class TutoringSessionView extends GPanel {
         addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        addc(subproblemView, 1, 0, 1, 2, 0.0, 0.0,
+        addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
-        addc(xView, 2, 0, 1, 2, 0.0, 0.0,
+        addc(xView, 3, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
     }
