@@ -37,13 +37,13 @@ public class PendingStep {
     
     private int currentHintIndex;
     
-        /**
+    /**
      * If true, the GUI immediately notifies the tutor when the student performs
      * this step.
      */
     protected boolean notifyTutor;
     
-        /**
+    /**
      * True, if the student has completed this step, otherwise false.
      * 
      * Note, if this is true and notifyTutor is true, the tutor has been
@@ -71,8 +71,6 @@ public class PendingStep {
     public void setId(int id) {
         this.id = id;
     }
-    
-    
 
     public Step getStep() {
         return step;
@@ -107,7 +105,7 @@ public class PendingStep {
         return hints.get(currentHintIndex);
     }
     
-        public boolean isNotifyTutor() {
+    public boolean isNotifyTutor() {
         return notifyTutor;
     }
 
@@ -115,7 +113,7 @@ public class PendingStep {
         this.notifyTutor = notifyTutor;
     }
     
-        public boolean isCompleted() {
+    public boolean isCompleted() {
         return isCompleted;
     }
 

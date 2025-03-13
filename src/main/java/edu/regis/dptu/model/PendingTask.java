@@ -56,12 +56,11 @@ public class PendingTask {
         currentStep = new PendingStep(step);
     }
     
-    // ToDo: See comment above
     public PendingStep currentStep() {
         return currentStep;
     }
     
-       /**
+    /**
      * Return whether this task is completed.
      * 
      * @return true if all of the steps in this task have been completed, 
