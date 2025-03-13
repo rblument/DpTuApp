@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @author rickb
  */
-public class StudentModelDAO extends MySqlDAO implements StudentModelSvc {
+public class StudentModelDAO extends Transactionable implements StudentModelSvc {
 
     /**
      * Initialize this DAO via the parent constructor.
@@ -63,6 +63,8 @@ public class StudentModelDAO extends MySqlDAO implements StudentModelSvc {
             conn = DriverManager.getConnection(URL);
             stmt1 = conn.prepareStatement(sql1);
             
+            startTransaction(conn);
+            
             stmt1.setString(1, userId);
             stmt1.setString(2, ScaffoldLevel.EXTREME.toString());
             stmt1.executeUpdate();
@@ -86,8 +88,10 @@ public class StudentModelDAO extends MySqlDAO implements StudentModelSvc {
                     assessment.setId(rs.getInt(1));
                 }
             }
-             
+
+            commit(conn);
         } catch (SQLException e) {
+            if (conn != null) rollback(conn);
             throw new NonRecoverableException("UserDAO-ERR-5" + e.toString(), e);
         } finally {
             close(stmt2);
