@@ -38,7 +38,7 @@ public class TutoringSessionView extends GPanel {
      * once it is created. Use CodeView as an example. Go to next TODO to 
      * adjust the initializeComponent method.
      */
-    private JLabel variablesView;
+    private VariablesView variablesView;
     private JLabel subproblemView;
     private JLabel xView;
     private CodeView codeView;
@@ -80,7 +80,7 @@ public class TutoringSessionView extends GPanel {
      * example.
      */
     private void initializeComponents() {
-        variablesView = new JLabel("VariablesView");
+        variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
         codeView = new CodeView();
