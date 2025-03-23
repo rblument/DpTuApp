@@ -12,35 +12,57 @@
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.model.CodeModel;
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemListener;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import java.lang.String;
 
 /**
  * Displays the Code Panel section of the Tutoring Session GUI. This panel will
  * display code statements from the CodeModel.
  *
- * TODO- This File is unfinished and may not have full functionality.
  *
  * @author cadencea
  */
-public class CodeView extends GPanel {
+public class CodeView extends GPanel implements ProblemListener {
 
     /**
-     * Declares the CodeView model displayed in this view along with the
+     * Declares the CodeView model (a Problem object) displayed in this view along with the
      * necessary arrayLists for the code statements.
      *
      */
-    private CodeModel model;
+    private Problem model;
     private ArrayList statementStrings;
-    private ArrayList statementJLabels;
+    private ArrayList<JLabel> statementJLabels;
 
     /**
+     * Used as a background color
+     */
+    private static final Color MEDIUM_GRAY = new Color(215, 215, 215);
+    
+    /**
+     * 
      * Initialize this view including creating and laying out its child
      * components.
      */
     public CodeView() {
+        // Temperary model so it can be tested.
+        model = new LCSProblem("test","test");
+        setModel(model);
+        
+        // Adds codeView to the list of problem listeners the Problem has so it 
+        // can be notified about updates
+        model.addProblemListener(this);
+        
+        //Making it look pretty
+        setBorder(BorderFactory.createTitledBorder("Code View"));
+        setBackground(MEDIUM_GRAY);
+        
         initializeComponents();
         layoutComponents();
     }
@@ -51,7 +73,7 @@ public class CodeView extends GPanel {
      * @return a CodeModel
      *
      */
-    public CodeModel getModel() {
+    public Problem getModel() {
         return model;
     }
 
@@ -62,7 +84,7 @@ public class CodeView extends GPanel {
      *
      * @param model a CodeModel.
      */
-    public void setModel(CodeModel model) {
+    public  void setModel(Problem model) {
         this.model = model;
 
         updateView();
@@ -73,16 +95,10 @@ public class CodeView extends GPanel {
      */
     private void initializeComponents() {
         /**
-         * TODO- I can't imagine this is the right place for this model to be
-         * initialized but I have not been able to find how to do it and this
-         * works so...
-         */
-        model = new CodeModel();
-        /**
          * grabs the statement strings from the model and creates JLabels for
          * each in an ArrayList
          */
-        statementStrings = model.getStatementList();
+        statementStrings = model.getCodeStatements();
         statementJLabels = new ArrayList();
         for (int i = 0; i < statementStrings.size(); i++) {
             statementJLabels.add(new JLabel(statementStrings.get(i).toString()));
@@ -95,15 +111,17 @@ public class CodeView extends GPanel {
      *
      * The loop iterates through the statementJLabels list and adds the
      * component.
-     *
-     * TODO- Is it bad practice to cast it as a JLabel, it /should/ only have
-     * JLabels but is there a more best practice way to achieve this?
      */
     private void layoutComponents() {
         for (int i = 0; i < statementJLabels.size(); i++) {
-            addc((JLabel) statementJLabels.get(i), 0, i, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                    5, 5, 5, 5);
+            //Line Numbers
+            addc(new JLabel(String.valueOf(i+1)), 0, i, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
+                    0, 1, 0, 1);
+            // Code Statements
+            addc(statementJLabels.get(i), 1, i, 1, 1, 1.0, 0.0,
+                    GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                    0, 1, 0, 1);
         }
     }
 
@@ -112,5 +130,21 @@ public class CodeView extends GPanel {
      */
     private void updateView() {
 
+    }
+    
+    /**
+     * Takes the updated problem and updated the view to match the model's state.
+     * 
+     * For CodeView this highlights the JLabel with the line currently 
+     * being used in the model.
+     * 
+     * @param problem 
+     */
+    public void problemUpdated(Problem problem) {
+        
+        int currentLineNumber = problem.getCurrentLineNumber();
+        statementJLabels.get(currentLineNumber).setBackground(Color.YELLOW);
+        statementJLabels.get(currentLineNumber).setOpaque(true);
+        
     }
 }

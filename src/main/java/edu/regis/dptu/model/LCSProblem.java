@@ -126,6 +126,8 @@ public class LCSProblem extends Problem {
         executionState = EXECUTION_STATE.PRE;
         
         kind = TaskKind.LCS_PROBLEM;
+        
+        loadCodeStatements();
     }
 
     /**
@@ -270,6 +272,7 @@ public class LCSProblem extends Problem {
             default: // Should never get here
                 System.out.println("Unknown execution state: " + executionState);
         }
+        notifyProblemListeners();
     }
     
     /**
@@ -530,6 +533,5 @@ public class LCSProblem extends Problem {
                
         }       
     }
-    
     
 }
