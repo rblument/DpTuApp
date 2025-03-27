@@ -40,10 +40,12 @@ public class TutoringSessionView extends GPanel {
     private JLabel xView;
     private CodeView codeView;
     private SubproblemTableView tableView;
+
     
     // We need to comment out these for now as they're not ready to be used yet
     // private StepCompletionView stepCompletionView;
     // private StepSelectorView stepSelectorView;
+
 
     /**
      * Initialize this view including creating and laying out its child
@@ -140,6 +142,7 @@ public class TutoringSessionView extends GPanel {
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
+
     }
 
     /**

@@ -15,29 +15,27 @@ package edu.regis.dptu.view;
 import edu.regis.dptu.model.Problem;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.GPanel;
 
 /**
- * A view that displays the variables for the current problem.
  *
  * @author danielaflores
  */
 public class VariablesView extends GPanel {
-     
     private Problem model;
     private JLabel rName, rValue, cName, cValue, iName, iValue, jName, jValue, lName, lValue;
-     
+
     public VariablesView() {
         initializeComponents();
         layoutComponents();
     }
     
-    public void setModel(Problem model) {
+    public void setModel(Problem model){
         this.model = model;
         updateView();
     }
-  
-    private void initializeComponents() {
+     
+    private void initializeComponents(){
          rName = new JLabel("r = ");
          rValue = new JLabel("13");
          cName = new JLabel("c = ");
