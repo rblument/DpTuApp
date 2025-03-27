@@ -29,5 +29,9 @@ public class ActionFactory {
         TeachMeAction.instance();
         PracticeAction.instance();
         QuizMeAction.instance();
+        BackAction.instance();
+        CheckAnswerAction.instance();
+        NewExampleAction.instance();
+        RequestHintAction.instance();
     }
 }
