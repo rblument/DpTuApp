@@ -496,6 +496,51 @@ public class LCSProblem extends Problem {
         }
 
     }
+
+    /**
+     * Single method for checking completion of problem.
+     */
+    public boolean isComplete() {
+        if(getExecutionState() == EXECUTION_STATE.POST) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Extracts LCS result from the completed matrix.
+     * This should only be called when the algorithm is complete. (i.e., executionState == POST).
+     * 
+     * @author EverettCV
+     */
+    public String getResult() {
+        if (!isComplete()) {
+            return "LCS is not complete yet.";
+        }
+
+        StringBuilder lcs = new StringBuilder();
+
+        // Starting from last cell
+        int i = n; 
+        int j = m;
+
+        while (i > 0 && j > 0) {
+            if (x.charAt(i - 1) == y.charAt(j - 1)) {
+                //If characters match, it is part of the LCS
+                lcs.append(x.charAt(i - 1));
+                i--;
+                j--;
+            } else if (subproblemL[i - 1][j] >= subproblemL[i][j - 1]) {
+                // Move up in the matrix
+                i--;
+            } else {
+                // Move left in the matrix
+                j--;
+            }
+        }
+        return lcs.reverse().toString();
+    }
+
     
     /**
      * Resets this problem (algorithm) back to its initial state before

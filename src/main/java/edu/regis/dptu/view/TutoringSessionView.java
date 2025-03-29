@@ -40,6 +40,7 @@ public class TutoringSessionView extends GPanel {
     private JLabel xView;
     private CodeView codeView;
     private SubproblemTableView tableView;
+    private LCSProblemView lcsProblemView;
 
     
     // We need to comment out these for now as they're not ready to be used yet
@@ -138,6 +139,7 @@ public class TutoringSessionView extends GPanel {
         xView = new JLabel("X View");
         codeView = new CodeView();
         tableView = new SubproblemTableView("skullandbones", "lullabybabies");
+        lcsProblemView = new LCSProblemView();
         
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
@@ -163,6 +165,9 @@ public class TutoringSessionView extends GPanel {
                 5, 5, 5, 5);
         addc(xView, 3, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(lcsProblemView, 2, 0, 2, 2, 1.0, 1.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
         
         // We'll add these components to the layout later
