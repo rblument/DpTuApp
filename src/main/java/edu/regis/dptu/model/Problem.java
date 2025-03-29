@@ -54,7 +54,7 @@ public abstract class Problem extends TitledModel {
         this.kind = kind;
     }
 
-    public ArrayList getCodeStatements() {
+    public ArrayList<String> getCodeStatements() {
         return codeStatements;
     }
 
@@ -87,7 +87,7 @@ public abstract class Problem extends TitledModel {
     protected void loadCodeStatements() {
         
         codeStatements.add("<html><pre>"
-                + "<b>for</b> r =1 to n-1 <b>do</b>\n"
+                + "<b>for</b> r =0 to n-1 <b>do</b>\n"
                 + "</pre></html>");
         codeStatements.add("<html><pre>"
                 + "   L[r,-1] = 0"
@@ -120,8 +120,40 @@ public abstract class Problem extends TitledModel {
                 + "<b>return</b> array L"
                 + "</pre></html>");
 
-    }  
+    } 
     
+    /**
+     * Basic method that each problem will Override to handle decoding its 
+     * specific problem from a SubproblemTableView table cell location to a 
+     * line number.
+     * 
+     * Note: Similar to notifyProblemListener, this could be effective for both
+     * highlighting problems. If the step() methods has information about what 
+     * cell is currently being computed, this decoder would have the correct 
+     * line number if the user clicked it, or have the correct line number based 
+     * on what step we are on.
+     * 
+     * @param row
+     * @param column
+     * @return correspondingLineNumber
+     */
+    protected int TableToLineNumberdecoder(int row, int column) {
+        int correspondingLineNumber = -1;
+        // Next steps are creating the LCS problem decoder, letting codeView 
+        // use that to decode the line number from the row and column.
+        return correspondingLineNumber;
+    }
+    
+    /**
+     * Notifies each problemListener in the problemListeners array list. 
+     * Passes itself to each.
+     * 
+     * Note: When considering how to handle step interaction AND click 
+     * interaction, potentially this could work for both. Since it is simply 
+     * passing itself, we could leave it to the views to handle changes for 
+     * either. So in LCSProblem, we would call this at the end of the step 
+     * methods or the clickListener in SubproblemTableView. 
+     */
     protected void notifyProblemListeners() {
         for (int i = 0; i < problemListeners.size(); i++) {
             problemListeners.get(i).problemUpdated(this);

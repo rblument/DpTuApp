@@ -37,8 +37,9 @@ public class CodeView extends GPanel implements ProblemListener {
      *
      */
     private Problem model;
-    private ArrayList statementStrings;
+    private ArrayList<String> statementStrings;
     private ArrayList<JLabel> statementJLabels;
+    private SubproblemTableView table;
 
     /**
      * Used as a background color
@@ -50,8 +51,12 @@ public class CodeView extends GPanel implements ProblemListener {
      * Initialize this view including creating and laying out its child
      * components.
      */
-    public CodeView() {
-        // Temperary model so it can be tested.
+    public CodeView(SubproblemTableView table) {
+        
+        // Temporary table so CodeView can access it
+        this.table = table;
+        
+        // Temporary model so it can be tested.
         model = new LCSProblem("test","test");
         setModel(model);
         
@@ -140,6 +145,7 @@ public class CodeView extends GPanel implements ProblemListener {
      * 
      * @param problem 
      */
+    @Override
     public void problemUpdated(Problem problem) {
         
         int currentLineNumber = problem.getCurrentLineNumber();
