@@ -151,8 +151,6 @@ public class TutoringSession {
         this.problem = problem;
     }
     
-    
-    
     public PendingTask currentTask() {
         return tasks.get(0);
     }

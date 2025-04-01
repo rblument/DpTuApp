@@ -12,7 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.model.CodeModel;
 import edu.regis.dptu.model.TutoringSession;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
@@ -136,12 +135,15 @@ public class TutoringSessionView extends GPanel {
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
-        codeView = new CodeView();
         tableView = new SubproblemTableView("skullandbones", "lullabybabies");
+
+        codeView = new CodeView(tableView);
+
         
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
+
 
     }
 
@@ -187,7 +189,7 @@ public class TutoringSessionView extends GPanel {
         // Update the code view with the current model
         if (model.getProblem() != null) {
             // Assuming CodeModel can be updated with the problem
-            codeView.setModel(new CodeModel());
+          //  codeView.setModel(new CodeModel());
         }
         
         // Update the variable view with the problem

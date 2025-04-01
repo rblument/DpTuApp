@@ -15,7 +15,6 @@ package edu.regis.dptu.view;
 import edu.regis.dptu.model.Problem;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
-import javax.swing.GPanel;
 
 /**
  *
