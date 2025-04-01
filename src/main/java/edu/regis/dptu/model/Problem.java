@@ -12,38 +12,81 @@
  */
 package edu.regis.dptu.model;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * The primary task that a student is attempting to solve, as part of a unit 
- * within a course. 
- * 
+ * The primary Dynamic Programming task that a student is attempting to solve,
+ * which is associated with a unit within a course.
+ *
+ * Subclasses need to implement the abstract loadCodeStatements
+ *
  * In VanLehn's sense, this is a task for the student to complete, but we treat
  * tasks at a finer granularity i.e. as subproblems within the primary problem.
  * The tasks within a problem are derived from the specific nature of the
  * problem.
- * 
+ *
  * @author rickb
  */
 public abstract class Problem extends TitledModel {
-    
+
+    /**
+     * The task associated with this problem. (ToDo: )
+     */
     protected TaskKind kind;
-    
+
+    /**
+     * The variables used in the algorithmic solution to this dynamic
+     * programming problem, which is determined by the child subclass.
+     *
+     * In general, all variables except the tableVariable will have a data type
+     * of int, while the tableVariable with have a type int[][].
+     */
+    protected HashMap<String, Object> variables;
+
+    /**
+     * The variable name containing the matrix cell table for this problem.
+     */
+    protected String tableVariable;
+
+    /**
+     * The algorithmic solution to this dynamic programming problem as textual
+     * lines of code.
+     */
     protected ArrayList codeStatements = new ArrayList();
-    protected int currentLineNumber = -1;
-    
-    protected ArrayList<ProblemListener> problemListeners = new ArrayList();
-    
+
+    /**
+     * The currently line number to execute
+     */
+    protected int currentLineNumber = 0;
+
+    /**
+     * A history of the line numbers that were executed prior to the current
+     * line number.
+     *
+     * step() adds to this history, undo() removes items from it.
+     */
+    protected ArrayList<Integer> executionHistory;
+
+    protected ArrayList<ProblemListener> problemListeners;
+
+    protected abstract void loadCodeStatements();
+
     public Problem() {
         this(DEFAULT_ID);
     }
-    
+
     public Problem(int id) {
         super(id);
-    }
-    
-    public String getTitle() {
-        return title;
+
+        variables = new HashMap<>();
+        codeStatements = new ArrayList<>();
+        executionHistory = new ArrayList<>();
+        problemListeners = new ArrayList<>();
     }
 
     public TaskKind getKind() {
@@ -70,6 +113,28 @@ public abstract class Problem extends TitledModel {
         this.currentLineNumber = currentLineNumber;
     }
 
+    public String getTableVariable() {
+        return tableVariable;
+    }
+
+    public void setTableVariable(String tableVariable) {
+        this.tableVariable = tableVariable;
+    }
+
+    public ArrayList<String> getVariableNames() {
+        return new ArrayList(variables.keySet());
+    }
+
+    public int getVariableValue(String variableName) {
+        return (int) variables.get(variableName);
+    }
+
+    public int getValueAt(int row, int column) {
+        int[][] table = (int[][]) variables.get(tableVariable);
+
+        return table[row][column];
+    }
+
     public ArrayList<ProblemListener> getProblemListeners() {
         return problemListeners;
     }
@@ -77,62 +142,101 @@ public abstract class Problem extends TitledModel {
     public void addProblemListener(ProblemListener listener) {
         problemListeners.add(listener);
     }
-    
-    /**
-     * This method adds all the statements for the codeView to the arrayList.
-     * 
-     * Note: Hardcoded as of now but can be overridden by specific problem types 
-     * in the future.
-     */
-    protected void loadCodeStatements() {
-        
-        codeStatements.add("<html><pre>"
-                + "<b>for</b> r =0 to n-1 <b>do</b>\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "   L[r,-1] = 0"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "<b>for</b> c =0 to m-1 <b>do</b>\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "   L[-1,c] = 0"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "<b>for</b> i =0 to n-1 <b>do</b>\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "   <b>for</b> j =0 to m-1 <b>do</b>\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "       <b>if</b> x<sub>i</sub> = y<sub>j</sub> <b>then</b>\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "           L[i, j] = L[i-1, j+1] + 1\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "       <b>else</b>\n"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "           L[i, j] = max(L[i-1,j], L[i, j-1])"
-                + "</pre></html>");
-        codeStatements.add("<html><pre>"
-                + "<b>return</b> array L"
-                + "</pre></html>");
 
-    } 
-    
     /**
-     * Basic method that each problem will Override to handle decoding its 
-     * specific problem from a SubproblemTableView table cell location to a 
-     * line number.
-     * 
+     * Execute the current line of code and then update to the "next" line of
+     * code to execute.
+     */
+    public void step() {
+        executionHistory.add(currentLineNumber);
+        String methodName = "executeLine" + currentLineNumber;
+        executeMethod(methodName);
+    }
+
+    /**
+     * Execute the next n statements (forward).
+     *
+     * @param n number of steps to execute
+     */
+    public void step(int n) {
+        for (int i = 0; i < n; i++) {
+            step();
+        }
+    }
+
+    /**
+     * Take one step backward in the algorithm by undoing the
+     */
+    public void undo() {
+        int size = executionHistory.size();
+
+        if (size == 0) {
+            System.out.println("Cannot undo past Line 0");
+            
+        } else {
+            int lastItemPos = size - 1;
+
+            int previousLineNumber = executionHistory.remove(lastItemPos);
+
+            String methodName = "undoLine" + previousLineNumber;
+            executeMethod(methodName);
+
+            if (previousLineNumber != 0) {
+                lastItemPos--;
+
+                currentLineNumber = executionHistory.get(lastItemPos);
+            }
+        }
+    }
+
+    /**
+     * Undo the previous n statements (backwards)
+     *
+     * @param n number of steps to execute
+     */
+    public void undo(int n) {
+        for (int i = 0; i < n; i++) {
+            undo();
+        }
+    }
+
+    /**
+     * Use reflection to execute the given method name.
+     *
+     * @param methodName
+     */
+    public void executeMethod(String methodName) {
+        Class clazz = this.getClass();
+
+        try {
+            Method method = clazz.getDeclaredMethod(methodName);
+            method.setAccessible(true);
+            method.invoke(this);
+
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Basic method that each problem will Override to handle decoding its
+     * specific problem from a SubproblemTableView table cell location to a line
+     * number.
+     *
      * Note: Similar to notifyProblemListener, this could be effective for both
-     * highlighting problems. If the step() methods has information about what 
-     * cell is currently being computed, this decoder would have the correct 
-     * line number if the user clicked it, or have the correct line number based 
+     * highlighting problems. If the step() methods has information about what
+     * cell is currently being computed, this decoder would have the correct
+     * line number if the user clicked it, or have the correct line number based
      * on what step we are on.
-     * 
+     *
      * @param row
      * @param column
      * @return correspondingLineNumber
@@ -143,23 +247,21 @@ public abstract class Problem extends TitledModel {
         // use that to decode the line number from the row and column.
         return correspondingLineNumber;
     }
-    
+
     /**
-     * Notifies each problemListener in the problemListeners array list. 
-     * Passes itself to each.
-     * 
-     * Note: When considering how to handle step interaction AND click 
-     * interaction, potentially this could work for both. Since it is simply 
-     * passing itself, we could leave it to the views to handle changes for 
-     * either. So in LCSProblem, we would call this at the end of the step 
-     * methods or the clickListener in SubproblemTableView. 
+     * Notifies each problemListener in the problemListeners array list. Passes
+     * itself to each.
+     *
+     * Note: When considering how to handle step interaction AND click
+     * interaction, potentially this could work for both. Since it is simply
+     * passing itself, we could leave it to the views to handle changes for
+     * either. So in LCSProblem, we would call this at the end of the step
+     * methods or the clickListener in SubproblemTableView.
      */
     protected void notifyProblemListeners() {
         for (int i = 0; i < problemListeners.size(); i++) {
             problemListeners.get(i).problemUpdated(this);
         }
     }
-    
-    
-}
 
+}

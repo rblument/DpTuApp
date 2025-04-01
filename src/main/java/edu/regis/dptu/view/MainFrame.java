@@ -22,7 +22,7 @@ import javax.swing.JFrame;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 
 /**
- * The primary GUI window in the ShaTu application.
+ * The primary GUI window in the DpTu application.
  * 
  * Most of the display functionality is handled by child component views.
  * 
@@ -57,7 +57,7 @@ public class MainFrame extends JFrame implements WindowListener {
     private static final int SCREEN_SIZE_INSET = 50;
     
     /**
-     * The SHA tutoring session displayed in this frame.
+     * The DP tutoring session displayed in this frame.
      */
     private TutoringSession model;
     
@@ -72,8 +72,8 @@ public class MainFrame extends JFrame implements WindowListener {
     private MainFrame() {
         super("DpTu");
 
-        Dimension screenSize = Toolkit. getDefaultToolkit(). getScreenSize();
-        screenSize.width = screenSize.width - SCREEN_SIZE_INSET ;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        screenSize.width = screenSize.width - SCREEN_SIZE_INSET;
         screenSize.height = screenSize.height - SCREEN_SIZE_INSET - 10;
         setSize(screenSize);
         setLocation(10, 10);
@@ -96,7 +96,7 @@ public class MainFrame extends JFrame implements WindowListener {
      * @return the Session model 
      */
     public TutoringSession getModel() {
-        // ToDo: Ask to update?
+        // Update the model with any changes from the view
         updateModel();
         
         return model;
@@ -108,9 +108,18 @@ public class MainFrame extends JFrame implements WindowListener {
      * @param model a Session model
      */
     public void setModel(TutoringSession model) {
-        // ToDo: Ask to save changes to existing model?
-        
         this.model = model;
+        view.setModel(model);
+        updateView();
+    }
+    
+    /**
+     * Get the tutoring session view.
+     * 
+     * @return The TutoringSessionView
+     */
+    public TutoringSessionView getView() {
+        return view;
     }
 
     @Override
@@ -119,7 +128,8 @@ public class MainFrame extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        // ToDo: Save etc.
+        // Save the session before closing
+        updateModel();
         this.dispose();
     }
 
@@ -147,7 +157,7 @@ public class MainFrame extends JFrame implements WindowListener {
      * Create the child components used in this frame.
      */
     private void initializeComponents() {
-        view = new TutoringSessionView(); 
+        view = new TutoringSessionView();
     }
     
     /**
@@ -161,14 +171,13 @@ public class MainFrame extends JFrame implements WindowListener {
      * Update the current model with any changes made in this frame's view.
      */
     private void updateModel() {
-        
+        // Nothing to do here for now, as the model is updated through actions
     }
     
     /**
      * Display the current model in this frame's view.
      */
     private void updateView() {
-        
+        // The view will update itself based on the model
     }
 }
-
