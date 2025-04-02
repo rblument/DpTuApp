@@ -44,3 +44,67 @@ CREATE TABLE Account (
    IsStudent tinyint DEFAULT 0,
    PRIMARY KEY (UserId)
 );
+
+#
+# Course related Tables
+
+# Create the Course Table
+CREATE TABLE Course(
+   CourseId INT NOT NULL AUTO_INCREMENT,
+   Title VARCHAR(256),
+   PrimaryPedagogy ENUM(
+      'STUDENT_CHOICE',
+      'FIXED_SEQUENCE',
+      'MASTERY_LEARNING',
+      'MICROADAPTATION',
+      'OTHER',
+      'ERROR'
+   ),
+   Description VARCHAR(256),
+
+   PRIMARY KEY (CourseId)
+);
+
+# Create the Unit Table
+# All Units belong to a course (hence not null CourseId)
+CREATE TABLE Unit (
+   UnitId INT NOT NULL AUTO_INCREMENT,
+   CourseId INT NOT NULL,
+   Title VARCHAR(256),
+   Description VARCHAR(256),
+   SequenceIndex INT DEFAULT 0,
+   Pedagogy ENUM(
+      'STUDENT_CHOICE',
+      'FIXED_SEQUENCE',
+      'MASTERY_LEARNING',
+      'MICROADAPTATION',
+      'OTHER',
+      'ERROR'
+   ),
+
+   PRIMARY KEY(UnitId),
+   FOREIGN KEY (CourseId)
+      REFERENCES Course(CourseId)
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+# Create the TutoringSession Table
+# SecurityToken is a 256bit hash, so it has constant chars
+# Session is one-to-one with Account and Course
+CREATE TABLE TutoringSession (
+   SessionId INT NOT NULL AUTO_INCREMENT,
+   SecurityToken CHAR(255) NOT NULL,
+   UserId VARCHAR(256) NOT NULL,
+   CourseId INT NOT NULL,
+   UnitId INT NOT NULL,
+   IsActive BOOLEAN DEFAULT false,
+   StartDate TIMESTAMP NOT NULL,
+
+   PRIMARY KEY (SessionId),
+   FOREIGN KEY (UserId)
+      REFERENCES Account(UserId)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+   FOREIGN KEY (CourseId)
+      REFERENCES Course(CourseId)
+      ON UPDATE CASCADE ON DELETE CASCADE
+);

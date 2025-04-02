@@ -25,15 +25,28 @@ import javax.swing.JLabel;
  * @author rickb
  */
 public class TutoringSessionView extends GPanel {
+
     /**
      * The tutoring session model displayed in this view.
      */
     private TutoringSession model;
-    
-    private JLabel test;
 
     /**
-     * Initialize this view including creating and laying out its child components.
+     * Declares each of the views used in the tutorings session view.
+     *
+     * TODO- Each subview currently is a JLabel, change it to the view class
+     * once it is created. Use CodeView as an example. Go to next TODO to 
+     * adjust the initializeComponent method.
+     */
+    private JLabel variablesView;
+    private JLabel subproblemView;
+    private JLabel xView;
+    private CodeView codeView;
+    private SubSequenceView subSeqView;
+
+    /**
+     * Initialize this view including creating and laying out its child
+     * components.
      */
     public TutoringSessionView() {
         initializeComponents();
@@ -62,17 +75,37 @@ public class TutoringSessionView extends GPanel {
 
     /**
      * Create the child GUI components appearing in this frame.
+     *
+     * TODO- Adjust the JLabel to instead be your view, use CodeView as an
+     * example.
      */
     private void initializeComponents() {
-        test = new JLabel("You have successfully signed in");
+        variablesView = new JLabel("VariablesView");
+        subproblemView = new JLabel("Subproblem View");
+        xView = new JLabel("X View");
+        codeView = new CodeView();
+        subSeqView = new SubSequenceView("skullandbones", "lullabybabies");
     }
 
     /**
      * Layout the child components in this view
+     *
      */
     private void layoutComponents() {
-        addc(test, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        addc(subproblemView, 1, 0, 1, 2, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(xView, 2, 0, 1, 2, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }
 

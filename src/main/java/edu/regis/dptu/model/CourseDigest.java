@@ -20,6 +20,11 @@ package edu.regis.dptu.model;
  */
 public class CourseDigest extends TitledModel {
     /**
+     * The primary pedagogical approach initially used to start task selection.
+     */
+    private TaskSelectionKind primaryPedagogy;
+
+    /**
      * Instantiate this digest with default id, title, and description
      */
     public CourseDigest() {
@@ -45,5 +50,13 @@ public class CourseDigest extends TitledModel {
      */
     public CourseDigest(int id, String title) {
         super(id, title);
+    }
+
+    public TaskSelectionKind getPrimaryPedagogy() {
+        return primaryPedagogy;
+    }
+
+    public void setPrimaryPedagogy(TaskSelectionKind primaryPedagogy) {
+        this.primaryPedagogy = primaryPedagogy;
     }
 }

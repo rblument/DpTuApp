@@ -13,6 +13,7 @@
 package edu.regis.dptu.view;
 
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -24,9 +25,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * The first window displayed to a student user, which contains a splash panel 
- * and associated panels for creating new users and signing-in exiting users.
+ * and associated panels for creating new users and signing-in existing users.
  * 
- * @author rickb
+ * @author rickb (modified)
  */
 public class SplashFrame extends JFrame {
     /**
@@ -40,6 +41,16 @@ public class SplashFrame extends JFrame {
     public static final String NEW_USER = "NewUserPanel";
     
     /**
+     * Name of the dashboard panel in this frame's primary card layout panel.
+     */
+    public static final String DASHBOARD = "DashboardPanel";
+
+    /**
+     * Name of the lesson screen panel in the card layout.
+     */
+    public static final String LESSON = "LessonMenu";
+    
+    /**
      * Allowed consecutive illegal passwords before the user is locked out.
      */
     public static final int MAX_SIGNIN_ATTEMPTS = 3;
@@ -50,10 +61,7 @@ public class SplashFrame extends JFrame {
     private static final SplashFrame SINGLETON;
     
     /**
-     * Create the singleton for this JFrame, which occurs when this class
-     * is loaded by the Java class loaded, as a result of the class being 
-     * referenced by executing WelcomeFrame.instance() in the main() method of
-     * EthicsCourtTutor.
+     * Create the singleton for this JFrame
      */
     static {
         SINGLETON = new SplashFrame();
@@ -62,25 +70,30 @@ public class SplashFrame extends JFrame {
     /**
      * Return the singleton instance of this JFrame.
      * 
-     * @return the WelcomeFrame singleton 
+     * @return the SplashFrame singleton 
      */
     public static SplashFrame instance() {
         return SINGLETON;
     }
     
     /**
-     * A CardLayout containing the SPLASH and NEW_USER panels.
+     * The current tutoring session.
+     */
+    private TutoringSession tutoringSession;
+    
+    /**
+     * A CardLayout containing all main panels (SPLASH, NEW_USER, DASHBOARD, etc.).
      */
     private JPanel cards;
     
     /**
-     * The name of the currently selected panel, SPLASH or NEW_USER.
+     * The name of the currently selected panel
      */
     private String selectedPanel;
     
     /**
      * The splash panel, which displays splash information, sign-in fields,
-     * and a link to the create new student account panel.
+     * and a link to create new student account panel.
      */
     private SplashPanel splashPanel;
     
@@ -91,18 +104,28 @@ public class SplashFrame extends JFrame {
     private NewAccountPanel newAccountPanel;
     
     /**
+     * The panel that allows users to select a type of service.
+     */
+    private DashboardPanel dashboardPanel;
+    
+    /**
+     * View for lesson session functionality.
+     */
+    private LessonSessionView lessonSessionView;
+    
+    /**
      * The number of consecutive illegal passwords attempted by the current
      * user attempting to login (see MAX_SIGNIN_ATTEMPTS).
      */
     protected int signInAttempts = 0;
     
-   /**
-     * Create and layout the child components in this Spalsh JFrame.
+    /**
+     * Create and layout the child components in this Splash JFrame.
      */
     private SplashFrame() {
         super("DpTu");
         
-        setMinimumSize(new Dimension(875,650));
+        setMinimumSize(new Dimension(875, 650));
         
         initializeComponents();
         
@@ -115,12 +138,12 @@ public class SplashFrame extends JFrame {
         splashPanel.setInitialFocus();
         
         setVisible(true);
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
     /**
      * Return the student login information displayed in this frame.
-     * 
-     * See getAccount()
      * 
      * @return a User (userId and password)
      */
@@ -131,8 +154,6 @@ public class SplashFrame extends JFrame {
     /**
      * Return the user account information 
      * 
-     * See getUser()
-     * 
      * @return an Account (userId, passwd, first and last name)
      */
     public Account getAccount() {
@@ -141,28 +162,25 @@ public class SplashFrame extends JFrame {
     
     /**
      * Display to the user the result of an invalid password in a sign in.
-     * 
-     * Handles an invalid password response from a SignInAction keeping track
-     * of the number of user attempts thus far.     * 
      */
     public void invalidPass() {
         if (signInAttempts < MAX_SIGNIN_ATTEMPTS) {
-           
             String msg = "Invalid Password attempt " + 
-                         String.valueOf(signInAttempts) + " of " + 
+                         String.valueOf(signInAttempts + 1) + " of " + 
                          MAX_SIGNIN_ATTEMPTS;
             
             signInAttempts++;
             
-            JOptionPane.showMessageDialog(this, msg, "SignIn Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, msg, "SignIn Error", 
+                    JOptionPane.ERROR_MESSAGE);
             
         } else {
             String msg = "You exceeded the max number of sign in attempts\n" +
                          "Please contact the DpTu administrator";
             
-            JOptionPane.showMessageDialog(this, msg, "SignIn Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, msg, "SignIn Error", 
+                    JOptionPane.ERROR_MESSAGE);
 
-            // ToDo: What?
             this.dispose();
             System.exit(1);
         }
@@ -176,18 +194,49 @@ public class SplashFrame extends JFrame {
     }
     
     /**
-     * Display the New User panel, which allows the user to create a new
-     * student account with associated sign-in information.
+     * Display the New User panel
      */
     public void selectNewUser() {
         selectPanel(NEW_USER);
     }
     
     /**
-     * Reset the text fields in the new account panel to the empty string
+     * Reset the text fields in the new account panel to empty string
      */
     public void clearNewAccountPanel() {
         newAccountPanel.clearFields();
+    }
+    
+    /**
+     * Initialize and show dashboard for the given session.
+     * @param session The current tutoring session
+     */
+    public void initializeDashboard(TutoringSession session) {
+        if (session == null) {
+            System.err.println("TutoringSession is null in initializeDashboard");
+            return;
+        }
+
+        this.tutoringSession = session;
+        
+        // Create new dashboard if it doesn't exist
+        if (this.dashboardPanel == null) {
+            this.dashboardPanel = new DashboardPanel(session);
+            this.cards.add(dashboardPanel, DASHBOARD);
+        } else {
+            // Update existing dashboard
+            this.dashboardPanel.setModel(session);
+        }
+        
+        // Make sure the dashboard is visible
+        this.setVisible(true);
+        
+        // Switch to dashboard view
+        selectPanel(DASHBOARD);
+        
+        // Revalidate and repaint to ensure proper display
+        this.cards.revalidate();
+        this.cards.repaint();
     }
     
     /**
@@ -197,25 +246,47 @@ public class SplashFrame extends JFrame {
         User user = splashPanel.getModel();
        
         JOptionPane.showMessageDialog(this, 
-                user.getUserId() + " is not a known user.\n\nPerhaps, try creating a 'New User' first.",
+                user.getUserId() + " is not a known user.\n\n" +
+                "Perhaps, try creating a 'New User' first.",
                 "Warning", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    /**
+     * Select the lesson screen panel
+     */
+    public void selectLessonScreen() {
+        selectPanel(LESSON);
+    }
+    
+    /**
+     * Select the practice screen panel
+     */
+    public void selectPracticeScreen() {
+        // TODO: Implement practice screen selection
+    }
+    
+    /**
+     * Handle user logout
+     */
+    public void logout() {
+        selectSplash();
+        // Additional logout cleanup if needed
     }
     
     /**
      * Display the card panel with the associated name.
      * 
-     * @param name SPLASH or NEW_USER
+     * @param name Name of the panel to display
      */
     private void selectPanel(String name) {
-        CardLayout cl = (CardLayout) (cards.getLayout());
+        CardLayout cl = (CardLayout)(cards.getLayout());
         cl.show(cards, name);
         selectedPanel = name;
         
         if (name.equals(SPLASH)) {
             JButton but = splashPanel.getSigninButton();
-        
             SwingUtilities.getRootPane(but).setDefaultButton(but);
-        } else {
+        } else if (name.equals(NEW_USER)) {
             newAccountPanel.updateFocus();
         }
     }
@@ -231,6 +302,9 @@ public class SplashFrame extends JFrame {
         
         cards.add(splashPanel, SPLASH);
         cards.add(newAccountPanel, NEW_USER);
+        
+        // Initialize lesson view if needed
+        lessonSessionView = new LessonSessionView();
+        //cards.add(lessonSessionView, LESSON);
     }
 }
-

@@ -72,6 +72,7 @@ public class Course extends TitledModel {
     public CourseDigest getDigest() {
         CourseDigest digest = new CourseDigest(id, title);
         
+        digest.setPrimaryPedagogy(primaryPedagogy);
         digest.setDescription(description);
         
         return digest;

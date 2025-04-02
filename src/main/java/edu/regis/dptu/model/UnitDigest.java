@@ -20,6 +20,21 @@ package edu.regis.dptu.model;
  */
 public class UnitDigest extends TitledModel {
     /**
+     * The courseId to which the unit belongs.
+     */
+    private int courseId;
+
+    /**
+     * The pedagogical approach initially used to start task selection.
+     */
+    private TaskSelectionKind pedagogy;
+
+    /**
+     * The index of the unit in the course.
+     */
+    private int sequenceIndex;
+
+    /**
      * Instantiate this digest with default id, title, and description
      */
     public UnitDigest() {
@@ -34,5 +49,29 @@ public class UnitDigest extends TitledModel {
      */
     public UnitDigest(int id) {
         super(id);
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public TaskSelectionKind getPedagogy() {
+        return pedagogy;
+    }
+
+    public int getSequenceIndex() {
+        return sequenceIndex;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public void setPedagogy(TaskSelectionKind pedagogy) {
+        this.pedagogy = pedagogy;
+    }
+
+    public void setSequenceIndex(int sequenceIndex) {
+        this.sequenceIndex = sequenceIndex;
     }
 }
