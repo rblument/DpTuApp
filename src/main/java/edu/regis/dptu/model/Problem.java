@@ -151,6 +151,9 @@ public abstract class Problem extends TitledModel {
         executionHistory.add(currentLineNumber);
         String methodName = "executeLine" + currentLineNumber;
         executeMethod(methodName);
+        
+        // Notify listeners that the problem has been updated
+        notifyProblemListeners();
     }
 
     /**
@@ -186,7 +189,23 @@ public abstract class Problem extends TitledModel {
 
                 currentLineNumber = executionHistory.get(lastItemPos);
             }
+            
+            // Notify listeners that the problem has been updated
+            notifyProblemListeners();
         }
+    }
+    
+    /**
+     * Reset the problem to its initial state.
+     */
+    public void reset() {
+        currentLineNumber = 0;
+        executionHistory.clear();
+        
+        // Additional reset logic implemented by subclasses
+        
+        // Notify listeners that the problem has been updated
+        notifyProblemListeners();
     }
 
     /**
