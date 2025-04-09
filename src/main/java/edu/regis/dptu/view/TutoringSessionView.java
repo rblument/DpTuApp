@@ -33,16 +33,19 @@ public class TutoringSessionView extends GPanel {
 
     /**
      * Declares each of the views used in the tutorings session view.
-     *
-     * TODO- Each subview currently is a JLabel, change it to the view class
-     * once it is created. Use CodeView as an example. Go to next TODO to 
-     * adjust the initializeComponent method.
      */
-    private JLabel variablesView;
+    private VariablesView variablesView;
     private JLabel subproblemView;
     private JLabel xView;
     private CodeView codeView;
+
     private SubSequenceView subSeqView;
+    private SubproblemTableView tableView;
+
+    
+    // We need to comment out these for now as they're not ready to be used yet
+    // private StepCompletionView stepCompletionView;
+    // private StepSelectorView stepSelectorView;
 
     /**
      * Initialize this view including creating and laying out its child
@@ -72,24 +75,82 @@ public class TutoringSessionView extends GPanel {
 
         updateView();
     }
+    
+    /**
+     * Return the table view.
+     *
+     * @return the SubproblemTableView
+     */
+    public SubproblemTableView getTableView() {
+        return tableView;
+    }
+    
+    /**
+     * This is a stub method that will be implemented later when we add StepCompletionView.
+     * For now, it returns null to prevent compilation errors.
+     *
+     * @return null for now
+     */
+    public StepCompletionView getStepCompletionView() {
+        // Will be implemented later
+        return null;
+    }
+    
+    /**
+     * This is a stub method that will be implemented later when we add StepSelectorView.
+     * For now, it returns null to prevent compilation errors.
+     *
+     * @return null for now
+     */
+    public StepSelectorView getStepSelectorView() {
+        // Will be implemented later
+        return null;
+    }
+
+    /**
+     * Set the table view.
+     *
+     * @param tableView the new SubproblemTableView
+     */
+    public void setTableView(SubproblemTableView tableView) {
+        // Remove the old table view if it exists
+        if (this.tableView != null) {
+            remove(this.tableView);
+        }
+        
+        // Add the new table view
+        this.tableView = tableView;
+        addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        
+        // Refresh the layout
+        revalidate();
+        repaint();
+    }
 
     /**
      * Create the child GUI components appearing in this frame.
-     *
-     * TODO- Adjust the JLabel to instead be your view, use CodeView as an
-     * example.
      */
     private void initializeComponents() {
-        variablesView = new JLabel("VariablesView");
+        variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
         codeView = new CodeView();
         subSeqView = new SubSequenceView("skullandbones", "lullabybabies");
+
+        tableView = new SubproblemTableView("skullandbones", "lullabybabies");
+
+        codeView = new CodeView(tableView);
+
+        
+        // We'll add these components later
+        // stepCompletionView = new StepCompletionView();
+        // stepSelectorView = new StepSelectorView();
     }
 
     /**
      * Layout the child components in this view
-     *
      */
     private void layoutComponents() {
         addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
@@ -98,21 +159,55 @@ public class TutoringSessionView extends GPanel {
         addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        addc(subproblemView, 1, 0, 1, 2, 0.0, 0.0,
+        addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
-        addc(xView, 2, 0, 1, 2, 0.0, 0.0,
+        addc(xView, 3, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
         addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
+
+        // We'll add these components to the layout later
+        /*
+        addc(stepSelectorView, 2, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(stepCompletionView, 2, 1, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        */
     }
 
     /**
      * Display the current model in our child components.
      */
     private void updateView() {
-
+        if (model == null) {
+            return;
+        }
+        
+        // Update the code view with the current model
+        if (model.getProblem() != null) {
+            // Assuming CodeModel can be updated with the problem
+          //  codeView.setModel(new CodeModel());
+        }
+        
+        // Update the variable view with the problem
+        if (model.getProblem() != null) {
+            variablesView.setModel(model.getProblem());
+        }
+        
+        // We'll add these updates later
+        /*
+        // Update the step selector with available steps
+        if (model.currentTask() != null) {
+            stepSelectorView.setTask(model.currentTask().getTask());
+        }
+        */
     }
 }

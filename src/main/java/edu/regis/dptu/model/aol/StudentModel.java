@@ -44,12 +44,18 @@ public class StudentModel {
     /**
      * Instantiate this student model with default information.
      *
+     * Create a student model for the given user id and with default information.
+     * 
      * @param userId the user id of the student whose model is being created.
      */
     public StudentModel(String userId) {
         this.userId = userId;
 
-        assessments = new HashMap<>();
+        //assessments = new HashMap<>();
+
+        
+        assessments = new HashMap<>();   
+
     }
 
     public String getUserId() {
@@ -61,7 +67,12 @@ public class StudentModel {
     }
 
     public void addAssessment(int knowledgeComponentId, Assessment assessment) {
+        System.out.println("***** StuMod.addAssess: id: " + knowledgeComponentId);
         assessments.put(knowledgeComponentId, assessment);
+    }
+    
+    public void addAssessment(Assessment assessment) {
+        addAssessment(assessment.getOutcome().getId(), assessment);
     }
 
     /**
@@ -84,7 +95,11 @@ public class StudentModel {
     public Assessment findAssessment(int knowledgeComponentId) {
         return assessments.get(knowledgeComponentId);
     }
-
+    
+    public HashMap<Integer, Assessment> getAssessments() {
+        return assessments;
+    }
+    
     /**
      * Return the current scaffolding level being used to support the student.
      *

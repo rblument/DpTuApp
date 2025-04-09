@@ -81,15 +81,16 @@ public class SubSequenceView extends JPanel {
         wordPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // Line 1: x=13     skullandbones
-        JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel line1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         line1.add(lengthLabel1);
         line1.add(new JLabel(canvas.getWord1()));
 
         // Line 2: y=13    lullabybabies
-        JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel line2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         line2.add(lengthLabel2);
         line2.add(new JLabel(canvas.getWord2()));
 
+        wordPanel.add(titleLabel);
         wordPanel.add(line1);
         wordPanel.add(line2);
 
@@ -98,13 +99,13 @@ public class SubSequenceView extends JPanel {
         canvasPanel.add(canvas);
 
         // Button added
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        canvasPanel.add(stepButton);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        buttonPanel.add(stepButton);
 
         add(titleLabel, BorderLayout.NORTH);
-        add(wordPanel, BorderLayout.NORTH);
-        add(canvasPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(wordPanel, BorderLayout.CENTER);
+        add(canvasPanel, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.EAST);
     }
 
     // Button trigger

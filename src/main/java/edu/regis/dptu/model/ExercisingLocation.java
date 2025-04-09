@@ -20,7 +20,7 @@ package edu.regis.dptu.model;
  * 
  * @author rickb
  */
-public class ExercisingLocation {
+public class ExercisingLocation extends Model {
     /**
      * The id of the associated course.
      */
@@ -41,8 +41,13 @@ public class ExercisingLocation {
      */
     private int stepId;
     
+    
     public ExercisingLocation() {
-        
+        this(Model.DEFAULT_ID);
+    }
+    
+    public ExercisingLocation(int id) {
+        this.id = id;
     }
 
     public int getCourseId() {

@@ -42,7 +42,7 @@ public class SubSequenceCanvasView extends JPanel {
         lcs = findLCS(mainSeq, subSeq);
 
         setLayout(null);
-        setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(200, 200));
     }
 
     /**

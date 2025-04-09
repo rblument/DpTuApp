@@ -26,6 +26,8 @@ public enum StepSubType {
      */
     INFO_MESSAGE("Information Message"),
     
+    PROBLEM_REVIEW("Review Problem"),
+    
     /**
     * A step in which the student must perform some GUI action, which is 
     * typically performed outside of actual tutoring for purposes of learning 
@@ -73,6 +75,10 @@ public enum StepSubType {
      * match, and the upper is higher value than the cell to the left
      */
     USE_UPPER("Cell Step: Use value of cell above."),
+    
+    STEP_COMPLETION_REPLY("Step Completion Reply"),
+    
+     REQUEST_HINT("Request Hint"), 
     
     /**
      * The initial default value in a NewExampleRequest

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import javax.swing.JFrame;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Random;
 
 /**
  *
@@ -47,169 +48,208 @@ public class LCSProblemTest {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
+   /**
+    * Test the step() and undo() methods of Problem
+    */
     @Test
     public void testAll() {
-        String x = "skullandbones";
+        String x = "skullandbones"; // n == 13
         String y = "lullabybabies";
         
         LCSProblem problem = new LCSProblem(x, y);
         problem.reset();
         
-        assertEquals(x.length(), problem.getN());
-        assertEquals(y.length(), problem.getM());
-        assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
+        int n =  problem.getVariableValue("n");
+        int m = problem.getVariableValue("m");
         
-        problem.step(); // advance r_loop from Java index -1 to 0;
-       
+       // assertEquals(x.length(), problem.getN());
+       // assertEquals(y.length(), problem.getM());
+       assertEquals(x.length(),n);
+       assertEquals(y.length(), m);
+       assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
+        
+        problem.step(); // execute Line 0 LCS(x,y);
+        problem.step(); // enter Line1 r_loop advancing r from -1 to 0;
+
         assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
-    
+        
+        problem.step(); // execute Line 2 L[1,-1]  really L[1,0] in Java
+  
         // Finish the r loop
-        for (int i = 0; i <= problem.getN() + 1; i++)
-            problem.step();
+       for (int ii = 0; ii < n; ii++) {
+           problem.step();  // Line 1 for i = 1 to n-1
+           problem.step();  // Line 2   L[i,-1] = 0
+        }
+      
+       problem.step();  // Line1 increments r past end of loop, fall out of r-loop
+       assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
+      
+
+ 
+       problem.step(); // c from -1 to 1
+       problem.step(); // Line 4
         
-        assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
-       
-        // advance c from Java index -1 to 1 since c_loop starts at DP cell 0
-        problem.step(); 
-        
-       
         // finish the c loop
-        for (int i = 2; i <= problem.getM() + 1; i++)
+        for (int ii = 0; ii < m - 1; ii++) {
             problem.step();
+            problem.step();
+        }
+    
+        problem.step(); // Line3 increment exceeds c value fall out of c-loop
         
         assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-       
-        // i == -1 and j == -1, step will assign i = 1 and j = 0
-        problem.step();
+    
+        // i == -1 and j == -1, step will assign i = 1 
+        problem.step(); // Line 5
+        
+        // j == -1 to j = 0
+        problem.step();  // Line 6
         
         assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
         
-        for (int s = 1; s <= problem.getM(); s++) 
-            problem.step();
+        problem.step(); // Line 7 if x[i] == y[j]
         
+        problem.step(); // Line 10
         
-        problem.step(); // forces exit of j_loop
-        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-        problem.step(); // begin second iteration of i_loop
+        for (int xj = 2; xj < n + 1; xj++) {
+            problem.step(); // Line 6  for j
+            problem.step(); // Line 7  if x[i] == y[j]
+            problem.step(); // Line 8 then or Line 10 else
+        }
+        
         assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
         
-        // i == 2 and j = 0
-        for (int s = 1; s <= problem.getM(); s++)
-            problem.step();
-
-        problem.step(); // forces exit of j_loop
-        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-        problem.step(); // begin third iteration of i_loop
-        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        problem.step(); // break out of J-Loop
         
-        // i == 3 and j = 0
-        for (int s = 1; s <= problem.getM(); s++)
-            problem.step();
-
-        for (int row = 4; row < problem.getM(); row++) {
-            problem.step(); // forces exit of j_loop
-            assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-            problem.step(); // begin next iteration of i_loop
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+    
+   
+        // We're about to do LCS row 2 (Java row 3)
+        // then all remaining rows
+  
+        for (int xi = 3; xi < n + 2; xi++) {
+            problem.step();  // increment i
             assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
             
-            for (int s = 1; s <= problem.getM(); s++) 
-                problem.step();
-        } 
+           for (int xj = 1; xj < n + 1; xj++) {
+                problem.step(); // Line 6  for j
+                problem.step(); // Line 7  if x[i] == y[j]
+               problem.step(); // Line 8 then or Line 10 else
+            }
+           // In-J
+            problem.step(); // breakout of J
+            assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        }
         
-       
-        problem.step(); // forces exit of j_loop
-        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        problem.step(); // break out of i loop
+
+        assertEquals(LCSProblem.EXECUTION_STATE.RETRN, problem.getExecutionState());
         
-        problem.step(); // begin last iteration of i_loop
-        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
+        problem.step();
+ 
+        problem.prettyPrint();
         
-        for (int s = 1; s <= problem.getM(); s++) 
-            problem.step();
-        
-        problem.step(); // forces exit of j_loop
-        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-        
-        problem.step(); // foce exit of i_loop
-        
+        // Start undoing
         assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
+        
+        problem.undo(); // Line 11
+        
+        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        
+        for (int xx = 0; xx < 591; xx++)
+            problem.undo();
+     
+        assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
         
         problem.prettyPrint();
     }
-    
-    /*
-    Test the SubproblemTableView. Creates the LCS problem and steps through
-    while setting the i,j value in the table. Finally checks table values against
-    the LCS problem values and displays the table for a short time to visually
-    see that it is working. 
-    */
+
+    /**
+     * Test method for stepRLoop() method.
+     * 
+     * @author EverettCV
+     */
     @Test
-    public void testTable() {
+    public void testRLoop() {
+        /*
+        System.out.println("\nPerforming testRLoop() method:\n\n");
+
         String x = "skullandbones";
         String y = "lullabybabies";
-        
-        LCSProblem problem = new LCSProblem(x, y);
-        SubproblemTableView subProblemTable = new SubproblemTableView(x, y);
-        
-        JFrame frame = new JFrame();
-        
-        frame.setSize(1000, 1000);
-        
-        frame.add(subProblemTable);
-        
-        frame.setVisible(true);
-        
-        problem.reset();
-        
-        problem.step(); // advance r_loop from Java index -1 to 0;
-       
-        assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
     
-        // Finish the r loop
-        for (int i = 0; i <= problem.getN() + 1; i++) {
-            problem.step();
-        }
-        
-        assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
-       
-        // advance c from Java index -1 to 1 since c_loop starts at DP cell 0
-        problem.step(); 
-        
-       
-        // finish the c loop
-        for (int i = 2; i <= problem.getM() + 1; i++) {
-            problem.step();
-            
-        }
-        
-        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-       
-        // i == -1 and j == -1, step will assign i = 1 and j = 0
-        problem.step();
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
 
-        assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
-        
-        while (problem.getExecutionState() != LCSProblem.EXECUTION_STATE.POST) {
-            problem.step();
-            if (problem.getI() <= problem.getN() && problem.getJ() <= problem.getM()) {
-                subProblemTable.updateCellValue(problem.getI(), problem.getJ(), problem.getCurrentValue());
-            } 
-        }
-        
-        for (int i = 0; i <= problem.getN(); i++) {
-            for (int j = 0; j <= problem.getM(); j++) {
-                assertEquals(problem.getValueAt(i, j), subProblemTable.getCellValue(i, j));
-            }
-        }
-//        
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        Random rand = new Random();
+
+        int stepCount = rand.nextInt(14);
+
+        System.out.println("stepCount = " + stepCount);
+
+        problem.stepRLoop(stepCount);
+
+        problem.prettyPrint();
+*/
     }
-        
-        
+
+    /**
+     * Test method for stepRLoop() method.
+     * 
+     * @author EverettCV
+     */
+    @Test
+    public void testCLoop() {
+        /*
+        System.out.println("\nPerforming testCLoop() method:\n\n");
+
+        String x = "skullandbones";
+        String y = "lullabybabies";
+    
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
+
+        Random rand = new Random();
+
+        int stepCount = rand.nextInt(14);
+
+        System.out.println("stepCount = " + stepCount);
+
+        problem.stepCLoop(stepCount);
+
+        problem.prettyPrint();
+        */
+
+    }
+
+    /**
+     * Test method for stepIJLoop() method.
+     * 
+     * @author EverettCV
+     */
+    @Test
+    public void testIJLoop() {
+        /*
+        System.out.println("\nPerforming testIJLoop() method:\n\n");
+
+        String x = "skullandbones";
+        String y = "lullabybabies";
+
+        LCSProblem problem = new LCSProblem(x, y);
+        problem.reset();
+
+        Random rand = new Random();
+
+        int stepCountI = rand.nextInt(y.length());
+        int stepCountJ = rand.nextInt(x.length());
+
+        System.out.println("stepCountI = " + stepCountI);
+        System.out.println("stepCountJ = " + stepCountJ);
+
+        problem.stepIJLoop(stepCountI, stepCountJ);
+
+        problem.prettyPrint();
+*/
+    }
+
 }

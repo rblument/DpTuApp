@@ -72,4 +72,19 @@ public enum TaskSelectionKind {
     public String getTitle() {
         return title;
     }
+    
+     /**
+     * Return the enum value for the given title.
+     * 
+     * @param aTitle
+     * @return 
+     */
+    public static TaskSelectionKind findValue(String aTitle) {
+        for (TaskSelectionKind kind : values()) {
+            if (kind.getTitle().equalsIgnoreCase(aTitle))
+                return kind;
+        }
+        
+        return ERROR;
+    }
 }

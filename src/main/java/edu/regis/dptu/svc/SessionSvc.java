@@ -15,6 +15,7 @@ package edu.regis.dptu.svc;
 import edu.regis.dptu.err.IllegalArgException;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;
 
 /**
@@ -37,12 +38,12 @@ public interface SessionSvc {
      * Return the session with the specified id (this is a full session with all
      * events versus a digest).
      * 
-     * @param userId the user id of the session to return (user@university.edu)
+     * @param student the student whose session to return
      * @return the Session for the given user id
      * @throws ObjNotFoundException no trial with the given id exists
      * @throws NonRecoverableException perhaps see getCause().getErrorCode().
      */
-    TutoringSession retrieve(String userId) throws ObjNotFoundException, NonRecoverableException;
+    TutoringSession retrieve(Student student) throws ObjNotFoundException, NonRecoverableException;
     
     /**
      * Update the session in formation in the database using the given session.
@@ -60,4 +61,14 @@ public interface SessionSvc {
      * @throws NonRecoverableException 
      */
     void delete(String userId) throws NonRecoverableException;
+    
+    /**
+     * Return the security token (from the DB) for the given user id
+     * 
+     * @param userId
+     * @return The SHA-256 encrypted security token string.
+     * @throws ObjNotFoundException No session with the given user id exists.
+     * @throws NonRecoverableException perhaps see getCause().getErrorCode().
+     */
+    String retrieveSecurityToken(String userId) throws ObjNotFoundException, NonRecoverableException;
 }
