@@ -13,14 +13,9 @@
 package edu.regis.dptu.test;
 
 import edu.regis.dptu.model.MatrixChainProblem;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import javax.swing.JFrame;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.Random;
 import org.junit.jupiter.api.Test;
 
 /**
