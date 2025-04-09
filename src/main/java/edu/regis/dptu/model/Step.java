@@ -38,17 +38,17 @@ public class Step extends TitledModel {
     /**
      * Which step this is in the parent task.
      */
-    protected int sequenceId = 1;
+    protected int sequenceIndex = 1;
+    
+      /**
+     * The hints, if any, associated with this step (in order to be given).
+     */
+    protected ArrayList<Hint> hints;
     
     /**
      * The hint currently available to the student (index into hints).
      */
     protected int currentHintIndex = 0;
-    
-    /**
-     * The hints, if any, associated with this step (in order to be given).
-     */
-    protected final ArrayList<Hint> hints;
     
     /**
      * The amount of seconds the student can take on this step before the GUI
@@ -99,7 +99,7 @@ public class Step extends TitledModel {
     public Step(int id,int sequenceId, StepSubType subType) {
         super(id);
         
-        this.sequenceId = sequenceId;
+        this.sequenceIndex = sequenceId;
 
         timeout = null;
 
@@ -116,7 +116,7 @@ public class Step extends TitledModel {
     public Step(int id, int sequenceID, StepSubType subType, int solution){
         super(id);
         
-        this.sequenceId = sequenceId;
+        this.sequenceIndex = sequenceIndex;
 
         timeout = null;
 
@@ -158,9 +158,13 @@ public class Step extends TitledModel {
 
 	return null;
     }
+    
+        public void setHints(ArrayList<Hint> hints) {
+        this.hints = hints;
+    }
 
-    public int getSequenceId() {
-        return sequenceId;
+    public int getSequenceIndex() {
+        return sequenceIndex;
     }
 
     public Timeout getTimeout() {

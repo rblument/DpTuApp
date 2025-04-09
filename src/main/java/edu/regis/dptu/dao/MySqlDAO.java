@@ -15,7 +15,6 @@ package edu.regis.dptu.dao;
 import edu.regis.dptu.err.MissingPropertyException;
 import edu.regis.dptu.util.ResourceMgr;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -150,19 +149,6 @@ public abstract class MySqlDAO {
 	    } catch (Exception e){
 		LOGGER.log(Level.INFO, "MySqlDao-ERR-7: close() {0}", e.toString());
 	    }
-	}
-    }
-
-    /**
-     * Rollback any statements made in the current transaction associated
-     * with the given connection.
-     * @param conn
-     */
-    protected void rollback(Connection conn) {
-	try {
-	    conn.rollback();
-	} catch (SQLException e) {
-	    LOGGER.log(Level.SEVERE, "MySqlDao-ERR-8: rollback {0}", e.toString());
 	}
     }
 }

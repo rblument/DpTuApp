@@ -12,10 +12,13 @@
  */
 package edu.regis.dptu.view;
 
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemListener;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +32,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 /**
@@ -37,7 +42,7 @@ import javax.swing.table.TableColumnModel;
  *  being considered in the algorithm
  * @author Corey Brantley
  */
-public class SubproblemTableView extends GPanel {
+public class SubproblemTableView extends GPanel implements ProblemListener {
     
     JTable table;
     // A table must be in a scroll pane to include the headers
@@ -56,6 +61,40 @@ public class SubproblemTableView extends GPanel {
         buildTableData(string1);
         initializeComponents();
         layoutComponents();
+        
+        // Mouse Listener for clicking on a cell
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                getCellClicked(e.getPoint(), table);
+            }
+
+        });
+
+    }
+    
+    /**
+     * Returns the x and y coordinate of 
+     * 
+     * @param point
+     * @param table
+     * @return 
+     */
+    public int[] getCellClicked(Point point, JTable table) {
+        
+        int[] cellLocation = new int[2];
+        cellLocation[0] = table.rowAtPoint(point);
+        cellLocation[1] = table.columnAtPoint(point) - 1;
+        
+        if (cellLocation[0] <= -1 || cellLocation[1] <= -1) {
+            System.out.println("Invalid Cell: Should not Pass anything!");
+        } else System.out.println("Cell Location: Row: " + cellLocation[0] + 
+                " Column: " + cellLocation[1]);
+        
+        return cellLocation;
+        
+        
+        
     }
     
     public void updateCellValue(int i, int j, int newValue) {
@@ -175,6 +214,18 @@ public class SubproblemTableView extends GPanel {
         
         tableData = new Object[rows.size()][columnHeaders.length];
         tableData = rows.toArray(tableData);
+        
+    }
+    /**
+     * Takes the updated problem state passed by the problem calling 
+     * notifyProblemListeners().
+     * 
+     * Will update values on the table based on state of problem. 
+     * 
+     * @param problem 
+     */
+    @Override
+    public void problemUpdated(Problem problem) {
         
     }
     

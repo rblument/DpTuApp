@@ -21,7 +21,21 @@ public enum TaskKind {
     /**
      * A task requiring a Student to complete a Problem.
      */
-    PROBLEM("Problem"),
+    LCS_PROBLEM("LCS Problem"),
+    
+    MATRIX_CHAIN("Matrix Chaining"),
+    
+    KNAPSACK_0_1("0/1 Knapsack"),
+    
+    INITIALIZE_FIRST_ROW("Initiailize First Row"),
+    
+    INITIALIZE_FIRST_COL("Initialize First Column"),
+    
+    /**
+     * This is a specific cell value identified by an i,j value in during the
+     * i_j_loop of the algorithm.
+     */
+    ASSIGN_CELL("Assign a Cell Value"),
     
     /**
      * The task of generating the table for a dynamic programming problem
