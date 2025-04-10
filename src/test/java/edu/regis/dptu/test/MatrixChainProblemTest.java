@@ -23,55 +23,42 @@ import org.junit.jupiter.api.Test;
  * @author corey
  */
 public class MatrixChainProblemTest {
-    
-    public MatrixChainProblemTest() {
-    }
-    
-    @BeforeAll
-    public static void setUpClass() {
-    }
-    
-    @AfterAll
-    public static void tearDownClass() {
-    }
-    
+
     @Test
-    public void testAll() {
-        int[][] sizes =  {
+    public void testMatrixChainExecution() {
+        // Input sizes for matrices: 10x5, 5x2, 2x20, 20x12, 12x4, 4x60
+        int[][] sizes = {
             {10, 5}, {5, 2}, {2, 20}, {20, 12}, {12, 4}, {4, 60}
         };
 
         MatrixChainProblem problem = new MatrixChainProblem(sizes);
 
-        // Start in PRE
-        assertEquals(MatrixChainProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
-
-        // Step once to enter R_LOOP
-        problem.step();
-        assertEquals(MatrixChainProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
-
-        // Complete R_LOOP
-        for (int i = 0; i < problem.getN() + 1; i++) {
-            problem.step();
-        }
-        
-        problem.step();
-        
-        assertEquals(MatrixChainProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
-
-        // Complete full DP table build
+        // Step through all lines until execution is complete
         while (problem.getExecutionState() != MatrixChainProblem.EXECUTION_STATE.POST) {
+//            System.out.println("hello");
             problem.step();
         }
 
-        // Final state should be POST
+        // Confirm we reached POST state
         assertEquals(MatrixChainProblem.EXECUTION_STATE.POST, problem.getExecutionState());
 
-        // Check final cost value is correct
-        int expectedCost = 2356; // Verified optimal cost for this matrix chain
-        assertEquals(expectedCost, problem.getValueAt(0, problem.getN()));
+        // Optimal cost should be 2356 for this matrix sequence
+        int expectedCost = 2356;
+        int result = problem.getValueAt(0, problem.getVariableValue("n")- 1);
+        assertEquals(expectedCost, result);
 
-        // Optional printout
+        // Optional visual confirmation
+        problem.prettyPrint();
+
+        // Now test undo all the way back to PRE
+        while (problem.getCurrentLineNumber() != 0) {
+            problem.undo();
+        }
+
+        // Final state after undoing everything
+        assertTrue(problem.getCurrentLineNumber() == 0);
+        
         problem.prettyPrint();
     }
-}
+} 
+

@@ -13,288 +13,253 @@
 package edu.regis.dptu.model;
 
 import java.util.ArrayList;
-
-
+import java.util.Stack;
 
 /**
  *
  * @author corey
  */
+
 public class MatrixChainProblem extends Problem {
+
+    public enum EXECUTION_STATE { PRE, R_LOOP, C_LOOP, I_LOOP, J_LOOP, POST }
+
+    private EXECUTION_STATE executionState;
     
-    /**
-     * Current state of execution capturing which of the loops are current.
-     * Note if the corresponding iteration index for a loop is -1, the loop
-     * hasn't entered its first iteration.
-     */
-    public enum EXECUTION_STATE {PRE, R_LOOP, C_LOOP, I_LOOP, J_LOOP, POST};
-    
-    /**
-     * Convenience reference to the number of matrices.
-     */
-    private final int n;
+    // Stack to store m[i][j] values for undo tracking
+    private Stack<int[]> mHistory = new Stack<>();
 
-    public int getN() {
-        return n;
+    public MatrixChainProblem(int[][] sizes) {
+        super();
+
+        int n = sizes.length;
+        ArrayList<Integer> d = new ArrayList<>();
+        
+        d.add(sizes[0][0]);
+        for (int[] size : sizes) {
+            d.add(size[1]);
+        }
+
+        variables.put("n", n);
+        variables.put("c", 1);
+        variables.put("i", 0);
+        variables.put("j", 0);
+        variables.put("k", 0);
+        variables.put("d", d);
+        variables.put("m", new int[n][n]);
+
+        tableVariable = "m";
+
+        int[][] m = (int[][]) variables.get("m");
+        for (int x = 0; x < n; x++) {
+            for (int y = 0; y < n; y++) {
+                m[x][y] = -1;
+            }
+        }
+
+        executionState = EXECUTION_STATE.PRE;
+        kind = TaskKind.MATRIX_CHAIN;
+
+        loadCodeStatements();
     }
 
-    public int getR() {
-        return r;
-    }
-
-    public int getC() {
-        return c;
-    }
-
-    public int getI() {
-        return i;
-    }
-
-    public int getJ() {
-        return j;
-    }
-
-    public int getK() {
-        return k;
+    @Override
+    protected void loadCodeStatements() {
+        codeStatements.add("<html><pre>for i = 0 to n-1</pre></html>"); // 0
+        codeStatements.add("<html><pre>    m[i][i] = 0</pre></html>"); // 1
+        codeStatements.add("<html><pre>for c = 1 to n-1</pre></html>"); // 2
+        codeStatements.add("<html><pre>    for i = 0 to n - c</pre></html>"); // 3
+        codeStatements.add("<html><pre>        j = i + c</pre></html>"); // 4
+        codeStatements.add("<html><pre>        m[i][j] = ∞</pre></html>"); // 5
+        codeStatements.add("<html><pre>        for k = i to j-1</pre></html>"); // 6
+        codeStatements.add("<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]*d[k+1]*d[j+1]</pre></html>"); // 7
+        codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>"); // 8
+        codeStatements.add("<html><pre>return m</pre></html>"); // 9
     }
 
     public EXECUTION_STATE getExecutionState() {
         return executionState;
     }
-        
-    /**
-     * Convenience reference to the length of y.
-     */
-//    private final int m;
-    
-    /**
-     * Current value of iteration loop variable r.
-     * When this is -1, the loop hasn't been entered, when it has a value of 0,
-     * it represents cell value -1 in the Dynamic Programming problem.
-     */
-    private int r;
-    
-    /**
-     * Current value of iteration loop variable c.
-     * When this is -1, the loop hasn't been entered, when it has a value of 0,
-     * it represents cell value -1 in the Dynamic Programming problem.
-     */
-    private int c;
-    
-    /**
-     * Current value of iteration loop variable i.
-     * When this is -1, the loop hasn't been entered, when it has a value of 0,
-     * it represents cell value -1 in the Dynamic Programming problem.
-     */
-    private int i;
-    
-    /**
-     * Current value of iteration loop variable j.
-     * When this is -1, the loop hasn't been entered, when it has a value of 0,
-     * it represents cell value -1 in the Dynamic Programming problem.
-     */
-    private int j;
-    
-    private int k;
-    
-    private ArrayList<int[][]> matrices;
-    
-    private ArrayList<int[]> matricesSizes;
-    
-    private ArrayList<Integer> dArray;
-    
-    /**
-     * The subproblem dynamic values.
-     * 
-     * Note all indexes are shifted by 1 since 
-     * subproblem[0][0] in the Java array corresponds to cell[-1][-1] in
-     * the Dynamic Programming problem.
-     */
-    private final int[][] subproblemL;
-    
-       
-    /**
-     * The current state of the algorithm, before the loops, in a loop, and
-     * after all of the loops have executed.
-     */
-    private MatrixChainProblem.EXECUTION_STATE executionState;
-    
-    public MatrixChainProblem(int[][] matriceSizes) {
-//        this.matrices = matrices;
-        
-//        this.n = this.matrices.size();
-        
-//        for(int[][] matrix : matrices) {
-//            int [] matrixSize = {matrix.length, matrix[0].length};
-//            this.matricesSizes.add(matrixSize);
-//        }
-//      
-        matricesSizes = new ArrayList<>();
-        
-        for (int[] mSize : matriceSizes) {
-            matricesSizes.add(mSize);
-        }
-        
-        n = matricesSizes.size() - 1;
-        
-        executionState = EXECUTION_STATE.PRE;
-        
-        r = -1; // Loops have not been entered.
-        c = -1;
-        i = -1;
-        j = -1;
-        k = -1;  
-        
-        subproblemL = new int[n+1][n+1];
-        
-        buildDArray();
-    }
-       
-    /**
-     *
-     * @param matrices
-     */
-//    public MatrixChainProblem(ArrayList<int[][]> matrices) {
-//        for(int[][] matrix : matrices) {
-//            int [] matrixSize = {matrix.length, matrix[0].length};
-//            this.matricesSizes.add(matrixSize);
-//        }
-//        
-//        this();
-//    }
-    
-//    public MatrixChainProblem(int[][] matriceSizes) {
-//        
-//        for (int[] mSize : matriceSizes) {
-//            this.matricesSizes.add(mSize);
-//        }
-//        
-//        this();
-//    }
-        
-    private void buildDArray() {
-        dArray = new ArrayList<>();
-        for (int i = 0; i < matricesSizes.size(); i++) {
-            if (i == 0) {
-                dArray.add(matricesSizes.get(i)[0]);
-            }
-            dArray.add(matricesSizes.get(i)[1]);
-        }
-    }
-    
-    public void step() {
-        switch (executionState) {
-            case PRE:
-                reset();
-                executionState = EXECUTION_STATE.R_LOOP;
-                break;
 
-            case R_LOOP:
-                if (++r == n + 1) {
-                    executionState = EXECUTION_STATE.C_LOOP;
-                    c = 1;
-                } else {
-                    subproblemL[r][r] = 0;
-                }
-                break;
-
-            case C_LOOP:
-                if (c == n + 1) {
-                    executionState = EXECUTION_STATE.I_LOOP;
-                    i = 0;
-                } else {
-                    i = 0;
-                    j = c;
-                    k = i;
-                    subproblemL[i][j] = Integer.MAX_VALUE;
-                    executionState = EXECUTION_STATE.I_LOOP;
-                }
-                break;
-
-            case I_LOOP:
-                j = i + c;
-                k = i;
-                subproblemL[i][j] = Integer.MAX_VALUE;
-                executionState = EXECUTION_STATE.J_LOOP;
-                break;
-
-            case J_LOOP:
-                if (k < j) {
-                    int cost = subproblemL[i][k] + subproblemL[k + 1][j]
-                            + dArray.get(i) * dArray.get(k + 1) * dArray.get(j + 1);
-                    if (cost < subproblemL[i][j]) {
-                        subproblemL[i][j] = cost;
-                    }
-                    k++;
-                } else {
-                    i++;
-                    if (i + c >= n + 1) {
-                        c++;
-                        if (c == n + 1) {
-                            executionState = EXECUTION_STATE.POST;
-                        } else {
-                            executionState = EXECUTION_STATE.C_LOOP;
-                        }
-                    } else {
-                        j = i + c;
-                        k = i;
-                        subproblemL[i][j] = Integer.MAX_VALUE;
-                        executionState = EXECUTION_STATE.J_LOOP;
-                    }
-                }
-                break;
-
-            case POST:
-                System.out.println("Shouldn't call step() in POST state.");
-                break;
-
-            default:
-                System.out.println("Unknown execution state.");
-        }
-    }
-    
-    public int getCurrentValue() {
-    return subproblemL[i][j];
-}
-
-    public int getValueAt(int row, int column) {
-        return subproblemL[row][column];
-    }
-
-    
-        /**
-     * Resets this problem (algorithm) back to its initial state before
-     * execution of the first statement.
-     */
-    public void reset() {
-        r = -1;
-        c = -1;
-        i = -1;
-        j = -1;
-        k = -1;
-        
-        for (int p = 0; p <= n; p++)
-            for (int q = 0; q <= n; q++)
-                subproblemL[p][q] = -1;
-    }
-    
-    /**
-     * Outputs to System.out the current state (of the algorithm).
-     */
     public void prettyPrint() {
-        System.out.println("\nExecutionState: " + executionState);
-        System.out.println("r: " + r);
-        System.out.println("c: " + c);
-        System.out.println("i: " + i);
-        System.out.println("j: " + j);
-            
-        for (int p = 0; p <= n; p++) {
-            for (int q = 0; q <= n; q++)
-                System.out.print(subproblemL[p][q] + " ");
-           
-            System.out.println("");           
-        }       
+        int[][] m = (int[][]) variables.get("m");
+        int n = (int) variables.get("n");
+
+        System.out.println("ExecutionState: " + executionState);
+        System.out.println("Current line: " + currentLineNumber);
+        System.out.println("DP Table (m):");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.printf("%6s", m[i][j] == -1 ? "-" : m[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public void executeLine0() {
+        variables.put("i", 0);
+        executionState = EXECUTION_STATE.R_LOOP;
+        currentLineNumber = 1;
+    }
+
+    public void executeLine1() {
+        int i = (int) variables.get("i");
+        int n = (int) variables.get("n");
+        int[][] m = (int[][]) variables.get("m");
+        mHistory.push(new int[]{i, i, m[i][i]});
+        m[i][i] = 0;
+        if (i + 1 == n) {
+            variables.put("c", 1);
+            executionState = EXECUTION_STATE.C_LOOP;
+            currentLineNumber = 2;
+        } else {
+            variables.put("i", i + 1);
+            currentLineNumber = 1;
+        }
+    }
+
+    public void executeLine2() {
+        int c = (int) variables.get("c");
+        int n = (int) variables.get("n");
+        if (c == n) {
+            executionState = EXECUTION_STATE.POST;
+            currentLineNumber = 9;
+        } else {
+            variables.put("i", 0);
+            currentLineNumber = 3;
+        }
+    }
+
+    public void executeLine3() {
+        int i = (int) variables.get("i");
+        int c = (int) variables.get("c");
+        int n = (int) variables.get("n");
+        if (i > n - c - 1) {
+            variables.put("c", c + 1);
+            currentLineNumber = 2;
+        } else {
+            currentLineNumber = 4;
+        }
+    }
+
+    public void executeLine4() {
+        int i = (int) variables.get("i");
+        int c = (int) variables.get("c");
+        int j = i + c;
+        variables.put("j", j);
+        currentLineNumber = 5;
+    }
+
+    public void executeLine5() {
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+        int[][] m = (int[][]) variables.get("m");
+        mHistory.push(new int[]{i, j, m[i][j]});
+        m[i][j] = Integer.MAX_VALUE;
+        variables.put("k", i);
+        currentLineNumber = 6;
+    }
+
+    public void executeLine6() {
+        int k = (int) variables.get("k");
+        int j = (int) variables.get("j");
+        if (k >= j) {
+            int i = (int) variables.get("i");
+            variables.put("i", i + 1);
+            currentLineNumber = 3;
+        } else {
+            currentLineNumber = 7;
+        }
+    }
+
+    public void executeLine7() {
+        int[][] m = (int[][]) variables.get("m");
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+        int k = (int) variables.get("k");
+        ArrayList<Integer> d = (ArrayList<Integer>) variables.get("d");
+        int cost = m[i][k] + m[k + 1][j] + d.get(i) * d.get(k + 1) * d.get(j + 1);
+        variables.put("cost", cost);
+        currentLineNumber = 8;
+    }
+
+    public void executeLine8() {
+        int cost = (int) variables.get("cost");
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+        int[][] m = (int[][]) variables.get("m");
+        if (cost < m[i][j]) {
+            mHistory.push(new int[]{i, j, m[i][j]});
+            m[i][j] = cost;
+        }
+        int k = (int) variables.get("k");
+        variables.put("k", k + 1);
+        currentLineNumber = 6;
+    }
+
+    public void executeLine9() {
+        executionState = EXECUTION_STATE.POST;
+    }
+
+    public void undoLine1() {
+        if (!mHistory.isEmpty()) {
+            int[] change = mHistory.pop();
+            int[][] m = (int[][]) variables.get("m");
+            m[change[0]][change[1]] = change[2];
+        }
+        int i = (int) variables.get("i") - 1;
+        if (i >= 0) {
+            variables.put("i", i);
+        }
+        if (i <= 0) executionState = EXECUTION_STATE.PRE;
+    }
+
+    public void undoLine2() {
+        int c = (int) variables.get("c") - 1;
+        variables.put("c", c);
+        variables.put("i", 0);
+        if (c <= 0) executionState = EXECUTION_STATE.R_LOOP;
+    }
+
+    public void undoLine3() {
+        int i = (int) variables.get("i") - 1;
+        variables.put("i", i);
+        if (i < 0) executionState = EXECUTION_STATE.C_LOOP;
+    }
+
+    public void undoLine4() {
+        variables.put("j", 0);
+    }
+
+    public void undoLine5() {
+        if (!mHistory.isEmpty()) {
+            int[] change = mHistory.pop();
+            int[][] m = (int[][]) variables.get("m");
+            m[change[0]][change[1]] = change[2];
+        }
+    }
+
+    public void undoLine6() {
+        int k = (int) variables.get("k") - 1;
+        variables.put("k", k);
+    }
+
+    public void undoLine7() {
+        variables.remove("cost");
+    }
+
+    public void undoLine8() {
+        if (!mHistory.isEmpty()) {
+            int[] change = mHistory.pop();
+            int[][] m = (int[][]) variables.get("m");
+            m[change[0]][change[1]] = change[2];
+        }
+        int k = (int) variables.get("k") - 1;
+        variables.put("k", k);
+    }
+
+    public void undoLine9() {
+        executionState = EXECUTION_STATE.C_LOOP;
+        variables.put("c", (int) variables.get("n"));
     }
 }
-
-    
