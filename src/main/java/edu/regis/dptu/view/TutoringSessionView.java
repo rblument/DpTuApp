@@ -41,6 +41,7 @@ public class TutoringSessionView extends GPanel {
 
     private SubSequenceView subSeqView;
     private SubproblemTableView tableView;
+    private StepViewPanel stepViewPanel;
 
     
     // We need to comment out these for now as they're not ready to be used yet
@@ -143,11 +144,14 @@ public class TutoringSessionView extends GPanel {
         tableView = new SubproblemTableView("skullandbones", "lullabybabies");
 
         codeView = new CodeView(tableView);
-
+        
+        // Initialize the new StepViewPanel
+        stepViewPanel = new StepViewPanel();
         
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
-        // stepSelectorView = new StepSelectorView(); 
+
+        // stepSelectorView = new StepSelectorView();
     }
 
     /**
@@ -174,6 +178,11 @@ public class TutoringSessionView extends GPanel {
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
         
+        // Add the new StepViewPanel at the bottom of the UI
+        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        
         // We'll add these components to the layout later
         /*
         addc(stepSelectorView, 2, 0, 1, 1, 0.0, 0.0,
@@ -195,8 +204,11 @@ public class TutoringSessionView extends GPanel {
         
         // Update the code view with the current model
         if (model.getProblem() != null) {
+            // Set the problem model to the step view panel
+            stepViewPanel.setModel(model.getProblem());
+            
             // Assuming CodeModel can be updated with the problem
-          //  codeView.setModel(new CodeModel());
+            // codeView.setModel(new CodeModel());
         }
         
         // Update the variable view with the problem
