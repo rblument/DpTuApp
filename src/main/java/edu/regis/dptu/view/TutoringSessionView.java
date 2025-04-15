@@ -38,6 +38,8 @@ public class TutoringSessionView extends GPanel {
     private JLabel subproblemView;
     private JLabel xView;
     private CodeView codeView;
+
+    private SubSequenceView subSeqView;
     private SubproblemTableView tableView;
     private StepViewPanel stepViewPanel;
 
@@ -45,7 +47,6 @@ public class TutoringSessionView extends GPanel {
     // We need to comment out these for now as they're not ready to be used yet
     // private StepCompletionView stepCompletionView;
     // private StepSelectorView stepSelectorView;
-
 
     /**
      * Initialize this view including creating and laying out its child
@@ -136,6 +137,10 @@ public class TutoringSessionView extends GPanel {
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
+        codeView = new CodeView();
+      
+        subSeqView = new SubSequenceView("skullandbones", "lullabybabies");
+        
         tableView = new SubproblemTableView("skullandbones", "lullabybabies");
 
         codeView = new CodeView(tableView);
@@ -145,6 +150,7 @@ public class TutoringSessionView extends GPanel {
         
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
+
         // stepSelectorView = new StepSelectorView();
     }
 
@@ -167,6 +173,10 @@ public class TutoringSessionView extends GPanel {
         addc(xView, 3, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
+
+        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
         
         // Add the new StepViewPanel at the bottom of the UI
         addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0,
@@ -181,7 +191,7 @@ public class TutoringSessionView extends GPanel {
         addc(stepCompletionView, 2, 1, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
-        */
+
     }
 
     /**
