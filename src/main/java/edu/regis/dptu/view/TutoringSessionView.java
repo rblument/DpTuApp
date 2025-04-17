@@ -38,7 +38,7 @@ public class TutoringSessionView extends GPanel {
     private JLabel subproblemView;
     private JLabel xView;
     private CodeView codeView;
-
+    private ProblemInputView problemInputView;
     private SubSequenceView subSeqView;
     private SubproblemTableView tableView;
     private StepViewPanel stepViewPanel;
@@ -109,6 +109,19 @@ public class TutoringSessionView extends GPanel {
     }
 
     /**
+     * Returns the current SubSequenceView instance
+     * 
+     * Changes (April 17, 2025):
+     * Exposed SubSequenceView through a getter to allow dynamic updates
+     * (Updating input strings based on user input from InputViews)
+     * 
+     * @return the SubSequenceView displayed in the tutoring session
+     */
+    public SubSequenceView getSubSeqView() {
+        return subSeqView;
+    }
+
+    /**
      * Set the table view.
      *
      * @param tableView the new SubproblemTableView
@@ -137,7 +150,7 @@ public class TutoringSessionView extends GPanel {
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
-        codeView = new CodeView();
+        problemInputView = new ProblemInputView(this);
       
         subSeqView = new SubSequenceView("skullandbones", "lullabybabies");
         
@@ -158,28 +171,28 @@ public class TutoringSessionView extends GPanel {
      * Layout the child components in this view
      */
     private void layoutComponents() {
-        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
+        addc(problemInputView, 0, 0, 2, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
+                5, 5, 5, 5);                
+        addc(codeView, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
+                5, 5, 5, 5); 
+        addc(variablesView, 1, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);   
+        addc(tableView, 2, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0,
+        addc(subproblemView, 4, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
-        addc(xView, 3, 1, 1, 1, 0.0, 0.0,
+        addc(xView, 4, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
                 5, 5, 5, 5);
-
-        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0,
+        addc(subSeqView, 5, 0, 1, 1, 0.5, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
-        
-        // Add the new StepViewPanel at the bottom of the UI
-        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0,
+        addc(stepViewPanel, 0, 3, 2, 1, 1.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
@@ -190,7 +203,7 @@ public class TutoringSessionView extends GPanel {
                 5, 5, 5, 5);
         addc(stepCompletionView, 2, 1, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
+                5, 5, 5, 5);*/
 
     }
 
