@@ -136,7 +136,7 @@ public class TutoringSessionView extends GPanel {
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
         xView = new JLabel("X View");
-        codeView = new CodeView();
+        //codeView = new CodeView();
         subSeqView = new SubSequenceView("skullandbones", "lullabybabies");
 
         tableView = new SubproblemTableView("skullandbones", "lullabybabies");

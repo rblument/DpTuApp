@@ -12,11 +12,17 @@
  */
 package edu.regis.dptu.view;
 
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.model.Step;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  * This is the Subsequence Canvas view. Two words are displayed aside each
@@ -24,12 +30,14 @@ import javax.swing.JPanel;
  *
  * @author Sofia Reyes
  */
-public class SubSequenceCanvasView extends JPanel {
+public class SubSequenceCanvasView extends JPanel implements ProblemListener {
 
     private String mainSeq;
     private String subSeq;
     private String lcs;
     private int highlightIndex = 0;
+    private Problem model;
+    private Step step;
 
     /**
      *
@@ -40,6 +48,10 @@ public class SubSequenceCanvasView extends JPanel {
         mainSeq = word1;
         subSeq = word2;
         lcs = findLCS(mainSeq, subSeq);
+
+        // create problem
+        model = new LCSProblem(mainSeq, subSeq);
+        model.addProblemListener(this);
 
         setLayout(null);
         setPreferredSize(new Dimension(200, 200));
@@ -61,6 +73,10 @@ public class SubSequenceCanvasView extends JPanel {
      */
     public String getWord2() {
         return subSeq;
+    }
+
+    public Problem getModel() {
+        return model;
     }
 
     /**
@@ -119,7 +135,9 @@ public class SubSequenceCanvasView extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setFont(new Font("Arial", Font.PLAIN, 20));
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.setFont(new Font("Arial", Font.PLAIN, 20));
 
         if (mainSeq == null || subSeq == null) {
             g.setColor(Color.RED);
@@ -128,14 +146,14 @@ public class SubSequenceCanvasView extends JPanel {
 
         int x1 = 20;
         int y1 = 30;
-        g.setColor(Color.BLACK);
-        g.drawString(mainSeq, x1, y1);
+        g2.setColor(Color.BLACK);
+        g2.drawString(mainSeq, x1, y1);
 
         int x2 = 20;
         int y2 = 60;
-        g.drawString(subSeq, x2, y2);
+        g2.drawString(subSeq, x2, y2);
 
-        g.setColor(Color.red);
+        g2.setColor(Color.red);
         int count = 0;
         int lcsIndex = 0;
         for (char c : lcs.toCharArray()) {
@@ -143,8 +161,8 @@ public class SubSequenceCanvasView extends JPanel {
             int idx2 = subSeq.indexOf(c, lcsIndex);
 
             if (count < highlightIndex && idx1 != -1 && idx2 != -1) {
-                g.drawString(String.valueOf(c), x1 + g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)), y1);
-                g.drawString(String.valueOf(c), x2 + g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)), y2);
+                g2.drawString(String.valueOf(c), x1 + g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)), y1);
+                g2.drawString(String.valueOf(c), x2 + g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)), y2);
                 lcsIndex = idx1 + 1;
                 count++;
             }
@@ -174,4 +192,10 @@ public class SubSequenceCanvasView extends JPanel {
 //                lcsIndex = idx1 + 1;
 //            }
 //        }
+    @Override
+    public void problemUpdated(Problem problem) {
+        this.model = problem;
+
+        highlightLCS();
+    }
 }

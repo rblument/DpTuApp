@@ -12,6 +12,8 @@
  */
 package edu.regis.dptu.view;
 
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.Step;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,7 +35,9 @@ import javax.swing.SwingConstants;
 public class SubSequenceView extends JPanel {
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2;
-    private JButton stepButton;
+    private JButton lcsButton;
+    private Step step;
+    public JButton stepButton;
     public SubSequenceCanvasView canvas;
 
     public SubSequenceView(String word1, String word2) {
@@ -61,8 +65,11 @@ public class SubSequenceView extends JPanel {
         lengthLabel2 = new JLabel("y=" + word2.length());
         lengthLabel2.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        stepButton = new JButton("Step LCS");
-        stepButton.addActionListener(e -> stepThroughLCS());
+        lcsButton = new JButton("Step LCS");
+        lcsButton.addActionListener(e -> stepThroughLCS());
+        
+        stepButton = new JButton("Step Completed");
+        stepButton.addActionListener(e -> stepCompleted());
 
         canvas = new SubSequenceCanvasView(word1, word2);
     }
@@ -99,17 +106,22 @@ public class SubSequenceView extends JPanel {
         canvasPanel.add(canvas);
 
         // Button added
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        buttonPanel.add(stepButton);
+        //JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        //buttonPanel.add(lcsButton);
+       canvasPanel.add(stepButton, BorderLayout.SOUTH);
 
         add(titleLabel, BorderLayout.NORTH);
         add(wordPanel, BorderLayout.CENTER);
         add(canvasPanel, BorderLayout.SOUTH);
-        add(buttonPanel, BorderLayout.EAST);
+        //add(buttonPanel, BorderLayout.EAST);
     }
 
     // Button trigger
     private void stepThroughLCS() {
         canvas.highlightLCS();
+    }
+    
+    private void stepCompleted() {
+        canvas.problemUpdated(canvas.getModel());
     }
 }
