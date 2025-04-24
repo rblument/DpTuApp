@@ -20,232 +20,157 @@ import javax.swing.JLabel;
 
 /**
  * Displays a tutoring session (the top-level GUI view for the application).
+ * Integrates views and ensures the shared Problem model is distributed correctly.
+ * Includes Debug Prints.
  *
- * Various aspects of the tutoring session are displayed in the child components
- * of this view.
- *
- * @author rickb
+ * @author rickb (Modified by Assistant for Functional Integration & Debug)
  */
 public class TutoringSessionView extends GPanel {
 
-    /**
-     * The tutoring session model displayed in this view.
-     */
+    // ... (fields remain the same) ...
     private TutoringSession model;
-
-    /**
-     * Declares each of the views used in the tutorings session view.
-     */
     private VariablesView variablesView;
-    private JLabel subproblemView; // Assuming these are placeholders as in original
-    private JLabel xView;          // Assuming these are placeholders as in original
+    private JLabel subproblemView;
+    private JLabel xView;
     private CodeView codeView;
-
-    private SubSequenceView subSeqView; // Assuming this is separate
+    private SubSequenceView subSeqView;
     private SubproblemTableView tableView;
     private StepViewPanel stepViewPanel;
-
-
-    // We need to comment out these for now as they're not ready to be used yet
-    // private StepCompletionView stepCompletionView;
-    // private StepSelectorView stepSelectorView;
+    // ...
 
     /**
      * Initialize this view including creating and laying out its child
-     * components.
+     * components. Uses original layout.
      */
     public TutoringSessionView() {
-        initializeComponents();
-        layoutComponents();
+        System.out.println("DEBUG: TutoringSessionView constructor called.");
+        initializeComponents(); // Creates components and sets up model sharing
+        layoutComponents();     // Uses original layout constraints
     }
 
-    /**
-     * Return the model currently displayed in this view.
-     *
-     * @return a TutoringSession
-     */
-    public TutoringSession getModel() {
-        return model;
-    }
+    // ... (getModel, getTableView, stubs remain the same) ...
+    public TutoringSession getModel() { return model; }
+    public SubproblemTableView getTableView() { return tableView; }
+    public StepCompletionView getStepCompletionView() { return null; }
+    public StepSelectorView getStepSelectorView() { return null; }
 
-    /**
-     * Display the given model in this view.
-     *
-     * @param model a TutoringSession.
-     */
-    public void setModel(TutoringSession model) {
-        this.model = model;
-        updateView(); // Update child views when the main session model changes
-    }
 
-    /**
-     * Return the table view.
-     *
-     * @return the SubproblemTableView
-     */
-    public SubproblemTableView getTableView() {
-        return tableView;
-    }
-
-    /**
-     * This is a stub method that will be implemented later when we add StepCompletionView.
-     * For now, it returns null to prevent compilation errors.
-     *
-     * @return null for now
-     */
-    public StepCompletionView getStepCompletionView() {
-        // Will be implemented later
-        return null;
-    }
-
-    /**
-     * This is a stub method that will be implemented later when we add StepSelectorView.
-     * For now, it returns null to prevent compilation errors.
-     *
-     * @return null for now
-     */
-    public StepSelectorView getStepSelectorView() {
-        // Will be implemented later
-        return null;
-    }
-
-    /**
-     * Set the table view. (Original functionality preserved)
-     *
-     * @param tableView the new SubproblemTableView
-     */
+    // Keep original setTableView
     public void setTableView(SubproblemTableView tableView) {
-        // Remove the old table view if it exists
-        if (this.tableView != null) {
-            remove(this.tableView);
-        }
-
-        // Add the new table view
+        if (this.tableView != null) { remove(this.tableView); }
         this.tableView = tableView;
         addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
-        // Refresh the layout
         revalidate();
         repaint();
     }
 
+
     /**
      * Create the child GUI components appearing in this frame.
+     * FUNCTIONAL CHANGE: Ensures all relevant views get the *same* Problem model instance.
      */
     private void initializeComponents() {
+        System.out.println("DEBUG: TutoringSessionView initializing components...");
         variablesView = new VariablesView();
-        subproblemView = new JLabel("Subproblem View"); // Placeholder
-        xView = new JLabel("X View");                 // Placeholder
+        subproblemView = new JLabel("Subproblem View"); // Original Placeholder
+        xView = new JLabel("X View");                 // Original Placeholder
 
-        subSeqView = new SubSequenceView("skullandbones", "lullabybabies"); // Example init
+        String initialX = "skullandbones"; String initialY = "lullabybabies";
+        subSeqView = new SubSequenceView(initialX, initialY); // Original init
+        tableView = new SubproblemTableView(initialX, initialY);
+        codeView = new CodeView(tableView); // Original init
 
-        tableView = new SubproblemTableView("skullandbones", "lullabybabies"); // Example init
+        // *** Create the single, shared Problem instance ***
+        Problem sharedProblem = new LCSProblem(initialX, initialY);
+        System.out.println("DEBUG: TutoringSessionView created sharedProblem: " + Integer.toHexString(sharedProblem.hashCode()));
 
-        codeView = new CodeView(tableView); // Create CodeView
 
-        // *** FIX: Create the shared Problem instance ***
-        // Ideally, this comes from the TutoringSession model later,
-        // but for initial setup, create a default one.
-        Problem sharedProblem = new LCSProblem("skullandbones", "lullabybabies");
-
-        // *** FIX: Initialize StepViewPanel with the shared Problem ***
+        // *** Initialize StepViewPanel with the shared Problem ***
         stepViewPanel = new StepViewPanel(sharedProblem);
 
-        // *** FIX: Set the shared Problem model on CodeView ***
+
+        // *** Set the shared Problem model on other views ***
+        System.out.println("DEBUG: TutoringSessionView setting model on CodeView...");
         codeView.setModel(sharedProblem);
-
-        // *** FIX: Set the shared Problem model on VariablesView ***
-        // Assuming VariablesView also needs the problem model
-        variablesView.setModel(sharedProblem); // Need to ensure VariablesView has setModel
-
-        // *** FIX: Add table as listener to the *shared* problem ***
-        if (sharedProblem != null) {
-           sharedProblem.addProblemListener(tableView);
-        }
+        System.out.println("DEBUG: TutoringSessionView setting model on VariablesView...");
+        variablesView.setModel(sharedProblem);
+        System.out.println("DEBUG: TutoringSessionView setting model on SubproblemTableView...");
+        // *** Set model on tableView - This now handles listener registration ***
+        tableView.setModel(sharedProblem);
 
 
-        // We'll add these components later
+        // *** Listener addition REMOVED/COMMENTED OUT here ***
+        // if (sharedProblem != null) {
+        //    sharedProblem.addProblemListener(tableView); // Now handled by tableView.setModel()
+        // }
+
+
+        // Original commented out components
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
+         System.out.println("DEBUG: TutoringSessionView components initialized.");
     }
+
 
     /**
-     * Layout the child components in this view
+     * Layout the child components in this view using **ORIGINAL** constraints.
      */
     private void layoutComponents() {
-        // Layout remains largely the same as original
-        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0, // Placeholder
-                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
-                5, 5, 5, 5);
-        addc(xView, 3, 1, 1, 1, 0.0, 0.0, // Placeholder
-                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
-                5, 5, 5, 5);
+        // *** Using ORIGINAL layout constraints from user's code ***
+        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(codeView, 0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(tableView, 1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5); // Original
+        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, 5, 5, 5, 5); // Original
+        addc(xView, 3, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, 5, 5, 5, 5);       // Original
+        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 5, 5, 5, 5);     // Original
+        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5); // Original
 
-        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0, // Position might need adjustment based on placeholders
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
 
-        // Add the StepViewPanel (usually at the bottom)
-        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0, // Span 2 columns, below code/table
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-
-        // We'll add these components to the layout later
-        /*
-        addc(stepSelectorView, 2, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
-                5, 5, 5, 5);
-        addc(stepCompletionView, 2, 1, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-        */
+        // Original commented out layout
+        /* addc(stepSelectorView, ...); addc(stepCompletionView, ...); */
     }
+
 
     /**
      * Display the current model in our child components.
+     * **FUNCTIONAL CHANGE:** Ensures all views needing the model receive it.
      */
     private void updateView() {
+         System.out.println("DEBUG: TutoringSessionView.updateView called.");
         if (model == null) {
-            // Optionally disable components or set default states if no session model
-            return;
-        }
-
-        Problem currentProblem = model.getProblem();
-
-        // *** FIX: Update all relevant views with the current problem ***
-        if (currentProblem != null) {
-            stepViewPanel.setModel(currentProblem);
-            codeView.setModel(currentProblem);
-            variablesView.setModel(currentProblem); // Assuming VariablesView needs update
-
-            // No need to explicitly set the model for the table view here,
-            // as it's a listener and should update itself via problemUpdated.
-        } else {
-            // Handle case where the session has no current problem
-            // Maybe set models to null or show a default state
+            System.out.println("DEBUG: TutoringSessionView.updateView: Main session model is null. Setting child models to null.");
+            // Set models to null if session model is null
             stepViewPanel.setModel(null);
             codeView.setModel(null);
             variablesView.setModel(null);
+            tableView.setModel(null);
+            return;
         }
 
 
-        // We'll add these updates later
-        /*
-        // Update the step selector with available steps
-        if (model.currentTask() != null) {
-            stepSelectorView.setTask(model.currentTask().getTask());
-        }
-        */
+        Problem currentProblem = model.getProblem();
+        System.out.println("DEBUG: TutoringSessionView.updateView: Current problem from session: " + (currentProblem != null ? Integer.toHexString(currentProblem.hashCode()) : "null"));
+
+
+        // *** Pass the current problem to all relevant views ***
+        stepViewPanel.setModel(currentProblem);
+        codeView.setModel(currentProblem);
+        variablesView.setModel(currentProblem);
+        tableView.setModel(currentProblem); // <<< Ensure tableView gets the model
+
+
+        // Original commented out updates
+        /* if (model.currentTask() != null) { stepSelectorView.setTask(model.currentTask().getTask()); } */
+
+
+        // Refresh layout after potentially changing models
+        revalidate();
+        repaint();
+    }
+
+    void setModel(TutoringSession model) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

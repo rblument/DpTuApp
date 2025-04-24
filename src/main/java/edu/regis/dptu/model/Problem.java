@@ -138,6 +138,20 @@ public abstract class Problem extends TitledModel {
     public ArrayList<ProblemListener> getProblemListeners() {
         return problemListeners;
     }
+    
+    /**
+     * Returns the raw Object value for a variable.
+     * Use this for non-int variables like the DP table.
+     * @param variableName The name of the variable.
+     * @return The variable's value as an Object, or null if not found.
+     */
+    public Object getVariableObject(String variableName) {
+        // Added null check for safety
+        if (variables != null) {
+            return variables.get(variableName);
+        }
+        return null;
+    }
 
     public void addProblemListener(ProblemListener listener) {
         problemListeners.add(listener);

@@ -36,7 +36,7 @@ import javax.swing.SpinnerNumberModel;
  * A panel containing buttons and controls that allow a user to step forward
  * and backward through the LCS algorithm execution.
  *
- * @author [your name] // Replace with original author or leave as is
+ * @author Shamar Henry
  */
 public class StepViewPanel extends GPanel implements ProblemListener {
 
