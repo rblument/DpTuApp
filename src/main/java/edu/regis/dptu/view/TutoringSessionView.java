@@ -41,7 +41,9 @@ public class TutoringSessionView extends GPanel {
     private JLabel xView;          // Assuming these are placeholders as in original
     private CodeView codeView;
 
-    private SubSequenceView subSeqView; // Assuming this is separate
+    private ProblemInputView problemInputView;
+    private SubSequenceView subSeqView;
+
     private SubproblemTableView tableView;
     private StepViewPanel stepViewPanel;
 
@@ -109,10 +111,20 @@ public class TutoringSessionView extends GPanel {
         return null;
     }
 
+
+    public SubSequenceView getSubSeqView() {
+        return subSeqView;
+    }
+
     /**
      * Set the table view. (Original functionality preserved)
-     *
-     * @param tableView the new SubproblemTableView
+     * Returns the current SubSequenceView instance
+     * 
+     * Changes (April 17, 2025):
+     * Exposed SubSequenceView through a getter to allow dynamic updates
+     * (Updating input strings based on user input from InputViews)
+     * 
+     * @return the SubSequenceView displayed in the tutoring session
      */
     public void setTableView(SubproblemTableView tableView) {
         // Remove the old table view if it exists
@@ -136,8 +148,11 @@ public class TutoringSessionView extends GPanel {
      */
     private void initializeComponents() {
         variablesView = new VariablesView();
+
         subproblemView = new JLabel("Subproblem View"); // Placeholder
         xView = new JLabel("X View");                 // Placeholder
+      
+        problemInputView = new ProblemInputView(this);
 
         subSeqView = new SubSequenceView("skullandbones", "lullabybabies"); // Example init
 
@@ -165,7 +180,6 @@ public class TutoringSessionView extends GPanel {
            sharedProblem.addProblemListener(tableView);
         }
 
-
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
@@ -175,29 +189,35 @@ public class TutoringSessionView extends GPanel {
      * Layout the child components in this view
      */
     private void layoutComponents() {
+
         // Layout remains largely the same as original
         addc(variablesView, 0, 1, 1, 1, 0.0, 0.0,
+
+        addc(problemInputView, 0, 0, 2, 1, 0.0, 0.0,
+
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0,
+                5, 5, 5, 5);                
+        addc(codeView, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(tableView, 1, 0, 1, 1, 0.0, 0.0,
+                5, 5, 5, 5); 
+        addc(variablesView, 1, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);   
+        addc(tableView, 2, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0, // Placeholder
-                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
-                5, 5, 5, 5);
-        addc(xView, 3, 1, 1, 1, 0.0, 0.0, // Placeholder
-                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
-                5, 5, 5, 5);
 
-        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0, // Position might need adjustment based on placeholders
+        addc(subproblemView, 4, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(xView, 4, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(subSeqView, 5, 0, 1, 1, 0.5, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
+        addc(stepViewPanel, 0, 3, 2, 1, 1.0, 0.0,
 
-        // Add the StepViewPanel (usually at the bottom)
-        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0, // Span 2 columns, below code/table
                 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
@@ -210,6 +230,7 @@ public class TutoringSessionView extends GPanel {
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
         */
+
     }
 
     /**
