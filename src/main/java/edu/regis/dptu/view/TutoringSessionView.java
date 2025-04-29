@@ -33,7 +33,10 @@ public class TutoringSessionView extends GPanel {
     private JLabel subproblemView;
     private JLabel xView;
     private CodeView codeView;
+
+    private ProblemInputView problemInputView;
     private SubSequenceView subSeqView;
+
     private SubproblemTableView tableView;
     private StepViewPanel stepViewPanel;
     // ...
@@ -54,8 +57,32 @@ public class TutoringSessionView extends GPanel {
     public StepCompletionView getStepCompletionView() { return null; }
     public StepSelectorView getStepSelectorView() { return null; }
 
+    /**
+     * This is a stub method that will be implemented later when we add StepSelectorView.
+     * For now, it returns null to prevent compilation errors.
+     *
+     * @return null for now
+     */
+    public StepSelectorView getStepSelectorView() {
+        // Will be implemented later
+        return null;
+    }
 
-    // Keep original setTableView
+
+    public SubSequenceView getSubSeqView() {
+        return subSeqView;
+    }
+
+    /**
+     * Set the table view. (Original functionality preserved)
+     * Returns the current SubSequenceView instance
+     * 
+     * Changes (April 17, 2025):
+     * Exposed SubSequenceView through a getter to allow dynamic updates
+     * (Updating input strings based on user input from InputViews)
+     * 
+     * @return the SubSequenceView displayed in the tutoring session
+     */
     public void setTableView(SubproblemTableView tableView) {
         if (this.tableView != null) { remove(this.tableView); }
         this.tableView = tableView;
@@ -76,6 +103,8 @@ public class TutoringSessionView extends GPanel {
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View"); // Original Placeholder
         xView = new JLabel("X View");                 // Original Placeholder
+      
+        problemInputView = new ProblemInputView(this);
 
         String initialX = "skullandbones"; String initialY = "lullabybabies";
         subSeqView = new SubSequenceView(initialX, initialY); // Original init
@@ -107,7 +136,7 @@ public class TutoringSessionView extends GPanel {
         // }
 
 
-        // Original commented out components
+        // We'll add these components later
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
          System.out.println("DEBUG: TutoringSessionView components initialized.");
@@ -118,18 +147,29 @@ public class TutoringSessionView extends GPanel {
      * Layout the child components in this view using **ORIGINAL** constraints.
      */
     private void layoutComponents() {
-        // *** Using ORIGINAL layout constraints from user's code ***
-        addc(variablesView, 0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(codeView, 0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(tableView, 1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5); // Original
-        addc(subproblemView, 3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, 5, 5, 5, 5); // Original
-        addc(xView, 3, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, 5, 5, 5, 5);       // Original
-        addc(subSeqView, 3, 0, 1, 1, 0.5, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 5, 5, 5, 5);     // Original
-        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5); // Original
+        addc(problemInputView, 0, 0, 2, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,  5, 5, 5); 
+        addc(codeView, 0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        // ToDo: Is tableView and subproblemView trying to do the same thing?
+        addc(tableView, 1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5); // Original
+        addc(subproblemView, 2,1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, 5, 5, 5, 5); // Original
+        addc(subSeqView, 3, 1, 1, 1, 0.5, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 5, 5, 5, 5);     // Original
+       // addc(xView, 3, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL, 5, 5, 5, 5);       // Original
+        addc(variablesView, 0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+
+        addc(stepViewPanel, 1, 2, 2, 1, 1.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5); // Original
 
 
-        // Original commented out layout
-        /* addc(stepSelectorView, ...); addc(stepCompletionView, ...); */
+
+        // We'll add these components to the layout later
+        /*
+        addc(stepSelectorView, 2, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.VERTICAL,
+                5, 5, 5, 5);
+        addc(stepCompletionView, 2, 1, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        */
+
     }
 
 

@@ -30,6 +30,8 @@ public class SubSequenceCanvasView extends JPanel {
     private String subSeq;
     private String lcs;
     private int highlightIndex = 0;
+    private String word1;
+    private String word2;
 
     /**
      *
@@ -42,7 +44,7 @@ public class SubSequenceCanvasView extends JPanel {
         lcs = findLCS(mainSeq, subSeq);
 
         setLayout(null);
-        setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(600, 300));
     }
 
     /**
@@ -151,6 +153,44 @@ public class SubSequenceCanvasView extends JPanel {
 
         }
 
+    }
+
+    /**
+     * Updates the first string (main sequence) displayed on the canvas.
+     * 
+     * Changes (April 17, 2025):
+     * - Dynamically updates mainSeq.
+     * - Recomputes LCS based on the updated string.
+     * - Resets highlight progress for fresh stepping through LCS.
+     * 
+     * @author EverettCV
+     * 
+     * @param word1 The new main sequence string
+     */
+    public void setWord1(String word1) {
+        this.mainSeq = word1;
+        lcs = findLCS(mainSeq, subSeq);
+        highlightIndex = 0;
+        repaint();
+    }
+
+    /**
+     * Updates the second string (sub sequence) displayed on the canvas.
+     * 
+     * Changes (April 17, 2025):
+     * - Dynamically updates subSeq.
+     * - Recomputes LCS based on the updated string.
+     * - Resets highlight progress for fresh stepping through LCS.
+     * 
+     * @author EverettCV
+     * 
+     * @param word2 The new sub sequence string
+     */
+    public void setWord2(String word2) {
+        this.subSeq = word2;
+        lcs = findLCS(mainSeq, subSeq);
+        highlightIndex = 0;
+        repaint();
     }
 
     // Previous code to show both words in canvas view. this worked before adding button aspects

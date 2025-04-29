@@ -276,4 +276,48 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             return renderer.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, col);
         }
     }
+
+    /**
+     * Updates the SubproblemTableView based on new input strings.
+     * 
+     * Changes (April 17, 2025):
+     * Dynamically rebuilds the table headers and data based on updated strings.
+     * Resets the table model and reapplies all necessary renderers after update.
+     * Forces revalidation and repainting to reflect the changes visually.
+     * 
+     * Possible enhancements:
+     * Check for the string length to see if they are the same as the current table so we don't need to rebuild the 
+     * entire table and instead just the headers. Would still need to clear/reset the table however. This would just be minimal optimizations.
+     * 
+     * @author EverettCV
+     * 
+     * @param string1 The new first input String (x-axis labels)
+     * @param string2 The new second input String (y-axis labels)
+     */
+    public void updateStrings(String string1, String string2) {
+        string1 = string1.toUpperCase();
+        string2 = string2.toUpperCase();
+
+        buildColumnHeaders(string2);
+        buildTableData(string1);
+
+        table.setModel(new DefaultTableModel(tableData, columnHeaders));
+
+        // Reapply the renderers for custom borders and formatting
+        TableColumnModel model = table.getColumnModel();
+        for (int i = 1; i < table.getColumnCount(); i++) {
+            TableColumn col = model.getColumn(i);
+            col.setCellRenderer(new CustomRenderer(Color.BLACK));
+        }
+
+        // Reset header renderer for visual consistency
+        final JTableHeader header = table.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(table));
+
+        revalidate();
+        repaint();
+    }
+    
+    
+    
 }
