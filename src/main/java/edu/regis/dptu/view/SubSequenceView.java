@@ -16,12 +16,16 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.Step;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /**
@@ -35,10 +39,11 @@ import javax.swing.SwingConstants;
 public class SubSequenceView extends JPanel {
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2;
-    private JButton lcsButton;
     private Step step;
+    private JButton guessSubmitButton;
     public JButton stepButton;
     public SubSequenceCanvasView canvas;
+    private JTextField guessField;
 
     public SubSequenceView(String word1, String word2) {
         initializeComponents(word1, word2);
@@ -54,10 +59,10 @@ public class SubSequenceView extends JPanel {
      * @param word2
      */
     public void initializeComponents(String word1, String word2) {
-        titleLabel = new JLabel("Subsequence Highlighter");
-        titleLabel.setForeground(Color.BLACK);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//        titleLabel = new JLabel("Subsequence Highlighter");
+//        titleLabel.setForeground(Color.BLACK);
+//        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+//        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         lengthLabel1 = new JLabel("x=" + word1.length());
         lengthLabel1.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -65,11 +70,13 @@ public class SubSequenceView extends JPanel {
         lengthLabel2 = new JLabel("y=" + word2.length());
         lengthLabel2.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        lcsButton = new JButton("Step LCS");
-        lcsButton.addActionListener(e -> stepThroughLCS());
-        
-        stepButton = new JButton("Step Completed");
+        stepButton = new JButton("Step Through LCS");
         stepButton.addActionListener(e -> stepCompleted());
+
+        guessField = new JTextField(10);
+
+        guessSubmitButton = new JButton("Guess LCS");
+        guessSubmitButton.addActionListener(e -> guessEntered());
 
         canvas = new SubSequenceCanvasView(word1, word2);
     }
@@ -80,48 +87,55 @@ public class SubSequenceView extends JPanel {
     public void layoutComponents() {
         setLayout(new BorderLayout());
 
-        // Display 'Subsequence Highlighter'
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
         // Displaying words
         JPanel wordPanel = new JPanel();
-        wordPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        wordPanel.setLayout(new BoxLayout(wordPanel, BoxLayout.Y_AXIS));
+        wordPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Line 1: x=13     skullandbones
-        JPanel line1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        JPanel line1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 2));
         line1.add(lengthLabel1);
         line1.add(new JLabel(canvas.getWord1()));
 
+        // canvas 
+        canvas.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         // Line 2: y=13    lullabybabies
-        JPanel line2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        JPanel line2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 2));
         line2.add(lengthLabel2);
         line2.add(new JLabel(canvas.getWord2()));
 
-        wordPanel.add(titleLabel);
+        wordPanel.add(Box.createVerticalStrut(10));
         wordPanel.add(line1);
+        wordPanel.add(canvas);
         wordPanel.add(line2);
+        wordPanel.add(Box.createVerticalStrut(10));
+        //add(guessField);
 
-        // nvas added
-        JPanel canvasPanel = new JPanel();
-        canvasPanel.add(canvas);
+        // Canvas and buttons added
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 
+        //Guess Panel
+        JPanel guessPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        guessPanel.add(new JLabel("Guess the LCS"));
+        guessPanel.add(guessField);
+        guessPanel.add(guessSubmitButton);
         // Button added
-        //JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        //buttonPanel.add(lcsButton);
-       canvasPanel.add(stepButton, BorderLayout.SOUTH);
+        guessPanel.add(stepButton);
+        bottomPanel.add(guessPanel);
 
-        add(titleLabel, BorderLayout.NORTH);
-        add(wordPanel, BorderLayout.CENTER);
-        add(canvasPanel, BorderLayout.SOUTH);
-        //add(buttonPanel, BorderLayout.EAST);
+        add(wordPanel, BorderLayout.NORTH);
+        add(bottomPanel, BorderLayout.CENTER);
     }
 
     // Button trigger
-    private void stepThroughLCS() {
-        canvas.highlightLCS();
-    }
-    
     private void stepCompleted() {
         canvas.problemUpdated(canvas.getModel());
     }
+
+    private void guessEntered() {
+        canvas.userGuess(guessField);
+    }
+
 }

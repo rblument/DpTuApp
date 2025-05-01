@@ -21,7 +21,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
 /**
@@ -38,8 +40,11 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
     private int highlightIndex = 0;
     private Problem model;
     private Step step;
+    private int arrowIndex;
 
     /**
+     * Constructor that initiates the lcs and the canvas view, displaying words
+     * from the problem.
      *
      * @param word1
      * @param word2
@@ -54,7 +59,7 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
         model.addProblemListener(this);
 
         setLayout(null);
-        setPreferredSize(new Dimension(200, 200));
+        setPreferredSize(new Dimension(100, 100));
     }
 
     /**
@@ -75,6 +80,11 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
         return subSeq;
     }
 
+    /**
+     * Returns the updated model to the Problem
+     *
+     * @return
+     */
     public Problem getModel() {
         return model;
     }
@@ -192,10 +202,26 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
 //                lcsIndex = idx1 + 1;
 //            }
 //        }
+    /**
+     * When the button is pressed, update the model to the current step in the
+     * problem, then display the next step.
+     *
+     * @param problem
+     */
     @Override
     public void problemUpdated(Problem problem) {
         this.model = problem;
 
         highlightLCS();
+    }
+
+    public void userGuess(JTextField guess) {
+        String userGuess = guess.getText().trim();
+        System.out.println("User guessed: '" + userGuess + "', actual LCS: '" + lcs + "'");
+        if (userGuess.equalsIgnoreCase(lcs)) {
+            JOptionPane.showMessageDialog(this, "Correct! You found the LCS: " + lcs);
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect. Lets walk through it. Click the 'Step Through LCS' button.");
+        }
     }
 }
