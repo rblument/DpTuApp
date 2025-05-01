@@ -24,7 +24,6 @@ import java.awt.Graphics2D;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 
 /**
  * This is the Subsequence Canvas view. Two words are displayed aside each
@@ -43,8 +42,7 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
     private int arrowIndex;
 
     /**
-     * Constructor that initiates the lcs and the canvas view, displaying words
-     * from the problem.
+     * Constructor that initiates the sequences, LCS, and model
      *
      * @param word1
      * @param word2
@@ -90,7 +88,8 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
     }
 
     /**
-     * This is the logic to find the longest common sequence (LCS).
+     * This is the logic to find the longest common sequence (LCS). Builds a DP
+     * table and backtracks to construct the LCS string
      *
      * @param main
      * @param sub
@@ -127,7 +126,7 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
     }
 
     /**
-     * When the button is pressed, it highlights the sequence of the two words.
+     * When the button is pressed, moves the highlight forward
      */
     public void highlightLCS() {
         if (highlightIndex < lcs.length() - 1) {
@@ -215,11 +214,18 @@ public class SubSequenceCanvasView extends JPanel implements ProblemListener {
         highlightLCS();
     }
 
+    /**
+     * Evaluates the users guess
+     *
+     * @param guess
+     */
     public void userGuess(JTextField guess) {
         String userGuess = guess.getText().trim();
         System.out.println("User guessed: '" + userGuess + "', actual LCS: '" + lcs + "'");
         if (userGuess.equalsIgnoreCase(lcs)) {
             JOptionPane.showMessageDialog(this, "Correct! You found the LCS: " + lcs);
+
+            // TODO: update the students progress, display another word?
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. Lets walk through it. Click the 'Step Through LCS' button.");
         }

@@ -12,10 +12,8 @@
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.Step;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -26,7 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 /**
  * This is the Subsequence view for the TutoringSession View. The title, words,
@@ -38,8 +35,7 @@ import javax.swing.SwingConstants;
  */
 public class SubSequenceView extends JPanel {
 
-    private JLabel titleLabel, lengthLabel1, lengthLabel2;
-    private Step step;
+    private JLabel lengthLabel1, lengthLabel2;
     private JButton guessSubmitButton;
     public JButton stepButton;
     public SubSequenceCanvasView canvas;
@@ -53,16 +49,13 @@ public class SubSequenceView extends JPanel {
     }
 
     /**
-     * The title, words, and length of words are initialized and formatted.
+     * Initializes UI components including labels, buttons, input fields, and
+     * canvas view
      *
      * @param word1
      * @param word2
      */
     public void initializeComponents(String word1, String word2) {
-//        titleLabel = new JLabel("Subsequence Highlighter");
-//        titleLabel.setForeground(Color.BLACK);
-//        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
-//        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         lengthLabel1 = new JLabel("x=" + word1.length());
         lengthLabel1.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -82,7 +75,7 @@ public class SubSequenceView extends JPanel {
     }
 
     /**
-     * The components of the view are displayed in specific positions.
+     * Lays out the UI elements with panels and layout managers
      */
     public void layoutComponents() {
         setLayout(new BorderLayout());
@@ -129,11 +122,18 @@ public class SubSequenceView extends JPanel {
         add(bottomPanel, BorderLayout.CENTER);
     }
 
-    // Button trigger
+    /**
+     * When button is clicked, updates the model about the users progress on the
+     * model
+     */
     private void stepCompleted() {
         canvas.problemUpdated(canvas.getModel());
     }
 
+    /**
+     * When user guesses an input, compares it to LCS in model and determines if
+     * it's correct
+     */
     private void guessEntered() {
         canvas.userGuess(guessField);
     }
