@@ -12,7 +12,11 @@
  */
 package edu.regis.dptu.view.act;
 
+import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.view.MainFrame;
+import edu.regis.dptu.view.SplashFrame;
+import edu.regis.dptu.view.DashboardPanel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import static javax.swing.Action.MNEMONIC_KEY;
@@ -31,15 +35,31 @@ public class TeachMeAction extends DpTuGuiAction {
 
     private TeachMeAction() {
         super("Teach Me");
-        
+
         putValue(SHORT_DESCRIPTION, "Start a teaching session");
         putValue(MNEMONIC_KEY, KeyEvent.VK_T);
     }
 
+    /**
+     * @author EverettCV
+     */
     @Override
     public void actionPerformed(ActionEvent evt) {
-        MainFrame frame = MainFrame.instance();
-        frame.setVisible(true);
-        // TODO: Add tutor notification in future sprint
+
+        // Get the DashboardPanel from the SplashFrame
+        DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
+
+        if (dashboard == null) {
+            System.err.println("DashboardPanel not initialized. Defaulting to LCS_PROBLEM.");
+            SplashFrame.instance().selectLessonScreen(TaskKind.LCS_PROBLEM);
+            return;
+        }
+
+        // Get the selected TaskKind from the DashboardPanel
+        TaskKind selectedKind = dashboard.getSelectedTaskKind();
+        System.out.println("TeachMeAction selected TaskKind: " + selectedKind);
+
+        // Call SplashFrame to transition to the lesson screen with this TaskKind
+        SplashFrame.instance().selectLessonScreen(selectedKind);
     }
 }

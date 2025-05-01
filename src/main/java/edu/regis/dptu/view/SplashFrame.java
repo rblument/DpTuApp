@@ -15,6 +15,11 @@ package edu.regis.dptu.view;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
+import edu.regis.dptu.model.TaskKind;
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.MatrixChainProblem;
+// Import Knapsack problem once implemented and update the switch statement below.
+import edu.regis.dptu.model.Problem;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import javax.swing.JButton;
@@ -307,4 +312,60 @@ public class SplashFrame extends JFrame {
         lessonSessionView = new LessonSessionView();
         //cards.add(lessonSessionView, LESSON);
     }
+
+    /**
+     * Basic getter for the dashboardPanel
+     * @return the DashboardPanel instance currently used in the SplashFrame
+     * @author EverettCV
+     */
+    public DashboardPanel getDashboardPanel() {
+        return dashboardPanel;
+    }
+
+    /**
+     * Select the lesson screen for the given problem type (TaskKind). 
+     * Creates a new TutoringSession with the appropriate Problem. @author EverettCV
+     */
+    public void selectLessonScreen(TaskKind kind) {
+
+        // Step 1: Create the correct Problem subclass based on TaskKind
+        Problem problem;
+
+        switch (kind) {
+            case LCS_PROBLEM:
+                problem = new LCSProblem("skullandbones", "lullabybabies");
+                break;
+            case MATRIX_CHAIN:
+                problem = new MatrixChainProblem(new int[][]{
+                    {10, 20},
+                    {20, 30},
+                    {30, 40}
+                });  // default values, can be changed to whatever
+                break;
+            case KNAPSACK_0_1:
+                //problem = new KnapsackProblem(new int[]{1, 2, 3}, new int[]{6, 10, 12}, 5); Once the KnapsackProblem.java is implemented, uncomment this to allow them to select it
+                System.out.println("KnapsackProblem not yet implemented. Defaulting to LCSProblem");
+                problem = new LCSProblem("skullandbones", "lullabybabies");
+                break;
+            default:
+                // Fallback to LCS if somehow another TaskKind got through
+                problem = new LCSProblem("skullandbones", "skullandbones");
+                break;
+        }
+
+        // Create or update the TutoringSession
+        if (this.tutoringSession == null) {
+            this.tutoringSession = new TutoringSession(getAccount(), problem);
+        } else {
+            // Reuse the account, but replace the problem
+            this.tutoringSession = new TutoringSession(this.tutoringSession.getStudent().getAccount(), problem);
+        }
+
+        // Pass the new session to the MainFrame
+        MainFrame.instance().setModel(tutoringSession);
+
+        // Show the MainFrame (lesson view)
+        MainFrame.instance().setVisible(true);
+    }
+
 }
