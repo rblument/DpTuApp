@@ -463,4 +463,12 @@ public class LCSProblem extends Problem {
          System.out.println("------------------------");
     }
 
+    public String getX() {
+        return x;
+    }
+
+    public String getY() {
+        return y;
+    }
+
 }
