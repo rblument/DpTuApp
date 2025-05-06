@@ -21,7 +21,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -37,9 +36,8 @@ import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-
 /**
- * Creates Subproblem Table to view as student works through algorithm
+ * Creates Subproblem Table to view as student works through algorithm.
  * Retains original appearance and adds update functionality via ProblemListener.
  * Fixes update logic by always calling setValueAt and using fireTableDataChanged.
  *
@@ -47,24 +45,32 @@ import java.awt.event.MouseEvent;
  */
 public class SubproblemTableView extends GPanel implements ProblemListener {
 
-    // Keep original fields
+    // Model representing the dynamic programming problem
     private Problem model;
-    JTable table;
-    JScrollPane sp;
-    Object[][] tableData;
-    String[] columnHeaders;
+    JTable table;                  // Table component to display subproblems
+    JScrollPane sp;                // Scroll pane containing the table
+    Object[][] tableData;          // 2D array holding table cell values
+    String[] columnHeaders;        // Array holding the table's column headers
 
-
-    // Keep original constructor
-    public SubproblemTableView(String string1, String string2)
-    {
+    /**
+     * Constructor initializes the view with two input strings.
+     * @param string1 X-axis labels (to build rows)
+     * @param string2 Y-axis labels (to build columns)
+     */
+    public SubproblemTableView(String string1, String string2) {
+        // Convert inputs to uppercase for consistent labeling
         string1 = string1.toUpperCase();
         string2 = string2.toUpperCase();
+
+        // Build headers and data arrays based on inputs
         buildColumnHeaders(string2);
         buildTableData(string1);
+
+        // Initialize Swing components and layout
         initializeComponents();
         layoutComponents();
 
+        // Add mouse listener to detect cell clicks
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -73,224 +79,267 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         });
     }
 
-    // Keep original setModel
+    /**
+     * Sets the problem model and registers this view as a listener.
+     * @param model The Problem instance to observe
+     */
     public void setModel(Problem model) {
         this.model = model;
         if (this.model != null) {
-            this.model.addProblemListener(this);
-            updateView();
+            this.model.addProblemListener(this);  // Listen for updates
+            updateView();                         // Initial view update
         }
     }
 
-    // Keep original getCellClicked
+    /**
+     * Determines which cell was clicked based on a Point coordinate.
+     * @param point The mouse click location
+     * @param table The JTable being clicked
+     * @return A two-element array: [rowIndex, columnIndexAdjusted]
+     */
     public int[] getCellClicked(Point point, JTable table) {
         int[] cellLocation = new int[2];
         cellLocation[0] = table.rowAtPoint(point);
-        cellLocation[1] = table.columnAtPoint(point) - 1;
-        if (cellLocation[0] <= -1 || cellLocation[1] < -1) { return new int[]{-1, -1}; }
-        // System.out.println("Cell Location: Row: " + cellLocation[0] + " DP Col Index: " + cellLocation[1]); // Debug print removed
+        cellLocation[1] = table.columnAtPoint(point) - 1;  // Adjust for header column
+        if (cellLocation[0] <= -1 || cellLocation[1] < -1) {
+            // Click was outside valid cells
+            return new int[]{-1, -1};
+        }
         return cellLocation;
     }
 
-    // Keep original updateCellValue
+    /**
+     * Updates a single cell's value in the JTable.
+     * @param i Row index (unadjusted)
+     * @param j Column index (unadjusted)
+     * @param newValue New integer value to display
+     */
     public void updateCellValue(int i, int j, int newValue) {
-        table.setValueAt(newValue, i, j + 1);
+        table.setValueAt(newValue, i, j + 1);  // +1 to skip header column
     }
 
-    // Keep original getCellValue
+    /**
+     * Retrieves a cell's current value from the JTable.
+     * @param i Row index (unadjusted)
+     * @param j Column index (unadjusted)
+     * @return The Object stored at the specified cell
+     */
     public Object getCellValue(int i, int j) {
         return table.getValueAt(i, j + 1);
     }
 
-
-    // Keep original initializeComponents
-    private void initializeComponents()
-    {
+    /**
+     * Initializes the JTable, its model, renderers, and JScrollPane.
+     */
+    private void initializeComponents() {
+        // Custom JTable to render the first column as header style
         table = new JTable() {
             @Override
-            public Component prepareRenderer(
-                TableCellRenderer renderer, int row, int col) {
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
                 if (col < 1) {
+                    // Use header renderer for first column
                     return this.getTableHeader().getDefaultRenderer()
-                        .getTableCellRendererComponent(this, this.getValueAt(
-                            row, col), false, false, row, col);
+                        .getTableCellRendererComponent(this, this.getValueAt(row, col), false, false, row, col);
                 } else {
+                    // Default rendering for other cells
                     return super.prepareRenderer(renderer, row, col);
                 }
             }
         };
 
         table.setAutoCreateRowSorter(false);
+
+        // Set custom header renderer to center-align header text
         final JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
 
+        // Set non-editable table model with initial data
         table.setModel(new DefaultTableModel(tableData, columnHeaders) {
-             @Override
-             public boolean isCellEditable(int row, int column) { return false; }
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         });
 
+        // Configure column widths and cell renderers
         TableColumnModel columnModel = table.getColumnModel();
         if (columnModel.getColumnCount() > 1) {
             CustomRenderer cellRenderer = new CustomRenderer(Color.BLACK);
             for (int i = 1; i < table.getColumnCount(); i++) {
                 TableColumn col = columnModel.getColumn(i);
                 col.setCellRenderer(cellRenderer);
-                 if (i == 1) { col.setPreferredWidth(30); }
-                 else { col.setPreferredWidth(40); }
+                if (i == 1) { col.setPreferredWidth(30); } else { col.setPreferredWidth(40); }
             }
         }
         if (columnModel.getColumnCount() > 0) {
-             columnModel.getColumn(0).setPreferredWidth(150); // Original width
+            // Set width for the first "header" column
+            columnModel.getColumn(0).setPreferredWidth(150);
         }
-        table.getTableHeader().setPreferredSize(new Dimension(25, 25)); // Original height
+        // Set header height
+        table.getTableHeader().setPreferredSize(new Dimension(25, 25));
 
+        // Wrap table in scroll pane for overflow
         sp = new JScrollPane(table);
     }
 
-    // Keep original layoutComponents
+    /**
+     * Adds components to this panel using GridBagLayout constraints.
+     */
     private void layoutComponents() {
-        addc(sp, 0, 0, 1, 1, 0.0, 0.0, // Original constraints
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        addc(sp, 0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+             GridBagConstraints.NONE, 5, 5, 5, 5);
     }
 
-    // Keep original buildColumnHeaders
+    /**
+     * Constructs the table's column header labels based on input characters.
+     * @param string String whose characters become column labels
+     */
     private void buildColumnHeaders(String string) {
         List<String> headers = new ArrayList<String>();
-        headers.add("(i,j)");
-        headers.add("-1");
+        headers.add("(i,j)");               // Top-left corner label
+        headers.add("-1");                  // Base case column
         for (int i = 0; i < string.length(); i++) {
+            // HTML formatting to center label and index
             headers.add("<html><center>" + string.charAt(i) + "<br>(" + i + ")</center></html>");
         }
         columnHeaders = headers.toArray(new String[headers.size()]);
     }
 
-    // Keep original buildTableData
+    /**
+     * Builds the initial table data array with row labels and empty/default cells.
+     * @param string String whose characters become row labels
+     */
     private void buildTableData(String string) {
         List<Object[]> rows = new ArrayList<>();
         List<String> rowHeaders = new ArrayList<String>();
-        rowHeaders.add("-1");
-        for(int i = 0; i < string.length(); i++) {
+        rowHeaders.add("-1");               // Base case row label
+        for (int i = 0; i < string.length(); i++) {
             rowHeaders.add(String.valueOf(string.charAt(i)));
         }
-         if (columnHeaders == null) { tableData = new Object[0][0]; return; }
+        if (columnHeaders == null) {
+            tableData = new Object[0][0];
+            return;
+        }
+        // Create each row's data array
         for (int i = 0; i < rowHeaders.size(); i++) {
             Object[] toadd = new Object[columnHeaders.length];
-            if (i > 0) { toadd[0] = rowHeaders.get(i) + "  (" + (i - 1) + ")"; }
-            else { toadd[0] = rowHeaders.get(i); }
-            toadd[1] = 0;
+            if (i > 0) { 
+                // Format row label with index
+                toadd[0] = rowHeaders.get(i) + "  (" + (i - 1) + ")";
+            } else {
+                toadd[0] = rowHeaders.get(i);
+            }
+            toadd[1] = 0;                     // Base case column value
+            // Fill remaining cells with default: empty for data rows, zero for header row
             for (int p = 2; p < toadd.length; p++) {
-                if (i == 0 ) { toadd[p] = 0; }
-                else { toadd[p] = ""; }
+                if (i == 0 ) { toadd[p] = 0; } else { toadd[p] = ""; }
             }
             rows.add(toadd);
         }
         tableData = rows.toArray(new Object[0][]);
     }
 
-    // Keep problemUpdated
+    /**
+     * Called when the Problem model is updated. Ensures update on EDT.
+     */
     @Override
     public void problemUpdated(Problem problem) {
         SwingUtilities.invokeLater(this::updateView);
     }
 
-    // <<< updateView modified to REMOVE redundant check & keep fireTableDataChanged >>>
+    /**
+     * Refreshes the JTable contents based on the model's current DP table.
+     * Ensures all cells are updated and fires a table data change event.
+     */
     private void updateView() {
-        if (model == null || model.getTableVariable() == null || model.getVariableObject("n") == null || model.getVariableObject("m") == null) {
+        // Validate model and required variables
+        if (model == null || model.getTableVariable() == null ||
+            model.getVariableObject("n") == null || model.getVariableObject("m") == null) {
             return;
         }
-
         Object tableObj = model.getVariableObject(model.getTableVariable());
         Object nObj = model.getVariableObject("n");
         Object mObj = model.getVariableObject("m");
-
+        // Type check for DP table and indices
         if (!(tableObj instanceof int[][]) || !(nObj instanceof Integer) || !(mObj instanceof Integer)) {
-             System.err.println("SubproblemTableView: Model variable types are incorrect."); // Keep error for debugging
+            System.err.println("SubproblemTableView: Model variable types are incorrect.");
             return;
         }
-
         int[][] lTable = (int[][]) tableObj;
         int n = (int) nObj;
         int m = (int) mObj;
-
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-
+        // Ensure table has sufficient size
         if (dtm.getRowCount() < n + 1 || dtm.getColumnCount() < m + 2) {
-             System.err.println("SubproblemTableView: Table dimensions too small."); // Keep error for debugging
+            System.err.println("SubproblemTableView: Table dimensions too small.");
             return;
         }
-
+        // Iterate through DP table and update each cell
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= m; j++) {
                 int tableRow = i;
-                int tableCol = j + 1;
-
+                int tableCol = j + 1; // Offset to skip header column
                 if (tableRow < dtm.getRowCount() && tableCol < dtm.getColumnCount()) {
                     int value = lTable[i][j];
                     Object displayValue = (value == -1) ? "" : String.valueOf(value);
-
-                    // Always set the value to ensure TableModel events fire
                     dtm.setValueAt(displayValue, tableRow, tableCol);
-
                 } else {
-                     System.err.println("ERROR: SubproblemTableView: Attempted to update out-of-bounds cell (" + tableRow + ", " + tableCol + ") during loop.");
-                 }
+                    System.err.println("ERROR: SubproblemTableView: Attempted to update out-of-bounds cell (" 
+                        + tableRow + ", " + tableCol + ") during loop.");
+                }
             }
         }
-
-        // Keep this call - it tells the JTable the model *structure* or *all data* might have changed
+        // Notify JTable that data has changed
         dtm.fireTableDataChanged();
-
-        // Removed explicit repaint calls
-        // table.repaint();
-        // if (sp != null) { sp.repaint(); }
     }
 
-    // Keep original CustomRenderer class
+    /**
+     * Custom cell renderer to draw grid lines and center-align text.
+     */
     class CustomRenderer extends DefaultTableCellRenderer {
         Color gridColor;
-        public CustomRenderer(Color color){ gridColor = color; }
+        public CustomRenderer(Color color) { gridColor = color; }
+
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            int top = 1; int left = 1; int right = 0; int bottom = 0;
-            if (row == table.getRowCount() - 1) { bottom = 1; }
-            if (column == table.getColumnCount() - 1) { right = 1; }
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            Component cell = super.getTableCellRendererComponent(table, value,
+                    isSelected, hasFocus, row, column);
+            // Set border thickness: top & left by default, bottom on last row, right on last column
+            int top = 1, left = 1, right = 0, bottom = 0;
+            if (row == table.getRowCount() - 1) bottom = 1;
+            if (column == table.getColumnCount() - 1) right = 1;
             if (cell instanceof JLabel) {
-                 ((JLabel) cell).setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, gridColor));
-                 ((JLabel) cell).setHorizontalAlignment(JLabel.CENTER);
+                ((JLabel) cell).setBorder(BorderFactory.createMatteBorder(
+                        top, left, bottom, right, gridColor));
+                ((JLabel) cell).setHorizontalAlignment(JLabel.CENTER);
             }
             return cell;
         }
     }
 
-    // Keep original HeaderRenderer class
+    /**
+     * Header renderer to center-align column header text.
+     */
     private static class HeaderRenderer extends DefaultTableCellRenderer {
         DefaultTableCellRenderer renderer;
         public HeaderRenderer(JTable table) {
-            renderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
+            renderer = (DefaultTableCellRenderer) table.getTableHeader()
+                        .getDefaultRenderer();
             renderer.setHorizontalAlignment(JLabel.CENTER);
         }
         @Override
-        public Component getTableCellRendererComponent( JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-            return renderer.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, col);
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int col) {
+            return renderer.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, col);
         }
     }
 
     /**
-     * Updates the SubproblemTableView based on new input strings.
-     * 
-     * Changes (April 17, 2025):
-     * Dynamically rebuilds the table headers and data based on updated strings.
-     * Resets the table model and reapplies all necessary renderers after update.
-     * Forces revalidation and repainting to reflect the changes visually.
-     * 
-     * Possible enhancements:
-     * Check for the string length to see if they are the same as the current table so we don't need to rebuild the 
-     * entire table and instead just the headers. Would still need to clear/reset the table however. This would just be minimal optimizations.
-     * 
-     * @author EverettCV
-     * 
+     * Rebuilds table headers and data when input strings change.
+     * Dynamically reapplies renderers and refreshes the view.
+     *
      * @param string1 The new first input String (x-axis labels)
      * @param string2 The new second input String (y-axis labels)
      */
@@ -301,23 +350,21 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         buildColumnHeaders(string2);
         buildTableData(string1);
 
+        // Replace model with new data
         table.setModel(new DefaultTableModel(tableData, columnHeaders));
 
-        // Reapply the renderers for custom borders and formatting
+        // Reapply cell renderers
         TableColumnModel model = table.getColumnModel();
         for (int i = 1; i < table.getColumnCount(); i++) {
             TableColumn col = model.getColumn(i);
             col.setCellRenderer(new CustomRenderer(Color.BLACK));
         }
 
-        // Reset header renderer for visual consistency
+        // Reset header renderer
         final JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(table));
 
         revalidate();
         repaint();
     }
-    
-    
-    
 }
