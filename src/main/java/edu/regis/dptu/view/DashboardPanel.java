@@ -8,6 +8,7 @@ import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.view.act.PracticeAction;
 import edu.regis.dptu.view.act.QuizMeAction;
 import edu.regis.dptu.view.act.TeachMeAction;
+import edu.regis.dptu.model.TaskKind;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox; // Added for problem selector
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,7 +27,7 @@ import javax.swing.border.EmptyBorder;
 public class DashboardPanel extends GPanel {
     private TutoringSession model;
     private static boolean welcome = false;
- 
+
     private JButton logOutButton;
     private JButton settingsButton;
     private JButton teachMeButton;
@@ -35,6 +37,9 @@ public class DashboardPanel extends GPanel {
     private CustomProgressBar practiceProgressBar;
     private CustomProgressBar quizMeProgressBar;
     private JLabel welcomeLabel;
+
+    // ADDED: Problem selector combo box
+    private JComboBox<String> problemSelector; // @author EverettCV
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;
@@ -57,7 +62,7 @@ public class DashboardPanel extends GPanel {
         initializeComponents();
         layoutComponents();
     }
-    
+
     public void setModel(TutoringSession model) {
         this.model = model;
     }
@@ -106,20 +111,34 @@ public class DashboardPanel extends GPanel {
 
         quizMeButton = new JButton(QuizMeAction.instance());
         quizMeButton.setFocusPainted(false);
+
+        // ADDED: Problem selector dropdown for choosing problem type (LCS, Matrix, Knapsack)
+        problemSelector = new JComboBox<>(new String[]{
+            "Longest Common Subsequence",
+            "Matrix Chain Multiplication",
+            "Knapsack Problem"
+        });
+        problemSelector.setSelectedIndex(0); // Default to LCS
+
+        // TODO: Hook this selection into TeachMeAction, PracticeAction, QuizMeAction
+        // TODO: Replace String-based selection with a proper ProblemType enum for clean future-proofing
     }
 
     private void layoutComponents() {
         setLayout(new BorderLayout());
-        
+
         // Top panel with settings, welcome message, and logout
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(new Color(0, 43, 73));
         topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
-        
+
         topPanel.add(settingsButton, BorderLayout.WEST);
         topPanel.add(welcomeLabel, BorderLayout.CENTER);
         topPanel.add(logOutButton, BorderLayout.EAST);
-        
+
+        // ADDED: Attach problem selector below the welcome message
+        topPanel.add(problemSelector, BorderLayout.SOUTH);
+
         add(topPanel, BorderLayout.NORTH);
 
         // Main content panel with three columns
@@ -151,19 +170,19 @@ public class DashboardPanel extends GPanel {
         JPanel progressPanel = new JPanel(new BorderLayout());
         progressPanel.setBackground(new Color(0, 43, 73));
         progressPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        
+
         // Make progress bar fill the space while maintaining aspect ratio
         progressBar.setPreferredSize(new Dimension(100, 400));
         progressPanel.add(progressBar, BorderLayout.CENTER);
-        
+
         column.add(progressPanel, BorderLayout.CENTER);
-        
+
         // Button panel at the bottom
         JPanel buttonPanel = new JPanel(new BorderLayout());
         buttonPanel.setBackground(new Color(0, 43, 73));
         buttonPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         buttonPanel.add(button, BorderLayout.CENTER);
-        
+
         column.add(buttonPanel, BorderLayout.SOUTH);
 
         return column;
@@ -179,5 +198,23 @@ public class DashboardPanel extends GPanel {
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         SplashFrame.instance().logout();
+    }
+
+    /**
+     * Return the TaskKind corresponding to the currently selected problem in the dropdown.
+     * @return TaskKind @author EverettCV
+     */
+    public TaskKind getSelectedTaskKind() {
+        int index = problemSelector.getSelectedIndex();
+        switch (index) {
+            case 0:
+                return TaskKind.LCS_PROBLEM;
+            case 1:
+                return TaskKind.MATRIX_CHAIN;
+            case 2:
+                return TaskKind.KNAPSACK_0_1;
+            default:
+                return TaskKind.LCS_PROBLEM; // Fallback
+        }
     }
 }

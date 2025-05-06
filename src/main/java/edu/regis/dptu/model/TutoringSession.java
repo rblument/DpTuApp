@@ -81,6 +81,20 @@ public class TutoringSession {
         this.student = student;
         tasks = new ArrayList<>();
     }
+
+    /**
+     * Initialize this session with an Account and a Problem. 
+     * This constructor creates a new Student object from the Account.
+     * 
+     * @param account the Account used to create the Student.
+     * @param problem the Problem to be solved in this session.
+     * @author EverettCV
+     */
+    public TutoringSession(Account account, Problem problem) {
+        this.student = new Student(account);  // Create a new Student from Account
+        this.problem = problem;
+        this.tasks = new ArrayList<>();  // Initialize tasks list
+    }
     
      public int getId() {
         return id;
