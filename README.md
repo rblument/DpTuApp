@@ -1,3 +1,13 @@
+
+# DpTu
+
+## Documentation
+In the `documentation` directory, the `DatabaseDiagram.erdplus` file is an Entity Relationship Diagram formatted for the free online tool *ERDPlus* (found at this address: [https://erdplus.com/](https://erdplus.com)). By clicking the top-left `Menu`, one can import this file and make adjustments to the diagram before exporting and committing anew to this project. 
+
+As of 3 May 2025 (end of the Spring 2025 semester), this is the state of the database
+
+![The entity relation diagram of the ShaTu database](documentation/erd.png)
+
 DpTu - Dynamic Programming Tutor
 
 DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designed to help students learn and practice Dynamic Programming (DP) concepts and algorithms. It provides a step-by-step visual environment for specific DP problems, tracks student progress, and aims to adapt to individual learning needs.
@@ -111,3 +121,4 @@ LICENSE
 (C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved.
 Unauthorized use, duplication or distribution without the authors' permission is strictly prohibited.
 This software is distributed on an "AS IS" basis without warranties or conditions of any kind, either expressed or implied.
+
