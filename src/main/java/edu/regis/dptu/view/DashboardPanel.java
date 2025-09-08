@@ -40,6 +40,9 @@ public class DashboardPanel extends GPanel {
 
     // ADDED: Problem selector combo box
     private JComboBox<String> problemSelector; // @author EverettCV
+    
+    private static final Color REGIS_BLUE = new Color(0, 43, 73);
+    private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;
@@ -68,14 +71,14 @@ public class DashboardPanel extends GPanel {
     }
 
     private void initializeComponents() {
-        setBackground(new Color(0, 43, 73)); // Dark blue background
+        setBackground(REGIS_BLUE); // Dark blue background
 
         // Top bar components
         settingsButton = new JButton("Settings");
         settingsButton.setFocusPainted(false);
 
         welcomeLabel = new JLabel("Welcome, " + model.getStudent().getAccount().getFirstName() + "!");
-        welcomeLabel.setForeground(new Color(241, 196, 0)); // Gold color
+        welcomeLabel.setForeground(REGIS_GOLD); // Gold color
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
@@ -129,7 +132,7 @@ public class DashboardPanel extends GPanel {
 
         // Top panel with settings, welcome message, and logout
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(new Color(0, 43, 73));
+        topPanel.setBackground(REGIS_BLUE);
         topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
 
         topPanel.add(settingsButton, BorderLayout.WEST);
@@ -143,7 +146,7 @@ public class DashboardPanel extends GPanel {
 
         // Main content panel with three columns
         JPanel mainPanel = new JPanel(new GridLayout(1, 3, 10, 0));
-        mainPanel.setBackground(new Color(0, 43, 73));
+        mainPanel.setBackground(REGIS_BLUE);
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Create three columns
@@ -163,12 +166,12 @@ public class DashboardPanel extends GPanel {
 
     private JPanel createColumn(CustomProgressBar progressBar, JButton button, String labelText) {
         JPanel column = new JPanel(new BorderLayout(0, 5));
-        column.setBackground(new Color(0, 43, 73));
+        column.setBackground(REGIS_BLUE);
         column.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
         // Progress bar panel takes most of the space
         JPanel progressPanel = new JPanel(new BorderLayout());
-        progressPanel.setBackground(new Color(0, 43, 73));
+        progressPanel.setBackground(REGIS_BLUE);
         progressPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Make progress bar fill the space while maintaining aspect ratio
@@ -179,7 +182,7 @@ public class DashboardPanel extends GPanel {
 
         // Button panel at the bottom
         JPanel buttonPanel = new JPanel(new BorderLayout());
-        buttonPanel.setBackground(new Color(0, 43, 73));
+        buttonPanel.setBackground(REGIS_BLUE);
         buttonPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         buttonPanel.add(button, BorderLayout.CENTER);
 
