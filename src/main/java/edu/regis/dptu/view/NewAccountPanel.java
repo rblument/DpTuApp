@@ -57,7 +57,8 @@ public class NewAccountPanel extends GPanel {
      */
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX
             = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
+    
+    private static final Color LIGHT_BLUE = new Color(223, 242, 245);
     /**
      * The account being created and displayed in this panel.
      */
@@ -257,7 +258,7 @@ public class NewAccountPanel extends GPanel {
      */
     private GPanel createHeader() {
         GPanel panel = new GPanel();
-        panel.setBackground(new Color(223, 242, 245));
+        panel.setBackground(LIGHT_BLUE);
         
 
         JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
