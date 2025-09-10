@@ -71,6 +71,11 @@ public class SplashPanel extends GPanel {
     protected JButton createAcctBut;
     
     /**
+     * Used as a background color
+     */
+    private static final Color LIGHT_CYAN = new Color(223,242,245);
+    
+    /**
      * Create and layout the child GUI components in this panel.
      */
     public SplashPanel() {
@@ -216,7 +221,7 @@ public class SplashPanel extends GPanel {
     
      private GPanel createLogin() {
 	GPanel panel = new GPanel();
-	panel.setBackground(new Color(223,242,245));
+	panel.setBackground(LIGHT_CYAN);
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
