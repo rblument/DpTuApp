@@ -78,7 +78,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     /**
      * Constant for background color
      */
-    private static final Color PANEL_BACKGROUND = new Color(240, 240, 240); // Default or from new code
+    private static final Color CONTROL_PANEL_BACKGROUND_COLOR = new Color(240, 240, 240); // Background color for control panel and components
 
     /**
      * Initialize this view including creating and laying out its child components.
