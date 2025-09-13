@@ -20,6 +20,7 @@ import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.MatrixChainProblem;
 // Import Knapsack problem once implemented and update the switch statement below.
 import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemKind;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import javax.swing.JButton;
@@ -326,15 +327,17 @@ public class SplashFrame extends JFrame {
      * Select the lesson screen for the given problem type (TaskKind). 
      * Creates a new TutoringSession with the appropriate Problem. @author EverettCV
      */
-    public void selectLessonScreen(TaskKind kind) {
+    public void selectLessonScreen(ProblemKind kind) {
 
         // Step 1: Create the correct Problem subclass based on TaskKind
         Problem problem;
 
         switch (kind) {
             case LCS_PROBLEM:
+                // ToDO, this should be obtained from the Task
                 problem = new LCSProblem("skullandbones", "lullabybabies");
                 break;
+           /*
             case MATRIX_CHAIN:
                 problem = new MatrixChainProblem(new int[][]{
                     {10, 20},
@@ -347,6 +350,7 @@ public class SplashFrame extends JFrame {
                 System.out.println("KnapsackProblem not yet implemented. Defaulting to LCSProblem");
                 problem = new LCSProblem("skullandbones", "lullabybabies");
                 break;
+*/
             default:
                 // Fallback to LCS if somehow another TaskKind got through
                 problem = new LCSProblem("skullandbones", "skullandbones");

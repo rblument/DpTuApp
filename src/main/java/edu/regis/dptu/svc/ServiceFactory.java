@@ -14,6 +14,7 @@ package edu.regis.dptu.svc;
 
 import edu.regis.dptu.dao.AccountDAO;
 import edu.regis.dptu.dao.CourseDAO;
+import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.dao.SessionDAO;
 import edu.regis.dptu.dao.StudentModelDAO;
 
@@ -28,7 +29,7 @@ import edu.regis.dptu.dao.StudentModelDAO;
  */
 public class ServiceFactory {
     /**
-     * Return a reference to the user service.
+     * Return a reference to a User service.
      * 
      * @return AccountSvc
      */
@@ -37,12 +38,21 @@ public class ServiceFactory {
     }
     
     /**
-     * Return a reference to the course service.
+     * Return a reference to a Course service.
      * 
      * @return CourseSvc
      */
     public static CourseSvc findCourseSvc() {
         return new CourseDAO();
+    }
+    
+    /**
+     * Return a reference to a Problem service. 
+     * 
+     * @return ProblemSvc
+     */
+    public static ProblemSvc findProblemSvc() {
+        return new ProblemDAO();
     }
     
     /**

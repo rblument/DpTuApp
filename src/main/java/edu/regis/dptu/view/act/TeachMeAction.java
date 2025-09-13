@@ -12,6 +12,7 @@
  */
 package edu.regis.dptu.view.act;
 
+import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.view.MainFrame;
 import edu.regis.dptu.view.SplashFrame;
@@ -51,12 +52,12 @@ public class TeachMeAction extends DpTuGuiAction {
 
         if (dashboard == null) {
             System.err.println("DashboardPanel not initialized. Defaulting to LCS_PROBLEM.");
-            SplashFrame.instance().selectLessonScreen(TaskKind.LCS_PROBLEM);
+            SplashFrame.instance().selectLessonScreen(ProblemKind.LCS_PROBLEM);
             return;
         }
 
         // Get the selected TaskKind from the DashboardPanel
-        TaskKind selectedKind = dashboard.getSelectedTaskKind();
+        ProblemKind selectedKind = dashboard.getSelectedProblemKind();
         System.out.println("TeachMeAction selected TaskKind: " + selectedKind);
 
         // Call SplashFrame to transition to the lesson screen with this TaskKind

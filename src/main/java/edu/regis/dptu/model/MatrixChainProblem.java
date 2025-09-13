@@ -40,7 +40,7 @@ public class MatrixChainProblem extends Problem {
     
     // Stack to record changes to m[i][j] for undo functionality
     private Stack<int[]> mHistory = new Stack<>();
-
+    
     /**
      * Constructor initializes the DP variables, dimension list "d",
      * and the empty cost table "m" with -1 placeholders.
@@ -49,7 +49,19 @@ public class MatrixChainProblem extends Problem {
      * @param sizes 2D array of matrix dimensions (p x q pairs)
      */
     public MatrixChainProblem(int[][] sizes) {
-        super();
+        this(Model.DEFAULT_ID, sizes);
+    }
+
+    /**
+     * Constructor initializes the DP variables, dimension list "d",
+     * and the empty cost table "m" with -1 placeholders.
+     * Sets initial execution state and loads code statements.
+     *
+     * @param id the unique id of this problem, as assigned by the DB.
+     * @param sizes 2D array of matrix dimensions (p x q pairs)
+     */
+    public MatrixChainProblem(int id, int[][] sizes) {
+        super(id);
 
         int n = sizes.length; // number of matrices
         ArrayList<Integer> d = new ArrayList<>();
@@ -83,10 +95,19 @@ public class MatrixChainProblem extends Problem {
 
         // Set initial execution state and task kind
         executionState = EXECUTION_STATE.PRE;
-        kind = TaskKind.MATRIX_CHAIN;
 
         // Load pseudocode statements for display
         loadCodeStatements();
+    }
+    
+     /**
+     * Return the type of this Dynamic Programming problem.
+     * 
+     * @return ProblemKind.LCS_PROBLEM
+     */
+    @Override
+    public ProblemKind getType() {
+        return ProblemKind.LCS_PROBLEM;
     }
 
     /**

@@ -19,16 +19,19 @@ package edu.regis.dptu.model;
  */
 public enum TaskKind {
     /**
-     * A task requiring a Student to complete a Problem.
+     * A task representing a top-level dynamic programming problem.
+     * (The type of the problem in the task specifies what kind of DP problem.)
      */
-    LCS_PROBLEM("LCS Problem"),
+    PROBLEM("Dynamic PRogramming Problem"),
     
-    MATRIX_CHAIN("Matrix Chaining"),
-    
-    KNAPSACK_0_1("0/1 Knapsack"),
-    
+    /**
+     * Initialize the first row of a Dynamic Programming problem table.
+     */
     INITIALIZE_FIRST_ROW("Initiailize First Row"),
     
+    /**
+     * Initialize the first column of a Dynamic Programming problem table.
+     */
     INITIALIZE_FIRST_COL("Initialize First Column"),
     
     /**

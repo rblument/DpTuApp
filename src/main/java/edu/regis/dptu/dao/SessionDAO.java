@@ -20,8 +20,9 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TaskKind;
-import static edu.regis.dptu.model.TaskKind.LCS_PROBLEM;
 import edu.regis.dptu.model.TutoringSession;
+import edu.regis.dptu.svc.ProblemSvc;
+import edu.regis.dptu.svc.ServiceFactory;
 import edu.regis.dptu.svc.SessionSvc;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -52,7 +53,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      */
     @Override
     public void create(TutoringSession session) throws IllegalArgException, NonRecoverableException {
-        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemKind, ProblemId) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?)";
+        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemType, ProblemId) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?)";
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -76,7 +77,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt.setBoolean(5, session.isIsActive());
             
             Problem prob = session.getProblem();
-            stmt.setString(6, prob.getKind().toString());
+            stmt.setString(6, prob.getType().toString());
             stmt.setInt(7, prob.getId());
 
             stmt.execute();
@@ -92,7 +93,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      */
     @Override
     public TutoringSession retrieve(Student student) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "SELECT SessionId, SecurityToken, StartDate, IsActive, ProblemKind, ProblemId FROM TutoringSession WHERE UserId = ?";
+        final String sql = "SELECT SessionId, SecurityToken, StartDate, IsActive, ProblemType, ProblemId FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -118,7 +119,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 
                 TaskKind kind = TaskKind.valueOf(rs.getString(5));
                 
-                session.setProblem(retrieveProblem(kind, rs.getInt(6), conn));
+                
+                ProblemSvc problemSvc = ServiceFactory.findProblemSvc();
+                
+                session.setProblem(problemSvc.retrieve(rs.getInt(6)));
 
                 return session;
             } else {
@@ -254,50 +258,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         }
     }
     
-    private Problem retrieveProblem(TaskKind kind, int kindId, Connection conn) 
-        throws NonRecoverableException {
-        switch (kind) {
-            case LCS_PROBLEM:
-                return retrieveLCSProblem(kindId, conn);
-                
-            default:
-                return null;
-        }
-    }
-    
-    private LCSProblem retrieveLCSProblem(int kindId, Connection conn) throws NonRecoverableException {
-         final String sql = "SELECT Title,Description,Sequence1,Sequence2 FROM LCSProblem WHERE Id = ?";
-
-        ArrayList<Task> tasks = new ArrayList<>();
-    
-        PreparedStatement stmt = null;
-
-        try {
-            stmt = conn.prepareStatement(sql);
-
-            stmt.setInt(1, kindId);
-  
-
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                LCSProblem prob = new LCSProblem(rs.getString(3), rs.getString(4));
-                prob.setId(kindId);
-                prob.setTitle(rs.getString(1));
-                prob.setDescription(rs.getString(2));
-                
-                return prob;
-                
-            } else {
-                throw new NonRecoverableException("Inconsisted DB LCSProb: " + kindId);
-            }
-            
-        } catch (SQLException e) {
-            throw new NonRecoverableException("CourseDAO-ERR-10" + e.toString(), e);
-        } finally {
-            close(stmt); // Don't close the connection, retrieve(courseId) will
-        }
-    }
+   
 }
 
 

@@ -14,6 +14,7 @@ package edu.regis.dptu.view;
 
 import edu.regis.dptu.model.LCSProblem; // Needed for creating the initial problem
 import edu.regis.dptu.model.Problem;   // Needed for type consistency
+import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.model.TutoringSession;
 
@@ -200,10 +201,10 @@ public class TutoringSessionView extends GPanel {
             (currentProblem != null ? Integer.toHexString(currentProblem.hashCode()) : "null"));
 
         // Update views depending on Problem type
-        TaskKind kind = currentProblem.getKind();
-        System.out.println("DEBUG: TaskKind is " + kind);
+        ProblemKind type = currentProblem.getType();
+        System.out.println("DEBUG: TaskKind is " + type);
 
-        switch (kind) {
+        switch (type) {
             case LCS_PROBLEM:
                 System.out.println("DEBUG: LCSProblem detected. Passing model to views.");
 

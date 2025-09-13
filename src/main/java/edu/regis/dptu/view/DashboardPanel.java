@@ -3,6 +3,7 @@
  */
 package edu.regis.dptu.view;
 
+import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.view.act.PracticeAction;
@@ -207,17 +208,17 @@ public class DashboardPanel extends GPanel {
      * Return the TaskKind corresponding to the currently selected problem in the dropdown.
      * @return TaskKind @author EverettCV
      */
-    public TaskKind getSelectedTaskKind() {
+    public ProblemKind getSelectedProblemKind() {
         int index = problemSelector.getSelectedIndex();
         switch (index) {
             case 0:
-                return TaskKind.LCS_PROBLEM;
+                return ProblemKind.LCS_PROBLEM;
             case 1:
-                return TaskKind.MATRIX_CHAIN;
+                return ProblemKind.MATRIX_CHAIN;
             case 2:
-                return TaskKind.KNAPSACK_0_1;
+                return ProblemKind.KNAPSACK_0_1;
             default:
-                return TaskKind.LCS_PROBLEM; // Fallback
+                return ProblemKind.LCS_PROBLEM; // Fallback
         }
     }
 }
