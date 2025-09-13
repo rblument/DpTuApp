@@ -26,6 +26,15 @@ public enum StepSubType {
      */
     INFO_MESSAGE("Information Message"),
     
+    /**
+     * The student completed a Pending Step.
+     */
+    STEP_COMPLETED("Step Comleted"),
+    
+    /**
+     * The student is being asked to review a proposed Dynamic Programming problem.
+     * 
+     */
     PROBLEM_REVIEW("Review Problem"),
     
     /**

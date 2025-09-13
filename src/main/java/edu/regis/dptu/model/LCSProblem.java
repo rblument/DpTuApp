@@ -66,15 +66,26 @@ public class LCSProblem extends Problem {
      * after all of the loops have executed.
      */
     private EXECUTION_STATE executionState;
-
-    /**
+    
+   /**
      * Initialize this problem with the given input sequences.
      *
      * @param x the first input sequence, as a String
      * @param y the second input sequence, as String
      */
     public LCSProblem(String x, String y) {
-        super();
+        this(Model.DEFAULT_ID, x, y);
+    }
+
+    /**
+     * Initialize this problem with the given input sequences.
+     *
+     * @param id, the unique id of this problem, as assigned by the DB.
+     * @param x the first input sequence, as a String
+     * @param y the second input sequence, as String
+     */
+    public LCSProblem(int id, String x, String y) {
+        super(id);
 
         this.x = x; // Store original if needed by other parts not shown
         this.y = y; // Store original if needed
@@ -105,11 +116,20 @@ public class LCSProblem extends Problem {
 
         executionState = EXECUTION_STATE.PRE;
 
-        kind = TaskKind.LCS_PROBLEM;
 
         loadCodeStatements(); // Load the pseudocode lines
 
         reset(); // Call reset to ensure consistent initial state including table values
+    }
+    
+    /**
+     * Return the type of this Dynamic Programming problem.
+     * 
+     * @return ProblemKind.LCS_PROBLEM
+     */
+    @Override
+    public ProblemKind getType() {
+        return ProblemKind.LCS_PROBLEM;
     }
 
     public EXECUTION_STATE getExecutionState() {

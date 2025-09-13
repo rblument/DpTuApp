@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemKind;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
@@ -36,9 +37,9 @@ public class ProblemInputView extends JPanel {
         }
 
         // Otherwise, dynamically load the correct input view based on the Problem's TaskKind
-        TaskKind kind = problem.getKind();
+        ProblemKind type = problem.getType();
 
-        switch (kind) {
+        switch (type) {
             case LCS_PROBLEM:
                 LCSInputView lcsInputView = new LCSInputView(parentView);
                 add(lcsInputView, BorderLayout.CENTER);

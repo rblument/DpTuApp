@@ -21,7 +21,7 @@ import edu.regis.dptu.model.CourseDigest;
 import edu.regis.dptu.model.ExercisingLocation;
 import edu.regis.dptu.model.Hint;
 import edu.regis.dptu.model.KnowledgeComponent;
-import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.Model;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepSubType;
@@ -33,6 +33,8 @@ import edu.regis.dptu.model.Unit;
 import edu.regis.dptu.model.UnitDigest;
 import edu.regis.dptu.model.aol.OutcomeGranularity;
 import edu.regis.dptu.svc.CourseSvc;
+import edu.regis.dptu.svc.ProblemSvc;
+import edu.regis.dptu.svc.ServiceFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -190,9 +192,9 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 task.setKind(TaskKind.valueOf(rs.getString(3)));
                 task.setSequenceIndex(rs.getInt(4));
                 
-          
                 task.setSteps(retrieveSteps(courseId, task.getId(), conn));
                 
+                // ToDo, is problem needed in the task versus in the steps
                 // retrieve LCS Problem
 
                 return task;
@@ -317,6 +319,7 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
         PreparedStatement stmt = null;
         
         int courseId = course.getId();
+        int problemId = Model.DEFAULT_ID;
 
         try {
             stmt = conn.prepareStatement(sql);
@@ -333,7 +336,14 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 task.setKind(TaskKind.valueOf(rs.getString(4)));
                 task.setSequenceIndex(rs.getInt(5));
                 
-                task.setProblem(retrieveProblem(task.getKind(), rs.getInt(6), conn));
+                switch (task.getKind()) {
+                    case PROBLEM:
+                        ProblemSvc problemSvc = ServiceFactory.findProblemSvc();
+                        problemId = rs.getInt(6);
+                        Problem problem = problemSvc.retrieve(problemId);
+                        task.setProblem(problem);
+                        break;
+                }
                 
                 tasks.add(task);
                 
@@ -343,6 +353,9 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
             }
             
             return tasks;
+        } catch (ObjNotFoundException e) {
+            InconsistentDBException ex = new InconsistentDBException("Problem not found in Problem Task Type: " + problemId);
+            throw new NonRecoverableException("Cannot find problem in DB", ex);
         } catch (SQLException e) {
             throw new NonRecoverableException("CourseDAO-ERR-7" + e.toString(), e);
         } finally {
@@ -490,53 +503,6 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
             close(stmt); // Don't close the connection, retrieve(courseId) will
         }
     }
-    
-    private Problem retrieveProblem(TaskKind kind, int kindId, Connection conn) 
-        throws NonRecoverableException {
-        switch (kind) {
-            case LCS_PROBLEM:
-                return retrieveLCSProblem(kindId, conn);
-                
-            default:
-                return null;
-        }
-    }
-    
-    private LCSProblem retrieveLCSProblem(int kindId, Connection conn) throws NonRecoverableException {
-         final String sql = "SELECT Title,Description,Sequence1,Sequence2 FROM LCSProblem WHERE Id = ?";
-
-        ArrayList<Task> tasks = new ArrayList<>();
-    
-        PreparedStatement stmt = null;
-
-        try {
-            stmt = conn.prepareStatement(sql);
-
-            stmt.setInt(1, kindId);
-  
-
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                LCSProblem prob = new LCSProblem(rs.getString(3), rs.getString(4));
-                prob.setId(kindId);
-                prob.setTitle(rs.getString(1));
-                prob.setDescription(rs.getString(2));
-                
-                return prob;
-                
-            } else {
-                throw new NonRecoverableException("Inconsisted DB LCSProb: " + kindId);
-            }
-            
-        } catch (SQLException e) {
-            throw new NonRecoverableException("CourseDAO-ERR-10" + e.toString(), e);
-        } finally {
-            close(stmt); // Don't close the connection, retrieve(courseId) will
-        }
-    }
-    
-
     
     private Timeout retrieveTimeout(int timeoutId, Connection conn) 
         throws NonRecoverableException {

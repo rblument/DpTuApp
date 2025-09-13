@@ -20,10 +20,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The primary Dynamic Programming task that a student is attempting to solve,
- * which is associated with a unit within a course.
+ * The Dynamic Programming problem that a student is attempting to solve.
  *
- * Subclasses need to implement the abstract loadCodeStatements
+ * The specific type of Dynamic Programming problem is specified by the
+ * value returned by the getType() method, which is declared abstract in this
+ * parent class. 
  *
  * In VanLehn's sense, this is a task for the student to complete, but we treat
  * tasks at a finer granularity i.e. as subproblems within the primary problem.
@@ -35,9 +36,19 @@ import java.util.logging.Logger;
 public abstract class Problem extends TitledModel {
 
     /**
-     * The task associated with this problem. (ToDo: )
+     * The type of this Dynamic Programming problem, which must be assigned
+     * when instantiating a subclass
      */
-    protected TaskKind kind;
+    protected ProblemKind type;
+    
+    /**
+     * The id that serves as an index into the DB subtype table. 
+     * 
+     * For example, if type is LCS_PROBLEM, then the subtype id is the id
+     * of the problem in the LCSProblem table (with the Model.id being the
+     * id in the Problem table
+     */
+    protected int subTypeId;
 
     /**
      * The variables used in the algorithmic solution to this dynamic
@@ -57,7 +68,7 @@ public abstract class Problem extends TitledModel {
      * The algorithmic solution to this dynamic programming problem as textual
      * lines of code.
      */
-    protected ArrayList codeStatements = new ArrayList();
+    protected ArrayList<String> codeStatements;
 
     /**
      * The currently line number to execute
@@ -72,14 +83,35 @@ public abstract class Problem extends TitledModel {
      */
     protected ArrayList<Integer> executionHistory;
 
+    /**
+     * Observers who are listening for changes to the state of this problem.
+     */
     protected ArrayList<ProblemListener> problemListeners;
 
+    /**
+     * Return the type of this problem.
+     * 
+     * @return 
+     */
+    public abstract ProblemKind getType();
+    
+    /**
+     * Loads the pseudo-code statements for display.
+     */
     protected abstract void loadCodeStatements();
-
+    
+    /**
+     * Instantiate a Dynamic Programming problem with a DEFAULT_ID.
+     */
     public Problem() {
         this(DEFAULT_ID);
     }
 
+    /**
+     * Instantiate a Dynamic Programming problem with the given id.
+     * 
+     * @param id unique int id of this problem, as assigned by the DB.
+     */
     public Problem(int id) {
         super(id);
 
@@ -89,12 +121,12 @@ public abstract class Problem extends TitledModel {
         problemListeners = new ArrayList<>();
     }
 
-    public TaskKind getKind() {
-        return kind;
+    public int getSubTypeId() {
+        return subTypeId;
     }
 
-    public void setKind(TaskKind kind) {
-        this.kind = kind;
+    public void setSubTypeId(int subTypeId) {
+        this.subTypeId = subTypeId;
     }
 
     public ArrayList<String> getCodeStatements() {

@@ -29,7 +29,7 @@ public class Task extends TitledModel {
     /**
      * Indicates the type of task the student trying to complete.
      */
-    private TaskKind kind = TaskKind.LCS_PROBLEM;
+    private TaskKind kind = TaskKind.PROBLEM;
     
     /**
      * The sequence in which this task is performed in its problem.
