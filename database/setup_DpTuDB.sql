@@ -45,6 +45,11 @@ CREATE TABLE Account (
    PRIMARY KEY (UserId)
 );
 
+CREATE TABLE StudentModel (
+   UserId VARCHAR(255) NOT NULL PRIMARY KEY,
+   ScaffoldLevel VARCHAR(16) NOT NULL
+);
+
 #
 # Course related Tables
 
