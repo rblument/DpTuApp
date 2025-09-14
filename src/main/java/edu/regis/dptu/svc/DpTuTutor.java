@@ -429,17 +429,15 @@ public class DpTuTutor implements TutorSvc {
         student = new Student(account);
         studentModel = student.getStudentModel();
 
-        // ToDo: follow ShaTu to create these 
-        //for (KnowledgeComponent outcome : course.getOutcomes()) {
-        //    Assessment assessment = new Assessment(outcome, AssessmentLevel.NOT_STARTED);
+        for (KnowledgeComponent outcome : course.getOutcomes()) {
+            Assessment assessment = new Assessment(outcome, AssessmentLevel.NOT_STARTED);
 
-         //   studentModel.addAssessment(outcome.getId(), assessment);
-        //}
+            studentModel.addAssessment(outcome.getId(), assessment);
+        }
 
-        // ToDo: Add the Student model service and associated DAO
-        //StudentModelSvc stuSvc = ServiceFactory.findStudentModelSvc();
+        StudentModelSvc stuSvc = ServiceFactory.findStudentModelSvc();
 
-       // stuSvc.create(student);
+        stuSvc.create(student);
 
         return student;
 
