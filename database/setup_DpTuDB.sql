@@ -188,8 +188,6 @@ CREATE TABLE PendingStep (
   CurrentHintIndex int NOT NULL
 );
 
-
-
 CREATE TABLE KnowledgeComponent (
   Id int NOT NULL ,
   CourseId int NOT NULL,
@@ -242,12 +240,9 @@ CREATE TABLE LCSProblem (
   PRIMARY KEY (Id)
 );
 
-
-#
-#
-#
-#
-#
+/*********************************************************************************
+* Seeds
+*/
 
 INSERT INTO Course
   (CourseId, Title, PrimaryPedagogy, Description)
@@ -303,7 +298,6 @@ VALUES
  'Student has appropriately demonstrated acknowleding they understand the current problem.',
  'Application', 0, 'Other', '0', 'Knowledge Component');
 
-
 INSERT INTO Problem
  (Id, ProblemType, SubTypeId, Title, Description)
 VALUES
@@ -314,3 +308,97 @@ INSERT INTO LCSProblem
  (Id, Sequence1, Sequence2)
  VALUES
  (0, 'skullandbones', 'lullabybabies');
+
+/*********************************************************************************
+* Foreign Indexes
+*/
+
+ALTER TABLE TutoringSession
+ADD CONSTRAINT fk_tutoring_session_unit
+FOREIGN KEY (UnitId) REFERENCES Unit(UnitId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Task
+ADD CONSTRAINT fk_task_course
+FOREIGN KEY (CourseId) REFERENCES Course(CourseId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Task
+ADD CONSTRAINT fk_task_unit
+FOREIGN KEY (UnitId) REFERENCES Unit(UnitId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Step
+ADD CONSTRAINT fk_step_course
+FOREIGN KEY (CourseId) REFERENCES Course(CourseId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Step
+ADD CONSTRAINT fk_step_unit
+FOREIGN KEY (UnitId) REFERENCES Unit(UnitId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Step
+ADD CONSTRAINT fk_step_task
+FOREIGN KEY (TaskId) REFERENCES Task(TaskId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE PendingTask
+ADD CONSTRAINT fk_pending_task_session
+FOREIGN KEY (SessionId) REFERENCES TutoringSession(SessionId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE PendingTask
+ADD CONSTRAINT fk_pending_task_task
+FOREIGN KEY (TaskId) REFERENCES Task(TaskId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE PendingStep
+ADD CONSTRAINT fk_pending_step_session
+FOREIGN KEY (SessionId) REFERENCES TutoringSession(SessionId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE PendingStep
+ADD CONSTRAINT fk_pending_step_step
+FOREIGN KEY (StepId) REFERENCES Step(Id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Hint
+ADD CONSTRAINT fk_hint_step
+FOREIGN KEY (StepId) REFERENCES Step(Id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Assessment
+ADD CONSTRAINT fk_assessment_user
+FOREIGN KEY (UserId) REFERENCES Account(UserId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE Assessment
+ADD CONSTRAINT fk_assessment_knowledge_component
+FOREIGN KEY (KnowledgeComponentId) REFERENCES KnowledgeComponent(Id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE KnowledgeComponent
+ADD CONSTRAINT fk_knowledge_component_course
+FOREIGN KEY (CourseId) REFERENCES Course(CourseId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ExercisingLocation
+ADD CONSTRAINT fk_exercising_location_course
+FOREIGN KEY (CourseId) REFERENCES Course(CourseId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ExercisingLocation
+ADD CONSTRAINT fk_exercising_location_unit
+FOREIGN KEY (UnitId) REFERENCES Unit(UnitId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ExercisingLocation
+ADD CONSTRAINT fk_exercising_location_task
+FOREIGN KEY (TaskId) REFERENCES Task(TaskId)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ExercisingLocation
+ADD CONSTRAINT fk_exercising_location_step
+FOREIGN KEY (StepId) REFERENCES Step(Id)
+ON UPDATE CASCADE ON DELETE CASCADE;
