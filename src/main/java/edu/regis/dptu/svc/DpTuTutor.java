@@ -27,6 +27,7 @@ import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Course;
+import edu.regis.dptu.model.KnowledgeComponent;
 import edu.regis.dptu.model.PendingStep;
 import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.Step;
@@ -37,6 +38,8 @@ import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.Unit;
+import edu.regis.dptu.model.aol.Assessment;
+import edu.regis.dptu.model.aol.AssessmentLevel;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.util.SHA_256;
 
