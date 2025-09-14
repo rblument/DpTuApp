@@ -13,19 +13,19 @@
 package edu.regis.dptu.view;
 
 // import edu.regis.dptu.model.LCSProblem; // Keep import if needed, though model is passed in
-import edu.regis.dptu.model.Problem;
-import edu.regis.dptu.model.ProblemListener;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import java.lang.String;
+
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemListener;
 
 /**
- * Displays the Code Panel section of the Tutoring Session GUI. This panel will
- * display code statements from the CodeModel.
- *
+ * Displays the Code Panel section of the Tutoring Session GUI. This panel will display code
+ * statements from the CodeModel.
  *
  * @author cadencea
  */
@@ -34,30 +34,24 @@ public class CodeView extends GPanel implements ProblemListener {
     /**
      * Declares the CodeView model (a Problem object) displayed in this view along with the
      * necessary arrayLists for the code statements.
-     *
      */
     private Problem model; // Initialize as null, will be set by setModel
+
     private ArrayList<String> statementStrings;
     private ArrayList<JLabel> statementJLabels;
     private SubproblemTableView table; // Keep if needed for other interactions
 
-    /**
-     * Used as a background color
-     */
+    /** Used as a background color */
     private static final Color MEDIUM_GRAY = new Color(215, 215, 215);
 
-    /**
-     *
-     * Initialize this view including creating and laying out its child
-     * components.
-     */
+    /** Initialize this view including creating and laying out its child components. */
     public CodeView(SubproblemTableView table) {
         this.table = table; // Store reference if needed
 
         // Initialize label list
         statementJLabels = new ArrayList<>();
 
-        //Making it look pretty
+        // Making it look pretty
         setBorder(BorderFactory.createTitledBorder("Code View"));
         setBackground(MEDIUM_GRAY);
 
@@ -68,7 +62,6 @@ public class CodeView extends GPanel implements ProblemListener {
      * Returns the model currently displayed in this view.
      *
      * @return a CodeModel
-     *
      */
     public Problem getModel() {
         return model;
@@ -76,8 +69,6 @@ public class CodeView extends GPanel implements ProblemListener {
 
     /**
      * Display the given model in this view.
-     *
-     *
      *
      * @param model a CodeModel.
      */
@@ -113,13 +104,10 @@ public class CodeView extends GPanel implements ProblemListener {
         repaint();
     }
 
-    /**
-     * Create the child GUI components appearing in this frame.
-     */
+    /** Create the child GUI components appearing in this frame. */
     private void initializeComponents() {
         /**
-         * grabs the statement strings from the model and creates JLabels for
-         * each in an ArrayList
+         * grabs the statement strings from the model and creates JLabels for each in an ArrayList
          */
         if (model != null) {
             statementStrings = model.getCodeStatements();
@@ -128,35 +116,54 @@ public class CodeView extends GPanel implements ProblemListener {
                 statementJLabels.add(new JLabel(statementStrings.get(i).toString()));
             }
         } else {
-             // Handle case where model is null (e.g., clear lists)
+            // Handle case where model is null (e.g., clear lists)
             statementStrings = new ArrayList<>();
             statementJLabels = new ArrayList<>();
         }
     }
 
     /**
-     * Layout the child components in this view. Since each line will be below
-     * the next we will adjust the 3rd parameter in the addc statement.
+     * Layout the child components in this view. Since each line will be below the next we will
+     * adjust the 3rd parameter in the addc statement.
      *
-     * The loop iterates through the statementJLabels list and adds the
-     * component.
+     * <p>The loop iterates through the statementJLabels list and adds the component.
      */
     private void layoutComponents() {
         for (int i = 0; i < statementJLabels.size(); i++) {
-            //Line Numbers
-            addc(new JLabel(String.valueOf(i+1)), 0, i, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
-                    0, 1, 0, 1);
+            // Line Numbers
+            addc(
+                    new JLabel(String.valueOf(i + 1)),
+                    0,
+                    i,
+                    1,
+                    1,
+                    0.0,
+                    0.0,
+                    GridBagConstraints.EAST,
+                    GridBagConstraints.HORIZONTAL,
+                    0,
+                    1,
+                    0,
+                    1);
             // Code Statements
-            addc(statementJLabels.get(i), 1, i, 1, 1, 1.0, 0.0,
-                    GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                    0, 1, 0, 1);
+            addc(
+                    statementJLabels.get(i),
+                    1,
+                    i,
+                    1,
+                    1,
+                    1.0,
+                    0.0,
+                    GridBagConstraints.WEST,
+                    GridBagConstraints.HORIZONTAL,
+                    0,
+                    1,
+                    0,
+                    1);
         }
     }
 
-    /**
-     * Update the view based on the current state of the model (highlighting).
-     */
+    /** Update the view based on the current state of the model (highlighting). */
     private void updateView() {
         // Reset background of all labels first
         if (statementJLabels != null) {
@@ -187,8 +194,7 @@ public class CodeView extends GPanel implements ProblemListener {
     /**
      * Takes the updated problem and updated the view to match the model's state.
      *
-     * For CodeView this highlights the JLabel with the line currently
-     * being used in the model.
+     * <p>For CodeView this highlights the JLabel with the line currently being used in the model.
      *
      * @param problem The updated problem instance.
      */

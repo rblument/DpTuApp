@@ -1,11 +1,11 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
@@ -16,35 +16,39 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 /**
- * MatrixChainProblem implements the dynamic programming algorithm
- * for the Matrix Chain Multiplication problem.
- * It extends the generic Problem class and provides step-by-step
- * execution and undo functionality.
+ * MatrixChainProblem implements the dynamic programming algorithm for the Matrix Chain
+ * Multiplication problem. It extends the generic Problem class and provides step-by-step execution
+ * and undo functionality.
  *
- * State transitions are tracked via the EXECUTION_STATE enum,
- * and intermediate DP table changes are recorded in a history stack
- * to support undo operations.
+ * <p>State transitions are tracked via the EXECUTION_STATE enum, and intermediate DP table changes
+ * are recorded in a history stack to support undo operations.
  *
  * @author Corey Brantley
  */
 public class MatrixChainProblem extends Problem {
 
     /**
-     * Enumeration of execution states corresponding to each loop
-     * or phase in the matrix chain algorithm.
+     * Enumeration of execution states corresponding to each loop or phase in the matrix chain
+     * algorithm.
      */
-    public enum EXECUTION_STATE { PRE, R_LOOP, C_LOOP, I_LOOP, J_LOOP, POST }
+    public enum EXECUTION_STATE {
+        PRE,
+        R_LOOP,
+        C_LOOP,
+        I_LOOP,
+        J_LOOP,
+        POST
+    }
 
     // Current state of execution within the algorithm
     private EXECUTION_STATE executionState;
-    
+
     // Stack to record changes to m[i][j] for undo functionality
     private Stack<int[]> mHistory = new Stack<>();
-    
+
     /**
-     * Constructor initializes the DP variables, dimension list "d",
-     * and the empty cost table "m" with -1 placeholders.
-     * Sets initial execution state and loads code statements.
+     * Constructor initializes the DP variables, dimension list "d", and the empty cost table "m"
+     * with -1 placeholders. Sets initial execution state and loads code statements.
      *
      * @param sizes 2D array of matrix dimensions (p x q pairs)
      */
@@ -53,9 +57,8 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Constructor initializes the DP variables, dimension list "d",
-     * and the empty cost table "m" with -1 placeholders.
-     * Sets initial execution state and loads code statements.
+     * Constructor initializes the DP variables, dimension list "d", and the empty cost table "m"
+     * with -1 placeholders. Sets initial execution state and loads code statements.
      *
      * @param id the unique id of this problem, as assigned by the DB.
      * @param sizes 2D array of matrix dimensions (p x q pairs)
@@ -65,7 +68,7 @@ public class MatrixChainProblem extends Problem {
 
         int n = sizes.length; // number of matrices
         ArrayList<Integer> d = new ArrayList<>();
-        
+
         // Build dimension list: first matrix's row count
         d.add(sizes[0][0]);
         // Add each matrix's column count
@@ -99,10 +102,10 @@ public class MatrixChainProblem extends Problem {
         // Load pseudocode statements for display
         loadCodeStatements();
     }
-    
-     /**
+
+    /**
      * Return the type of this Dynamic Programming problem.
-     * 
+     *
      * @return ProblemKind.LCS_PROBLEM
      */
     @Override
@@ -111,9 +114,8 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Loads HTML-formatted code statements representing each step
-     * of the matrix chain multiplication algorithm.
-     * These statements are shown in the view during execution.
+     * Loads HTML-formatted code statements representing each step of the matrix chain
+     * multiplication algorithm. These statements are shown in the view during execution.
      */
     @Override
     protected void loadCodeStatements() {
@@ -124,13 +126,15 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add("<html><pre>        j = i + c</pre></html>");
         codeStatements.add("<html><pre>        m[i][j] = ∞</pre></html>");
         codeStatements.add("<html><pre>        for k = i to j-1</pre></html>");
-        codeStatements.add("<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]*d[k+1]*d[j+1]</pre></html>");
+        codeStatements.add(
+                "<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]*d[k+1]*d[j+1]</pre></html>");
         codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>");
         codeStatements.add("<html><pre>return m</pre></html>"); // final result
     }
 
     /**
      * Returns the current execution state of the algorithm.
+     *
      * @return The current EXECUTION_STATE
      */
     public EXECUTION_STATE getExecutionState() {
@@ -138,8 +142,7 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Prints a console representation of the DP table and state,
-     * useful for debugging and testing.
+     * Prints a console representation of the DP table and state, useful for debugging and testing.
      */
     public void prettyPrint() {
         int[][] m = (int[][]) variables.get("m");
@@ -157,9 +160,7 @@ public class MatrixChainProblem extends Problem {
         }
     }
 
-    /**
-     * Executes line 0: initializes i to 0 and transitions to R_LOOP.
-     */
+    /** Executes line 0: initializes i to 0 and transitions to R_LOOP. */
     public void executeLine0() {
         variables.put("i", 0);
         executionState = EXECUTION_STATE.R_LOOP;
@@ -167,15 +168,15 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Executes line 1: sets m[i][i] to 0 and records the change.
-     * Advances i or moves to chain length loop when done.
+     * Executes line 1: sets m[i][i] to 0 and records the change. Advances i or moves to chain
+     * length loop when done.
      */
     public void executeLine1() {
         int i = (int) variables.get("i");
         int n = (int) variables.get("n");
         int[][] m = (int[][]) variables.get("m");
         // Record previous value for undo
-        mHistory.push(new int[]{i, i, m[i][i]});
+        mHistory.push(new int[] {i, i, m[i][i]});
         m[i][i] = 0;
         if (i + 1 == n) {
             // Move to chain length iteration
@@ -190,8 +191,8 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Executes line 2: checks chain length c; if complete,
-     * transitions to POST, otherwise starts inner loops.
+     * Executes line 2: checks chain length c; if complete, transitions to POST, otherwise starts
+     * inner loops.
      */
     public void executeLine2() {
         int c = (int) variables.get("c");
@@ -206,8 +207,8 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Executes line 3: determines whether to increment c or
-     * proceed to set j based on current i and c.
+     * Executes line 3: determines whether to increment c or proceed to set j based on current i and
+     * c.
      */
     public void executeLine3() {
         int i = (int) variables.get("i");
@@ -222,9 +223,7 @@ public class MatrixChainProblem extends Problem {
         }
     }
 
-    /**
-     * Executes line 4: computes j = i + c and stores it.
-     */
+    /** Executes line 4: computes j = i + c and stores it. */
     public void executeLine4() {
         int i = (int) variables.get("i");
         int c = (int) variables.get("c");
@@ -234,22 +233,22 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Executes line 5: sets m[i][j] to infinity (max int),
-     * records change, and initializes k for k-loop.
+     * Executes line 5: sets m[i][j] to infinity (max int), records change, and initializes k for
+     * k-loop.
      */
     public void executeLine5() {
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
         int[][] m = (int[][]) variables.get("m");
-        mHistory.push(new int[]{i, j, m[i][j]});
+        mHistory.push(new int[] {i, j, m[i][j]});
         m[i][j] = Integer.MAX_VALUE;
         variables.put("k", i);
         currentLineNumber = 6;
     }
 
     /**
-     * Executes line 6: checks if k-loop is done; if so,
-     * increments i to next row; otherwise moves to cost calc.
+     * Executes line 6: checks if k-loop is done; if so, increments i to next row; otherwise moves
+     * to cost calc.
      */
     public void executeLine6() {
         int k = (int) variables.get("k");
@@ -264,8 +263,7 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Executes line 7: computes cost for splitting at k
-     * and stores it in variables for comparison.
+     * Executes line 7: computes cost for splitting at k and stores it in variables for comparison.
      */
     @SuppressWarnings("unchecked")
     public void executeLine7() {
@@ -281,8 +279,8 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Executes line 8: if new cost is lower, updates m[i][j],
-     * records change, and increments k for next iteration.
+     * Executes line 8: if new cost is lower, updates m[i][j], records change, and increments k for
+     * next iteration.
      */
     public void executeLine8() {
         int cost = (int) variables.get("cost");
@@ -290,7 +288,7 @@ public class MatrixChainProblem extends Problem {
         int j = (int) variables.get("j");
         int[][] m = (int[][]) variables.get("m");
         if (cost < m[i][j]) {
-            mHistory.push(new int[]{i, j, m[i][j]});
+            mHistory.push(new int[] {i, j, m[i][j]});
             m[i][j] = cost;
         }
         int k = (int) variables.get("k");
@@ -298,16 +296,14 @@ public class MatrixChainProblem extends Problem {
         currentLineNumber = 6;
     }
 
-    /**
-     * Executes line 9: marks algorithm as complete.
-     */
+    /** Executes line 9: marks algorithm as complete. */
     public void executeLine9() {
         executionState = EXECUTION_STATE.POST;
     }
 
     /**
-     * Undoes the effects of executeLine1 (m[i][i] assignment).
-     * Restores previous value from history.
+     * Undoes the effects of executeLine1 (m[i][i] assignment). Restores previous value from
+     * history.
      */
     public void undoLine1() {
         if (!mHistory.isEmpty()) {
@@ -322,9 +318,7 @@ public class MatrixChainProblem extends Problem {
         if (i <= 0) executionState = EXECUTION_STATE.PRE;
     }
 
-    /**
-     * Undoes executeLine2: decrements c and resets i.
-     */
+    /** Undoes executeLine2: decrements c and resets i. */
     public void undoLine2() {
         int c = (int) variables.get("c") - 1;
         variables.put("c", c);
@@ -332,25 +326,19 @@ public class MatrixChainProblem extends Problem {
         if (c <= 0) executionState = EXECUTION_STATE.R_LOOP;
     }
 
-    /**
-     * Undoes executeLine3: decrements i and adjusts state if needed.
-     */
+    /** Undoes executeLine3: decrements i and adjusts state if needed. */
     public void undoLine3() {
         int i = (int) variables.get("i") - 1;
         variables.put("i", i);
         if (i < 0) executionState = EXECUTION_STATE.C_LOOP;
     }
 
-    /**
-     * Undoes executeLine4: resets j to 0.
-     */
+    /** Undoes executeLine4: resets j to 0. */
     public void undoLine4() {
         variables.put("j", 0);
     }
 
-    /**
-     * Undoes executeLine5: restores previous m[i][j] from history.
-     */
+    /** Undoes executeLine5: restores previous m[i][j] from history. */
     public void undoLine5() {
         if (!mHistory.isEmpty()) {
             int[] change = mHistory.pop();
@@ -359,24 +347,18 @@ public class MatrixChainProblem extends Problem {
         }
     }
 
-    /**
-     * Undoes executeLine6: decrements k for previous iteration.
-     */
+    /** Undoes executeLine6: decrements k for previous iteration. */
     public void undoLine6() {
         int k = (int) variables.get("k") - 1;
         variables.put("k", k);
     }
 
-    /**
-     * Undoes executeLine7: removes cost variable.
-     */
+    /** Undoes executeLine7: removes cost variable. */
     public void undoLine7() {
         variables.remove("cost");
     }
 
-    /**
-     * Undoes executeLine8: restores m[i][j] and decrements k.
-     */
+    /** Undoes executeLine8: restores m[i][j] and decrements k. */
     public void undoLine8() {
         if (!mHistory.isEmpty()) {
             int[] change = mHistory.pop();
@@ -387,9 +369,7 @@ public class MatrixChainProblem extends Problem {
         variables.put("k", k);
     }
 
-    /**
-     * Undoes executeLine9: resets c and state to before POST.
-     */
+    /** Undoes executeLine9: resets c and state to before POST. */
     public void undoLine9() {
         executionState = EXECUTION_STATE.C_LOOP;
         variables.put("c", (int) variables.get("n"));

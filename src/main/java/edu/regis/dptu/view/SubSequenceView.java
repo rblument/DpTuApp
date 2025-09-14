@@ -1,11 +1,11 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
@@ -17,16 +17,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
- * This is the Subsequence view for the TutoringSession View. The title, words,
- * and button are displayed. Both words entered to find LCS are shown with the
- * length of each. When the button is pressed, it will display a step-by-step
- * process to finding the LCS and highlight them accordingly.
+ * This is the Subsequence view for the TutoringSession View. The title, words, and button are
+ * displayed. Both words entered to find LCS are shown with the length of each. When the button is
+ * pressed, it will display a step-by-step process to finding the LCS and highlight them
+ * accordingly.
  *
  * @author Sofia Reyes
  */
@@ -67,9 +68,7 @@ public class SubSequenceView extends JPanel {
         canvas = new SubSequenceCanvasView(word1, word2);
     }
 
-    /**
-     * The components of the view are displayed in specific positions.
-     */
+    /** The components of the view are displayed in specific positions. */
     public void layoutComponents() {
         setLayout(new BorderLayout());
 
@@ -80,13 +79,15 @@ public class SubSequenceView extends JPanel {
         JPanel wordPanel = new JPanel();
         wordPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        // Changed (April 17, 2025 - EverettCV): Now loads default value of the first variable originally, but updates the line1 appropriately when inputs change.
+        // Changed (April 17, 2025 - EverettCV): Now loads default value of the first variable
+        // originally, but updates the line1 appropriately when inputs change.
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line1.add(lengthLabel1);
         wordLabel1 = new JLabel(canvas.getWord1());
         line1.add(wordLabel1);
 
-        // Changed (April 17, 2025 - EverettCV): Now loads default value of the second variable originally, but updates the line2 appropriately when inputs change.
+        // Changed (April 17, 2025 - EverettCV): Now loads default value of the second variable
+        // originally, but updates the line2 appropriately when inputs change.
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line2.add(lengthLabel2);
         wordLabel2 = new JLabel(canvas.getWord2());
@@ -94,10 +95,6 @@ public class SubSequenceView extends JPanel {
 
         wordPanel.add(line1);
         wordPanel.add(line2);
-
-
-
-
 
         // nvas added
         JPanel canvasPanel = new JPanel();
@@ -120,15 +117,13 @@ public class SubSequenceView extends JPanel {
 
     /**
      * Updates the displayed input strings and lengths when new inputs are submitted.
-     * 
-     * Changes (April 17, 2025):
-     * - Dynamically updates all labels and canvas contents.
-     * - Forces revalidation and repaint to ensure view reflects new inputs.
-     * 
-     * TODO: In the future, improve resizing to dynamically fit very long words.
-     * 
+     *
+     * <p>Changes (April 17, 2025): - Dynamically updates all labels and canvas contents. - Forces
+     * revalidation and repaint to ensure view reflects new inputs.
+     *
+     * <p>TODO: In the future, improve resizing to dynamically fit very long words.
+     *
      * @author EverettCV
-     * 
      * @param word1 Updated first string input
      * @param word2 Updated second string input
      */
@@ -142,7 +137,6 @@ public class SubSequenceView extends JPanel {
 
         canvas.setWord1(word1);
         canvas.setWord2(word2);
-
 
         canvas.setPreferredSize(new Dimension(600, 300));
         canvas.revalidate();

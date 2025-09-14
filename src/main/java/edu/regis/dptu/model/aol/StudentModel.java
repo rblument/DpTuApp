@@ -1,57 +1,55 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.model.aol;
 
-import edu.regis.dptu.model.ScaffoldLevel;
 import java.util.HashMap;
 
+import edu.regis.dptu.model.ScaffoldLevel;
+
 /**
- * Captures the current assessment for each learning outcome in a course, as
- * well as, all tutoring sessions in which the student participated.
+ * Captures the current assessment for each learning outcome in a course, as well as, all tutoring
+ * sessions in which the student participated.
  *
  * @author rickb
  */
 public class StudentModel {
     /**
-     * Convenience reference to the user id (email) of the student associated
-     * with this student model.
+     * Convenience reference to the user id (email) of the student associated with this student
+     * model.
      */
     private String userId;
 
     /**
-     * The assessments of outcomes for the student associated with this model.
-     * The key is the id of the knowledge component in the associated
-     * assessment.
+     * The assessments of outcomes for the student associated with this model. The key is the id of
+     * the knowledge component in the associated assessment.
      */
     private HashMap<Integer, Assessment> assessments;
 
-    /**
-     * The current scaffolding being used to support the student.
-     */
+    /** The current scaffolding being used to support the student. */
     private ScaffoldLevel scaffoldLevel = ScaffoldLevel.EXTREME;
 
     /**
      * Instantiate this student model with default information.
      *
-     * Create a student model for the given user id and with default information.
-     * 
+     * <p>Create a student model for the given user id and with default information.
+     *
      * @param userId the user id of the student whose model is being created.
      */
     public StudentModel(String userId) {
         this.userId = userId;
 
         // assessments = new HashMap<>();
-        assessments = new HashMap<>();   
+        assessments = new HashMap<>();
     }
 
     public String getUserId() {
@@ -66,7 +64,7 @@ public class StudentModel {
         System.out.println("***** StuMod.addAssess: id: " + knowledgeComponentId);
         assessments.put(knowledgeComponentId, assessment);
     }
-    
+
     public void addAssessment(Assessment assessment) {
         addAssessment(assessment.getOutcome().getId(), assessment);
     }
@@ -85,18 +83,16 @@ public class StudentModel {
      * Return the student assessment, if any, for the given outcome.
      *
      * @param knowledgeComponentId
-     *
      * @return an Assessment of the student.
      */
     public Assessment findAssessment(int knowledgeComponentId) {
         return assessments.get(knowledgeComponentId);
     }
 
-    
     public HashMap<Integer, Assessment> getAssessments() {
         return assessments;
     }
-    
+
     /**
      * Return the current scaffolding level being used to support the student.
      *
