@@ -13,7 +13,7 @@
 package edu.regis.dptu.model;
 
 /**
- * The legal types of practice examples that a student can request.
+ * The legal types of practice ("do one") examples that a student can request.
  * 
  * @author rickb
  */

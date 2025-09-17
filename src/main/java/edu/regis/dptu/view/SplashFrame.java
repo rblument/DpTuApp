@@ -265,10 +265,10 @@ public class SplashFrame extends JFrame {
     }
     
     /**
-     * Select the practice screen panel
+     * Select the "Do One" (practice) screen panel
      */
-    public void selectPracticeScreen() {
-        // TODO: Implement practice screen selection
+    public void selectDoOneScreen() {
+        // TODO: Implement "Do One " practice screen selection
     }
     
     /**

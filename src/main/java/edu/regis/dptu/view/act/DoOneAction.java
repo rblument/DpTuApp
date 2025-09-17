@@ -18,22 +18,22 @@ import java.awt.event.KeyEvent;
 import static javax.swing.Action.MNEMONIC_KEY;
 import static javax.swing.Action.SHORT_DESCRIPTION;
 
-public class QuizMeAction extends DpTuGuiAction {
-    private static final QuizMeAction SINGLETON;
+public class DoOneAction extends DpTuGuiAction {
+    private static final DoOneAction SINGLETON;
     
     static {
-        SINGLETON = new QuizMeAction();
+        SINGLETON = new DoOneAction();
     }
 
-    public static QuizMeAction instance() {
+    public static DoOneAction instance() {
         return SINGLETON;
     }
 
-    private QuizMeAction() {
-        super("Quiz Me");
+    private DoOneAction() {
+        super("Do One");
         
-        putValue(SHORT_DESCRIPTION, "Start a quiz session");
-        putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
+        putValue(SHORT_DESCRIPTION, "Start a practice (\"Do One\") session");
+        putValue(MNEMONIC_KEY, KeyEvent.VK_D);
     }
 
     @Override

@@ -23,22 +23,22 @@ import java.awt.event.KeyEvent;
 import static javax.swing.Action.MNEMONIC_KEY;
 import static javax.swing.Action.SHORT_DESCRIPTION;
 
-public class TeachMeAction extends DpTuGuiAction {
-    private static final TeachMeAction SINGLETON;
+public class SeeOneAction extends DpTuGuiAction {
+    private static final SeeOneAction SINGLETON;
     
     static {
-        SINGLETON = new TeachMeAction();
+        SINGLETON = new SeeOneAction();
     }
 
-    public static TeachMeAction instance() {
+    public static SeeOneAction instance() {
         return SINGLETON;
     }
 
-    private TeachMeAction() {
-        super("Teach Me");
+    private SeeOneAction() {
+        super("See One");
 
         putValue(SHORT_DESCRIPTION, "Start a teaching session");
-        putValue(MNEMONIC_KEY, KeyEvent.VK_T);
+        putValue(MNEMONIC_KEY, KeyEvent.VK_S);
     }
 
     /**
@@ -58,7 +58,7 @@ public class TeachMeAction extends DpTuGuiAction {
 
         // Get the selected TaskKind from the DashboardPanel
         ProblemKind selectedKind = dashboard.getSelectedProblemKind();
-        System.out.println("TeachMeAction selected TaskKind: " + selectedKind);
+        System.out.println("SeeOneAction selected TaskKind: " + selectedKind);
 
         // Call SplashFrame to transition to the lesson screen with this TaskKind
         SplashFrame.instance().selectLessonScreen(selectedKind);

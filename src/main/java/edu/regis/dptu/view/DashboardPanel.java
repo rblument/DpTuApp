@@ -6,9 +6,9 @@ package edu.regis.dptu.view;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
-import edu.regis.dptu.view.act.PracticeAction;
-import edu.regis.dptu.view.act.QuizMeAction;
-import edu.regis.dptu.view.act.TeachMeAction;
+import edu.regis.dptu.view.act.DoOneAction;
+import edu.regis.dptu.view.act.TeachOneAction;
+import edu.regis.dptu.view.act.SeeOneAction;
 import edu.regis.dptu.model.TaskKind;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,12 +31,12 @@ public class DashboardPanel extends GPanel {
 
     private JButton logOutButton;
     private JButton settingsButton;
-    private JButton teachMeButton;
-    private JButton practiceButton;
-    private JButton quizMeButton;
-    private CustomProgressBar teachMeProgressBar;
-    private CustomProgressBar practiceProgressBar;
-    private CustomProgressBar quizMeProgressBar;
+    private JButton seeOneButton;
+    private JButton doOneButton;
+    private JButton teachOneButton;
+    private CustomProgressBar seeOneProgressBar;
+    private CustomProgressBar doOneProgressBar;
+    private CustomProgressBar teachOneProgressBar;
     private JLabel welcomeLabel;
 
     // ADDED: Problem selector combo box
@@ -88,33 +88,33 @@ public class DashboardPanel extends GPanel {
         logOutButton.addActionListener(e -> logOutButtonActionPerformed(e));
 
         // Initialize progress bars
-        teachMeProgressBar = new CustomProgressBar();
-        teachMeProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        teachMeProgressBar.setValue(100);
-        teachMeProgressBar.setString("100%");
-        teachMeProgressBar.setStringPainted(true);
+        seeOneProgressBar = new CustomProgressBar();
+        seeOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
+        seeOneProgressBar.setValue(100);
+        seeOneProgressBar.setString("100%");
+        seeOneProgressBar.setStringPainted(true);
 
-        practiceProgressBar = new CustomProgressBar();
-        practiceProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        practiceProgressBar.setValue(50);
-        practiceProgressBar.setString("50%");
-        practiceProgressBar.setStringPainted(true);
+        doOneProgressBar = new CustomProgressBar();
+        doOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
+        doOneProgressBar.setValue(50);
+        doOneProgressBar.setString("50%");
+        doOneProgressBar.setStringPainted(true);
 
-        quizMeProgressBar = new CustomProgressBar();
-        quizMeProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        quizMeProgressBar.setValue(0);
-        quizMeProgressBar.setString("0%");
-        quizMeProgressBar.setStringPainted(true);
+        teachOneProgressBar = new CustomProgressBar();
+        teachOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
+        teachOneProgressBar.setValue(0);
+        teachOneProgressBar.setString("0%");
+        teachOneProgressBar.setStringPainted(true);
 
         // Initialize buttons with new actions
-        teachMeButton = new JButton(TeachMeAction.instance());
-        teachMeButton.setFocusPainted(false);
+        seeOneButton = new JButton(SeeOneAction.instance());
+        seeOneButton.setFocusPainted(false);
 
-        practiceButton = new JButton(PracticeAction.instance());
-        practiceButton.setFocusPainted(false);
+        doOneButton = new JButton(DoOneAction.instance());
+        doOneButton.setFocusPainted(false);
 
-        quizMeButton = new JButton(QuizMeAction.instance());
-        quizMeButton.setFocusPainted(false);
+        teachOneButton = new JButton(TeachOneAction.instance());
+        teachOneButton.setFocusPainted(false);
 
         // ADDED: Problem selector dropdown for choosing problem type (LCS, Matrix, Knapsack)
         problemSelector = new JComboBox<>(new String[]{
@@ -124,7 +124,7 @@ public class DashboardPanel extends GPanel {
         });
         problemSelector.setSelectedIndex(0); // Default to LCS
 
-        // TODO: Hook this selection into TeachMeAction, PracticeAction, QuizMeAction
+        // TODO: Hook this selection into SeeOneAction, DoOneAction, TeachOneAction
         // TODO: Replace String-based selection with a proper ProblemType enum for clean future-proofing
     }
 
@@ -151,9 +151,9 @@ public class DashboardPanel extends GPanel {
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Create three columns
-        mainPanel.add(createColumn(teachMeProgressBar, teachMeButton, "Teach Me"));
-        mainPanel.add(createColumn(practiceProgressBar, practiceButton, "Practice"));
-        mainPanel.add(createColumn(quizMeProgressBar, quizMeButton, "Quiz Me"));
+        mainPanel.add(createColumn(seeOneProgressBar, seeOneButton, "See One"));
+        mainPanel.add(createColumn(doOneProgressBar, doOneButton, " Do One"));
+        mainPanel.add(createColumn(teachOneProgressBar, teachOneButton, "Teach One"));
 
         add(mainPanel, BorderLayout.CENTER);
 
@@ -192,11 +192,11 @@ public class DashboardPanel extends GPanel {
         return column;
     }
 
-    private void practiceButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        SplashFrame.instance().selectPracticeScreen();
+    private void doOneButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        SplashFrame.instance().selectDoOneScreen();
     }
 
-    private void teachMeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void seeOneButtonActionPerformed(java.awt.event.ActionEvent evt) {
         SplashFrame.instance().selectLessonScreen();
     }
 

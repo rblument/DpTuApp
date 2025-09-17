@@ -14,7 +14,7 @@ DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designe
   - Visualization of variable values during execution (VariablesView).
   - Visualization of subsequence comparison (SubSequenceView).
 - Student Modeling: Tracks student progress on learning outcomes (Knowledge Components).
-- Learning Modes: Basic structure for "Teach Me," "Practice," and "Quiz Me" modes (DashboardPanel).
+- Learning Modes: Basic structure for "See One," "Do One," and "Teach One" modes (DashboardPanel).
 - Client-Server Architecture: Java Swing GUI client communicates with a Java socket server over JSON.
 - Database Persistence: Uses MySQL to store user accounts, course structure, tutoring sessions, and student models.
 

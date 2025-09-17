@@ -72,7 +72,7 @@ public interface StudentModelSvc {
     * Retrieve a list of unfinished lessons for a student in a specific learning mode.
     * 
     * @param userId the unique identifier for the student.
-    * @param learningCategory the category of learning (e.g., "Teach Me", "Practice", "Quiz Me").
+    * @param learningCategory the category of learning (e.g., "See One", "Do One", "Teach One").
     * @return a list of strings representing unfinished lesson names.
     * @throws ObjNotFoundException if the student record is not found.
     * @throws NonRecoverableException if a database error occurs.
