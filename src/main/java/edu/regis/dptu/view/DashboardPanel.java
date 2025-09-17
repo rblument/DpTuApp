@@ -4,6 +4,7 @@
 package edu.regis.dptu.view;
 
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.view.act.DoOneAction;
@@ -16,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox; // Added for problem selector
@@ -24,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import java.util.logging.Logger;
 
 public class DashboardPanel extends GPanel {
     private TutoringSession model;
@@ -44,6 +47,8 @@ public class DashboardPanel extends GPanel {
     
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
+    
+    private static final Logger LOGGER = Logger.getLogger(DashboardPanel.class.getName());
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;
@@ -115,6 +120,9 @@ public class DashboardPanel extends GPanel {
 
         teachOneButton = new JButton(TeachOneAction.instance());
         teachOneButton.setFocusPainted(false);
+        
+        // Apply scaffold level rules for which buttons are visible.
+        applyScaffoldLevelRules();
 
         // ADDED: Problem selector dropdown for choosing problem type (LCS, Matrix, Knapsack)
         problemSelector = new JComboBox<>(new String[]{
@@ -220,5 +228,51 @@ public class DashboardPanel extends GPanel {
             default:
                 return ProblemKind.LCS_PROBLEM; // Fallback
         }
+    }
+    
+    /**
+     * Enable/disable buttons based on the student's current ScaffoldLevel.
+     */
+    private void applyScaffoldLevelRules() {
+        
+        // Gracefully handle if the model objects don't exist.
+        if (model == null || model.getStudent() == null) {
+            LOGGER.log(Level.WARNING, 
+                    "DashboardPanel: model or student is null, "
+                    + "skipping scaffold level rules");
+            return;
+        }
+        
+        // Get the current scaffold level.
+        var studentModel = model.getStudent().getStudentModel();
+        ScaffoldLevel lvl = studentModel.getScaffoldLevel();  
+        LOGGER.log(Level.INFO,
+                "DashboardPanel: applying scaffold level rules for {0}", lvl);
+
+        // Create button enabled booleans.
+        boolean seeOneButtonEnabled = false, 
+                doOneButtonEnabled = false, 
+                teachOneButtonEnabled = false;
+        
+        // Set the button enabled booleans based on the scaffold level.
+        switch (lvl) {
+            case EXTREME:
+                seeOneButtonEnabled = true;
+                break;
+            case NONE:
+                seeOneButtonEnabled = true;
+                doOneButtonEnabled = true;
+                teachOneButtonEnabled = true;
+                break;
+            default:
+                seeOneButtonEnabled = true;
+                doOneButtonEnabled = true;
+                break;
+        }
+        
+        // Use the button enabled booleans to actually enable/disable the buttons.
+        seeOneButton.setEnabled(seeOneButtonEnabled);
+        doOneButton.setEnabled(doOneButtonEnabled);
+        teachOneButton.setEnabled(teachOneButtonEnabled);
     }
 }
