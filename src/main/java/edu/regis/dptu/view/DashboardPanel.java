@@ -232,6 +232,8 @@ public class DashboardPanel extends GPanel {
     
     /**
      * Enable/disable buttons based on the student's current ScaffoldLevel.
+     * 
+     * @author hsherwin@regis.edu
      */
     private void applyScaffoldLevelRules() {
         
