@@ -1,60 +1,58 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.dao;
 
-import edu.regis.dptu.err.IllegalArgException;
-import edu.regis.dptu.err.NonRecoverableException;
-import edu.regis.dptu.err.ObjNotFoundException;
-import edu.regis.dptu.model.LCSProblem;
-import edu.regis.dptu.model.Problem;
-import edu.regis.dptu.model.Student;
-import edu.regis.dptu.model.Task;
-import edu.regis.dptu.model.TaskKind;
-import edu.regis.dptu.model.TutoringSession;
-import edu.regis.dptu.svc.ProblemSvc;
-import edu.regis.dptu.svc.ServiceFactory;
-import edu.regis.dptu.svc.SessionSvc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+import edu.regis.dptu.err.IllegalArgException;
+import edu.regis.dptu.err.NonRecoverableException;
+import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.Student;
+import edu.regis.dptu.model.TaskKind;
+import edu.regis.dptu.model.TutoringSession;
+import edu.regis.dptu.svc.ProblemSvc;
+import edu.regis.dptu.svc.ServiceFactory;
+import edu.regis.dptu.svc.SessionSvc;
+
 /**
- *
  * A Data Access Object implementing {@link SessionSvc} behaviors.
- * 
+ *
  * @author rickb
  */
 public class SessionDAO extends MySqlDAO implements SessionSvc {
-    /**
-     * Initialize this DAO via the parent constructor.
-     */
+    /** Initialize this DAO via the parent constructor. */
     public SessionDAO() {
         super();
     }
-    
+
     /**
      * {@inheritDoc}
-     * 
-     * Autoincrements the id and sets startDate to CURRENT_TIMESTAMP() so session need not specify those attributes
+     *
+     * <p>Autoincrements the id and sets startDate to CURRENT_TIMESTAMP() so session need not
+     * specify those attributes
      */
     @Override
-    public void create(TutoringSession session) throws IllegalArgException, NonRecoverableException {
-        final String sql = "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemType, ProblemId) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?)";
-        
+    public void create(TutoringSession session)
+            throws IllegalArgException, NonRecoverableException {
+        final String sql =
+                "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemType, ProblemId) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?)";
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -75,25 +73,25 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt.setInt(3, session.getCourse().getId());
             stmt.setInt(4, session.getUnit().getId());
             stmt.setBoolean(5, session.isIsActive());
-            
+
             Problem prob = session.getProblem();
             stmt.setString(6, prob.getType().toString());
             stmt.setInt(7, prob.getId());
 
             stmt.execute();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new NonRecoverableException("Create Session Error", e);
         } finally {
             close(conn, stmt);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public TutoringSession retrieve(Student student) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "SELECT SessionId, SecurityToken, StartDate, IsActive, ProblemType, ProblemId FROM TutoringSession WHERE UserId = ?";
+    public TutoringSession retrieve(Student student)
+            throws ObjNotFoundException, NonRecoverableException {
+        final String sql =
+                "SELECT SessionId, SecurityToken, StartDate, IsActive, ProblemType, ProblemId FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -101,12 +99,12 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         try {
             conn = DriverManager.getConnection(URL);
             stmt = conn.prepareStatement(sql);
-            
+
             String userId = student.getAccount().getUserId();
             stmt.setString(1, userId);
 
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 TutoringSession session = new TutoringSession(null);
                 GregorianCalendar date = new GregorianCalendar();
@@ -116,12 +114,11 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 date.setTime(rs.getDate(3));
                 session.setStartDate(date);
                 session.setIsActive(rs.getBoolean(4));
-                
+
                 TaskKind kind = TaskKind.valueOf(rs.getString(5));
-                
-                
+
                 ProblemSvc problemSvc = ServiceFactory.findProblemSvc();
-                
+
                 session.setProblem(problemSvc.retrieve(rs.getInt(6)));
 
                 return session;
@@ -134,13 +131,12 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             close(stmt);
         }
     }
-    
-     /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc} */
     @Override
-    public String retrieveSecurityToken(String userId) throws ObjNotFoundException, NonRecoverableException {
-         final String sql = "SELECT SecurityToken FROM TutoringSession WHERE UserId = ?";
+    public String retrieveSecurityToken(String userId)
+            throws ObjNotFoundException, NonRecoverableException {
+        final String sql = "SELECT SecurityToken FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -165,13 +161,13 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             close(conn, stmt);
         }
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc} */
     @Override
-    public void update(TutoringSession session) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "UPDATE TutoringSession SET SecurityToken = ?, CourseId = ?, UnitId = ?, IsActive = ? WHERE SessionId = ?";
+    public void update(TutoringSession session)
+            throws ObjNotFoundException, NonRecoverableException {
+        final String sql =
+                "UPDATE TutoringSession SET SecurityToken = ?, CourseId = ?, UnitId = ?, IsActive = ? WHERE SessionId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -195,16 +191,14 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             }
 
             conn.commit();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new NonRecoverableException("Update Session Error", e);
         } finally {
             close(conn, stmt);
         }
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc} */
     @Override
     public void delete(String userId) throws NonRecoverableException {
         final String sql = "DELETE FROM TutoringSession WHERE UserId = ?";
@@ -226,7 +220,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             }
 
             conn.commit();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new NonRecoverableException("Delete Session Error", e);
         } finally {
             close(conn, stmt);
@@ -241,7 +235,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      */
     private boolean exists(int sessionId, Connection conn) throws NonRecoverableException {
         final String sql = "SELECT SessionId FROM TutoringSession WHERE SessionId = ?;";
-        
+
         PreparedStatement stmt = null;
 
         try {
@@ -257,8 +251,4 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             close(stmt);
         }
     }
-    
-   
 }
-
-

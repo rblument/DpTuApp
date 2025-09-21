@@ -1,11 +1,11 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
@@ -17,64 +17,50 @@ import java.util.GregorianCalendar;
 
 /**
  * A Dynamic Programming tutoring session, which is displayed in the tutor view.
- * 
+ *
  * @author rickb
  */
 public class TutoringSession {
-    /**
-     * The id of this session in the database.
-     */
+    /** The id of this session in the database. */
     private int id;
-    
+
     /**
-     * An SHA-256 encrypted security token that must be communicated to the
-     * tutor/server in all subsequent requests after signing in.
+     * An SHA-256 encrypted security token that must be communicated to the tutor/server in all
+     * subsequent requests after signing in.
      */
     private String securityToken = "";
-    
-    /**
-     * The student being tutored in this session.
-     */
+
+    /** The student being tutored in this session. */
     private Student student;
-    
-    /**
-     * A summary of the course currently being taught in this session.
-     */
+
+    /** A summary of the course currently being taught in this session. */
     private CourseDigest course;
-    
-    /**
-     * A summary of the unit currently being taught in this session.
-     */
+
+    /** A summary of the unit currently being taught in this session. */
     private UnitDigest unit;
-    
-     /**
-     * True, if the session is currently active (though the student may not
-     * be currently signed-in).
+
+    /**
+     * True, if the session is currently active (though the student may not be currently signed-in).
      */
     private boolean isActive = true;
-    
-    /**
-     * The date and time when this session was initially created.
-     */
+
+    /** The date and time when this session was initially created. */
     private GregorianCalendar startDate;
-    
-    /**
-     * The overall problem being solved in this session.
-     */
+
+    /** The overall problem being solved in this session. */
     private Problem problem;
- 
-     /**
+
+    /**
      * The current task list.
-     * 
-     * If there are multiple tasks, the first one is the current task and the
-     * remaining tasks are pending. Multiple tasks occur when a student 
-     * overrides the task proposed by the tutor.
+     *
+     * <p>If there are multiple tasks, the first one is the current task and the remaining tasks are
+     * pending. Multiple tasks occur when a student overrides the task proposed by the tutor.
      */
     private ArrayList<PendingTask> tasks; // ToDo: Change to PendingTask
 
     /**
      * Initialize this session with default information.
-     * 
+     *
      * @param student the Student being tutored in this session.
      */
     public TutoringSession(Student student) {
@@ -83,20 +69,20 @@ public class TutoringSession {
     }
 
     /**
-     * Initialize this session with an Account and a Problem. 
-     * This constructor creates a new Student object from the Account.
-     * 
+     * Initialize this session with an Account and a Problem. This constructor creates a new Student
+     * object from the Account.
+     *
      * @param account the Account used to create the Student.
      * @param problem the Problem to be solved in this session.
      * @author EverettCV
      */
     public TutoringSession(Account account, Problem problem) {
-        this.student = new Student(account);  // Create a new Student from Account
+        this.student = new Student(account); // Create a new Student from Account
         this.problem = problem;
-        this.tasks = new ArrayList<>();  // Initialize tasks list
+        this.tasks = new ArrayList<>(); // Initialize tasks list
     }
-    
-     public int getId() {
+
+    public int getId() {
         return id;
     }
 
@@ -114,7 +100,7 @@ public class TutoringSession {
 
     /**
      * Return the student being tutored in this tutoring session.
-     * 
+     *
      * @return a Student
      */
     public Student getStudent() {
@@ -140,7 +126,7 @@ public class TutoringSession {
     public void setUnit(UnitDigest unit) {
         this.unit = unit;
     }
-    
+
     public boolean isIsActive() {
         return isActive;
     }
@@ -164,12 +150,12 @@ public class TutoringSession {
     public void setProblem(Problem problem) {
         this.problem = problem;
     }
-    
+
     public PendingTask currentTask() {
         return tasks.get(0);
     }
-    
-    //ToDo: change to PendingTask
+
+    // ToDo: change to PendingTask
     public void addTask(PendingTask task) {
         tasks.add(task);
     }
@@ -181,14 +167,12 @@ public class TutoringSession {
     public void setTasks(ArrayList<PendingTask> tasks) {
         this.tasks = tasks;
     }
-    
+
     public void removeTask(PendingTask task) {
         tasks.remove(task);
     }
-    
+
     public void removeTask(int taskId) {
-        for (PendingTask task : tasks) 
-            if (task.getTask().getId() == taskId)
-                removeTask(task);
+        for (PendingTask task : tasks) if (task.getTask().getId() == taskId) removeTask(task);
     }
 }

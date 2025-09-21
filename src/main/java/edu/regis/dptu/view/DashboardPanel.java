@@ -3,27 +3,27 @@
  */
 package edu.regis.dptu.view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.view.act.PracticeAction;
 import edu.regis.dptu.view.act.QuizMeAction;
 import edu.regis.dptu.view.act.TeachMeAction;
-import edu.regis.dptu.model.TaskKind;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox; // Added for problem selector
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 public class DashboardPanel extends GPanel {
     private TutoringSession model;
@@ -41,7 +41,7 @@ public class DashboardPanel extends GPanel {
 
     // ADDED: Problem selector combo box
     private JComboBox<String> problemSelector; // @author EverettCV
-    
+
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
@@ -50,17 +50,16 @@ public class DashboardPanel extends GPanel {
 
         if (!welcome) {
             welcome = true;
-            System.out.println("DashboardPanel initialized for user: "
-                    + tutoringSession.getStudent().getAccount().getFirstName());
-            String welcomeMessage = "Welcome, "
-                    + tutoringSession.getStudent().getAccount().getFirstName() + "! "
-                    + "Your session has successfully started.";
+            System.out.println(
+                    "DashboardPanel initialized for user: "
+                            + tutoringSession.getStudent().getAccount().getFirstName());
+            String welcomeMessage =
+                    "Welcome, "
+                            + tutoringSession.getStudent().getAccount().getFirstName()
+                            + "! "
+                            + "Your session has successfully started.";
             JOptionPane.showMessageDialog(
-                    null,
-                    welcomeMessage,
-                    "Welcome",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+                    null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
         }
 
         initializeComponents();
@@ -78,7 +77,8 @@ public class DashboardPanel extends GPanel {
         settingsButton = new JButton("Settings");
         settingsButton.setFocusPainted(false);
 
-        welcomeLabel = new JLabel("Welcome, " + model.getStudent().getAccount().getFirstName() + "!");
+        welcomeLabel =
+                new JLabel("Welcome, " + model.getStudent().getAccount().getFirstName() + "!");
         welcomeLabel.setForeground(REGIS_GOLD); // Gold color
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -117,15 +117,18 @@ public class DashboardPanel extends GPanel {
         quizMeButton.setFocusPainted(false);
 
         // ADDED: Problem selector dropdown for choosing problem type (LCS, Matrix, Knapsack)
-        problemSelector = new JComboBox<>(new String[]{
-            "Longest Common Subsequence",
-            "Matrix Chain Multiplication",
-            "Knapsack Problem"
-        });
+        problemSelector =
+                new JComboBox<>(
+                        new String[] {
+                            "Longest Common Subsequence",
+                            "Matrix Chain Multiplication",
+                            "Knapsack Problem"
+                        });
         problemSelector.setSelectedIndex(0); // Default to LCS
 
         // TODO: Hook this selection into TeachMeAction, PracticeAction, QuizMeAction
-        // TODO: Replace String-based selection with a proper ProblemType enum for clean future-proofing
+        // TODO: Replace String-based selection with a proper ProblemType enum for clean
+        // future-proofing
     }
 
     private void layoutComponents() {
@@ -158,7 +161,10 @@ public class DashboardPanel extends GPanel {
         add(mainPanel, BorderLayout.CENTER);
 
         // Copyright footer
-        JLabel copyright = new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved", SwingConstants.CENTER);
+        JLabel copyright =
+                new JLabel(
+                        "(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved",
+                        SwingConstants.CENTER);
         copyright.setForeground(Color.GRAY);
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
@@ -206,6 +212,7 @@ public class DashboardPanel extends GPanel {
 
     /**
      * Return the TaskKind corresponding to the currently selected problem in the dropdown.
+     *
      * @return TaskKind @author EverettCV
      */
     public ProblemKind getSelectedProblemKind() {
