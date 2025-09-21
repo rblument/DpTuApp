@@ -22,6 +22,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.Problem;
+
 /**
  * This is the Subsequence view for the TutoringSession View. The title, words,
  * and button are displayed. Both words entered to find LCS are shown with the
@@ -116,6 +119,19 @@ public class SubSequenceView extends JPanel {
     // Button trigger
     private void stepThroughLCS() {
         canvas.highlightLCS();
+    }
+
+    public void setModel(Problem currentProblem) {
+        if (currentProblem != null && currentProblem instanceof LCSProblem) {
+            this.updateWords(
+                ((LCSProblem) currentProblem).getX(),
+                ((LCSProblem) currentProblem).getY()
+            );
+
+            setVisible(true);
+        } else if (currentProblem == null) {
+            setVisible(false);
+        }
     }
 
     /**

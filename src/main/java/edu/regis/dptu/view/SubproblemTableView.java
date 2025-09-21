@@ -86,8 +86,12 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     public void setModel(Problem model) {
         this.model = model;
         if (this.model != null) {
-            this.model.addProblemListener(this);  // Listen for updates
-            updateView();                         // Initial view update
+            this.model.addProblemListener(this);
+            updateView();
+
+            setVisible(true);
+        } else {
+            setVisible(false);
         }
     }
 
