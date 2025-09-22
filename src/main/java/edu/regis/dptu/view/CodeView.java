@@ -39,15 +39,12 @@ public class CodeView extends GPanel implements ProblemListener {
 
     private ArrayList<String> statementStrings;
     private ArrayList<JLabel> statementJLabels;
-    private SubproblemTableView table; // Keep if needed for other interactions
 
     /** Used as a background color */
     private static final Color MEDIUM_GRAY = new Color(215, 215, 215);
 
     /** Initialize this view including creating and laying out its child components. */
     public CodeView(SubproblemTableView table) {
-        this.table = table; // Store reference if needed
-
         // Initialize label list
         statementJLabels = new ArrayList<>();
 
@@ -73,12 +70,7 @@ public class CodeView extends GPanel implements ProblemListener {
      * @param model a CodeModel.
      */
     public void setModel(Problem model) {
-        // NOTE: Cannot remove listener from the old model as 'removeProblemListener'
-        //       method doesn't seem to exist on the Problem interface/class.
-        // if (this.model != null) {
-        //    this.model.removeProblemListener(this); // This line caused compilation error
-        // }
-
+        // NOTE: Cannot remove listener from the old model
         this.model = model;
 
         // Clear previous UI components
@@ -94,6 +86,10 @@ public class CodeView extends GPanel implements ProblemListener {
             // if the same listener is added multiple times if setModel is called repeatedly
             // with the same model instance (which shouldn't typically happen).
             this.model.addProblemListener(this);
+
+            setVisible(true);
+        } else {
+            setVisible(false);
         }
 
         // Update the view to reflect the initial state of the new model
