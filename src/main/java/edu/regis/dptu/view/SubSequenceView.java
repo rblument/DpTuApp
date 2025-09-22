@@ -121,9 +121,7 @@ public class SubSequenceView extends JPanel {
     public void setModel(Problem currentProblem) {
         if (currentProblem != null && currentProblem instanceof LCSProblem) {
             this.updateWords(
-                ((LCSProblem) currentProblem).getX(),
-                ((LCSProblem) currentProblem).getY()
-            );
+                    ((LCSProblem) currentProblem).getX(), ((LCSProblem) currentProblem).getY());
 
             setVisible(true);
         } else if (currentProblem == null) {

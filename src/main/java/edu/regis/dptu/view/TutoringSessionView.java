@@ -315,7 +315,7 @@ public class TutoringSessionView extends GPanel {
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
         variablesView.setModel(currentProblem);
-        tableView.setModel(currentProblem); 
+        tableView.setModel(currentProblem);
 
         updateView(currentProblem);
     }

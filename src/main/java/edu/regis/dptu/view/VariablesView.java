@@ -32,11 +32,11 @@ public class VariablesView extends GPanel {
 
     public void setModel(Problem model) {
         this.model = model;
-        
+
         if (model != null) {
-                setVisible(true);
+            setVisible(true);
         } else {
-                setVisible(false);
+            setVisible(false);
         }
 
         updateView();
