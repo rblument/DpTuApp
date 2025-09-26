@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
-import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TutoringSession;
 
 /**
@@ -28,12 +27,9 @@ import edu.regis.dptu.model.TutoringSession;
  * @author rickb (Modified by Assistant for Functional Integration & Debug)
  */
 public class TutoringSessionView extends GPanel {
-
-    // ... (fields remain the same) ...
     private TutoringSession model;
     private VariablesView variablesView;
     private JLabel subproblemView;
-    private JLabel xView;
     private CodeView codeView;
 
     private ProblemInputView problemInputView;
@@ -123,8 +119,7 @@ public class TutoringSessionView extends GPanel {
     private void initializeComponents() {
         System.out.println("DEBUG: TutoringSessionView initializing components...");
         variablesView = new VariablesView();
-        subproblemView = new JLabel("Subproblem View"); // Original Placeholder
-        xView = new JLabel("X View"); // Original Placeholder
+        subproblemView = new JLabel("Subproblem View");
 
         problemInputView = new ProblemInputView(this);
 
@@ -283,93 +278,9 @@ public class TutoringSessionView extends GPanel {
 
     }
 
-    /**
-     * Display the current model in our child components. **FUNCTIONAL CHANGE:** Ensures all views
-     * needing the model receive it.
-     */
-    private void updateView() {
+    private void updateView(Problem currentProblem) {
         System.out.println("DEBUG: TutoringSessionView.updateView called.");
 
-        if (model == null) {
-            System.out.println(
-                    "DEBUG: TutoringSessionView.updateView: Main session model is null. Setting child models to null.");
-            // Set models to null if session model is null
-            stepViewPanel.setModel(null);
-            codeView.setModel(null);
-            variablesView.setModel(null);
-            tableView.setModel(null);
-            return;
-        }
-
-        Problem currentProblem = model.getProblem();
-        System.out.println(
-                "DEBUG: TutoringSessionView.updateView: Current problem from session: "
-                        + (currentProblem != null
-                                ? Integer.toHexString(currentProblem.hashCode())
-                                : "null"));
-
-        // Update views depending on Problem type
-        ProblemKind type = currentProblem.getType();
-        System.out.println("DEBUG: TaskKind is " + type);
-
-        switch (type) {
-            case LCS_PROBLEM:
-                System.out.println("DEBUG: LCSProblem detected. Passing model to views.");
-
-                // Pass the current problem to all relevant LCS views
-                stepViewPanel.setModel(currentProblem);
-                codeView.setModel(currentProblem);
-                variablesView.setModel(currentProblem);
-                tableView.setModel(currentProblem);
-
-                // Subsequence View - update and show
-                subSeqView.updateWords(
-                        ((LCSProblem) currentProblem).getX(), ((LCSProblem) currentProblem).getY());
-                subSeqView.setVisible(true);
-
-                // Make sure all views are visible
-                stepViewPanel.setVisible(true);
-                codeView.setVisible(true);
-                variablesView.setVisible(true);
-                tableView.setVisible(true);
-
-                break;
-
-            case MATRIX_CHAIN:
-                System.out.println("DEBUG: MatrixChainProblem detected. Clearing LCS views.");
-
-                // LCS views should not display anything for Matrix problems
-                stepViewPanel.setModel(null);
-                codeView.setModel(null);
-                variablesView.setModel(null);
-                tableView.setModel(null);
-
-                stepViewPanel.setVisible(false);
-                codeView.setVisible(false);
-                variablesView.setVisible(false);
-                tableView.setVisible(false);
-                subSeqView.setVisible(false); // Hide Subsequence view too
-
-                // TODO: Eventually create Matrix-specific step/code/table views,
-                // you can add logic here to pass the currentProblem to those views
-                break;
-
-            default:
-                System.out.println("DEBUG: Unrecognized TaskKind. Clearing views.");
-                stepViewPanel.setModel(null);
-                codeView.setModel(null);
-                variablesView.setModel(null);
-                tableView.setModel(null);
-
-                stepViewPanel.setVisible(false);
-                codeView.setVisible(false);
-                variablesView.setVisible(false);
-                tableView.setVisible(false);
-                subSeqView.setVisible(false);
-                break;
-        }
-
-        // Rebuild the correct ProblemInputView
         if (problemInputView != null) {
             remove(problemInputView);
         }
@@ -390,13 +301,22 @@ public class TutoringSessionView extends GPanel {
                 5,
                 5);
 
-        // Refresh layout after potentially changing models
         revalidate();
         repaint();
     }
 
     void setModel(TutoringSession model) {
         this.model = model;
-        updateView();
+
+        Problem currentProblem = null;
+        if (model != null) currentProblem = model.getProblem();
+
+        subSeqView.setModel(currentProblem);
+        stepViewPanel.setModel(currentProblem);
+        codeView.setModel(currentProblem);
+        variablesView.setModel(currentProblem);
+        tableView.setModel(currentProblem);
+
+        updateView(currentProblem);
     }
 }
