@@ -1,11 +1,11 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
@@ -16,11 +16,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+
 import javax.swing.JPanel;
 
 /**
- * This is the Subsequence Canvas view. Two words are displayed aside each
- * other, and shows a step-by-step process to finding the LCS.
+ * This is the Subsequence Canvas view. Two words are displayed aside each other, and shows a
+ * step-by-step process to finding the LCS.
  *
  * @author Sofia Reyes
  */
@@ -34,7 +35,6 @@ public class SubSequenceCanvasView extends JPanel {
     private String word2;
 
     /**
-     *
      * @param word1
      * @param word2
      */
@@ -102,9 +102,7 @@ public class SubSequenceCanvasView extends JPanel {
         return lcsBuild.reverse().toString();
     }
 
-    /**
-     * When the button is pressed, it highlights the sequence of the two words.
-     */
+    /** When the button is pressed, it highlights the sequence of the two words. */
     public void highlightLCS() {
         if (highlightIndex < lcs.length() - 1) {
             highlightIndex++;
@@ -113,8 +111,8 @@ public class SubSequenceCanvasView extends JPanel {
     }
 
     /**
-     * This displays the two words onto the canvas view, and when the button is
-     * clicked, then it will find the common letters shared.
+     * This displays the two words onto the canvas view, and when the button is clicked, then it
+     * will find the common letters shared.
      *
      * @param g
      */
@@ -145,26 +143,27 @@ public class SubSequenceCanvasView extends JPanel {
             int idx2 = subSeq.indexOf(c, lcsIndex);
 
             if (count < highlightIndex && idx1 != -1 && idx2 != -1) {
-                g.drawString(String.valueOf(c), x1 + g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)), y1);
-                g.drawString(String.valueOf(c), x2 + g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)), y2);
+                g.drawString(
+                        String.valueOf(c),
+                        x1 + g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)),
+                        y1);
+                g.drawString(
+                        String.valueOf(c),
+                        x2 + g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)),
+                        y2);
                 lcsIndex = idx1 + 1;
                 count++;
             }
-
         }
-
     }
 
     /**
      * Updates the first string (main sequence) displayed on the canvas.
-     * 
-     * Changes (April 17, 2025):
-     * - Dynamically updates mainSeq.
-     * - Recomputes LCS based on the updated string.
-     * - Resets highlight progress for fresh stepping through LCS.
-     * 
+     *
+     * <p>Changes (April 17, 2025): - Dynamically updates mainSeq. - Recomputes LCS based on the
+     * updated string. - Resets highlight progress for fresh stepping through LCS.
+     *
      * @author EverettCV
-     * 
      * @param word1 The new main sequence string
      */
     public void setWord1(String word1) {
@@ -176,14 +175,11 @@ public class SubSequenceCanvasView extends JPanel {
 
     /**
      * Updates the second string (sub sequence) displayed on the canvas.
-     * 
-     * Changes (April 17, 2025):
-     * - Dynamically updates subSeq.
-     * - Recomputes LCS based on the updated string.
-     * - Resets highlight progress for fresh stepping through LCS.
-     * 
+     *
+     * <p>Changes (April 17, 2025): - Dynamically updates subSeq. - Recomputes LCS based on the
+     * updated string. - Resets highlight progress for fresh stepping through LCS.
+     *
      * @author EverettCV
-     * 
      * @param word2 The new sub sequence string
      */
     public void setWord2(String word2) {
@@ -194,24 +190,26 @@ public class SubSequenceCanvasView extends JPanel {
     }
 
     // Previous code to show both words in canvas view. this worked before adding button aspects
-//        int x1 = 20;
-//        int y1 = 30;
-//        g.setColor(Color.BLACK);
-//        g.drawString(mainSeq, x1, y1);
-//
-//        int x2 = 20;
-//        int y2 = 60;
-//        g.drawString(subSeq, x2, y2);
-//
-//        g.setColor(Color.RED);
-//        int lcsIndex = 0;
-//        for (char c : lcs.toCharArray()) {
-//            int idx1 = mainSeq.indexOf(c, lcsIndex);
-//            int idx2 = subSeq.indexOf(c, lcsIndex);
-//            if (idx1 != -1 && idx2 != -1) {
-//                g.drawString(String.valueOf(c), x1 + g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)), y1);
-//                g.drawString(String.valueOf(c), x2 + g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)), y2);
-//                lcsIndex = idx1 + 1;
-//            }
-//        }
+    //        int x1 = 20;
+    //        int y1 = 30;
+    //        g.setColor(Color.BLACK);
+    //        g.drawString(mainSeq, x1, y1);
+    //
+    //        int x2 = 20;
+    //        int y2 = 60;
+    //        g.drawString(subSeq, x2, y2);
+    //
+    //        g.setColor(Color.RED);
+    //        int lcsIndex = 0;
+    //        for (char c : lcs.toCharArray()) {
+    //            int idx1 = mainSeq.indexOf(c, lcsIndex);
+    //            int idx2 = subSeq.indexOf(c, lcsIndex);
+    //            if (idx1 != -1 && idx2 != -1) {
+    //                g.drawString(String.valueOf(c), x1 +
+    // g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)), y1);
+    //                g.drawString(String.valueOf(c), x2 +
+    // g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)), y2);
+    //                lcsIndex = idx1 + 1;
+    //            }
+    //        }
 }

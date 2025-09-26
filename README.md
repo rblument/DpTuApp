@@ -102,6 +102,14 @@ _otherwise_
 - Running LCS:
   After sign-in, select a mode and use algorithm controls to step through LCS problem.
 
+## Contribution
+
+When contributing, be mindful to format the code before pushing it to GitHub. You can do this by running `mvn spotless:apply`. A plugin defined in [`pom.xml`](./pom.xml) controls the formatting of the project. The formatting keeps the code consistent for others to read, helping code readability and maintenance. 
+
+If you forget to format the code, be mindful that a GitHub workflow will do this for you in [`.github/workflows/format-code.yml`](./.github/workflows/format-code.yml). It should only affect you when pushing multiple times without running it. 
+
+A future contribution could be how to configure Netbeans to run this automatically in a pre-commit hook (but as of Sept 2025, Netbeans does not support pre-commit hooks). 
+
 ## Known Issues
 
 - Incomplete Problem Types: Matrix Chain and 0/1 Knapsack views may be placeholders.

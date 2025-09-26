@@ -1,20 +1,20 @@
 package edu.regis.dptu.dao;
 
-import edu.regis.dptu.err.NonRecoverableException;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import edu.regis.dptu.err.NonRecoverableException;
+
 /**
- * An Transaction Data Access Object to extend for when multiple
- * database operations should complete or fail as a logical unit
- * 
+ * An Transaction Data Access Object to extend for when multiple database operations should complete
+ * or fail as a logical unit
+ *
  * @author benm
  */
 public abstract class Transactionable extends MySqlDAO {
     /**
      * Start a transaction on the connection
-     * 
+     *
      * @param conn the database connection
      */
     protected void startTransaction(Connection conn) {
@@ -25,9 +25,8 @@ public abstract class Transactionable extends MySqlDAO {
     }
 
     /**
-     * Commit any statements made in the current transaction associated
-     * with the given connection.
-     * 
+     * Commit any statements made in the current transaction associated with the given connection.
+     *
      * @param conn the database connection
      */
     protected void commit(Connection conn) throws NonRecoverableException {
@@ -39,16 +38,16 @@ public abstract class Transactionable extends MySqlDAO {
     }
 
     /**
-     * Rollback any statements made in the current transaction associated
-     * with the given connection.
-     * 
+     * Rollback any statements made in the current transaction associated with the given connection.
+     *
      * @param conn the database connection
      */
     protected void rollback(Connection conn) throws NonRecoverableException {
         try {
             conn.rollback();
         } catch (SQLException e) {
-            throw new NonRecoverableException("Transaction Error: Not able to rollback transaction");
+            throw new NonRecoverableException(
+                    "Transaction Error: Not able to rollback transaction");
         }
     }
 }

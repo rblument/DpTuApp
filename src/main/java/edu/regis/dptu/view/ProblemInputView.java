@@ -1,20 +1,19 @@
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JPanel;
-import edu.regis.dptu.model.TaskKind;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
- * 
- * Updated April 30, 2025:
- * - Dynamically loads the correct input panel based on the Problem's TaskKind.
- * - Supports LCSInputView and MatrixInputView.
- * - KnapsackInputView is scaffolded for future use.
- * - Added null model fallback to avoid initialization errors when model not yet set.
- * 
+ *
+ * <p>Updated April 30, 2025: - Dynamically loads the correct input panel based on the Problem's
+ * TaskKind. - Supports LCSInputView and MatrixInputView. - KnapsackInputView is scaffolded for
+ * future use. - Added null model fallback to avoid initialization errors when model not yet set.
+ *
  * @author EverettCV
  */
 public class ProblemInputView extends JPanel {
@@ -26,7 +25,8 @@ public class ProblemInputView extends JPanel {
         setLayout(new BorderLayout());
 
         // Safely get the problem from the parent model (can be null during early initialization)
-        Problem problem = (parentView.getModel() != null) ? parentView.getModel().getProblem() : null;
+        Problem problem =
+                (parentView.getModel() != null) ? parentView.getModel().getProblem() : null;
 
         // If no model/problem exists yet, fallback to LCSInputView by default
         if (problem == null) {
@@ -51,7 +51,8 @@ public class ProblemInputView extends JPanel {
                 break;
 
             case KNAPSACK_0_1:
-                // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are implemented:
+                // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are
+                // implemented:
                 // KnapsackInputView knapsackInputView = new KnapsackInputView();
                 // add(knapsackInputView, BorderLayout.CENTER);
                 System.out.println("Knapsack input view not yet implemented.");

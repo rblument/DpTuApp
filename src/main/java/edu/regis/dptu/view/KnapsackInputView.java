@@ -10,14 +10,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /*
-* Currently, KnapsackInputView is thought to be designed as a Single Input field with an Add button
-* to then append it to a list with all inputs, that can then be passed to a display variable in another View,
-* which can be used and visualized there. NOT IMPLEMENTED OR TESTED, ONLY TEMPLATED.
-* 
-* Relevant files and helpful templates to follow:
-* ProblemInputView.java
-* LCSInputView.java
-*/
+ * Currently, KnapsackInputView is thought to be designed as a Single Input field with an Add button
+ * to then append it to a list with all inputs, that can then be passed to a display variable in another View,
+ * which can be used and visualized there. NOT IMPLEMENTED OR TESTED, ONLY TEMPLATED.
+ *
+ * Relevant files and helpful templates to follow:
+ * ProblemInputView.java
+ * LCSInputView.java
+ */
 public class KnapsackInputView extends JPanel {
     public KnapsackInputView() {
         setLayout(new GridBagLayout());

@@ -1,5 +1,14 @@
 package edu.regis.dptu.dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Course;
@@ -13,22 +22,11 @@ import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.svc.CourseSvc;
 import edu.regis.dptu.svc.ServiceFactory;
 import edu.regis.dptu.svc.StudentModelSvc;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * A Data Access Object implementing {@link StudentModelSvc } behaviors.
- * 
- * @todo temporary
- * Shows how to use the {@link Transactionable} class
  *
+ * @todo temporary Shows how to use the {@link Transactionable} class
  * @author rickb
  * @author benm
  */
@@ -39,9 +37,7 @@ import java.util.List;
  */
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
 
-    /**
-     * Initialize this DAO via the parent constructor.
-     */
+    /** Initialize this DAO via the parent constructor. */
     public StudentModelDAO() {
         super();
     }
@@ -50,7 +46,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     public void create(Student student) throws NonRecoverableException {
         final String sql1 = "INSERT INTO StudentModel (UserId, ScaffoldLevel) VALUES (?,?)";
 
-        final String sql2 = "INSERT INTO Assessment (UserId, KnowledgeComponentId, AssessmentLevel, Exposures, Successes, Hints) VALUES (?,?,?,?,?,?)";
+        final String sql2 =
+                "INSERT INTO Assessment (UserId, KnowledgeComponentId, AssessmentLevel, Exposures, Successes, Hints) VALUES (?,?,?,?,?,?)";
 
         String userId = student.getAccount().getUserId();
         StudentModel studentModel = student.getStudentModel();
@@ -62,13 +59,13 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
         try {
             conn = DriverManager.getConnection(URL);
             stmt1 = conn.prepareStatement(sql1);
-            
+
             startTransaction(conn);
-            
+
             stmt1.setString(1, userId);
             stmt1.setString(2, ScaffoldLevel.EXTREME.toString());
             stmt1.executeUpdate();
-            
+
             stmt2 = conn.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
 
             for (Assessment assessment : studentModel.getAssessments().values()) {
@@ -100,7 +97,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     }
 
     @Override
-    public StudentModel retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
+    public StudentModel retrieve(String userId)
+            throws ObjNotFoundException, NonRecoverableException {
         final String sql = "SELECT ScaffoldLevel FROM StudentModel WHERE UserId = ?";
 
         Connection conn = null;
@@ -137,11 +135,13 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
 
     @Override
     public void update(StudentModel model) throws ObjNotFoundException, NonRecoverableException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void updateAssessment(StudentModel model, Assessment assessment, StudentModelFieldKind field)
+    public void updateAssessment(
+            StudentModel model, Assessment assessment, StudentModelFieldKind field)
             throws NonRecoverableException {
 
         String sql = "";
@@ -200,7 +200,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
 
     @Override
     public void delete(String userId) throws NonRecoverableException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
@@ -219,18 +220,15 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     }
 
     /**
-     * Utility that returns whether the student model exists for the given user
-     * id in the database.
+     * Utility that returns whether the student model exists for the given user id in the database.
      *
-     * As all students are created with an associated student model, this should
-     * always return true.
+     * <p>As all students are created with an associated student model, this should always return
+     * true.
      *
-     * @param userId the user id of the student whose student model is being
-     * checked.
-     * @param conn an existing connection to the database, which is not closed
-     * by this method.
-     * @return true, if the student model for the given user id exists in the
-     * database, which should always be the case, otherwise false
+     * @param userId the user id of the student whose student model is being checked.
+     * @param conn an existing connection to the database, which is not closed by this method.
+     * @return true, if the student model for the given user id exists in the database, which should
+     *     always be the case, otherwise false
      * @throws NonRecoverableException (see ex.getCause().getErrorCode())
      */
     private boolean exists(String userId, Connection conn) throws NonRecoverableException {
@@ -253,107 +251,106 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
             close(stmt);
         }
     }
-    
-   /**
-    * Retrieves a list of unfinished lessons for a student in a specific learning category.
-    * 
-    * The category is inferred from `AssessmentLevel`:
-    * - "Not Started" → See One
-    * - "In Progress" → Do One
-    * - "Completed", "Very Low", "Low", "Medium", "High", "Very High" → Teach One
-    *
-    * If a lesson is not yet completed in a **previous category**, it will indicate that.
-    *
-    * @param userId The unique identifier of the student.
-    * @param learningCategory The learning category ("See One", "Do One", "Teach One").
-    * @return A list of unfinished lesson names, formatted accordingly.
-    * @throws ObjNotFoundException If the student record is not found.
-    * @throws NonRecoverableException If a database error occurs.
-    */
-   @Override
-   public List<String> retrieveIncompleteLessons(String userId, String learningCategory) 
-           throws ObjNotFoundException, NonRecoverableException {
 
-       List<String> lessons = new ArrayList<>();
+    /**
+     * Retrieves a list of unfinished lessons for a student in a specific learning category.
+     *
+     * <p>The category is inferred from `AssessmentLevel`: - "Not Started" → Teach Me - "In
+     * Progress" → Practice - "Completed", "Very Low", "Low", "Medium", "High", "Very High" → Quiz
+     * Me
+     *
+     * <p>If a lesson is not yet completed in a **previous category**, it will indicate that.
+     *
+     * @param userId The unique identifier of the student.
+     * @param learningCategory The learning category ("Teach Me", "Practice", "Quiz Me").
+     * @return A list of unfinished lesson names, formatted accordingly.
+     * @throws ObjNotFoundException If the student record is not found.
+     * @throws NonRecoverableException If a database error occurs.
+     */
+    @Override
+    public List<String> retrieveIncompleteLessons(String userId, String learningCategory)
+            throws ObjNotFoundException, NonRecoverableException {
 
-       // SQL Query: Retrieve all lessons and their assessment levels
-       final String sql = """
+        List<String> lessons = new ArrayList<>();
+
+        // SQL Query: Retrieve all lessons and their assessment levels
+        final String sql =
+                """
            SELECT kc.Title, a.AssessmentLevel
            FROM Assessment a
            JOIN KnowledgeComponent kc ON a.KnowledgeComponentId = kc.Id
            WHERE a.UserId = ?
        """;
 
-       try (Connection conn = DriverManager.getConnection(URL);
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(URL);
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-           stmt.setString(1, userId);
-           try (ResultSet rs = stmt.executeQuery()) {
-               while (rs.next()) {
-                   String lessonTitle = rs.getString("Title");
-                   String assessmentLevel = rs.getString("AssessmentLevel");
+            stmt.setString(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String lessonTitle = rs.getString("Title");
+                    String assessmentLevel = rs.getString("AssessmentLevel");
 
-                   // Determine category based on AssessmentLevel
-                   switch (AssessmentLevel.fromString(assessmentLevel)) {
-                       case NOT_STARTED:
-                           if (learningCategory.equalsIgnoreCase("See One")) {
-                               lessons.add(lessonTitle);
-                           } else {
-                               // If user is in "Do One" or "Teach One" but hasn't done See One
-                               lessons.add(lessonTitle + " (Complete in See One first)");
-                           }
-                           break;
-                       case IN_PROGRESS:
-                           if (learningCategory.equalsIgnoreCase("Do One")) {
-                               lessons.add(lessonTitle);
-                           } else {
-                               // If user is in "Teach One" but hasn't completed Do One
-                               lessons.add(lessonTitle + " (Complete in Do One first)");
-                           }
-                           break;
-                       case COMPLETED:
-                       case VERY_LOW:
-                       case LOW:
-                       case MEDIUM:
-                       case HIGH:
-                       case VERY_HIGH:
-                           if (learningCategory.equalsIgnoreCase("Teach One")) {
-                               lessons.add(lessonTitle);
-                           }
-                           break;
-                       default:
-                           break;
-                   }
-               }
-           }
-       } catch (SQLException e) {
-           throw new NonRecoverableException("Error retrieving incomplete lessons: " + e, e);
-       }
+                    // Determine category based on AssessmentLevel
+                    switch (AssessmentLevel.fromString(assessmentLevel)) {
+                        case NOT_STARTED:
+                            if (learningCategory.equalsIgnoreCase("Teach Me")) {
+                                lessons.add(lessonTitle);
+                            } else {
+                                // If user is in "Practice" or "Quiz Me" but hasn't done Teach Me
+                                lessons.add(lessonTitle + " (Complete in Teach Me first)");
+                            }
+                            break;
+                        case IN_PROGRESS:
+                            if (learningCategory.equalsIgnoreCase("Practice")) {
+                                lessons.add(lessonTitle);
+                            } else {
+                                // If user is in "Quiz Me" but hasn't completed Practice
+                                lessons.add(lessonTitle + " (Complete in Practice first)");
+                            }
+                            break;
+                        case COMPLETED:
+                        case VERY_LOW:
+                        case LOW:
+                        case MEDIUM:
+                        case HIGH:
+                        case VERY_HIGH:
+                            if (learningCategory.equalsIgnoreCase("Quiz Me")) {
+                                lessons.add(lessonTitle);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new NonRecoverableException("Error retrieving incomplete lessons: " + e, e);
+        }
 
-       // If no lessons are found, return a single message to indicate completion
-       if (lessons.isEmpty()) {
-           lessons.add("All lessons completed!");
-       }
+        // If no lessons are found, return a single message to indicate completion
+        if (lessons.isEmpty()) {
+            lessons.add("All lessons completed!");
+        }
 
-       return lessons;
-   }
-
-
-
+        return lessons;
+    }
 
     /**
      * Retrive
+     *
      * @param userId
      * @param conn
      * @return
      * @throws ObjNotFoundException
      * @throws SQLException
-     * @throws NonRecoverableException 
+     * @throws NonRecoverableException
      */
     private ArrayList<Assessment> retrieveAssessments(String userId, Connection conn)
             throws ObjNotFoundException, SQLException, NonRecoverableException {
 
-        final String sql = "SELECT Id,KnowledgeComponentId,AssessmentLevel,Exposures,Successes,Hints FROM Assessment WHERE UserId = ?";
+        final String sql =
+                "SELECT Id,KnowledgeComponentId,AssessmentLevel,Exposures,Successes,Hints FROM Assessment WHERE UserId = ?";
 
         CourseSvc courseSvc = ServiceFactory.findCourseSvc();
         Course course = courseSvc.retrieve(1); // Note only one course possible.
