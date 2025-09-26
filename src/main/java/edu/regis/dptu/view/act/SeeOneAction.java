@@ -22,8 +22,8 @@ import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
-public class TeachMeAction extends DpTuGuiAction {
-    private static final TeachMeAction SINGLETON;
+public class SeeOneAction extends DpTuGuiAction {
+    private static final SeeOneAction SINGLETON;
     
     static {
         SINGLETON = new SeeOneAction();

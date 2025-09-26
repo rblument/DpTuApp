@@ -255,14 +255,14 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     /**
      * Retrieves a list of unfinished lessons for a student in a specific learning category.
      *
-     * <p>The category is inferred from `AssessmentLevel`: - "Not Started" → Teach Me - "In
-     * Progress" → Practice - "Completed", "Very Low", "Low", "Medium", "High", "Very High" → Quiz
+     * <p>The category is inferred from `AssessmentLevel`: - "Not Started" → See One - "In
+     * Progress" → Do One - "Completed", "Very Low", "Low", "Medium", "High", "Very High" → Teach One
      * Me
      *
      * <p>If a lesson is not yet completed in a **previous category**, it will indicate that.
      *
      * @param userId The unique identifier of the student.
-     * @param learningCategory The learning category ("Teach Me", "Practice", "Quiz Me").
+     * @param learningCategory The learning category ("See One", "Do One", "Teach One").
      * @return A list of unfinished lesson names, formatted accordingly.
      * @throws ObjNotFoundException If the student record is not found.
      * @throws NonRecoverableException If a database error occurs.
@@ -294,19 +294,19 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     // Determine category based on AssessmentLevel
                     switch (AssessmentLevel.fromString(assessmentLevel)) {
                         case NOT_STARTED:
-                            if (learningCategory.equalsIgnoreCase("Teach Me")) {
+                            if (learningCategory.equalsIgnoreCase("See One")) {
                                 lessons.add(lessonTitle);
                             } else {
-                                // If user is in "Practice" or "Quiz Me" but hasn't done Teach Me
-                                lessons.add(lessonTitle + " (Complete in Teach Me first)");
+                                // If user is in "Do One" or "Teach One" but hasn't done "See One"
+                                lessons.add(lessonTitle + " (Complete in \"See One\" first)");
                             }
                             break;
                         case IN_PROGRESS:
-                            if (learningCategory.equalsIgnoreCase("Practice")) {
+                            if (learningCategory.equalsIgnoreCase("Do One")) {
                                 lessons.add(lessonTitle);
                             } else {
-                                // If user is in "Quiz Me" but hasn't completed Practice
-                                lessons.add(lessonTitle + " (Complete in Practice first)");
+                                // If user is in "Teach One" but hasn't completed "Do One"
+                                lessons.add(lessonTitle + " (Complete in \"Do One\" first)");
                             }
                             break;
                         case COMPLETED:
@@ -315,7 +315,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                         case MEDIUM:
                         case HIGH:
                         case VERY_HIGH:
-                            if (learningCategory.equalsIgnoreCase("Quiz Me")) {
+                            if (learningCategory.equalsIgnoreCase("Teach One")) {
                                 lessons.add(lessonTitle);
                             }
                             break;

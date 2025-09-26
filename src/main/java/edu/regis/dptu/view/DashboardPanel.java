@@ -9,6 +9,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,11 +22,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
-import edu.regis.dptu.view.act.PracticeAction;
-import edu.regis.dptu.view.act.QuizMeAction;
-import edu.regis.dptu.view.act.TeachMeAction;
+import edu.regis.dptu.view.act.DoOneAction;
+import edu.regis.dptu.view.act.TeachOneAction;
+import edu.regis.dptu.view.act.SeeOneAction;
 
 public class DashboardPanel extends GPanel {
     private TutoringSession model;
@@ -131,7 +135,7 @@ public class DashboardPanel extends GPanel {
                         });
         problemSelector.setSelectedIndex(0); // Default to LCS
 
-        // TODO: Hook this selection into TeachMeAction, PracticeAction, QuizMeAction
+        // TODO: Hook this selection into SeeOneAction, DoOneAction, TeachOneAction
         // TODO: Replace String-based selection with a proper ProblemType enum for clean
         // future-proofing
     }
@@ -216,7 +220,7 @@ public class DashboardPanel extends GPanel {
     }
 
     /**
-     * Return the TaskKind corresponding to the currently selected problem in the dropdown.
+     * Return the TaskKind corresponding to the currently selected problem in the drop-down.
      *
      * @return TaskKind @author EverettCV
      */
