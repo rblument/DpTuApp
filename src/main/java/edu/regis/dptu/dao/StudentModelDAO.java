@@ -22,6 +22,9 @@ import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.svc.CourseSvc;
 import edu.regis.dptu.svc.ServiceFactory;
 import edu.regis.dptu.svc.StudentModelSvc;
+import edu.regis.dptu.svc.SessionSvc;
+import edu.regis.dptu.model.TutoringSession;
+
 
 /**
  * A Data Access Object implementing {@link StudentModelSvc } behaviors.
@@ -120,7 +123,23 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                 for (Assessment assessment : retrieveAssessments(userId, conn)) {
                     studentModel.addAssessment(assessment);
                 }
+                
+                try {
+                    SessionSvc sessionSvc = ServiceFactory.findSessionSvc();
 
+                    // Build a minimal Student with userId so sessionSvc can retrieve
+                    Student stub = new Student();
+                    Account acct = new Account();
+                    acct.setUserId(userId);
+                    stub.setAccount(acct);
+
+                    TutoringSession session = sessionSvc.retrieve(stub);
+                    if (session != null) {
+                        studentModel.addSession(session);
+                    }
+                } catch (ObjNotFoundException ignore) {
+                    // No session found for this user, leave sessions list empty
+                }
                 return studentModel;
 
             } else {
