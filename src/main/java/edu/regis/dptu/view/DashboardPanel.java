@@ -208,7 +208,7 @@ public class DashboardPanel extends GPanel {
     }
 
     private void doOneButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        SplashFrame.instance().selectDoOneScreen();
+        SplashFrame.instance().selectPracticeScreen();
     }
 
     private void seeOneButtonActionPerformed(java.awt.event.ActionEvent evt) {
