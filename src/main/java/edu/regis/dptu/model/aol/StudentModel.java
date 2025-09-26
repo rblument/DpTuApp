@@ -13,6 +13,8 @@
 package edu.regis.dptu.model.aol;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import edu.regis.dptu.model.ScaffoldLevel;
 
@@ -23,32 +25,26 @@ import edu.regis.dptu.model.ScaffoldLevel;
  * @author rickb
  */
 public class StudentModel {
-    /**
-     * Convenience reference to the user id (email) of the student associated with this student
-     * model.
-     */
+    /** Convenience reference to the user id (email) of the student for this model. */
     private String userId;
 
     /**
-     * The assessments of outcomes for the student associated with this model. The key is the id of
-     * the knowledge component in the associated assessment.
+     * Assessments of outcomes for the student. Key is the knowledge component id.
      */
     private HashMap<Integer, Assessment> assessments;
+
+    /** Tutoring sessions this student has participated in. */
+    private List<TutoringSession> sessions = new ArrayList<>();
 
     /** The current scaffolding being used to support the student. */
     private ScaffoldLevel scaffoldLevel = ScaffoldLevel.EXTREME;
 
     /**
-     * Instantiate this student model with default information.
-     *
-     * <p>Create a student model for the given user id and with default information.
-     *
+     * Create a student model for the given user id with default information.
      * @param userId the user id of the student whose model is being created.
      */
     public StudentModel(String userId) {
         this.userId = userId;
-
-        // assessments = new HashMap<>();
         assessments = new HashMap<>();
     }
 
@@ -69,22 +65,12 @@ public class StudentModel {
         addAssessment(assessment.getOutcome().getId(), assessment);
     }
 
-    /**
-     * Return whether this student has an assessment for the given outcome.
-     *
-     * @param knowledgeComponentId
-     * @return true if the student has an assessment for the given outcome.
-     */
+    /** @return true if the student has an assessment for the given outcome id. */
     public boolean containsAssessment(int knowledgeComponentId) {
         return assessments.containsKey(knowledgeComponentId);
     }
 
-    /**
-     * Return the student assessment, if any, for the given outcome.
-     *
-     * @param knowledgeComponentId
-     * @return an Assessment of the student.
-     */
+    /** @return the assessment for the given outcome id, or null if none. */
     public Assessment findAssessment(int knowledgeComponentId) {
         return assessments.get(knowledgeComponentId);
     }
@@ -93,11 +79,20 @@ public class StudentModel {
         return assessments;
     }
 
-    /**
-     * Return the current scaffolding level being used to support the student.
-     *
-     * @return
-     */
+    /** Sessions API */
+    public List<TutoringSession> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<TutoringSession> sessions) {
+        this.sessions = sessions;
+    }
+
+    public void addSession(TutoringSession session) {
+        this.sessions.add(session);
+    }
+
+    /** Scaffolding API */
     public ScaffoldLevel getScaffoldLevel() {
         return scaffoldLevel;
     }
