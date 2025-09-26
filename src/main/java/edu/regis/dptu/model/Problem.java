@@ -1,11 +1,11 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
@@ -22,94 +22,77 @@ import java.util.logging.Logger;
 /**
  * The Dynamic Programming problem that a student is attempting to solve.
  *
- * The specific type of Dynamic Programming problem is specified by the
- * value returned by the getType() method, which is declared abstract in this
- * parent class. 
+ * <p>The specific type of Dynamic Programming problem is specified by the value returned by the
+ * getType() method, which is declared abstract in this parent class.
  *
- * In VanLehn's sense, this is a task for the student to complete, but we treat
- * tasks at a finer granularity i.e. as subproblems within the primary problem.
- * The tasks within a problem are derived from the specific nature of the
- * problem.
+ * <p>In VanLehn's sense, this is a task for the student to complete, but we treat tasks at a finer
+ * granularity i.e. as subproblems within the primary problem. The tasks within a problem are
+ * derived from the specific nature of the problem.
  *
  * @author rickb
  */
 public abstract class Problem extends TitledModel {
 
     /**
-     * The type of this Dynamic Programming problem, which must be assigned
-     * when instantiating a subclass
+     * The type of this Dynamic Programming problem, which must be assigned when instantiating a
+     * subclass
      */
     protected ProblemKind type;
-    
+
     /**
-     * The id that serves as an index into the DB subtype table. 
-     * 
-     * For example, if type is LCS_PROBLEM, then the subtype id is the id
-     * of the problem in the LCSProblem table (with the Model.id being the
-     * id in the Problem table
+     * The id that serves as an index into the DB subtype table.
+     *
+     * <p>For example, if type is LCS_PROBLEM, then the subtype id is the id of the problem in the
+     * LCSProblem table (with the Model.id being the id in the Problem table
      */
     protected int subTypeId;
 
     /**
-     * The variables used in the algorithmic solution to this dynamic
-     * programming problem, which is determined by the child subclass.
+     * The variables used in the algorithmic solution to this dynamic programming problem, which is
+     * determined by the child subclass.
      *
-     * In general, all variables except the tableVariable will have a data type
-     * of int, while the tableVariable with have a type int[][].
+     * <p>In general, all variables except the tableVariable will have a data type of int, while the
+     * tableVariable with have a type int[][].
      */
     protected HashMap<String, Object> variables;
 
-    /**
-     * The variable name containing the matrix cell table for this problem.
-     */
+    /** The variable name containing the matrix cell table for this problem. */
     protected String tableVariable;
 
-    /**
-     * The algorithmic solution to this dynamic programming problem as textual
-     * lines of code.
-     */
+    /** The algorithmic solution to this dynamic programming problem as textual lines of code. */
     protected ArrayList<String> codeStatements;
 
-    /**
-     * The currently line number to execute
-     */
+    /** The currently line number to execute */
     protected int currentLineNumber = 0;
 
     /**
-     * A history of the line numbers that were executed prior to the current
-     * line number.
+     * A history of the line numbers that were executed prior to the current line number.
      *
-     * step() adds to this history, undo() removes items from it.
+     * <p>step() adds to this history, undo() removes items from it.
      */
     protected ArrayList<Integer> executionHistory;
 
-    /**
-     * Observers who are listening for changes to the state of this problem.
-     */
+    /** Observers who are listening for changes to the state of this problem. */
     protected ArrayList<ProblemListener> problemListeners;
 
     /**
      * Return the type of this problem.
-     * 
-     * @return 
+     *
+     * @return
      */
     public abstract ProblemKind getType();
-    
-    /**
-     * Loads the pseudo-code statements for display.
-     */
+
+    /** Loads the pseudo-code statements for display. */
     protected abstract void loadCodeStatements();
-    
-    /**
-     * Instantiate a Dynamic Programming problem with a DEFAULT_ID.
-     */
+
+    /** Instantiate a Dynamic Programming problem with a DEFAULT_ID. */
     public Problem() {
         this(DEFAULT_ID);
     }
 
     /**
      * Instantiate a Dynamic Programming problem with the given id.
-     * 
+     *
      * @param id unique int id of this problem, as assigned by the DB.
      */
     public Problem(int id) {
@@ -170,10 +153,11 @@ public abstract class Problem extends TitledModel {
     public ArrayList<ProblemListener> getProblemListeners() {
         return problemListeners;
     }
-    
+
     /**
-     * Returns the raw Object value for a variable.
-     * Use this for non-int variables like the DP table.
+     * Returns the raw Object value for a variable. Use this for non-int variables like the DP
+     * table.
+     *
      * @param variableName The name of the variable.
      * @return The variable's value as an Object, or null if not found.
      */
@@ -189,15 +173,12 @@ public abstract class Problem extends TitledModel {
         problemListeners.add(listener);
     }
 
-    /**
-     * Execute the current line of code and then update to the "next" line of
-     * code to execute.
-     */
+    /** Execute the current line of code and then update to the "next" line of code to execute. */
     public void step() {
         executionHistory.add(currentLineNumber);
         String methodName = "executeLine" + currentLineNumber;
         executeMethod(methodName);
-        
+
         // Notify listeners that the problem has been updated
         notifyProblemListeners();
     }
@@ -213,15 +194,13 @@ public abstract class Problem extends TitledModel {
         }
     }
 
-    /**
-     * Take one step backward in the algorithm by undoing the
-     */
+    /** Take one step backward in the algorithm by undoing the */
     public void undo() {
         int size = executionHistory.size();
 
         if (size == 0) {
             System.out.println("Cannot undo past Line 0");
-            
+
         } else {
             int lastItemPos = size - 1;
 
@@ -235,21 +214,19 @@ public abstract class Problem extends TitledModel {
 
                 currentLineNumber = executionHistory.get(lastItemPos);
             }
-            
+
             // Notify listeners that the problem has been updated
             notifyProblemListeners();
         }
     }
-    
-    /**
-     * Reset the problem to its initial state.
-     */
+
+    /** Reset the problem to its initial state. */
     public void reset() {
         currentLineNumber = 0;
         executionHistory.clear();
-        
+
         // Additional reset logic implemented by subclasses
-        
+
         // Notify listeners that the problem has been updated
         notifyProblemListeners();
     }
@@ -292,15 +269,13 @@ public abstract class Problem extends TitledModel {
     }
 
     /**
-     * Basic method that each problem will Override to handle decoding its
-     * specific problem from a SubproblemTableView table cell location to a line
-     * number.
+     * Basic method that each problem will Override to handle decoding its specific problem from a
+     * SubproblemTableView table cell location to a line number.
      *
-     * Note: Similar to notifyProblemListener, this could be effective for both
-     * highlighting problems. If the step() methods has information about what
-     * cell is currently being computed, this decoder would have the correct
-     * line number if the user clicked it, or have the correct line number based
-     * on what step we are on.
+     * <p>Note: Similar to notifyProblemListener, this could be effective for both highlighting
+     * problems. If the step() methods has information about what cell is currently being computed,
+     * this decoder would have the correct line number if the user clicked it, or have the correct
+     * line number based on what step we are on.
      *
      * @param row
      * @param column
@@ -308,19 +283,17 @@ public abstract class Problem extends TitledModel {
      */
     protected int TableToLineNumberdecoder(int row, int column) {
         int correspondingLineNumber = -1;
-        // Next steps are creating the LCS problem decoder, letting codeView 
+        // Next steps are creating the LCS problem decoder, letting codeView
         // use that to decode the line number from the row and column.
         return correspondingLineNumber;
     }
 
     /**
-     * Notifies each problemListener in the problemListeners array list. Passes
-     * itself to each.
+     * Notifies each problemListener in the problemListeners array list. Passes itself to each.
      *
-     * Note: When considering how to handle step interaction AND click
-     * interaction, potentially this could work for both. Since it is simply
-     * passing itself, we could leave it to the views to handle changes for
-     * either. So in LCSProblem, we would call this at the end of the step
+     * <p>Note: When considering how to handle step interaction AND click interaction, potentially
+     * this could work for both. Since it is simply passing itself, we could leave it to the views
+     * to handle changes for either. So in LCSProblem, we would call this at the end of the step
      * methods or the clickListener in SubproblemTableView.
      */
     protected void notifyProblemListeners() {
@@ -328,5 +301,4 @@ public abstract class Problem extends TitledModel {
             problemListeners.get(i).problemUpdated(this);
         }
     }
-
 }

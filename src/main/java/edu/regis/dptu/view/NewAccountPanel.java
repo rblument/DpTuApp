@@ -1,21 +1,17 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.model.Account;
-import edu.regis.dptu.view.act.CreateAcctAction;
-import edu.regis.dptu.view.act.SignInAction;
-import edu.regis.dptu.view.act.BackAction;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -28,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -40,6 +37,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import edu.regis.dptu.model.Account;
+import edu.regis.dptu.view.act.BackAction;
+import edu.regis.dptu.view.act.CreateAcctAction;
+import edu.regis.dptu.view.act.SignInAction;
+
 /**
  * New user screen that also allows the student to create an IRBt account
  *
@@ -47,27 +49,21 @@ import javax.swing.text.Document;
  */
 public class NewAccountPanel extends GPanel {
 
-    /**
-     * Events of interest occurring in this class are logged to this logger.
-     */
+    /** Events of interest occurring in this class are logged to this logger. */
     private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
 
-    /**
-     * A regex pattern used to validate user email ids (e.g. "rick@regis.edu").
-     */
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX
-            = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    
+    /** A regex pattern used to validate user email ids (e.g. "rick@regis.edu"). */
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
     private static final Color LIGHT_BLUE = new Color(223, 242, 245);
-    /**
-     * The account being created and displayed in this panel.
-     */
+
+    /** The account being created and displayed in this panel. */
     private Account model;
 
-    /**
-     * The editable fields appearing in this dialog.
-     */
+    /** The editable fields appearing in this dialog. */
     protected HintTextField fName;
+
     protected HintTextField lName;
     protected HintTextField userId;
     protected JPasswordField pass1;
@@ -82,9 +78,7 @@ public class NewAccountPanel extends GPanel {
     protected JButton createAcctBut;
     protected JButton backBut;
 
-    /**
-     * Constructor for the NewAccountPanel class
-     */
+    /** Constructor for the NewAccountPanel class */
     public NewAccountPanel() {
         super();
 
@@ -108,8 +102,7 @@ public class NewAccountPanel extends GPanel {
     }
 
     /**
-     * Display the given model in the view, but the MD5 encrypted password is
-     * not displayed.
+     * Display the given model in the view, but the MD5 encrypted password is not displayed.
      *
      * @param model
      */
@@ -121,6 +114,7 @@ public class NewAccountPanel extends GPanel {
 
     /**
      * Returns the JTextField component associated with the user ID.
+     *
      * @return the user ID JTextField component
      */
     public JTextField getUserIdComp() {
@@ -128,29 +122,25 @@ public class NewAccountPanel extends GPanel {
     }
 
     /**
-     * Requests focus for the first name input field in the window.
-     * This method sets the focus to the 'fName' text field.
+     * Requests focus for the first name input field in the window. This method sets the focus to
+     * the 'fName' text field.
      */
     public void updateFocus() {
         fName.requestFocusInWindow();
     }
-    
-    /**
-     * Set all of the text fields in this view to the empty string.
-     */
+
+    /** Set all of the text fields in this view to the empty string. */
     public void clearFields() {
         fName.setText("");
         lName.setText("");
         userId.setText("");
         pass1.setText("");
         pass2.setText("");
-            secQuestions.setSelectedIndex(0);
+        secQuestions.setSelectedIndex(0);
         secAnswer.setText("");
     }
 
-    /**
-     * Update our model with the current values displayed in this view
-     */
+    /** Update our model with the current values displayed in this view */
     private void updateModel() {
         model.setUserId(userId.getText());
         model.setFirstName(fName.getText());
@@ -160,10 +150,7 @@ public class NewAccountPanel extends GPanel {
         model.setSecurityAnswer(encryptSHA256(new String(secAnswer.getPassword())));
     }
 
-    /**
-     * Update this view with the current values in our model (except the
-     * passwords).
-     */
+    /** Update this view with the current values in our model (except the passwords). */
     private void updateDisplay() {
         userId.setText(model.getUserId());
         fName.setText(model.getFirstName());
@@ -171,22 +158,22 @@ public class NewAccountPanel extends GPanel {
         pass1.setText("");
         pass2.setText("");
         // ToDo: This should use the model.
-                secQuestions.setSelectedIndex(0);
+        secQuestions.setSelectedIndex(0);
         secAnswer.setText("");
     }
 
     // Used to get focus
-    //public JTextField getFNameComp() {
-    //return fName;
-    //}
+    // public JTextField getFNameComp() {
+    // return fName;
+    // }
     private void initComponents() {
         LoginDocumentListener docListener = new LoginDocumentListener();
 
-        //fName = new JTextField("First", 15);
+        // fName = new JTextField("First", 15);
         fName = new HintTextField("First", 15);
-        //fName.setForeground(new Color(230,230,230));
+        // fName.setForeground(new Color(230,230,230));
         fName.getDocument().addDocumentListener(docListener);
-        //((AbstractDocument) fName.getDocument()).setDocumentFilter(new NameFilter());
+        // ((AbstractDocument) fName.getDocument()).setDocumentFilter(new NameFilter());
 
         lName = new HintTextField("Last", 30);
         lName.getDocument().addDocumentListener(docListener);
@@ -200,14 +187,14 @@ public class NewAccountPanel extends GPanel {
 
         pass2 = new JPasswordField(20);
         pass2.getDocument().addDocumentListener(docListener);
-        
-         String s1[] = {"What city were you born in?", "What is your mother's maiden name?"};
+
+        String s1[] = {"What city were you born in?", "What is your mother's maiden name?"};
         secQuestions = new JComboBox(s1);
-        
+
         secAnswer = new JPasswordField(20);
         secAnswer.getDocument().addDocumentListener(docListener);
 
-        //SignInAction act = SignInAction.instance();
+        // SignInAction act = SignInAction.instance();
         signInBut = new JButton(SignInAction.instance());
         signInBut.setEnabled(true);
 
@@ -217,63 +204,122 @@ public class NewAccountPanel extends GPanel {
 
         backBut = new JButton(BackAction.instance());
         backBut.setEnabled(true);
-        
+
         strength = new JLabel("(Strength: very poor)");
         strength.setForeground(Color.RED);
         strength.setFont(new Font("Dialog", Font.PLAIN, 10));
     }
 
     /**
-     * Layout the panel by setting the background, preferred size, adding necessary components and necessary layout constraints
+     * Layout the panel by setting the background, preferred size, adding necessary components and
+     * necessary layout constraints
      */
     private void layoutPanel() {
         setBackground(Color.WHITE);
 
         setPreferredSize(new Dimension(300, 400));
 
-        addc(createHeader(), 0, 0, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
+        addc(
+                createHeader(),
+                0,
+                0,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
 
-        addc(createOverview(), 0, 1, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
+        addc(
+                createOverview(),
+                0,
+                1,
+                1,
+                1,
+                1.0,
+                1.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.BOTH,
+                5,
+                5,
+                5,
+                5);
 
-        addc(createLogin(), 1, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                10, 5, 5, 5);
+        addc(
+                createLogin(),
+                1,
+                1,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                10,
+                5,
+                5,
+                5);
 
-        JLabel copyright = new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
+        JLabel copyright =
+                new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
-        addc(copyright, 0, 2, 2, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.CENTER,
-                5, 5, 5, 5);
+        addc(
+                copyright,
+                0,
+                2,
+                2,
+                1,
+                1.0,
+                1.0,
+                GridBagConstraints.NORTH,
+                GridBagConstraints.CENTER,
+                5,
+                5,
+                5,
+                5);
 
         setSize(490, 400);
     }
 
     /**
      * Creates and returns a header panel containing the title and header components.
+     *
      * @return a GPanel object representing the header section.
      */
     private GPanel createHeader() {
         GPanel panel = new GPanel();
         panel.setBackground(LIGHT_BLUE);
-        
 
         JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
         ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
         ccis.setForeground(Color.BLUE);
 
-        panel.addc(ccis, 0, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
+        panel.addc(
+                ccis,
+                0,
+                0,
+                1,
+                1,
+                1.0,
+                1.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
 
         return panel;
     }
 
     /**
-     * Creates and returns an overview panel that provides introductory information and instructions.
+     * Creates and returns an overview panel that provides introductory information and
+     * instructions.
+     *
      * @return a GPanel object representing the overview section.
      */
     private GPanel createOverview() {
@@ -287,23 +333,45 @@ public class NewAccountPanel extends GPanel {
         logo.setFont(new Font("Dialog", Font.PLAIN, 20));
         logo.setForeground(Color.MAGENTA);
 
-        panel.addc(logo, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        panel.addc(
+                logo,
+                0,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
 
         JLabel name = new JLabel("A See_1, Do_1, Teach_1 Intelligent Tutoring System.");
         name.setFont(new Font("Dialog", Font.PLAIN, 14));
-        panel.addc(name, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                0, 5, 5, 5);
+        panel.addc(
+                name,
+                0,
+                1,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                0,
+                5,
+                5,
+                5);
 
         JTextArea descr = new JTextArea();
         descr.setEditable(false);
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
         descr.setFont(new Font("Dialog", Font.PLAIN, 12));
-	descr.append("DpTu provides individualized tutoring practice focused ");
-	descr.append("on understanding Dynamic Programming and the");
+        descr.append("DpTu provides individualized tutoring practice focused ");
+        descr.append("on understanding Dynamic Programming and the");
         descr.append("underlying computer science concepts upon which it is ");
         descr.append("based.\n\n");
         descr.append("Please sign in or use 'New User' to create a student account.");
@@ -312,140 +380,385 @@ public class NewAccountPanel extends GPanel {
         descr.append("Use your university email address as your user id, but ");
         descr.append("DO NOT use your existing university password. Instead,");
         descr.append("use a different password for the DpTu tutor.");
-        panel.addc(descr, 0, 2, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                15, 5, 5, 5);
+        panel.addc(
+                descr,
+                0,
+                2,
+                1,
+                1,
+                1.0,
+                1.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.BOTH,
+                15,
+                5,
+                5,
+                5);
 
         JLabel loginMsg = new JLabel("To use the tutor, you must sign in.");
-        panel.addc(loginMsg, 0, 3, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        panel.addc(
+                loginMsg,
+                0,
+                3,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
 
-        panel.addc(new JLabel(" "), 0, 4, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
+        panel.addc(
+                new JLabel(" "),
+                0,
+                4,
+                1,
+                1,
+                1.0,
+                1.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.BOTH,
+                5,
+                5,
+                5,
+                5);
 
         return panel;
     }
 
     /**
-     * Creates and returns a login panel containing all login-related components such as text fields, labels, and buttons.
+     * Creates and returns a login panel containing all login-related components such as text
+     * fields, labels, and buttons.
+     *
      * @return a GPanel object representing the login section.
      */
     private GPanel createLogin() {
-               GPanel panel = new GPanel();
-        panel.setBackground(new Color(241,196,0));
+        GPanel panel = new GPanel();
+        panel.setBackground(new Color(241, 196, 0));
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
         JLabel label = new JLabel("Name");
         label.setLabelFor(fName);
-        panel.addc(label, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        panel.addc(
+                label,
+                0,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
 
-        panel.addc(fName, 0, 1, 1, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        panel.addc(lName, 1, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
+        panel.addc(
+                fName,
+                0,
+                1,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
+        panel.addc(
+                lName,
+                1,
+                1,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
 
         label = new JLabel("User Id:");
         label.setLabelFor(userId);
 
-        panel.addc(label, 0, 2, 1, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        panel.addc(
+                label,
+                0,
+                2,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
 
-        panel.addc(userId, 0, 3, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
+        panel.addc(
+                userId,
+                0,
+                3,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
 
         label = new JLabel("Create a Password:");
         label.setLabelFor(pass1);
 
-        panel.addc(label, 0, 4, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                15, 5, 5, 5);
+        panel.addc(
+                label,
+                0,
+                4,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                15,
+                5,
+                5,
+                5);
 
         label = new JLabel("(do not use your existing university password!)");
         label.setFont(new Font("Dialog", Font.PLAIN, 10));
-        label.setForeground(new Color(75,66,66));
+        label.setForeground(new Color(75, 66, 66));
 
-        panel.addc(label, 1, 4, 2, 1, 0.0, 0.0,
-                GridBagConstraints.SOUTHEAST, GridBagConstraints.NONE,
-                0, 5, 5, 5);
+        panel.addc(
+                label,
+                1,
+                4,
+                2,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.SOUTHEAST,
+                GridBagConstraints.NONE,
+                0,
+                5,
+                5,
+                5);
 
-        panel.addc(pass1, 0, 5, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
+        panel.addc(
+                pass1,
+                0,
+                5,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
 
-        panel.addc(strength, 0, 6, 1, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
+        panel.addc(
+                strength,
+                0,
+                6,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
 
         label = new JLabel("(try 6 characters, mixed case, and special chars)");
         label.setFont(new Font("Dialog", Font.PLAIN, 10));
-        label.setForeground(new Color(75,66,66));
-        panel.addc(label, 1, 6, 1, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
+        label.setForeground(new Color(75, 66, 66));
+        panel.addc(
+                label,
+                1,
+                6,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
 
         label = new JLabel("Confirm your password:");
         label.setLabelFor(pass1);
 
-        panel.addc(label, 0, 7, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        panel.addc(
+                label,
+                0,
+                7,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
 
-        panel.addc(pass2, 0, 8, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
-        
+        panel.addc(
+                pass2,
+                0,
+                8,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
+
         label = new JLabel("Choose Security Question:");
         label.setLabelFor(secQuestions);
 
-        panel.addc(label, 0, 9, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                15, 5, 5, 5);
-        
-        panel.addc(secQuestions, 0, 10, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
-        
+        panel.addc(
+                label,
+                0,
+                9,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                15,
+                5,
+                5,
+                5);
+
+        panel.addc(
+                secQuestions,
+                0,
+                10,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
+
         label = new JLabel("Answer:");
         label.setLabelFor(secAnswer);
 
-        panel.addc(label, 0, 11, 2, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                15, 5, 5, 5);
-        
-        panel.addc(secAnswer, 0, 12, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                0, 5, 5, 5);
+        panel.addc(
+                label,
+                0,
+                11,
+                2,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                15,
+                5,
+                5,
+                5);
+
+        panel.addc(
+                secAnswer,
+                0,
+                12,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                0,
+                5,
+                5,
+                5);
 
         msg = new JLabel("");
-       // msg.setLabelFor(backBut);
+        // msg.setLabelFor(backBut);
         msg.setFont(new Font("Dialog", Font.PLAIN, 10));
-        msg.setForeground(new Color(173,7,1));
+        msg.setForeground(new Color(173, 7, 1));
 
-        panel.addc(msg, 0, 13, 2, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-                
-        panel.addc(backBut, 0, 14, 1, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                10, 5, 5, 5);
-        panel.addc(createAcctBut, 1, 14, 1, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-                10, 5, 5, 5);
+        panel.addc(
+                msg,
+                0,
+                13,
+                2,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+
+        panel.addc(
+                backBut,
+                0,
+                14,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                10,
+                5,
+                5,
+                5);
+        panel.addc(
+                createAcctBut,
+                1,
+                14,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                10,
+                5,
+                5,
+                5);
 
         return panel;
     }
 
     /**
-     * Evaluates the strength of the password entered in the password field and updates the strength indicator accordingly.
+     * Evaluates the strength of the password entered in the password field and updates the strength
+     * indicator accordingly.
      */
     private void checkStrength() {
 
@@ -500,12 +813,13 @@ public class NewAccountPanel extends GPanel {
                 strength.setForeground(Color.GREEN);
                 break;
         }
-
     }
 
     /**
      * Compares the passwords entered in the two password fields to determine if they are identical.
-     * @return {@code True} if both password fields contain the same characters; {@code False} otherwise.
+     *
+     * @return {@code True} if both password fields contain the same characters; {@code False}
+     *     otherwise.
      */
     private boolean samePasswords() {
         char[] text1 = pass1.getPassword();
@@ -530,13 +844,10 @@ public class NewAccountPanel extends GPanel {
         }
     }
 
-    /**
-     * If the userId or password fields are empty, disable the OK 'Login'
-     * button.
-     */
+    /** If the userId or password fields are empty, disable the OK 'Login' button. */
     private void enableButtons(Document e) {
-        //Document document = (Document)e.getDocument();
-        //fName.getDocument().getLength() !=0;
+        // Document document = (Document)e.getDocument();
+        // fName.getDocument().getLength() !=0;
 
         boolean isValidFName = !fName.isDefaultValue();
         if (isValidFName) {
@@ -598,14 +909,14 @@ public class NewAccountPanel extends GPanel {
     }
 
     /**
-     * Listens to changes made to the LoginDialog's userId and password fields
-     * in order to appropriate enable the buttons in the dialog.
+     * Listens to changes made to the LoginDialog's userId and password fields in order to
+     * appropriate enable the buttons in the dialog.
      */
     public class LoginDocumentListener implements DocumentListener {
 
         /**
-         * As text was insert into the userId or password field, check whether
-         * we need to enable or disable the LoginDialog's buttons.
+         * As text was insert into the userId or password field, check whether we need to enable or
+         * disable the LoginDialog's buttons.
          */
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -619,8 +930,8 @@ public class NewAccountPanel extends GPanel {
         }
 
         /**
-         * As text was removed from the userId or password field, check whether
-         * we need to enable or disable the LoginDialog's buttons.
+         * As text was removed from the userId or password field, check whether we need to enable or
+         * disable the LoginDialog's buttons.
          */
         @Override
         public void removeUpdate(DocumentEvent e) {
@@ -634,8 +945,8 @@ public class NewAccountPanel extends GPanel {
         }
 
         /**
-         * As text was changed in the userId or password field, check whether we
-         * need to enable or disable the LoginDialog's buttons.
+         * As text was changed in the userId or password field, check whether we need to enable or
+         * disable the LoginDialog's buttons.
          */
         @Override
         public void changedUpdate(DocumentEvent e) {
@@ -649,9 +960,7 @@ public class NewAccountPanel extends GPanel {
         }
     }
 
-    /**
-     * Encrypt the given password using MD5
-     */
+    /** Encrypt the given password using MD5 */
     private String encryptMD5(String password) {
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
@@ -699,7 +1008,4 @@ public class NewAccountPanel extends GPanel {
             throw new RuntimeException(ex);
         }
     }
-
 }
-
-

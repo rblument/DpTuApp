@@ -1,19 +1,27 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.svc;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.GregorianCalendar;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import edu.regis.dptu.err.IllegalArgException;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
@@ -30,18 +38,10 @@ import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.Unit;
-import edu.regis.dptu.model.User;
 import edu.regis.dptu.model.aol.Assessment;
 import edu.regis.dptu.model.aol.AssessmentLevel;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.util.SHA_256;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The DpTu tutor, which implements the tutoring service.
@@ -50,63 +50,52 @@ import java.util.logging.Logger;
  */
 public class DpTuTutor implements TutorSvc {
 
-    /**
-     * The id of the default course taught by the this tutor (Dynamic Programming).
-     */
+    /** The id of the default course taught by the this tutor (Dynamic Programming). */
     private static final int DEFAULT_COURSE_ID = 1;
+
     /**
-     * The maximum number of characters allowed for encoding a example ASCII
-     * encoding request from the student.
+     * The maximum number of characters allowed for encoding a example ASCII encoding request from
+     * the student.
      */
     private static final int MAX_ASCII_SIZE = 20;
 
     private static final int MAX_BITS_SIZE = 32;
 
     /**
-     * Handler for logging non-exception messages from this class versus thrown
-     * exception, which are logged by the exception.
+     * Handler for logging non-exception messages from this class versus thrown exception, which are
+     * logged by the exception.
      */
-    private static final Logger LOGGER
-            = Logger.getLogger(DpTuTutor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DpTuTutor.class.getName());
 
     /**
-     * The current tutoring session, which contains information on the current
-     * Student, StudentModel, Course, Task, Step, etc.
+     * The current tutoring session, which contains information on the current Student,
+     * StudentModel, Course, Task, Step, etc.
      */
     private TutoringSession session;
-    
-    /**
-     * Convenience reference to the student currently being tutored.
-     */
+
+    /** Convenience reference to the student currently being tutored. */
     private Student student;
-    
-    /**
-     * Convenience reference to the student model of the student being tutored.
-     */
+
+    /** Convenience reference to the student model of the student being tutored. */
     private StudentModel studentModel;
 
-    /**
-     * Convenience reference to the current gson object.
-     */
+    /** Convenience reference to the current gson object. */
     private Gson gson;
 
-    /**
-     * Initialize the tutor singleton (a NoOp).
-     */
+    /** Initialize the tutor singleton (a NoOp). */
     public DpTuTutor() {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public TutorReply request(ClientRequest request) {
         // Uses reflection to invoke a method derived from the request name in
         // the client request (e.g., ":SignIn" invokes "signIn(...)").
-        Logger.getLogger(DpTuTutor.class.getName()).log(Level.INFO, request.getRequestType().getRequestName());
+        Logger.getLogger(DpTuTutor.class.getName())
+                .log(Level.INFO, request.getRequestType().getRequestName());
 
-        // Efficiently produce "signIn" from ":SignIn", for example.         
+        // Efficiently produce "signIn" from ":SignIn", for example.
         char c[] = request.getRequestType().getRequestName().toCharArray();
         c[1] = Character.toLowerCase(c[1]);
 
@@ -129,21 +118,20 @@ public class DpTuTutor implements TutorSvc {
 
                         Account account = ServiceFactory.findAccountSvc().retrieve(userId);
                         student = new Student(account);
-                        
+
                         try {
                             StudentModelSvc stuModSvc = ServiceFactory.findStudentModelSvc();
                             studentModel = stuModSvc.retrieve(userId);
                             student.setStudentModel(studentModel);
-                    
+
                         } catch (ObjNotFoundException ex) {
                             TutorReply reply = new TutorReply(":ERR");
-                            reply.setData("Student model not found for: " + userId );
+                            reply.setData("Student model not found for: " + userId);
                             return reply;
                         }
-    
-                        
+
                         session = ServiceFactory.findSessionSvc().retrieve(student);
-        
+
                     } else {
                         TutorReply reply = new TutorReply(":ERR");
                         reply.setData("Illegal Security Token");
@@ -161,7 +149,8 @@ public class DpTuTutor implements TutorSvc {
                 break;
 
             default: // e.g., signIn itself, newAccount
-                Logger.getLogger(DpTuTutor.class.getName()).log(Level.INFO, "No token verification required");
+                Logger.getLogger(DpTuTutor.class.getName())
+                        .log(Level.INFO, "No token verification required");
         }
 
         // Security token has been verified or not required (e.g., signIn, createAccount).
@@ -171,7 +160,10 @@ public class DpTuTutor implements TutorSvc {
             return (TutorReply) method.invoke(this, request.getData());
 
         } catch (NoSuchMethodException ex) {
-            return createError("Tutor received an unknown request type: " + request.getRequestType().getRequestName(), ex);
+            return createError(
+                    "Tutor received an unknown request type: "
+                            + request.getRequestType().getRequestName(),
+                    ex);
         } catch (SecurityException ex) {
             return createError("DpTuTutor_ERR_2", ex);
         } catch (IllegalAccessException ex) {
@@ -186,11 +178,10 @@ public class DpTuTutor implements TutorSvc {
     /**
      * Creates a new student account
      *
-     * This method handles ":CreateAccount" requests from the GUI client.
+     * <p>This method handles ":CreateAccount" requests from the GUI client.
      *
      * @param jsonAcct a JSon encoded Account object
-     * @return a TutorReply if successful the status is "Created", otherwise the
-     * status is "ERR".
+     * @return a TutorReply if successful the status is "Created", otherwise the status is "ERR".
      */
     public TutorReply createAccount(String jsonAcct) throws NonRecoverableException {
         Account acct = gson.fromJson(jsonAcct, Account.class);
@@ -202,7 +193,7 @@ public class DpTuTutor implements TutorSvc {
 
             try {
                 Course course = ServiceFactory.findCourseSvc().retrieve(courseId);
-                
+
                 student = createStudent(acct, course);
 
                 createSession(student, course);
@@ -221,14 +212,14 @@ public class DpTuTutor implements TutorSvc {
     /**
      * Attempts to sign a student in.
      *
-     * This method handles ":SignIn" requests from the GUI client.
+     * <p>This method handles ":SignIn" requests from the GUI client.
      *
      * @param jsonUser a JSon encoded User object
-     * @return a TutorReply, if successful, the status is "Authenticated" with
-     * data being a JSon encoded TutoringSession object.
+     * @return a TutorReply, if successful, the status is "Authenticated" with data being a JSon
+     *     encoded TutoringSession object.
      */
     public TutorReply signIn(String jsonUser) {
-         System.out.println("Received sign in: " + jsonUser);
+        System.out.println("Received sign in: " + jsonUser);
         Account requestAcct = gson.fromJson(jsonUser, Account.class);
 
         try {
@@ -237,21 +228,21 @@ public class DpTuTutor implements TutorSvc {
             if (dbAcct.getPassword().equals(requestAcct.getPassword())) {
                 student = new Student(dbAcct);
                 String userId = dbAcct.getUserId();
-                
+
                 try {
                     StudentModelSvc stuModSvc = ServiceFactory.findStudentModelSvc();
                     studentModel = stuModSvc.retrieve(userId);
                     student.setStudentModel(studentModel);
-                    
+
                 } catch (ObjNotFoundException ex) {
                     TutorReply reply = new TutorReply(":ERR");
-                    reply.setData("Student model not found in sign in for: " + userId );
+                    reply.setData("Student model not found in sign in for: " + userId);
                     return reply;
                 }
 
                 SessionSvc svc = ServiceFactory.findSessionSvc();
                 TutoringSession session = svc.retrieve(student);
-              
+
                 TutorReply reply = new TutorReply("Authenticated");
 
                 reply.setData(gson.toJson(session));
@@ -265,8 +256,7 @@ public class DpTuTutor implements TutorSvc {
         } catch (ObjNotFoundException e) {
             return new TutorReply("UnknownUser");
         } catch (NonRecoverableException ex) {
-            Logger.getLogger(DpTuTutor.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DpTuTutor.class.getName()).log(Level.SEVERE, null, ex);
             return new TutorReply();
         }
     }
@@ -274,11 +264,11 @@ public class DpTuTutor implements TutorSvc {
     /**
      * Returns a hint to the GUI client, if any
      *
-     * This method handles ":RequestHint" requests from the GUI client.
+     * <p>This method handles ":RequestHint" requests from the GUI client.
      *
      * @param sessionInfo a
-     * @return a TutorReply, if successful, the status is "Hint" with data being
-     * a displayable hint text string.
+     * @return a TutorReply, if successful, the status is "Hint" with data being a displayable hint
+     *     text string.
      */
     public TutorReply requestHint(String sessionInfo) {
         // ToDo: this is simply a hard coded test case
@@ -288,91 +278,87 @@ public class DpTuTutor implements TutorSvc {
         return new TutorReply();
     }
 
-     /**
-     * 
-     * 
+    /**
      * @param jsonObj a JSon encoded StepCompletion object
-     * @return 
+     * @return
      */
     public TutorReply completedStep(String jsonObj) {
         StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
-        
+
         Step step = completion.getStep();
-        
+
         switch (step.getSubType()) {
             case INFO_MESSAGE:
                 return completeInfoMsgStep(completion);
-                
+
             case COMPLETE_CELL:
                 return completeCellStep(completion);
-                
+
             case COMPLETE_FIRST_ROW:
                 return completeFirstRowStep(completion);
-                
+
             case COMPLETE_FIRST_COL:
                 return completeFirstColStep(completion);
-                
+
             default:
-                return createError("Unknown step completion: " + step.getSubType(), null);         
+                return createError("Unknown step completion: " + step.getSubType(), null);
         }
     }
-    
+
     public TutorReply completeInfoMsgStep(StepCompletion completion) {
         TutorReply reply = new TutorReply(":StepCompletionReply");
-        
+
         return reply;
     }
-    
+
     // TO_DO: this is stubbed in
     public TutorReply completeCellStep(StepCompletion completion) {
-         TutorReply reply = new TutorReply(":StepCompletionReply");
-        
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+
         // As adding one bit doesn't require any additional information,
-        // the data is the string with one '1' bit added. 
+        // the data is the string with one '1' bit added.
         String data = completion.getData();
-        
+
         // TO_DO: look up the problem given to the student , then check if one bit
         // added
-        
+
         StepCompletionReply stepReply = new StepCompletionReply();
-        
+
         // TO_DO: Use Student Model
         // ultimately, we'll probably only practice adding '1' bit twice
         // so this would correspond to the first replay
-        
+
         stepReply.setIsCorrect(true);
         stepReply.setIsNewStep(true);
         stepReply.setIsNewTask(false);
         stepReply.setIsRepeatStep(false);
-        
+
         // TO_DO: keep track of next step id and sequence id
         // this is really a new example at this point
         Step nextStep = new Step(10, 10, StepSubType.COMPLETE_CELL);
-        
+
         stepReply.setData(gson.toJson(nextStep));
-        
+
         reply.setData(gson.toJson(stepReply));
-        
+
         return reply;
     }
-    
+
     public TutorReply completeFirstRowStep(StepCompletion completion) {
         TutorReply reply = new TutorReply(":StepCompletionReply");
-        
+
         return reply;
     }
-        
+
     public TutorReply completeFirstColStep(StepCompletion completion) {
         TutorReply reply = new TutorReply(":StepCompletionReply");
-        
+
         return reply;
     }
-    
 
     public TutorReply completedTask(String taskInfo) {
         return new TutorReply();
     }
-
 
     /**
      * Create and save a new tutoring session associated with the given account.
@@ -381,24 +367,24 @@ public class DpTuTutor implements TutorSvc {
      * @throws NonRecoverableException
      * @return the new TutoringSession
      */
-    private TutoringSession createSession(Student student, Course course) throws NonRecoverableException {
+    private TutoringSession createSession(Student student, Course course)
+            throws NonRecoverableException {
         Account account = student.getAccount();
-        
+
         TutoringSession tSession = new TutoringSession(student);
         tSession.setStartDate(new GregorianCalendar());
         tSession.setCourse(course.getDigest());
         tSession.setUnit(course.currentUnit().getDigest());
-        
 
         Task task = getFirstTask(course);
         PendingTask pendingTask = new PendingTask(task);
-        pendingTask.setCurrentStep(new PendingStep(task.getCurrentStep()));   
+        pendingTask.setCurrentStep(new PendingStep(task.getCurrentStep()));
         tSession.addTask(pendingTask);
-        
-        //ToDo: This is really a kludge since the first task may not be the
+
+        // ToDo: This is really a kludge since the first task may not be the
         // problem task. Will/should every task represent the problem??
         tSession.setProblem(task.getProblem());
-   
+
         // Generate the security token for this tutoring session.
         Random rnd = new Random();
         String clearToken = "Session" + account.getUserId() + Integer.toString(rnd.nextInt());
@@ -409,11 +395,9 @@ public class DpTuTutor implements TutorSvc {
 
             return tSession;
 
-
         } catch (IllegalArgException ex) {
             throw new NonRecoverableException("Session already exists", ex);
         }
-     
     }
 
     /**
@@ -423,9 +407,8 @@ public class DpTuTutor implements TutorSvc {
      * @param course
      * @return
      */
-    private Student createStudent(Account account, Course course)
-            throws NonRecoverableException {
-        
+    private Student createStudent(Account account, Course course) throws NonRecoverableException {
+
         student = new Student(account);
         studentModel = student.getStudentModel();
 
@@ -440,20 +423,17 @@ public class DpTuTutor implements TutorSvc {
         stuSvc.create(student);
 
         return student;
-
     }
 
     /**
-     * Verify that the user with the given id has a session with the given
-     * session id.
+     * Verify that the user with the given id has a session with the given session id.
      *
      * @param userId String "user@regis.edu"
      * @param sessionId String identifying a previously generated session id.
-     * @return the current TutoringSession associated with the given user id and
-     * session id
+     * @return the current TutoringSession associated with the given user id and session id
      */
-    private boolean verifySession(String userId, String sessionId) 
-        throws ObjNotFoundException, NonRecoverableException {
+    private boolean verifySession(String userId, String sessionId)
+            throws ObjNotFoundException, NonRecoverableException {
 
         SessionSvc svc = ServiceFactory.findSessionSvc();
         String dbToken = svc.retrieveSecurityToken(userId);
@@ -477,13 +457,15 @@ public class DpTuTutor implements TutorSvc {
                 Unit unit = course.findUnitBySequenceId(0);
 
                 if (unit == null) {
-                    throw new NonRecoverableException("Unit 0 not found in course: " + course.getId());
+                    throw new NonRecoverableException(
+                            "Unit 0 not found in course: " + course.getId());
                 }
 
                 Task task = unit.findTaskBySequence(0);
 
                 if (task == null) {
-                    throw new NonRecoverableException("Task 0 not found in Unit 0 of course: " + course.getId());
+                    throw new NonRecoverableException(
+                            "Task 0 not found in Unit 0 of course: " + course.getId());
                 }
 
                 return task;
@@ -495,17 +477,17 @@ public class DpTuTutor implements TutorSvc {
                 return null; // ToDo
 
             default:
-                throw new NonRecoverableException("Unknwon task selection in course: " + course.getId());
+                throw new NonRecoverableException(
+                        "Unknwon task selection in course: " + course.getId());
         }
     }
 
     /**
-     * Utility for logging an error and an creating a tutoring reply error with
-     * the given message, and optional originating exception.
+     * Utility for logging an error and an creating a tutoring reply error with the given message,
+     * and optional originating exception.
      *
      * @param errMsg a displayable error message
-     * @param ex the original exception, if any, that caused the error,
-     * otherwise null.
+     * @param ex the original exception, if any, that caused the error, otherwise null.
      * @return a TutorReply with an ":ERR" status
      */
     private TutorReply createError(String errMsg, Exception ex) {
@@ -518,4 +500,3 @@ public class DpTuTutor implements TutorSvc {
         return new TutorReply(":ERR", errMsg);
     }
 }
-

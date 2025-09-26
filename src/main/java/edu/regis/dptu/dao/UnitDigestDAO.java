@@ -1,51 +1,51 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.dao;
 
-import edu.regis.dptu.err.IllegalArgException;
-import edu.regis.dptu.err.NonRecoverableException;
-import edu.regis.dptu.err.ObjNotFoundException;
-import edu.regis.dptu.model.TaskSelectionKind;
-import edu.regis.dptu.model.UnitDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import edu.regis.dptu.err.IllegalArgException;
+import edu.regis.dptu.err.NonRecoverableException;
+import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.TaskSelectionKind;
+import edu.regis.dptu.model.UnitDigest;
+
 /**
  * An MySQL Data Access Object for the UnitDigest
- * 
+ *
  * @author benm
  */
 public class UnitDigestDAO extends MySqlDAO {
-    /**
-     * Initialize this DAO via the parent constructor.
-     */
+    /** Initialize this DAO via the parent constructor. */
     public UnitDigestDAO() {
         super();
     }
 
     /**
      * Insert a unit into the database using the unit digest model.
-     * 
+     *
      * @param unit the unit to create.
      * @throws IllegalArgException a unit already exists with that id.
      * @throws NonRecoverableException perhaps see getCause().getErrorCode().
      */
     public void create(UnitDigest unit) throws IllegalArgException, NonRecoverableException {
-        final String sql = "INSERT INTO Unit(CourseId, Title, Description, SequenceIndex, Pedagogy) VALUES (?,?,?,?,?)";
-        
+        final String sql =
+                "INSERT INTO Unit(CourseId, Title, Description, SequenceIndex, Pedagogy) VALUES (?,?,?,?,?)";
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -65,7 +65,7 @@ public class UnitDigestDAO extends MySqlDAO {
             stmt.setString(5, unit.getPedagogy().toString());
 
             stmt.execute();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new NonRecoverableException("Create Unit Digest Error", e);
         } finally {
             close(conn, stmt);
@@ -73,8 +73,8 @@ public class UnitDigestDAO extends MySqlDAO {
     }
 
     /**
-     * Find the UnitDigest for the respective unitId
-     * eliminates the need to return an entire unit to the GUI.
+     * Find the UnitDigest for the respective unitId eliminates the need to return an entire unit to
+     * the GUI.
      *
      * @param unitId integer key of the unit to load.
      * @return The unit digest of the given id.
@@ -82,7 +82,8 @@ public class UnitDigestDAO extends MySqlDAO {
      * @throws NonRecoverableException see the documentation for this exception.
      */
     public UnitDigest retrieve(int unitId) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "SELECT CourseId, Title, Description, SequenceIndex, Pedagogy FROM Unit WHERE UnitId = ?";
+        final String sql =
+                "SELECT CourseId, Title, Description, SequenceIndex, Pedagogy FROM Unit WHERE UnitId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -94,7 +95,7 @@ public class UnitDigestDAO extends MySqlDAO {
             stmt.setInt(1, unitId);
 
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 UnitDigest unit = new UnitDigest(unitId);
 
@@ -123,7 +124,7 @@ public class UnitDigestDAO extends MySqlDAO {
      */
     private boolean exists(int unitId, Connection conn) throws NonRecoverableException {
         final String sql = "SELECT unitId FROM Unit WHERE UnitId = ?;";
-        
+
         PreparedStatement stmt = null;
 
         try {

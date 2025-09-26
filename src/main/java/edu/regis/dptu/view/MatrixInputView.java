@@ -10,13 +10,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /*
-* Currently, MatrixInputView is thought to be designed as a single Matrix Input Field with an Add button to append
-* a list with the Matrix constraints, and then that can be passed to a display variable in another View to be visualized and used. NOT IMPLEMENTED OR TESTED, JUST TEMPLATED.
-* 
-* Relevant files and helpful templates to follow:
-* ProblemInputView.java
-* LCSInputView.java
-*/
+ * Currently, MatrixInputView is thought to be designed as a single Matrix Input Field with an Add button to append
+ * a list with the Matrix constraints, and then that can be passed to a display variable in another View to be visualized and used. NOT IMPLEMENTED OR TESTED, JUST TEMPLATED.
+ *
+ * Relevant files and helpful templates to follow:
+ * ProblemInputView.java
+ * LCSInputView.java
+ */
 public class MatrixInputView extends JPanel {
     public MatrixInputView(TutoringSessionView parentView) {
         setLayout(new GridBagLayout());

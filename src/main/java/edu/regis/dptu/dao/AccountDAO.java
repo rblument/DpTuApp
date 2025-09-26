@@ -1,27 +1,28 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.dao;
 
-import edu.regis.dptu.err.IllegalArgException;
-import edu.regis.dptu.err.NonRecoverableException;
-import edu.regis.dptu.err.ObjNotFoundException;
-import edu.regis.dptu.model.Account;
-import edu.regis.dptu.svc.AccountSvc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import edu.regis.dptu.err.IllegalArgException;
+import edu.regis.dptu.err.NonRecoverableException;
+import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Account;
+import edu.regis.dptu.svc.AccountSvc;
 
 /**
  * A Data Access Object implementing {@link AccountSvc} behaviors.
@@ -30,19 +31,16 @@ import java.sql.SQLException;
  */
 public class AccountDAO extends MySqlDAO implements AccountSvc {
 
-    /**
-     * Initialize this DAO via the parent constructor.
-     */
+    /** Initialize this DAO via the parent constructor. */
     public AccountDAO() {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void create(Account acct) throws IllegalArgException, NonRecoverableException {
-        final String sql = "INSERT INTO Account (UserId, Password, FirstName, LastName, Question, Answer, IsStudent) VALUES (?,?,?,?,?,?,?)";
+        final String sql =
+                "INSERT INTO Account (UserId, Password, FirstName, LastName, Question, Answer, IsStudent) VALUES (?,?,?,?,?,?,?)";
 
         if (acct.isStudent()) { // Can only create students, not admins.
             Connection conn = null;
@@ -81,9 +79,7 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void delete(String userId) throws NonRecoverableException {
         final String sql = "DELETE FROM Account WHERE UserId = ?";
@@ -107,9 +103,7 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean exists(String userId) throws NonRecoverableException {
         Connection conn = null;
@@ -125,9 +119,7 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Account retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
         Connection conn = null;
@@ -144,12 +136,12 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void update(Account account) throws ObjNotFoundException, IllegalArgException, NonRecoverableException {
-        final String sql = "UPDATE Account SET Password = ?, FirstName = ?, LastName = ?, SecurityQuestion = ?, SecurityAnswer = ? WHERE UserId = ?";
+    public void update(Account account)
+            throws ObjNotFoundException, IllegalArgException, NonRecoverableException {
+        final String sql =
+                "UPDATE Account SET Password = ?, FirstName = ?, LastName = ?, SecurityQuestion = ?, SecurityAnswer = ? WHERE UserId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -189,8 +181,8 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
     }
 
     /**
-     * Utility to retrieve the account with the given user id that uses an
-     * established connection to the DB, which it does not close.
+     * Utility to retrieve the account with the given user id that uses an established connection to
+     * the DB, which it does not close.
      *
      * @param userId
      * @param conn
@@ -198,8 +190,10 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
      * @throws ObjNotFoundException
      * @throws NonRecoverableException
      */
-    private Account retrieve(String userId, Connection conn) throws ObjNotFoundException, NonRecoverableException {
-        final String sql = "SELECT Password, FirstName, LastName, Question, Answer, IsStudent FROM Account WHERE UserId = ?";
+    private Account retrieve(String userId, Connection conn)
+            throws ObjNotFoundException, NonRecoverableException {
+        final String sql =
+                "SELECT Password, FirstName, LastName, Question, Answer, IsStudent FROM Account WHERE UserId = ?";
 
         PreparedStatement stmt = null;
 
@@ -209,7 +203,7 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
             stmt.setString(1, userId);
 
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 Account account = new Account(userId);
 
@@ -236,8 +230,7 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
      * Utility that returns whether the given user (id) exists in the database.
      *
      * @param userId the account user id format name@university.edu
-     * @param conn an existing connection to the database, which is not closed
-     * by this method.
+     * @param conn an existing connection to the database, which is not closed by this method.
      * @return true, if the user id exists in the database, otherwise false
      * @throws NonRecoverableException (see ex.getCause().getErrorCode())
      */
@@ -262,4 +255,3 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
         }
     }
 }
-
