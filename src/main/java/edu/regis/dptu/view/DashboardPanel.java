@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,8 +25,8 @@ import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.view.act.DoOneAction;
-import edu.regis.dptu.view.act.TeachOneAction;
 import edu.regis.dptu.view.act.SeeOneAction;
+import edu.regis.dptu.view.act.TeachOneAction;
 
 public class DashboardPanel extends GPanel {
     private TutoringSession model;
@@ -48,7 +47,7 @@ public class DashboardPanel extends GPanel {
 
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
-    
+
     private static final Logger LOGGER = Logger.getLogger(DashboardPanel.class.getName());
 
     public DashboardPanel(TutoringSession tutoringSession) {
@@ -121,7 +120,7 @@ public class DashboardPanel extends GPanel {
 
         teachOneButton = new JButton(TeachOneAction.instance());
         teachOneButton.setFocusPainted(false);
-        
+
         // Apply scaffold level rules for which buttons are visible.
         applyScaffoldLevelRules();
 
@@ -237,33 +236,32 @@ public class DashboardPanel extends GPanel {
                 return ProblemKind.LCS_PROBLEM; // Fallback
         }
     }
-    
+
     /**
      * Enable/disable buttons based on the student's current ScaffoldLevel.
-     * 
+     *
      * @author hsherwin@regis.edu
      */
     private void applyScaffoldLevelRules() {
-        
+
         // Gracefully handle if the model objects don't exist.
         if (model == null || model.getStudent() == null) {
-            LOGGER.log(Level.WARNING, 
-                    "DashboardPanel: model or student is null, "
-                    + "skipping scaffold level rules");
+            LOGGER.log(
+                    Level.WARNING,
+                    "DashboardPanel: model or student is null, " + "skipping scaffold level rules");
             return;
         }
-        
+
         // Get the current scaffold level.
         var studentModel = model.getStudent().getStudentModel();
-        ScaffoldLevel lvl = studentModel.getScaffoldLevel();  
-        LOGGER.log(Level.INFO,
-                "DashboardPanel: applying scaffold level rules for {0}", lvl);
+        ScaffoldLevel lvl = studentModel.getScaffoldLevel();
+        LOGGER.log(Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
 
         // Create button enabled booleans.
-        boolean seeOneButtonEnabled = false, 
-                doOneButtonEnabled = false, 
+        boolean seeOneButtonEnabled = false,
+                doOneButtonEnabled = false,
                 teachOneButtonEnabled = false;
-        
+
         // Set the button enabled booleans based on the scaffold level.
         switch (lvl) {
             case EXTREME:
@@ -279,7 +277,7 @@ public class DashboardPanel extends GPanel {
                 doOneButtonEnabled = true;
                 break;
         }
-        
+
         // Use the button enabled booleans to actually enable/disable the buttons.
         seeOneButton.setEnabled(seeOneButtonEnabled);
         doOneButton.setEnabled(doOneButtonEnabled);

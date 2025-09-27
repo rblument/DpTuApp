@@ -24,7 +24,7 @@ import edu.regis.dptu.view.SplashFrame;
 
 public class SeeOneAction extends DpTuGuiAction {
     private static final SeeOneAction SINGLETON;
-    
+
     static {
         SINGLETON = new SeeOneAction();
     }

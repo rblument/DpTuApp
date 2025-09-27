@@ -255,9 +255,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     /**
      * Retrieves a list of unfinished lessons for a student in a specific learning category.
      *
-     * <p>The category is inferred from `AssessmentLevel`: - "Not Started" → See One - "In
-     * Progress" → Do One - "Completed", "Very Low", "Low", "Medium", "High", "Very High" → Teach One
-     * Me
+     * <p>The category is inferred from `AssessmentLevel`: - "Not Started" → See One - "In Progress"
+     * → Do One - "Completed", "Very Low", "Low", "Medium", "High", "Very High" → Teach One Me
      *
      * <p>If a lesson is not yet completed in a **previous category**, it will indicate that.
      *

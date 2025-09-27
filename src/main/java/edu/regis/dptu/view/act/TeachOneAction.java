@@ -22,7 +22,7 @@ import edu.regis.dptu.view.MainFrame;
 
 public class TeachOneAction extends DpTuGuiAction {
     private static final TeachOneAction SINGLETON;
-    
+
     static {
         SINGLETON = new TeachOneAction();
     }
@@ -33,7 +33,7 @@ public class TeachOneAction extends DpTuGuiAction {
 
     private TeachOneAction() {
         super("Teach One");
-        
+
         putValue(SHORT_DESCRIPTION, "Start a \"teach one\" (quiz) session");
         putValue(MNEMONIC_KEY, KeyEvent.VK_T);
     }
