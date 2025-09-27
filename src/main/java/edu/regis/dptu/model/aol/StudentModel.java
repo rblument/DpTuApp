@@ -12,34 +12,32 @@
  */
 package edu.regis.dptu.model.aol;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 
 import edu.regis.dptu.model.ScaffoldLevel;
 
 /**
- * Captures the current assessment for each learning outcome in a course,
- * as well as all tutoring sessions in which the student participated.
+ * Captures the current assessment for each learning outcome in a course, as well as all tutoring
+ * sessions in which the student participated.
  *
  * @author rickb
  */
 public class StudentModel {
     /**
-     * Convenience reference to the user id (email) of the student
-     * associated with this student model.
+     * Convenience reference to the user id (email) of the student associated with this student
+     * model.
      */
     private String userId;
 
     /**
-     * The assessments of outcomes for the student associated with this model.
-     * The key is the id of the knowledge component in the associated assessment.
+     * The assessments of outcomes for the student associated with this model. The key is the id of
+     * the knowledge component in the associated assessment.
      */
     private HashMap<Integer, Assessment> assessments;
 
-    /**
-     * The tutoring sessions in which the student has participated.
-     */
+    /** The tutoring sessions in which the student has participated. */
     private List<TutoringSession> sessions = new ArrayList<>();
 
     /** The current scaffolding being used to support the student. */

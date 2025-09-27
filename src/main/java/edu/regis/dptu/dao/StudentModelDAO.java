@@ -16,15 +16,14 @@ import edu.regis.dptu.model.KnowledgeComponent;
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.StudentModelFieldKind;
+import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.aol.Assessment;
 import edu.regis.dptu.model.aol.AssessmentLevel;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.svc.CourseSvc;
 import edu.regis.dptu.svc.ServiceFactory;
-import edu.regis.dptu.svc.StudentModelSvc;
 import edu.regis.dptu.svc.SessionSvc;
-import edu.regis.dptu.model.TutoringSession;
-
+import edu.regis.dptu.svc.StudentModelSvc;
 
 /**
  * A Data Access Object implementing {@link StudentModelSvc } behaviors.
@@ -123,7 +122,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                 for (Assessment assessment : retrieveAssessments(userId, conn)) {
                     studentModel.addAssessment(assessment);
                 }
-                
+
                 try {
                     SessionSvc sessionSvc = ServiceFactory.findSessionSvc();
 
