@@ -5,6 +5,9 @@ on:
     types: [opened, synchronize]
     branches: [ main, development ]
 
+permissions:
+  contents: write
+
 jobs:
   format:
     runs-on: ubuntu-latest
@@ -13,6 +16,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        ref: ${{ github.head_ref }}
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
