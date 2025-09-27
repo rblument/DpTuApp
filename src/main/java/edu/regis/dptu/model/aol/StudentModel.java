@@ -48,7 +48,6 @@ public class StudentModel {
     public StudentModel(String userId) {
         this.userId = userId;
 
-        // assessments = new HashMap<>();
         assessments = new HashMap<>();
     }
 
