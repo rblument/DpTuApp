@@ -30,9 +30,6 @@ import javax.swing.SpinnerNumberModel;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
-// import javax.swing.event.ChangeEvent; // Not used in old code
-// import javax.swing.event.ChangeListener; // Not used in old code
-
 /**
  * A panel containing buttons and controls that allow a user to step forward and backward through
  * the LCS algorithm execution.
@@ -98,12 +95,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
      * @param model a Problem model
      */
     public void setModel(Problem model) {
-        // NOTE: Cannot remove listener from the old model as 'removeProblemListener'
-        //       method doesn't seem to exist on the Problem interface/class.
-        // if (this.model != null) {
-        //    this.model.removeProblemListener(this); // This line caused compilation error
-        // }
-
         this.model = model;
 
         // Add this view as a listener to the new model
@@ -112,6 +103,10 @@ public class StepViewPanel extends GPanel implements ProblemListener {
             // if the same listener is added multiple times if setModel is called repeatedly
             // with the same model instance.
             this.model.addProblemListener(this);
+
+            setVisible(true);
+        } else {
+            setVisible(false);
         }
 
         updateView(); // Update button states based on the new model
