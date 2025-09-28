@@ -31,7 +31,10 @@ public class LCSInputView extends JPanel {
     private String string2;
 
     private TutoringSessionView parentView;
-
+    
+    public LCSInputView() {
+        this(null);
+    }
     public LCSInputView(TutoringSessionView parentView) {
         this.parentView = parentView;
 
@@ -89,9 +92,12 @@ public class LCSInputView extends JPanel {
 
         System.out.println("Submitted String 1: " + string1);
         System.out.println("Submitted String 2: " + string2);
-
-        parentView.getSubSeqView().updateWords(string1, string2);
-        parentView.getTableView().updateStrings(string1, string2);
+        
+        if (parentView != null) {
+            parentView.getSubSeqView().updateWords(string1, string2);
+            parentView.getTableView().updateStrings(string1, string2);
+        }
+        
 
         // TODO: Future: Also update LCSProblem model instance 
         //       so that step-by-step execution uses the new user input.

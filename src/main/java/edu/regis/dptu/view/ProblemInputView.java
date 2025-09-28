@@ -2,7 +2,7 @@ package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import edu.regis.dptu.model.TaskKind;
+import javax.swing.JLabel;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 
@@ -19,48 +19,60 @@ import edu.regis.dptu.model.ProblemKind;
  */
 public class ProblemInputView extends JPanel {
 
-    private TutoringSessionView parentView;
-
-    public ProblemInputView(TutoringSessionView parentView) {
-        this.parentView = parentView;
-        setLayout(new BorderLayout());
-
-        // Safely get the problem from the parent model (can be null during early initialization)
-        Problem problem = (parentView.getModel() != null) ? parentView.getModel().getProblem() : null;
-
-        // If no model/problem exists yet, fallback to LCSInputView by default
+    private JPanel activeInputPanel;
+    
+    public ProblemInputView() {
+        super(new BorderLayout());
+        System.out.println("Beginning of problemView, inside constructor");
+    }
+    
+    public void setModel(Problem problem) {
+        System.out.println("Inside setModel()");
         if (problem == null) {
-            System.out.println("No TutoringSession or Problem found. Defaulting to LCSInputView.");
-            LCSInputView lcsInputView = new LCSInputView(parentView);
-            add(lcsInputView, BorderLayout.CENTER);
+            setNullDummy("No problem selected. Choose a problem to begin.");
             return;
         }
-
-        // Otherwise, dynamically load the correct input view based on the Problem's TaskKind
-        ProblemKind type = problem.getType();
-
-        switch (type) {
+        
+        ProblemKind kind = problem.getType();
+        JPanel currentPanel;
+        
+        switch (kind) {
             case LCS_PROBLEM:
-                LCSInputView lcsInputView = new LCSInputView(parentView);
-                add(lcsInputView, BorderLayout.CENTER);
+                System.out.println("Setting currentPanel to LCSInputView");
+                currentPanel = new LCSInputView();
                 break;
-
             case MATRIX_CHAIN:
-                MatrixInputView matrixInputView = new MatrixInputView(parentView);
-                add(matrixInputView, BorderLayout.CENTER);
+                System.out.println("Setting currentPanel to MatrixInputView");
+                currentPanel = new MatrixInputView();
                 break;
-
             case KNAPSACK_0_1:
-                // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are implemented:
-                // KnapsackInputView knapsackInputView = new KnapsackInputView();
-                // add(knapsackInputView, BorderLayout.CENTER);
-                System.out.println("Knapsack input view not yet implemented.");
+                System.out.println("Setting currentPanel to KnapsackInputView");
+                currentPanel = new KnapsackInputView();
                 break;
-
             default:
-                System.out.println("Unrecognized problem type. Defaulting to LCS input view.");
-                LCSInputView defaultView = new LCSInputView(parentView);
-                add(defaultView, BorderLayout.CENTER);
+                currentPanel = nullDummy("Unknwon probelm type: " + kind);
+                break;
         }
+        
+        swapView(currentPanel);
+    }
+    
+    private void setNullDummy(String text) {
+        swapView(nullDummy(text));
+    }
+    
+    private JPanel nullDummy(String text) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel(text, JLabel.CENTER), BorderLayout.CENTER);
+        return panel;
+    }
+    
+    private void swapView(JPanel currentView) {
+        if (activeInputPanel != null)
+            remove(activeInputPanel);
+       activeInputPanel = currentView;
+       add(activeInputPanel, BorderLayout.CENTER);
+       revalidate();
+       repaint();
     }
 }
