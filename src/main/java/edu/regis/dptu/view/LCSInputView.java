@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import edu.regis.dptu.model.LCSProblem;
+
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
  * tutoring problem.
@@ -89,11 +91,10 @@ public class LCSInputView extends JPanel {
         System.out.println("Submitted String 1: " + string1);
         System.out.println("Submitted String 2: " + string2);
 
+        LCSProblem newProblem = new LCSProblem(string1, string2);
+        parentView.getTableView().setModel(newProblem);
         parentView.getSubSeqView().updateWords(string1, string2);
-        parentView.getTableView().updateStrings(string1, string2);
-
-        // TODO: Future: Also update LCSProblem model instance
-        //       so that step-by-step execution uses the new user input.
+        
         // TODO: Add input validation (e.g., prevent empty submissions).
     }
 
