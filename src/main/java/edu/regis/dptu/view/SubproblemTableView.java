@@ -94,18 +94,18 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         this.model = model;
         if (this.model != null) {
             this.model.addProblemListener(this);
-            //When the Problem changes, we should updateStrings() to match
+            // When the Problem changes, we should updateStrings() to match
             ProblemKind pKind = model.getType();
-            switch(pKind) {
+            switch (pKind) {
                 case MATRIX_CHAIN:
-                    //TODO
+                    // TODO
                     break;
                 case KNAPSACK_0_1:
-                    //TODO
+                    // TODO
                     break;
-                default: //i.e. LCS_PROBLEM
-                    String s1 = ((LCSProblem)model).getX();
-                    String s2 = ((LCSProblem)model).getY();
+                default: // i.e. LCS_PROBLEM
+                    String s1 = ((LCSProblem) model).getX();
+                    String s2 = ((LCSProblem) model).getY();
                     updateStrings(s1, s2);
             }
             updateView();
