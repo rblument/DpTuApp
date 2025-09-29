@@ -94,7 +94,7 @@ public class LCSInputView extends JPanel {
         LCSProblem newProblem = new LCSProblem(string1, string2);
         parentView.getTableView().setModel(newProblem);
         parentView.getSubSeqView().updateWords(string1, string2);
-        
+
         // TODO: Add input validation (e.g., prevent empty submissions).
     }
 
