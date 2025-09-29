@@ -215,9 +215,9 @@ public class StepSelectorView extends GPanel {
         String status = stepAssessmentLevels.get(selection.getStepType().toString());
         if (status != null) {
             if (status.equals(AssessmentLevel.NOT_STARTED.title())) {
-                label.setText(label.getText() + " (Teach Me)");
+                label.setText(label.getText() + " (See One)");
             } else if (status.equals(AssessmentLevel.IN_PROGRESS.title())) {
-                label.setText(label.getText() + " (Practice)");
+                label.setText(label.getText() + " (Do One)");
             } else if (status.equals(AssessmentLevel.COMPLETED.title())) {
                 label.setText(label.getText() + " ✅");
             }
