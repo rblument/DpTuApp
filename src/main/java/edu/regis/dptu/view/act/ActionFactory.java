@@ -24,9 +24,9 @@ public class ActionFactory {
         NewUserAction.instance();
         SaveSessionAction.instance();
         SignInAction.instance();
-        TeachMeAction.instance();
-        PracticeAction.instance();
-        QuizMeAction.instance();
+        SeeOneAction.instance();
+        DoOneAction.instance();
+        TeachOneAction.instance();
         BackAction.instance();
         CheckAnswerAction.instance();
         NewExampleAction.instance();
