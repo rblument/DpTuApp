@@ -280,26 +280,6 @@ public class TutoringSessionView extends GPanel {
 
     private void updateView(Problem currentProblem) {
         System.out.println("DEBUG: TutoringSessionView.updateView called.");
-
-        if (problemInputView != null) {
-            remove(problemInputView);
-        }
-
-        problemInputView = new ProblemInputView(); // Recreate it fresh based on the problem
-        addc(
-                problemInputView,
-                0,
-                0,
-                2,
-                1,
-                0.0,
-                0.0,
-                GridBagConstraints.NORTHWEST,
-                GridBagConstraints.HORIZONTAL,
-                5,
-                5,
-                5,
-                5);
         
         problemInputView.setModel(currentProblem);
 
