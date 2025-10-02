@@ -69,41 +69,40 @@ public class LCSProblemTest {
         problem.step(); // executeLine2 L[-1,-1]  really L[0,0] in Java
 
         // Finish the r loop
-        while (r <= n) {//we start with r==0 which corresponds to -1 on the table
+        while (r <= n) { // we start with r==0 which corresponds to -1 on the table
             problem.step(); // Line 1 r++
             r++;
             problem.step(); // Line 2 L[r,-1] = 0;
         }
-        
+
         problem.step(); // Line 1 one last time to increment r past the boundary and break the loop
-        
+
         assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
         assertEquals(-1, problem.getVariableValue("r"));
 
         // c loop - we already did the column for the first letter
-        for (int c = 0; c < m-1; c++) {
+        for (int c = 0; c < m - 1; c++) {
             problem.step(); // Line 3 c++
             problem.step(); // Line 4 L[-1,c] = 0;
         }
-        
+
         problem.step(); // Line 3 one last time; sets execution state to I_LOOP and goto Line 5
 
         assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
         assertEquals(-1, problem.getVariableValue("c"));
-        
+
         problem.step(); // Line 5 i loop
         assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
         for (int i = 0; i < n; i++) {
             problem.step(); // Line 6 j loop
             assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
             for (int j = 0; j < m; j++) {
-                assertEquals(i+1, problem.getVariableValue("i"));
-                assertEquals(j+1, problem.getVariableValue("j"));
+                assertEquals(i + 1, problem.getVariableValue("i"));
+                assertEquals(j + 1, problem.getVariableValue("j"));
                 problem.step(); // Line 7: if statement always executes
                 if (x.charAt(i) == y.charAt(j)) {
                     problem.step(); // Line 8
-                }
-                else {
+                } else {
                     problem.step(); // Line 10
                 }
                 problem.step(); // Line 6 j loop
@@ -111,36 +110,35 @@ public class LCSProblemTest {
             assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
             problem.step(); // Line 5 i loop
         }
-        
+
         assertEquals(LCSProblem.EXECUTION_STATE.RETRN, problem.getExecutionState());
         assertEquals(-1, problem.getVariableValue("i"));
         assertEquals(-1, problem.getVariableValue("j"));
-        
+
         problem.step(); // Line 11
-        
+
         assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
-        
+
         problem.prettyPrint();
 
-        //TODO implement undo() methods in LCSProblem
+        // TODO implement undo() methods in LCSProblem
         problem.undo();
-        
-        //assertEquals(LCSProblem.EXECUTION_STATE.RETRN, problem.getExecutionState());
-        
 
-//
-//        // Start undoing
-//        assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
-//
-//        problem.undo(); // Line 11
-//
-//        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-//
-//        for (int xx = 0; xx < 591; xx++) problem.undo();
-//
-//        assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
-//
-//        problem.prettyPrint();
+        // assertEquals(LCSProblem.EXECUTION_STATE.RETRN, problem.getExecutionState());
+
+        //
+        //        // Start undoing
+        //        assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
+        //
+        //        problem.undo(); // Line 11
+        //
+        //        assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+        //
+        //        for (int xx = 0; xx < 591; xx++) problem.undo();
+        //
+        //        assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
+        //
+        //        problem.prettyPrint();
     }
 
     /**

@@ -412,7 +412,8 @@ public class LCSProblem extends Problem {
     protected void loadCodeStatements() {
         codeStatements.clear();
         codeStatements.add("<html><pre><b>LCS(x,y)</b></pre></html>"); // Line 0
-        codeStatements.add("<html><pre>  <b>for</b> r = -1 to n-1 <b>do</b></pre></html>"); // Line 1
+        codeStatements.add(
+                "<html><pre>  <b>for</b> r = -1 to n-1 <b>do</b></pre></html>"); // Line 1
         codeStatements.add("<html><pre>    L[r,-1] = 0</pre></html>"); // Line 2
         codeStatements.add("<html><pre>  <b>for</b> c = 0 to m-1 <b>do</b></pre></html>"); // Line 3
         codeStatements.add("<html><pre>    L[-1,c] = 0</pre></html>"); // Line 4
