@@ -2,8 +2,9 @@ package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 
@@ -19,22 +20,22 @@ import edu.regis.dptu.model.ProblemKind;
 public class ProblemInputView extends JPanel {
 
     private JPanel activeInputPanel;
-    
+
     public ProblemInputView() {
         super(new BorderLayout());
         System.out.println("Beginning of problemView, inside constructor");
     }
-    
+
     public void setModel(Problem problem) {
         System.out.println("Inside setModel()");
         if (problem == null) {
             setNullDummy("No problem selected. Choose a problem to begin.");
             return;
         }
-        
+
         ProblemKind kind = problem.getType();
         JPanel currentPanel;
-        
+
         switch (kind) {
             case LCS_PROBLEM:
                 System.out.println("Setting currentPanel to LCSInputView");
@@ -57,26 +58,25 @@ public class ProblemInputView extends JPanel {
                 currentPanel = nullDummy("Unknwon probelm type: " + kind);
                 break;
         }
-        
+
         swapView(currentPanel);
     }
-    
+
     private void setNullDummy(String text) {
         swapView(nullDummy(text));
     }
-    
+
     private JPanel nullDummy(String text) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JLabel(text, JLabel.CENTER), BorderLayout.CENTER);
         return panel;
     }
-    
+
     private void swapView(JPanel currentView) {
-        if (activeInputPanel != null)
-            remove(activeInputPanel);
-       activeInputPanel = currentView;
-       add(activeInputPanel, BorderLayout.CENTER);
-       revalidate();
-       repaint();
+        if (activeInputPanel != null) remove(activeInputPanel);
+        activeInputPanel = currentView;
+        add(activeInputPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
 }

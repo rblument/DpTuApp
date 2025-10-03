@@ -1,6 +1,5 @@
 package edu.regis.dptu.view;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,7 +31,7 @@ public class LCSInputView extends JPanel {
     private String string2;
 
     private TutoringSessionView parentView;
-    
+
     public LCSInputView() {
 
         setLayout(new GridBagLayout());
@@ -89,7 +88,7 @@ public class LCSInputView extends JPanel {
 
         System.out.println("Submitted String 1: " + string1);
         System.out.println("Submitted String 2: " + string2);
-        
+
         Container tempView = this.getParent().getParent();
         // For now, use getParent().getParent() to find TutoringSessionView instance
         // This code is fragile, if you've changed the component heirarchy you
@@ -99,20 +98,16 @@ public class LCSInputView extends JPanel {
                 parentView = (TutoringSessionView) tempView;
                 parentView.getSubSeqView().updateWords(string1, string2);
                 parentView.getTableView().updateStrings(string1, string2);
+            } else {
+                System.out.println(
+                        "getParent().getParent() did not lead to " + "TutoringSessionView");
             }
-            else {
-                System.out.println("getParent().getParent() did not lead to "
-                    + "TutoringSessionView");
-            }
-        }
-        catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println(e);
         }
-        
-//        parentView.getSubSeqView().updateWords(string1, string2);
-//        parentView.getTableView().updateStrings(string1, string2);
-      
-        
+
+        //        parentView.getSubSeqView().updateWords(string1, string2);
+        //        parentView.getTableView().updateStrings(string1, string2);
 
         // TODO: Future: Also update LCSProblem model instance
         //       so that step-by-step execution uses the new user input.

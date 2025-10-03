@@ -280,7 +280,7 @@ public class TutoringSessionView extends GPanel {
 
     private void updateView(Problem currentProblem) {
         System.out.println("DEBUG: TutoringSessionView.updateView called.");
-        
+
         problemInputView.setModel(currentProblem);
 
         revalidate();

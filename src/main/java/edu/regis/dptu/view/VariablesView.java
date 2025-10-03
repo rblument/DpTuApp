@@ -34,9 +34,9 @@ public class VariablesView extends GPanel {
         this.model = model;
 
         if (model != null) {
-                setVisible(true);
+            setVisible(true);
         } else {
-                setVisible(false);
+            setVisible(false);
         }
 
         updateView();

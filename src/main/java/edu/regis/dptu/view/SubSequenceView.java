@@ -29,9 +29,6 @@ import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
-import edu.regis.dptu.model.LCSProblem;
-import edu.regis.dptu.model.Problem;
-
 /**
  * This is the Subsequence view for the TutoringSession View. The title, words, and button are
  * displayed. Both words entered to find LCS are shown with the length of each. When the button is
@@ -131,9 +128,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
     public void setModel(Problem currentProblem) {
         if (currentProblem != null && currentProblem instanceof LCSProblem) {
             this.updateWords(
-                ((LCSProblem) currentProblem).getX(),
-                ((LCSProblem) currentProblem).getY()
-            );
+                    ((LCSProblem) currentProblem).getX(), ((LCSProblem) currentProblem).getY());
 
             setVisible(true);
         } else if (currentProblem == null) {
