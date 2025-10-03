@@ -14,7 +14,7 @@ DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designe
   - Visualization of variable values during execution (VariablesView).
   - Visualization of subsequence comparison (SubSequenceView).
 - Student Modeling: Tracks student progress on learning outcomes (Knowledge Components).
-- Learning Modes: Basic structure for "Teach Me," "Practice," and "Quiz Me" modes (DashboardPanel).
+- Learning Modes: Basic structure for "See One," "Do One," and "Teach One" modes (DashboardPanel).
 - Client-Server Architecture: Java Swing GUI client communicates with a Java socket server over JSON.
 - Database Persistence: Uses MySQL to store user accounts, course structure, tutoring sessions, and student models.
 
@@ -101,6 +101,14 @@ _otherwise_
   Run DpTuApp -> Enter credentials -> Click "Sign In".
 - Running LCS:
   After sign-in, select a mode and use algorithm controls to step through LCS problem.
+
+## Contribution
+
+When contributing, be mindful to format the code before pushing it to GitHub. You can do this by running `mvn spotless:apply`. A plugin defined in [`pom.xml`](./pom.xml) controls the formatting of the project. The formatting keeps the code consistent for others to read, helping code readability and maintenance. 
+
+If you forget to format the code, be mindful that a GitHub workflow will do this for you in [`.github/workflows/format-code.yml`](./.github/workflows/format-code.yml). It should only affect you when pushing multiple times without running it. 
+
+A future contribution could be how to configure Netbeans to run this automatically in a pre-commit hook (but as of Sept 2025, Netbeans does not support pre-commit hooks). 
 
 ## Known Issues
 
