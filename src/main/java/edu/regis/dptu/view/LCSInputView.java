@@ -91,10 +91,6 @@ public class LCSInputView extends JPanel {
         System.out.println("Submitted String 1: " + string1);
         System.out.println("Submitted String 2: " + string2);
 
-        //LCSProblem newProblem = new LCSProblem(string1, string2);
-        //parentView.getTableView().setModel(newProblem);
-        //parentView.getSubSeqView().updateWords(string1, string2);
-
         Container tempView = this.getParent().getParent();
         // For now, use getParent().getParent() to find TutoringSessionView instance
         // This code is fragile, if you've changed the component heirarchy you
@@ -105,17 +101,13 @@ public class LCSInputView extends JPanel {
                 LCSProblem newProblem = new LCSProblem(string1, string2);
                 grandparentView.getTableView().setModel(newProblem);
                 grandparentView.getSubSeqView().setModel(newProblem);
-                //grandparentView.getSubSeqView().updateWords(string1, string2);
             } else {
                 System.out.println(
-                        "getParent().getParent() did not lead to " + "TutoringSessionView");
+                        "LCSInputView: getParent().getParent() did not lead to " + "TutoringSessionView");
             }
         } catch (NullPointerException e) {
             System.out.println(e);
         }
-
-        //        parentView.getSubSeqView().updateWords(string1, string2);
-        //        parentView.getTableView().updateStrings(string1, string2);
 
         // TODO: Add input validation (e.g., prevent empty submissions).
     }
