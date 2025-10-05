@@ -18,7 +18,7 @@ import javax.swing.JTextField;
  * LCSInputView.java
  */
 public class MatrixInputView extends JPanel {
-    public MatrixInputView(TutoringSessionView parentView) {
+    public MatrixInputView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
