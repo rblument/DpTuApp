@@ -103,7 +103,8 @@ public class LCSInputView extends JPanel {
                 grandparentView.getSubSeqView().setModel(newProblem);
             } else {
                 System.out.println(
-                        "LCSInputView: getParent().getParent() did not lead to " + "TutoringSessionView");
+                        "LCSInputView: getParent().getParent() did not lead to "
+                                + "TutoringSessionView");
             }
         } catch (NullPointerException e) {
             System.out.println(e);
