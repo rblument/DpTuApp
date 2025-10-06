@@ -125,16 +125,17 @@ class SubSequenceView extends JPanel implements ProblemListener {
         canvas.highlightLCS();
     }
 
-    public void setModel(Problem currentProblem) {
-        if (currentProblem != null && currentProblem instanceof LCSProblem) {
-            this.updateWords(
-                    ((LCSProblem) currentProblem).getX(), ((LCSProblem) currentProblem).getY());
-
-            setVisible(true);
-        } else if (currentProblem == null) {
-            setVisible(false);
-        }
-    }
+    //    public void setModel(Problem currentProblem) {
+    //        if (currentProblem != null && currentProblem instanceof LCSProblem) {
+    //            this.updateWords(
+    //                    ((LCSProblem) currentProblem).getX(), ((LCSProblem)
+    // currentProblem).getY());
+    //
+    //            setVisible(true);
+    //        } else if (currentProblem == null) {
+    //            setVisible(false);
+    //        }
+    //    }
 
     /**
      * Updates the displayed input strings and lengths when new inputs are submitted.

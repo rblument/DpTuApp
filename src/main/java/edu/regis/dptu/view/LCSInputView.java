@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import edu.regis.dptu.model.LCSProblem;
+
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
  * tutoring problem.
@@ -30,7 +32,7 @@ public class LCSInputView extends JPanel {
     private String string1;
     private String string2;
 
-    private TutoringSessionView parentView;
+    private TutoringSessionView grandparentView;
 
     public LCSInputView() {
 
@@ -95,22 +97,19 @@ public class LCSInputView extends JPanel {
         // Will likely have to edit this as well
         try {
             if (tempView instanceof TutoringSessionView) {
-                parentView = (TutoringSessionView) tempView;
-                parentView.getSubSeqView().updateWords(string1, string2);
-                parentView.getTableView().updateStrings(string1, string2);
+                grandparentView = (TutoringSessionView) tempView;
+                LCSProblem newProblem = new LCSProblem(string1, string2);
+                grandparentView.getTableView().setModel(newProblem);
+                grandparentView.getSubSeqView().setModel(newProblem);
             } else {
                 System.out.println(
-                        "getParent().getParent() did not lead to " + "TutoringSessionView");
+                        "LCSInputView: getParent().getParent() did not lead to "
+                                + "TutoringSessionView");
             }
         } catch (NullPointerException e) {
             System.out.println(e);
         }
 
-        //        parentView.getSubSeqView().updateWords(string1, string2);
-        //        parentView.getTableView().updateStrings(string1, string2);
-
-        // TODO: Future: Also update LCSProblem model instance
-        //       so that step-by-step execution uses the new user input.
         // TODO: Add input validation (e.g., prevent empty submissions).
     }
 

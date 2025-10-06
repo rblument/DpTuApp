@@ -106,11 +106,11 @@ public class MatrixChainProblem extends Problem {
     /**
      * Return the type of this Dynamic Programming problem.
      *
-     * @return ProblemKind.LCS_PROBLEM
+     * @return ProblemKind.MATRIX_CHAIN
      */
     @Override
     public ProblemKind getType() {
-        return ProblemKind.LCS_PROBLEM;
+        return ProblemKind.MATRIX_CHAIN;
     }
 
     /**

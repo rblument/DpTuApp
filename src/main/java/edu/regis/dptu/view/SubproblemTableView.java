@@ -35,7 +35,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
 
 /**
@@ -92,6 +94,20 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         this.model = model;
         if (this.model != null) {
             this.model.addProblemListener(this);
+            // When the Problem changes, we should updateStrings() to match
+            ProblemKind pKind = model.getType();
+            switch (pKind) {
+                case MATRIX_CHAIN:
+                    // TODO
+                    break;
+                case KNAPSACK_0_1:
+                    // TODO
+                    break;
+                default: // i.e. LCS_PROBLEM
+                    String s1 = ((LCSProblem) model).getX();
+                    String s2 = ((LCSProblem) model).getY();
+                    updateStrings(s1, s2);
+            }
             updateView();
 
             setVisible(true);
@@ -199,7 +215,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             columnModel.getColumn(0).setPreferredWidth(150);
         }
         // Set header height
-        table.getTableHeader().setPreferredSize(new Dimension(25, 25));
+        table.getTableHeader().setPreferredSize(new Dimension(25, 45));
 
         // Wrap table in scroll pane for overflow
         sp = new JScrollPane(table);
@@ -263,15 +279,6 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 toadd[0] = rowHeaders.get(i) + "  (" + (i - 1) + ")";
             } else {
                 toadd[0] = rowHeaders.get(i);
-            }
-            toadd[1] = 0; // Base case column value
-            // Fill remaining cells with default: empty for data rows, zero for header row
-            for (int p = 2; p < toadd.length; p++) {
-                if (i == 0) {
-                    toadd[p] = 0;
-                } else {
-                    toadd[p] = "";
-                }
             }
             rows.add(toadd);
         }
