@@ -92,8 +92,7 @@ public class DpTuTutor implements TutorSvc {
     public TutorReply request(ClientRequest request) {
         // Uses reflection to invoke a method derived from the request name in
         // the client request (e.g., ":SignIn" invokes "signIn(...)").
-        DpTuTutor.LOGGER
-                .log(Level.INFO, request.getRequestType().getRequestName());
+        DpTuTutor.LOGGER.log(Level.INFO, request.getRequestType().getRequestName());
 
         // Efficiently produce "signIn" from ":SignIn", for example.
         char c[] = request.getRequestType().getRequestName().toCharArray();
@@ -149,8 +148,7 @@ public class DpTuTutor implements TutorSvc {
                 break;
 
             default: // e.g., signIn itself, newAccount
-                DpTuTutor.LOGGER
-                        .log(Level.INFO, "No token verification required");
+                DpTuTutor.LOGGER.log(Level.INFO, "No token verification required");
         }
 
         // Security token has been verified or not required (e.g., signIn, createAccount).
