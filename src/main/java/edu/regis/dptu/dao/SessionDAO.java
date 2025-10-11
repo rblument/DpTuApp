@@ -128,7 +128,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         } catch (SQLException e) {
             throw new NonRecoverableException("Retrieve Session Error", e);
         } finally {
-            close(stmt);
+            close(conn, stmt);
         }
     }
 
