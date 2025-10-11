@@ -93,7 +93,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
             commit(conn);
         } catch (SQLException e) {
             if (conn != null) rollback(conn);
-            throw new NonRecoverableException("UserDAO-ERR-5" + e.toString(), e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-1" + e.toString(), e);
         } finally {
             close(stmt2);
             close(conn, stmt1);
@@ -131,7 +131,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                 throw new ObjNotFoundException("Student Id:" + userId);
             }
         } catch (SQLException e) {
-            throw new NonRecoverableException("UserDAO-ERR-5" + e.toString(), e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-2" + e.toString(), e);
         } finally {
             close(conn, stmt);
         }
@@ -151,8 +151,6 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
         String sql = "";
 
         int assessmentId = assessment.getId();
-        String userId = model.getUserId();
-        int knowledgeComponentId = assessment.getOutcome().getId();
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -187,6 +185,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     stmt.setInt(1, assessment.getHints());
                     stmt.setInt(2, assessmentId);
                     break;
+                default:
+                    break;
             }
 
             LOGGER.log(Level.FINE, "Executing statement: {0}", stmt.toString());
@@ -198,7 +198,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     Level.SEVERE,
                     "SQL Error - State: {0}, Code: {1}",
                     new Object[] {e.getSQLState(), e.getErrorCode()});
-            throw new NonRecoverableException("UserDAO-ERR-5" + e.toString(), e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-4" + e.toString(), e);
         } finally {
             close(conn, stmt);
         }
@@ -219,7 +219,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
             return exists(userId, conn);
 
         } catch (SQLException e) {
-            throw new NonRecoverableException("UserDAO-ERR-3" + e.toString(), e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-5" + e.toString(), e);
         } finally {
             close(conn);
         }

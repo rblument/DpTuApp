@@ -17,15 +17,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.LCSProblem;
-import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
-import edu.regis.dptu.model.Task;
 import edu.regis.dptu.svc.ProblemSvc;
 
 public class ProblemDAO extends MySqlDAO implements ProblemSvc {
@@ -73,40 +70,6 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
         }
     }
 
-    private void retrieveVariables(Problem problem, Connection conn)
-            throws NonRecoverableException {
-        final String sql =
-                "SELECT Id, VariableName, VariableValue, DataType, IsInput, Dimensions FROM Variable WHERE ProblemId = ?";
-
-        int problemId = problem.getId();
-
-        PreparedStatement stmt = null;
-
-        try {
-            conn = DriverManager.getConnection(URL);
-            stmt = conn.prepareStatement(sql);
-
-            stmt.setInt(1, problemId);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                //     Variable var
-
-                //   switch (DataType.valueOf(rs.getString(4))) {
-                //      case INT:
-                //           problem.addVariable(extractIntVariable(rs));
-                //   }
-
-            }
-
-        } catch (SQLException e) {
-            throw new NonRecoverableException("ProblemDAO-ERR-1" + e.toString(), e);
-        } finally {
-            close(stmt);
-        }
-    }
-
     private Problem retrieveProblemSubType(int id, ProblemKind type, int subTypeId, Connection conn)
             throws NonRecoverableException {
         switch (type) {
@@ -137,8 +100,6 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             throws NonRecoverableException {
         final String sql = "SELECT Sequence1,Sequence2 FROM LCSProblem WHERE Id = ?";
 
-        ArrayList<Task> tasks = new ArrayList<>();
-
         PreparedStatement stmt = null;
 
         try {
@@ -161,19 +122,9 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             }
 
         } catch (SQLException e) {
-            throw new NonRecoverableException("CourseDAO-ERR-10" + e.toString(), e);
+            throw new NonRecoverableException("ProblemDAO-ERR-2" + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
         }
-    }
-
-    private MatrixChainProblem retrieveMatrixProblem(int id, Connection conn)
-            throws NonRecoverableException {
-        throw new NonRecoverableException("Matrix Chain Problem not yet implemented.");
-    }
-
-    private MatrixChainProblem retrieveKnapsackProblem(int id, Connection conn)
-            throws NonRecoverableException {
-        throw new NonRecoverableException("Knapsack Problem not yet implemented.");
     }
 }

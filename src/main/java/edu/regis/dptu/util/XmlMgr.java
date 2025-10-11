@@ -176,7 +176,6 @@ public class XmlMgr {
 
         do {
             fileName = fileName + id + ".xml";
-            String fullPath = DATA_DIRECTORY + fileName;
 
             Path path = Paths.get(DATA_DIRECTORY);
 

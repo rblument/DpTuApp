@@ -17,11 +17,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.KeyStroke;
 
-import static javax.swing.Action.ACCELERATOR_KEY;
-import static javax.swing.Action.MNEMONIC_KEY;
-import static javax.swing.Action.SHORT_DESCRIPTION;
-import static javax.swing.Action.SMALL_ICON;
-
 import edu.regis.dptu.util.ImgFactory;
 
 /**

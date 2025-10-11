@@ -16,9 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
-import static javax.swing.Action.MNEMONIC_KEY;
-import static javax.swing.Action.SHORT_DESCRIPTION;
-
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;

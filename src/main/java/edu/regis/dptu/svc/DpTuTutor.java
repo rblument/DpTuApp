@@ -92,7 +92,7 @@ public class DpTuTutor implements TutorSvc {
     public TutorReply request(ClientRequest request) {
         // Uses reflection to invoke a method derived from the request name in
         // the client request (e.g., ":SignIn" invokes "signIn(...)").
-        Logger.getLogger(DpTuTutor.class.getName())
+        DpTuTutor.LOGGER
                 .log(Level.INFO, request.getRequestType().getRequestName());
 
         // Efficiently produce "signIn" from ":SignIn", for example.
@@ -145,11 +145,11 @@ public class DpTuTutor implements TutorSvc {
                 }
 
                 String msg = "Session verified for " + request.getUserId();
-                Logger.getLogger(DpTuTutor.class.getName()).log(Level.INFO, msg);
+                DpTuTutor.LOGGER.log(Level.INFO, msg);
                 break;
 
             default: // e.g., signIn itself, newAccount
-                Logger.getLogger(DpTuTutor.class.getName())
+                DpTuTutor.LOGGER
                         .log(Level.INFO, "No token verification required");
         }
 
@@ -256,7 +256,7 @@ public class DpTuTutor implements TutorSvc {
         } catch (ObjNotFoundException e) {
             return new TutorReply("UnknownUser");
         } catch (NonRecoverableException ex) {
-            Logger.getLogger(DpTuTutor.class.getName()).log(Level.SEVERE, null, ex);
+            DpTuTutor.LOGGER.log(Level.SEVERE, null, ex);
             return new TutorReply();
         }
     }
@@ -492,9 +492,9 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutorReply createError(String errMsg, Exception ex) {
         if (ex == null) {
-            Logger.getLogger(DpTuTutor.class.getName()).log(Level.SEVERE, errMsg);
+            DpTuTutor.LOGGER.log(Level.SEVERE, errMsg);
         } else {
-            Logger.getLogger(DpTuTutor.class.getName()).log(Level.SEVERE, errMsg, ex);
+            DpTuTutor.LOGGER.log(Level.SEVERE, errMsg, ex);
         }
 
         return new TutorReply(":ERR", errMsg);

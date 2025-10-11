@@ -24,7 +24,6 @@ import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.Student;
-import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.svc.ProblemSvc;
 import edu.regis.dptu.svc.ServiceFactory;
@@ -114,8 +113,6 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 date.setTime(rs.getDate(3));
                 session.setStartDate(date);
                 session.setIsActive(rs.getBoolean(4));
-
-                TaskKind kind = TaskKind.valueOf(rs.getString(5));
 
                 ProblemSvc problemSvc = ServiceFactory.findProblemSvc();
 
