@@ -303,9 +303,9 @@ public class TutoringSessionView extends GPanel {
     }
 
     /**
-    * Update displayed state of a problem after a change
-    * Is called whenever problem model has been modified
-    */
+     * Update displayed state of a problem after a change Is called whenever problem model has been
+     * modified
+     */
     public void problemUpdated(TutoringSession session) {
         System.out.println("DEBUG: TutoringSessionView.problemUpdated called");
         if (session == null) return;
