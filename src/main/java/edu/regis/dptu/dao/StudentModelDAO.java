@@ -11,11 +11,11 @@ import java.util.List;
 
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Course;
 import edu.regis.dptu.model.KnowledgeComponent;
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.Student;
-import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.StudentModelFieldKind;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.aol.Assessment;
