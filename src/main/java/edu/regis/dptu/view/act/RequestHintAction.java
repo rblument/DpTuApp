@@ -65,7 +65,7 @@ public class RequestHintAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Hint requested.")
+        System.out.println("Hint requested.");
         // Show a simple static hint message to the student
         // Basic implementation for DPTU-45
         String hintText = "Try focusing on how this step connects to the previous subproblem.";
