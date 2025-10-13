@@ -70,9 +70,6 @@ public class RequestHintAction extends DpTuGuiAction {
         // Basic implementation for DPTU-45
         String hintText = "Try focusing on how this step connects to the previous subproblem.";
         JOptionPane.showMessageDialog(
-                MainFrame.instance(),
-                hintText,
-                "Hint",
-                JOptionPane.INFORMATION_MESSAGE);
+                MainFrame.instance(), hintText, "Hint", JOptionPane.INFORMATION_MESSAGE);
     }
 }
