@@ -131,8 +131,6 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     Account acct = new Account();
                     acct.setUserId(userId);
                     Student stub = new Student(acct);
-                    acct.setUserId(userId);
-                    stub.setAccount(acct);
 
                     TutoringSession session = sessionSvc.retrieve(stub);
                     if (session != null) {
