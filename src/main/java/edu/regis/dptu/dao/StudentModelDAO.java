@@ -128,8 +128,9 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     SessionSvc sessionSvc = ServiceFactory.findSessionSvc();
 
                     // Build a minimal Student with userId so sessionSvc can retrieve
-                    Student stub = new Student();
                     Account acct = new Account();
+                    acct.setUserId(userId);
+                    Student stub = new Student(acct);
                     acct.setUserId(userId);
                     stub.setAccount(acct);
 
