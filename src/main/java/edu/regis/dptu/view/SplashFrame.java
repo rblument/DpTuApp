@@ -322,9 +322,7 @@ public class SplashFrame extends JFrame {
         if (this.tutoringSession == null) {
             this.tutoringSession = new TutoringSession(getAccount(), problem);
         } else {
-            // Reuse the account, but replace the problem
-            this.tutoringSession =
-                    new TutoringSession(this.tutoringSession.getStudent().getAccount(), problem);
+            this.tutoringSession.setProblem(problem);
         }
 
         // Pass the new session to the MainFrame

@@ -20,22 +20,22 @@ import static javax.swing.Action.SHORT_DESCRIPTION;
 
 import edu.regis.dptu.view.MainFrame;
 
-public class PracticeAction extends DpTuGuiAction {
-    private static final PracticeAction SINGLETON;
+public class TeachOneAction extends DpTuGuiAction {
+    private static final TeachOneAction SINGLETON;
 
     static {
-        SINGLETON = new PracticeAction();
+        SINGLETON = new TeachOneAction();
     }
 
-    public static PracticeAction instance() {
+    public static TeachOneAction instance() {
         return SINGLETON;
     }
 
-    private PracticeAction() {
-        super("Practice");
+    private TeachOneAction() {
+        super("Teach One");
 
-        putValue(SHORT_DESCRIPTION, "Start a practice session");
-        putValue(MNEMONIC_KEY, KeyEvent.VK_P);
+        putValue(SHORT_DESCRIPTION, "Start a \"teach one\" (quiz) session");
+        putValue(MNEMONIC_KEY, KeyEvent.VK_T);
     }
 
     @Override

@@ -17,11 +17,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemListener;
 
 /**
  * This is the Subsequence view for the TutoringSession View. The title, words, and button are
@@ -31,11 +37,15 @@ import javax.swing.SwingConstants;
  *
  * @author Sofia Reyes
  */
-public class SubSequenceView extends JPanel {
+class SubSequenceView extends JPanel implements ProblemListener {
+
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(SubSequenceView.class.getName());
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2, wordLabel1, wordLabel2;
     private JButton stepButton;
     public SubSequenceCanvasView canvas;
+    private Problem model;
 
     public SubSequenceView(String word1, String word2) {
         initializeComponents(word1, word2);
@@ -115,6 +125,18 @@ public class SubSequenceView extends JPanel {
         canvas.highlightLCS();
     }
 
+    //    public void setModel(Problem currentProblem) {
+    //        if (currentProblem != null && currentProblem instanceof LCSProblem) {
+    //            this.updateWords(
+    //                    ((LCSProblem) currentProblem).getX(), ((LCSProblem)
+    // currentProblem).getY());
+    //
+    //            setVisible(true);
+    //        } else if (currentProblem == null) {
+    //            setVisible(false);
+    //        }
+    //    }
+
     /**
      * Updates the displayed input strings and lengths when new inputs are submitted.
      *
@@ -144,5 +166,69 @@ public class SubSequenceView extends JPanel {
 
         repaint();
         revalidate();
+    }
+
+    /**
+     * Bind this view to a specific problem model. Registers as a ProblemListener so we get notified
+     * on updates. Immediately triggers an update to sync the UI with the model.
+     *
+     * @author Harrison Sherwin
+     */
+    public void setModel(Problem model) {
+
+        this.model = model;
+
+        if (this.model != null) {
+
+            this.model.addProblemListener(this);
+
+            LOGGER.log(
+                    Level.INFO,
+                    "SubSequenceView: model set ({0}), updating view",
+                    this.model.getClass().getSimpleName());
+
+            updateView();
+        } else {
+            LOGGER.warning("SubSequenceView: setModel called with a null model");
+        }
+    }
+
+    /**
+     * Called automatically whenever the bound Problem changes. Runs on the Swing event dispatch
+     * thread via SwingUtilities. Ensures UI refresh is thread-safe.
+     *
+     * @author Harrison Sherwin
+     */
+    @Override
+    public void problemUpdated(Problem problem) {
+
+        LOGGER.log(Level.FINE, "SubSequenceView: problemUpdated called");
+
+        // Update the UI on the Swing thread to avoid race conditions.
+        SwingUtilities.invokeLater(this::updateView);
+    }
+
+    /**
+     * Refresh the words displayed in this view based on the model. If the model is an LCSProblem,
+     * extract x and y strings. Push those strings into updateWords(), which updates the labels and
+     * canvas. For non-LCS problems, log but skip the update.
+     *
+     * @author hsherwin@regis.edu
+     */
+    private void updateView() {
+        if (model instanceof LCSProblem lcs) {
+            // Replace nulls with empty strings.
+            String x = (lcs.getX() == null) ? "" : lcs.getX();
+            String y = (lcs.getY() == null) ? "" : lcs.getY();
+
+            // Update the view with the current words.
+            updateWords(x, y);
+        } else if (model != null) {
+            LOGGER.log(
+                    Level.FINE,
+                    "SubSequenceView: model is not LCSProblem; " + "no word update performed");
+        }
+
+        // setModel() handles if(model = null).
     }
 }
