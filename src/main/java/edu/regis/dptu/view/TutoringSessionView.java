@@ -318,4 +318,5 @@ public class TutoringSessionView extends GPanel {
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
         updateView(currentProblem);
+    }
 }
