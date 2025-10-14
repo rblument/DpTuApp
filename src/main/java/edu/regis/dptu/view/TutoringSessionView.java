@@ -16,7 +16,6 @@ import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
 
-import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.TutoringSession;
 
@@ -122,7 +121,7 @@ public class TutoringSessionView extends GPanel {
         subproblemView = new JLabel("Subproblem View");
 
         problemInputView = new ProblemInputView();
-        
+
         subSeqView = new SubSequenceView(); // Original init
         tableView = new SubproblemTableView();
         codeView = new CodeView(tableView); // Original init
