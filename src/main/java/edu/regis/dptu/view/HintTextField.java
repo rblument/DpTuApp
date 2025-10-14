@@ -128,7 +128,6 @@ public class HintTextField extends JTextField {
     public class NameFilter extends DocumentFilter {
 
         private boolean isLetterOrHyphen(String str) {
-            boolean isValid = true;
             for (int i = 0; i < str.length(); i++)
                 if (!Character.isLetter(str.charAt(i)) && (str.charAt(i) != '-')) return false;
 
@@ -136,7 +135,6 @@ public class HintTextField extends JTextField {
         }
 
         private boolean isEmailChar(String str) {
-            boolean isValid = true;
             for (int i = 0; i < str.length(); i++) {
                 char ch = str.charAt(i);
                 if (!Character.isLetter(ch)
