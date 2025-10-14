@@ -62,14 +62,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
      * @param string1 X-axis labels (to build rows)
      * @param string2 Y-axis labels (to build columns)
      */
-    public SubproblemTableView(String string1, String string2) {
-        // Convert inputs to uppercase for consistent labeling
-        string1 = string1.toUpperCase();
-        string2 = string2.toUpperCase();
-
-        // Build headers and data arrays based on inputs
-        buildColumnHeaders(string2);
-        buildTableData(string1);
+    public SubproblemTableView() {
 
         // Initialize Swing components and layout
         initializeComponents();

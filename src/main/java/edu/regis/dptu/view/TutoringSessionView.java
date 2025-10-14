@@ -122,35 +122,11 @@ public class TutoringSessionView extends GPanel {
         subproblemView = new JLabel("Subproblem View");
 
         problemInputView = new ProblemInputView();
-
-        String initialX = "skullandbones";
-        String initialY = "lullabybabies";
-        subSeqView = new SubSequenceView(initialX, initialY); // Original init
-        tableView = new SubproblemTableView(initialX, initialY);
+        
+        subSeqView = new SubSequenceView(); // Original init
+        tableView = new SubproblemTableView();
         codeView = new CodeView(tableView); // Original init
-
-        // *** Create the single, shared Problem instance ***
-        Problem sharedProblem = new LCSProblem(initialX, initialY);
-        System.out.println(
-                "DEBUG: TutoringSessionView created sharedProblem: "
-                        + Integer.toHexString(sharedProblem.hashCode()));
-
-        // *** Initialize StepViewPanel with the shared Problem ***
-        stepViewPanel = new StepViewPanel(sharedProblem);
-
-        // *** Set the shared Problem model on other views ***
-        System.out.println("DEBUG: TutoringSessionView setting model on CodeView...");
-        codeView.setModel(sharedProblem);
-        System.out.println("DEBUG: TutoringSessionView setting model on VariablesView...");
-        variablesView.setModel(sharedProblem);
-        System.out.println("DEBUG: TutoringSessionView setting model on SubproblemTableView...");
-        // *** Set model on tableView - This now handles listener registration ***
-        tableView.setModel(sharedProblem);
-
-        // *** Listener addition REMOVED/COMMENTED OUT here ***
-        // if (sharedProblem != null) {
-        //    sharedProblem.addProblemListener(tableView); // Now handled by tableView.setModel()
-        // }
+        stepViewPanel = new StepViewPanel();
 
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
