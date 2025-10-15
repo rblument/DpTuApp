@@ -47,8 +47,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
     public SubSequenceCanvasView canvas;
     private Problem model;
 
-    public SubSequenceView(String word1, String word2) {
-        initializeComponents(word1, word2);
+    public SubSequenceView() {
+        initializeComponents();
         layoutComponents();
 
         setPreferredSize(new Dimension(600, 300));
@@ -60,26 +60,26 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * @param word1
      * @param word2
      */
-    public void initializeComponents(String word1, String word2) {
+    private void initializeComponents() {
         titleLabel = new JLabel("Subsequence Highlighter");
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        lengthLabel1 = new JLabel("x=" + word1.length());
+        lengthLabel1 = new JLabel("x=");
         lengthLabel1.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        lengthLabel2 = new JLabel("y=" + word2.length());
+        lengthLabel2 = new JLabel("y=");
         lengthLabel2.setFont(new Font("Arial", Font.PLAIN, 16));
 
         stepButton = new JButton("Step LCS");
         stepButton.addActionListener(e -> stepThroughLCS());
 
-        canvas = new SubSequenceCanvasView(word1, word2);
+        canvas = new SubSequenceCanvasView("word1", "word2");
     }
 
     /** The components of the view are displayed in specific positions. */
-    public void layoutComponents() {
+    private void layoutComponents() {
         setLayout(new BorderLayout());
 
         // Display 'Subsequence Highlighter'
@@ -93,14 +93,14 @@ class SubSequenceView extends JPanel implements ProblemListener {
         // originally, but updates the line1 appropriately when inputs change.
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line1.add(lengthLabel1);
-        wordLabel1 = new JLabel(canvas.getWord1());
+        wordLabel1 = new JLabel();
         line1.add(wordLabel1);
 
         // Changed (April 17, 2025 - EverettCV): Now loads default value of the second variable
         // originally, but updates the line2 appropriately when inputs change.
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line2.add(lengthLabel2);
-        wordLabel2 = new JLabel(canvas.getWord2());
+        wordLabel2 = new JLabel();
         line2.add(wordLabel2);
 
         wordPanel.add(line1);
@@ -152,7 +152,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
     public void updateWords(String word1, String word2) {
         // Update lengths
         lengthLabel1.setText("x=" + word1.length());
-        lengthLabel2.setText("x=" + word2.length());
+        lengthLabel2.setText("y=" + word2.length());
 
         wordLabel1.setText(word1);
         wordLabel2.setText(word2);
