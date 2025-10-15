@@ -13,16 +13,19 @@ import java.util.logging.Logger;
 
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Course;
 import edu.regis.dptu.model.KnowledgeComponent;
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.StudentModelFieldKind;
+import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.aol.Assessment;
 import edu.regis.dptu.model.aol.AssessmentLevel;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.svc.CourseSvc;
 import edu.regis.dptu.svc.ServiceFactory;
+import edu.regis.dptu.svc.SessionSvc;
 import edu.regis.dptu.svc.StudentModelSvc;
 
 /**
@@ -125,6 +128,21 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     studentModel.addAssessment(assessment);
                 }
 
+                try {
+                    SessionSvc sessionSvc = ServiceFactory.findSessionSvc();
+
+                    // Build a minimal Student with userId so sessionSvc can retrieve
+                    Account acct = new Account();
+                    acct.setUserId(userId);
+                    Student stub = new Student(acct);
+
+                    TutoringSession session = sessionSvc.retrieve(stub);
+                    if (session != null) {
+                        studentModel.addSession(session);
+                    }
+                } catch (ObjNotFoundException ignore) {
+                    // No session found for this user, leave sessions list empty
+                }
                 return studentModel;
 
             } else {
