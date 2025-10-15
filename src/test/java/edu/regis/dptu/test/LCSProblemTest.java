@@ -80,7 +80,7 @@ public class LCSProblemTest {
         assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
         assertEquals(-1, problem.getVariableValue("r"));
 
-        // c loop - we already did the column for the first letter
+        // c loop
         for (int c = 0; c < m - 1; c++) {
             problem.step(); // Line 3 c++
             problem.step(); // Line 4 L[-1,c] = 0;
