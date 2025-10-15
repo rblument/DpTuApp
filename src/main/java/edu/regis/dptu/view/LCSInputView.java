@@ -101,6 +101,9 @@ public class LCSInputView extends JPanel {
                 LCSProblem newProblem = new LCSProblem(string1, string2);
                 grandparentView.getTableView().setModel(newProblem);
                 grandparentView.getSubSeqView().setModel(newProblem);
+                grandparentView.getStepViewPanel().setModel(newProblem);
+                grandparentView.getCodeView().setModel(newProblem);
+                grandparentView.getVariablesView().setModel(newProblem);
             } else {
                 System.out.println(
                         "LCSInputView: getParent().getParent() did not lead to "

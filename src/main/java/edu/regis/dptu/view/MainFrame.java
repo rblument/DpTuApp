@@ -19,8 +19,6 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
-import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
-
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.view.act.ActionFactory;
 

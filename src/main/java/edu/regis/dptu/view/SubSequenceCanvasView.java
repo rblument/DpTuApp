@@ -31,8 +31,6 @@ public class SubSequenceCanvasView extends JPanel {
     private String subSeq;
     private String lcs;
     private int highlightIndex = 0;
-    private String word1;
-    private String word2;
 
     /**
      * @param word1

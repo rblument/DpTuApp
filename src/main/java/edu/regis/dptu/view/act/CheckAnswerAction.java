@@ -17,9 +17,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
 
-import static javax.swing.Action.MNEMONIC_KEY;
-import static javax.swing.Action.SHORT_DESCRIPTION;
-
 import edu.regis.dptu.view.MainFrame;
 
 /**

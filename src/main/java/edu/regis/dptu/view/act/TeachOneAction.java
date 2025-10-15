@@ -15,9 +15,6 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import static javax.swing.Action.MNEMONIC_KEY;
-import static javax.swing.Action.SHORT_DESCRIPTION;
-
 import edu.regis.dptu.view.MainFrame;
 
 public class TeachOneAction extends DpTuGuiAction {

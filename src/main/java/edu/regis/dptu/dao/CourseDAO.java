@@ -338,6 +338,8 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                         Problem problem = problemSvc.retrieve(problemId);
                         task.setProblem(problem);
                         break;
+                    default:
+                        break;
                 }
 
                 tasks.add(task);
@@ -445,54 +447,6 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
 
         } catch (SQLException e) {
             throw new NonRecoverableException("CourseDAO-ERR-9" + e.toString(), e);
-        } finally {
-            close(stmt); // Don't close the connection, retrieve(courseId) will
-        }
-    }
-
-    /**
-     * @param subType
-     * @param subTypeId index into the appropriate table determined by subType
-     * @return
-     */
-    private String extractStepSubTypeData(StepSubType subType, int subTypeId, Connection conn)
-            throws NonRecoverableException {
-        switch (subType) {
-            case INFO_MESSAGE:
-                return extractInfoMsgData(subTypeId, conn);
-            case GUI_ACTION:
-                return ""; // TBD
-            case STEP_COMPLETION_REPLY:
-                return ""; // TBD
-            case REQUEST_HINT:
-                return ""; // TBD
-            default:
-                return "";
-        }
-    }
-
-    /** The data is a POJO String object */
-    private String extractInfoMsgData(int subTypeId, Connection conn)
-            throws NonRecoverableException {
-        final String sql = "SELECT Text FROM InfoMsgStep WHERE SubStepId = ?";
-
-        PreparedStatement stmt = null;
-
-        try {
-            stmt = conn.prepareStatement(sql);
-
-            stmt.setInt(1, subTypeId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString(1);
-            } else {
-                String errMsg =
-                        "ERROR: ToDo: Throw database inconsistency InfoMsgStep table: " + subTypeId;
-                throw new NonRecoverableException(errMsg, new InconsistentDBException(errMsg));
-            }
-        } catch (SQLException e) {
-            throw new NonRecoverableException("CourseDAO-ERR-10" + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
         }

@@ -55,6 +55,10 @@ public class TutoringSessionView extends GPanel {
         return model;
     }
 
+    public CodeView getCodeView() {
+        return codeView;
+    }
+
     public SubproblemTableView getTableView() {
         return tableView;
     }
@@ -76,8 +80,16 @@ public class TutoringSessionView extends GPanel {
         return null;
     }
 
+    public StepViewPanel getStepViewPanel() {
+        return stepViewPanel;
+    }
+
     public SubSequenceView getSubSeqView() {
         return subSeqView;
+    }
+
+    public VariablesView getVariablesView() {
+        return variablesView;
     }
 
     /**

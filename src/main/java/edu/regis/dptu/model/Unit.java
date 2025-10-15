@@ -21,9 +21,6 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Unit extends TitledModel {
-    /** A summary of this unit (title and description). */
-    private UnitDigest digest;
-
     /** The pedagogical approach used to select the next task within this unit. */
     private TaskSelectionKind pedagogy;
 
@@ -45,7 +42,6 @@ public class Unit extends TitledModel {
     public Unit(int id) {
         super(id);
 
-        digest = new UnitDigest();
         pedagogy = TaskSelectionKind.FIXED_SEQUENCE;
     }
 

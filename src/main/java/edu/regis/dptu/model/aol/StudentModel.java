@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.regis.dptu.model.ScaffoldLevel;
+import edu.regis.dptu.model.TutoringSession;
 
 /**
  * Captures the current assessment for each learning outcome in a course, as well as all tutoring

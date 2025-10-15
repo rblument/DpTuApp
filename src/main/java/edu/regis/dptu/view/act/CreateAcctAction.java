@@ -20,9 +20,6 @@ import javax.swing.JOptionPane;
 
 import com.google.gson.Gson;
 
-import static javax.swing.Action.MNEMONIC_KEY;
-import static javax.swing.Action.SHORT_DESCRIPTION;
-
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.svc.ClientRequest;
 import edu.regis.dptu.svc.ServerRequestType;
