@@ -281,7 +281,7 @@ INSERT INTO Step
   StepSubType,
   SubTypeId, TimeoutId)
  VALUES
- (0, 1, 0, 0, 0,
+ (0, 1, 1, 0, 0,
   'Review Problem', 'Acknowledge understanding of the dynamic programming problem.',
   0, 'PROBLEM_REVIEW', 0, 0);
 
