@@ -142,17 +142,19 @@ public class SubSequenceCanvasView extends JPanel {
             idx2 = word2.indexOf(c, idx2);
 
             if (count < highlightIndex && idx1 != -1 && idx2 != -1) {
-                //draws a red letter on top of the black letter
-                g.drawString(String.valueOf(c),
+                // draws a red letter on top of the black letter
+                g.drawString(
+                        String.valueOf(c),
                         x1 + g.getFontMetrics().stringWidth(word1.substring(0, idx1)),
                         y1);
-                g.drawString(String.valueOf(c),
+                g.drawString(
+                        String.valueOf(c),
                         x2 + g.getFontMetrics().stringWidth(word2.substring(0, idx2)),
                         y2);
 
                 count++;
             }
-            
+
             idx1++;
             idx2++;
         }
