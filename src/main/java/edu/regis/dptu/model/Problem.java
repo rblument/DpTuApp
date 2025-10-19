@@ -33,6 +33,12 @@ import java.util.logging.Logger;
  */
 public abstract class Problem extends TitledModel {
 
+    /** The time between steps when running all */
+    private static final int RUN_STEP_INTERVAL = 500;
+
+    /** The logger for the class */
+    private static final Logger LOGGER = Logger.getLogger(Problem.class.getName());
+
     /**
      * The type of this Dynamic Programming problem, which must be assigned when instantiating a
      * subclass
@@ -82,6 +88,16 @@ public abstract class Problem extends TitledModel {
      */
     public abstract ProblemKind getType();
 
+    /**
+     * Method that determines if the subclass has completed Used to disable functionality in the UI
+     *
+     * @return whether the problem has finished
+     */
+    public abstract boolean hasFinished();
+
+    /** Method that resets the problem */
+    public abstract void reset();
+
     /** Loads the pseudo-code statements for display. */
     protected abstract void loadCodeStatements();
 
@@ -116,7 +132,7 @@ public abstract class Problem extends TitledModel {
         return codeStatements;
     }
 
-    public void setCodeStatements(ArrayList codeStatements) {
+    public void setCodeStatements(ArrayList<String> codeStatements) {
         this.codeStatements = codeStatements;
     }
 
@@ -137,7 +153,7 @@ public abstract class Problem extends TitledModel {
     }
 
     public ArrayList<String> getVariableNames() {
-        return new ArrayList(variables.keySet());
+        return new ArrayList<String>(variables.keySet());
     }
 
     public int getVariableValue(String variableName) {
@@ -184,14 +200,27 @@ public abstract class Problem extends TitledModel {
     }
 
     /**
-     * Execute the next n statements (forward).
+     * Execute the next n statements (forward). Will take a brief pause between steps so the user
+     * can follow
      *
      * @param n number of steps to execute
      */
     public void step(int n) {
-        for (int i = 0; i < n; i++) {
-            step();
-        }
+        final int[] count = {0};
+        javax.swing.Timer timer =
+                new javax.swing.Timer(
+                        RUN_STEP_INTERVAL,
+                        e -> {
+                            step();
+                            count[0]++;
+
+                            if (hasFinished() || count[0] >= n) {
+                                ((javax.swing.Timer) e.getSource()).stop();
+                                // Notify listeners that we've finished running steps
+                                notifyProblemListeners();
+                            }
+                        });
+        timer.start();
     }
 
     /** Take one step backward in the algorithm by undoing the */
@@ -199,7 +228,7 @@ public abstract class Problem extends TitledModel {
         int size = executionHistory.size();
 
         if (size == 0) {
-            System.out.println("Cannot undo past Line 0");
+            Problem.LOGGER.log(Level.WARNING, "Cannot undo past Line 0");
 
         } else {
             int lastItemPos = size - 1;
@@ -220,17 +249,6 @@ public abstract class Problem extends TitledModel {
         }
     }
 
-    /** Reset the problem to its initial state. */
-    public void reset() {
-        currentLineNumber = 0;
-        executionHistory.clear();
-
-        // Additional reset logic implemented by subclasses
-
-        // Notify listeners that the problem has been updated
-        notifyProblemListeners();
-    }
-
     /**
      * Undo the previous n statements (backwards)
      *
@@ -248,7 +266,8 @@ public abstract class Problem extends TitledModel {
      * @param methodName
      */
     public void executeMethod(String methodName) {
-        Class clazz = this.getClass();
+        // wildcard the generic to avoid build warnings
+        Class<?> clazz = this.getClass();
 
         try {
             Method method = clazz.getDeclaredMethod(methodName);
@@ -256,15 +275,15 @@ public abstract class Problem extends TitledModel {
             method.invoke(this);
 
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.LOGGER.log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.LOGGER.log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.LOGGER.log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.LOGGER.log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.LOGGER.log(Level.SEVERE, null, ex);
         }
     }
 
