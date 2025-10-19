@@ -113,17 +113,13 @@ public class MatrixChainProblem extends Problem {
         return ProblemKind.MATRIX_CHAIN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
         return executionState == EXECUTION_STATE.POST;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void reset() {
         // TODO implement reset of this problem
