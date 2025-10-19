@@ -61,10 +61,10 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 return problem;
 
             } else {
-                throw new ObjNotFoundException("Course Id:" + problemId);
+                throw new ObjNotFoundException("Problem Id:" + problemId);
             }
         } catch (SQLException e) {
-            throw new NonRecoverableException("ProblemDAO-ERR-1" + e.toString(), e);
+            throw new NonRecoverableException("ProblemDAO-ERR-1 " + e.toString(), e);
         } finally {
             close(conn, stmt);
         }
@@ -122,7 +122,7 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             }
 
         } catch (SQLException e) {
-            throw new NonRecoverableException("ProblemDAO-ERR-2" + e.toString(), e);
+            throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
         }
