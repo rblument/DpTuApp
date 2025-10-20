@@ -295,9 +295,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         boolean modelExists = (model != null);
         // Check if model exists before accessing its state
         boolean canStepBack = modelExists && model.getCurrentLineNumber() > 0;
-        boolean canStepForward =
-                modelExists; // Could add a check like !model.isFinished() if available
-        boolean canRun = modelExists; // Could add a check like !model.isFinished()
+        boolean canStepForward = modelExists && !model.hasFinished();
+        boolean canRun = modelExists && !model.hasFinished();
         boolean canReset = modelExists;
 
         stepBackButton.setEnabled(canStepBack);

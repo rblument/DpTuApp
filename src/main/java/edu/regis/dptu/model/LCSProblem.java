@@ -12,9 +12,8 @@
  */
 package edu.regis.dptu.model;
 
-// Imports might be needed depending on full context, e.g.,
-// import java.util.ArrayList;
-// import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a Longest Common Subsequence Dynamic Programming problem with inputs sequences
@@ -34,6 +33,9 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class LCSProblem extends Problem {
+
+    /** The logger for the class */
+    private static final Logger LOGGER = Logger.getLogger(LCSProblem.class.getName());
 
     /**
      * Current state of execution capturing which of the loops are current. Note if the
@@ -129,13 +131,19 @@ public class LCSProblem extends Problem {
         return executionState;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasFinished() {
+        return executionState == EXECUTION_STATE.POST;
+    }
+
     /** LCS(x,y) - Line 0 (Implicit start) */
-    private void executeLine0() {
+    public void executeLine0() {
         currentLineNumber = 1; // Move to first actual line of code
     }
 
     /** for r = 0 to n-1 do (DP indices) -> for r = 1 to n (Array indices) Line 1 */
-    private void executeLine1() {
+    public void executeLine1() {
         int r = (int) variables.get("r");
 
         if (r == -1) { // First entry into this loop
@@ -164,7 +172,7 @@ public class LCSProblem extends Problem {
      * L[r,-1] = 0 (DP Table indices) Maps to subproblem[r][0] (Array indices, where array 'r'
      * corresponds to DP 'r') Line 2
      */
-    private void executeLine2() {
+    public void executeLine2() {
         int r = (int) variables.get("r");
         int[][] subproblem = (int[][]) variables.get(tableVariable);
         // Safe bounds check for array access
@@ -177,7 +185,7 @@ public class LCSProblem extends Problem {
     }
 
     /** for c = 0 to m-1 do (DP indices) -> for c = 1 to m (Array indices) Line 3 */
-    private void executeLine3() {
+    public void executeLine3() {
         int c = (int) variables.get("c");
 
         if (c == -1) { // First entry into c loop
@@ -459,6 +467,8 @@ public class LCSProblem extends Problem {
 
         executionState = EXECUTION_STATE.PRE;
         executionHistory.clear();
+
+        notifyProblemListeners();
     }
 
     /**
@@ -467,24 +477,24 @@ public class LCSProblem extends Problem {
      */
     public void prettyPrint() {
         // Original prettyPrint code retained
-        System.out.println("\n--- LCSProblem State ---");
-        System.out.println("ExecutionState: " + executionState);
-        System.out.println("Current Line #: " + currentLineNumber);
-        System.out.println("r (array idx): " + variables.get("r"));
-        System.out.println("c (array idx): " + variables.get("c"));
-        System.out.println("i (array idx): " + variables.get("i"));
-        System.out.println("j (array idx): " + variables.get("j"));
+        LCSProblem.LOGGER.log(Level.INFO, "--- LCSProblem State ---");
+        LCSProblem.LOGGER.log(Level.INFO, "ExecutionState: " + executionState);
+        LCSProblem.LOGGER.log(Level.INFO, "Current Line #: " + currentLineNumber);
+        LCSProblem.LOGGER.log(Level.INFO, "r (array idx): " + variables.get("r"));
+        LCSProblem.LOGGER.log(Level.INFO, "c (array idx): " + variables.get("c"));
+        LCSProblem.LOGGER.log(Level.INFO, "i (array idx): " + variables.get("i"));
+        LCSProblem.LOGGER.log(Level.INFO, "j (array idx): " + variables.get("j"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
         int[][] subproblemL = (int[][]) variables.get("l");
 
-        System.out.println("DP Table (l):");
+        LCSProblem.LOGGER.log(Level.INFO, "DP Table (l):");
         System.out.print("       "); // Align header
         for (int q = 0; q <= m; q++) {
             System.out.printf("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
         }
-        System.out.println();
+        LCSProblem.LOGGER.log(Level.INFO, "");
 
         for (int p = 0; p <= n; p++) {
             System.out.printf("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
@@ -493,9 +503,9 @@ public class LCSProblem extends Problem {
                 System.out.printf(
                         "%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
             }
-            System.out.println("|");
+            LCSProblem.LOGGER.log(Level.INFO, "|");
         }
-        System.out.println("------------------------");
+        LCSProblem.LOGGER.log(Level.INFO, "------------------------");
     }
 
     public String getX() {

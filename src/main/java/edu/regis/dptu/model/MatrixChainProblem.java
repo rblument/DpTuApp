@@ -113,6 +113,19 @@ public class MatrixChainProblem extends Problem {
         return ProblemKind.MATRIX_CHAIN;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasFinished() {
+        return executionState == EXECUTION_STATE.POST;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void reset() {
+        // TODO implement reset of this problem
+        return;
+    }
+
     /**
      * Loads HTML-formatted code statements representing each step of the matrix chain
      * multiplication algorithm. These statements are shown in the view during execution.
