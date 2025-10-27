@@ -80,7 +80,7 @@ public abstract class Problem extends TitledModel {
     protected final int BACKTRACKING_START_NUM = 100;
     protected final int HIT = 1;
     protected final int MISS = 0;
-    protected final int ADD_TO_LCS = 2;
+    protected final int ADD_TO_SOLUTION = 2;
     
     /**
      * A history of the line numbers that were executed prior to the current line number.

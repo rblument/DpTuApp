@@ -657,7 +657,7 @@ public class LCSProblem extends Problem {
         int row = (int)variables.get("r");
         int col = (int)variables.get("c");
         int[][] bTable = (int[][]) variables.get(backtrackingTableVariable);
-        bTable[row][col] = ADD_TO_LCS; // highlight in green
+        bTable[row][col] = ADD_TO_SOLUTION; // highlight in green
         currentLineNumber = 105;
     }
     
