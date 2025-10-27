@@ -7,18 +7,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.regis.dptu.model.LCSProblem;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
  * tutoring problem. Updates all views accordingly.
- * 
  *
  * @author EverettCV
  */
@@ -75,8 +74,7 @@ public class LCSInputView extends JPanel {
     /**
      * Handles user input when Submit button is clicked.
      *
-     * Captures input strings - Updates all Views
-     * 
+     * <p>Captures input strings - Updates all Views
      */
     public void submitInputs() {
         string1 = inputField1.getText();
@@ -94,12 +92,13 @@ public class LCSInputView extends JPanel {
             tsView.getCodeView().setModel(newProblem);
             tsView.getBacktrackingCodeView().setModel(newProblem);
             tsView.getVariablesView().setModel(newProblem);
-        }
-        else {
+        } else {
             JFrame jFrame = new JFrame();
-            JOptionPane.showMessageDialog(jFrame,
-                    "Please enter two strings (no empty strings)", 
-                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    jFrame,
+                    "Please enter two strings (no empty strings)",
+                    "Invalid Input",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 

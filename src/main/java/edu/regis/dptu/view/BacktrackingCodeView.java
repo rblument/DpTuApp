@@ -1,11 +1,11 @@
 /*
  * DPTu: Dynamic Programming Tutor
- * 
+ *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  *  Unauthorized use, duplication or distribution without the authors'
  *  permission is strictly prohibited.
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
@@ -23,13 +23,12 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
 /**
- *
  * @author Gary
  */
-public class BacktrackingCodeView extends GPanel implements ProblemListener{
+public class BacktrackingCodeView extends GPanel implements ProblemListener {
     /**
-     * Declares the BacktrackingCodeView model (a Problem object) displayed in this view along with the
-     * necessary arrayLists for the code statements.
+     * Declares the BacktrackingCodeView model (a Problem object) displayed in this view along with
+     * the necessary arrayLists for the code statements.
      */
     private Problem model; // Initialize as null, will be set by setModel
 
@@ -38,10 +37,8 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener{
 
     // Used as a background color
     private static final Color LT_BLUE = new Color(220, 245, 255);
-    
-    /**
-     * Constructor.
-     */
+
+    /** Constructor. */
     public BacktrackingCodeView() {
         backtrackingStatementJLabels = new ArrayList<>();
 
@@ -82,10 +79,10 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener{
         revalidate();
         repaint();
     }
-    
+
     /**
-     * Uses pseudocode statements from the Problem instance to populate a list
-     * of JLabels for display onscreen
+     * Uses pseudocode statements from the Problem instance to populate a list of JLabels for
+     * display onscreen
      */
     private void initializeComponents() {
         backtrackingStatementStrings = model.getBacktrackingCodeStatements();
@@ -119,7 +116,8 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener{
                     0,
                     1);
             // Code Statements
-            addc(backtrackingStatementJLabels.get(i),
+            addc(
+                    backtrackingStatementJLabels.get(i),
                     1,
                     i,
                     1,
@@ -147,13 +145,10 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener{
             }
         }
 
-        
         // Highlight the current line if model and labels are valid
         if (model != null && backtrackingStatementJLabels != null) {
-            int currentLineNumber = model.getCurrentLineNumber() 
-                    - model.getBacktrackingStartNum();
-            if (currentLineNumber >= 0 
-                    && currentLineNumber < backtrackingStatementJLabels.size()) {
+            int currentLineNumber = model.getCurrentLineNumber() - model.getBacktrackingStartNum();
+            if (currentLineNumber >= 0 && currentLineNumber < backtrackingStatementJLabels.size()) {
                 JLabel currentLabel = backtrackingStatementJLabels.get(currentLineNumber);
                 if (currentLabel != null) {
                     currentLabel.setBackground(Color.YELLOW);
@@ -167,8 +162,8 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener{
     }
 
     /**
-     * Takes the updated problem and updated the view to match the model's state.
-     * Highlights the JLabel with the line currently being used in the model.
+     * Takes the updated problem and updated the view to match the model's state. Highlights the
+     * JLabel with the line currently being used in the model.
      *
      * @param problem The updated problem instance.
      */
@@ -178,4 +173,3 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener{
         updateView(); // Call updateView which uses this.model to get the state
     }
 }
-

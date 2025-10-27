@@ -1,14 +1,14 @@
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @author EverettCV
  */
 public class ProblemInputView extends JPanel {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ProblemInputView.class.getName());
 
     private JPanel activeInputPanel;

@@ -12,10 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import java.util.Iterator;
 
 /**
  * Represents a Longest Common Subsequence Dynamic Programming problem with inputs sequences
@@ -123,7 +122,7 @@ public class LCSProblem extends Problem {
 
         reset(); // Call reset to ensure consistent initial state including table values
     }
-    
+
     public String getX() {
         return x;
     }
@@ -145,10 +144,8 @@ public class LCSProblem extends Problem {
     public EXECUTION_STATE getExecutionState() {
         return executionState;
     }
-    
-    /**
-     * Initialize the DP table with -1 (or another indicator of uncomputed)
-     */
+
+    /** Initialize the DP table with -1 (or another indicator of uncomputed) */
     private void initializeTable() {
         int[][] initialTable = (int[][]) variables.get(tableVariable);
         for (int row = 0; row <= x.length(); row++) {
@@ -157,10 +154,8 @@ public class LCSProblem extends Problem {
             }
         }
     }
-    
-    /**
-     * Resets the bTable that controls highlighting back to initial values
-     */
+
+    /** Resets the bTable that controls highlighting back to initial values */
     private void initializeBacktrackingTable() {
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
@@ -172,11 +167,11 @@ public class LCSProblem extends Problem {
             }
         }
     }
-    
+
     /**
-     * {@inheritDoc}
-     * These are the states from which it is okay to click the backtrack button
-     * @return 
+     * {@inheritDoc} These are the states from which it is okay to click the backtrack button
+     *
+     * @return
      */
     @Override
     public boolean backtrackReady() {
@@ -194,16 +189,14 @@ public class LCSProblem extends Problem {
                 return false;
         }
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
+    /** {@inheritDoc} */
     @Override
     public void backtrackingOn() {
         currentLineNumber = BACKTRACKING_START_NUM;
         executionState = EXECUTION_STATE.B_PRE;
         initializeBacktrackingTable();
-        //remove backtracking numbers from execution history so we can start fresh
+        // remove backtracking numbers from execution history so we can start fresh
         Iterator<Integer> iterator = executionHistory.iterator();
         while (iterator.hasNext()) {
             Integer num = iterator.next();
@@ -213,9 +206,7 @@ public class LCSProblem extends Problem {
         }
         notifyProblemListeners();
     }
-    
-    
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
@@ -227,7 +218,7 @@ public class LCSProblem extends Problem {
                 return false;
         }
     }
-    
+
     /**
      * Resets this problem (algorithm) back to its initial state before execution of the first
      * statement. Includes re-initializing the DP table.
@@ -245,9 +236,9 @@ public class LCSProblem extends Problem {
         int[][] subproblemL = (int[][]) variables.get(tableVariable);
 
         initializeTable();
-        
+
         initializeBacktrackingTable();
-        
+
         // Initialize boundary conditions according to algorithm logic (Lines 2 & 4 do this)
         // We don't need to explicitly set subproblem[r][0]=0 or subproblem[0][c]=0 here,
         // as the step execution will handle that starting from the PRE state.
@@ -257,10 +248,10 @@ public class LCSProblem extends Problem {
 
         executionState = EXECUTION_STATE.PRE;
         executionHistory.clear();
-        
+
         notifyProblemListeners();
     }
-    
+
     /** Loads the pseudo-code statements for display. */
     @Override
     protected void loadCodeStatements() {
@@ -272,20 +263,18 @@ public class LCSProblem extends Problem {
         codeStatements.add(
                 "<html><pre>  <b>for</b> col = 0 to m-1 <b>do</b></pre></html>"); // Line 3
         codeStatements.add("<html><pre>    L[-1,col] = 0</pre></html>"); // Line 4
-        codeStatements.add(
-                "<html><pre>  <b>for</b> i = 0 to n-1 <b>do</b></pre></html>"); // Line 5
+        codeStatements.add("<html><pre>  <b>for</b> i = 0 to n-1 <b>do</b></pre></html>"); // Line 5
         codeStatements.add(
                 "<html><pre>    <b>for</b> j = 0 to m-1 <b>do</b></pre></html>"); // Line 6
         codeStatements.add(
-                "<html><pre>      <b>if</b> x<sub>i</sub> == y<sub>j</sub> <b>then</b></pre></html>"
-                ); // Line 7
+                "<html><pre>      <b>if</b> x<sub>i</sub> == y<sub>j</sub> <b>then</b></pre></html>"); // Line 7
         codeStatements.add("<html><pre>        L[i, j] = L[i-1, j-1] + 1</pre></html>"); // Line 8
         codeStatements.add("<html><pre>      <b>else</b></pre></html>"); // Line 9
         codeStatements.add(
                 "<html><pre>        L[i, j] = max(L[i-1, j], L[i, j-1])</pre></html>"); // Line 10
         codeStatements.add("<html><pre>  <b>return</b> L</pre></html>"); // Line 11
     }
-    
+
     @Override
     protected void loadBacktrackingCodeStatements() {
         backtrackingCodeStatements.clear();
@@ -295,8 +284,7 @@ public class LCSProblem extends Problem {
                 "<html><pre>row = x.length - 1, col = y.length - 1</pre></html>"); // line 1
         backtrackingCodeStatements.add(
                 "<html><pre>while(row >= 0 && col >= 0)</pre></html>"); // line 2
-        backtrackingCodeStatements.add(
-                "<html><pre>  if (x[row] == y[col])</pre></html>"); // line 3
+        backtrackingCodeStatements.add("<html><pre>  if (x[row] == y[col])</pre></html>"); // line 3
         backtrackingCodeStatements.add(
                 "<html><pre>    add y[col] to front of LCS</pre></html>"); // line 4
         backtrackingCodeStatements.add("<html><pre>    row--</pre></html>"); // line 5
@@ -308,10 +296,10 @@ public class LCSProblem extends Problem {
         backtrackingCodeStatements.add("<html><pre>    col--</pre></html>"); // line 10
         backtrackingCodeStatements.add("<html><pre>return LCS</pre></html>"); // line 11
     }
-    
+
     /**
-     * Outputs to System.out the current state (of the algorithm variables). 
-     * (Kept for potential manual debugging)
+     * Outputs to System.out the current state (of the algorithm variables). (Kept for potential
+     * manual debugging)
      */
     public void prettyPrint() {
         // Original prettyPrint code retained
@@ -345,9 +333,9 @@ public class LCSProblem extends Problem {
         }
         LCSProblem.LOGGER.log(Level.INFO, "------------------------");
     }
-    
-    //-----------------------LCS Algorithm--------------------------------------
-    //--------------------------------------------------------------------------
+
+    // -----------------------LCS Algorithm--------------------------------------
+    // --------------------------------------------------------------------------
 
     /** LCS(x,y) - Line 0 (Implicit start) */
     public void executeLine0() {
@@ -587,21 +575,17 @@ public class LCSProblem extends Problem {
             System.err.println("ERROR: Reached line 11 unexpectedly. State: " + executionState);
         }
     }
-    
-    //---------------------------LCS Algorithm Finished-------------------------
-    
-    //-----------------------Backtracking Algorithm Begins----------------------
-    
-    /**
-     * Line: Backtrack(table)
-     */
+
+    // ---------------------------LCS Algorithm Finished-------------------------
+
+    // -----------------------Backtracking Algorithm Begins----------------------
+
+    /** Line: Backtrack(table) */
     public void executeLine100() {
         currentLineNumber = 101;
     }
-    
-    /**
-     * Line: row = x.length - 1, col = y.length - 1
-     */
+
+    /** Line: row = x.length - 1, col = y.length - 1 */
     public void executeLine101() {
         // There is a "-1" row, so the rows go from 1 to x.length()
         variables.put("r", x.length());
@@ -610,27 +594,22 @@ public class LCSProblem extends Problem {
         currentLineNumber = 102;
         executionState = EXECUTION_STATE.B_WHILE;
     }
-    
-    /**
-     * Line: while (row >= 0 && col >= 0)
-     */
+
+    /** Line: while (row >= 0 && col >= 0) */
     public void executeLine102() {
         int row = (int) variables.get("r");
         int col = (int) variables.get("c");
         if (row >= 1 && col >= 1) {
             currentLineNumber = 103;
             executionState = EXECUTION_STATE.B_IF;
-            
-        }
-        else {
+
+        } else {
             currentLineNumber = 111;
             executionState = EXECUTION_STATE.B_RETRN;
         }
     }
-    
-    /**
-     * Line: if (x[row] == y[col])
-     */
+
+    /** Line: if (x[row] == y[col]) */
     public void executeLine103() {
         int row = (int) variables.get("r");
         int col = (int) variables.get("c");
@@ -641,39 +620,32 @@ public class LCSProblem extends Problem {
             // Change highlight in table to indicate status
             bTable[row][col] = HIT;
             currentLineNumber = 104;
-        }
-        else {
+        } else {
             // Change highlight in table to indicate status
             bTable[row][col] = MISS;
             currentLineNumber = 107;
             executionState = EXECUTION_STATE.B_ELIF;
         }
     }
-    
-    /**
-     * Line: add y[col] to front of LCS
-     */
+
+    /** Line: add y[col] to front of LCS */
     public void executeLine104() {
-        int row = (int)variables.get("r");
-        int col = (int)variables.get("c");
+        int row = (int) variables.get("r");
+        int col = (int) variables.get("c");
         int[][] bTable = (int[][]) variables.get(backtrackingTableVariable);
         bTable[row][col] = ADD_TO_SOLUTION; // highlight in green
         currentLineNumber = 105;
     }
-    
-    /**
-     * Line: row--
-     */
+
+    /** Line: row-- */
     public void executeLine105() {
         int row = (int) variables.get("r");
         row--;
         variables.put("r", row);
         currentLineNumber = 106;
     }
-    
-    /**
-     * Line: col--
-     */
+
+    /** Line: col-- */
     public void executeLine106() {
         int col = (int) variables.get("c");
         col--;
@@ -681,27 +653,22 @@ public class LCSProblem extends Problem {
         currentLineNumber = 102;
         executionState = EXECUTION_STATE.B_WHILE;
     }
-    
-    /**
-     * Line: else if (table[row-1][col] >= table[row][col-1])
-     */
+
+    /** Line: else if (table[row-1][col] >= table[row][col-1]) */
     public void executeLine107() {
         int row = (int) variables.get("r");
         int col = (int) variables.get("c");
         int lTable[][] = (int[][]) variables.get(tableVariable);
-        
+
         if (lTable[row - 1][col] >= lTable[row][col - 1]) {
             currentLineNumber = 108;
-        }
-        else {
+        } else {
             currentLineNumber = 109;
             executionState = EXECUTION_STATE.B_ELSE;
         }
     }
-    
-    /**
-     * Line: row--
-     */
+
+    /** Line: row-- */
     public void executeLine108() {
         int row = (int) variables.get("r");
         row--;
@@ -709,17 +676,13 @@ public class LCSProblem extends Problem {
         currentLineNumber = 102;
         executionState = EXECUTION_STATE.B_WHILE;
     }
-    
-    /**
-     * Line: else
-     */
+
+    /** Line: else */
     public void executeLine109() {
         currentLineNumber = 110;
     }
-    
-    /**
-     * Line: col--
-     */
+
+    /** Line: col-- */
     public void executeLine110() {
         int col = (int) variables.get("c");
         col--;
@@ -727,10 +690,8 @@ public class LCSProblem extends Problem {
         currentLineNumber = 102;
         executionState = EXECUTION_STATE.B_WHILE;
     }
-    
-    /**
-     * Line: Return LCS
-     */
+
+    /** Line: Return LCS */
     public void executeLine111() {
         /* Line 112 is left as a NOOP so that the table will lose highlight
         when finished */
@@ -738,10 +699,10 @@ public class LCSProblem extends Problem {
         // Ths step button will become disabled when we enter B_POST
         executionState = EXECUTION_STATE.B_POST;
     }
-    
-    //---------------------Backtracking Finished--------------------------------
-    
-    //-----------------------------Undo-----------------------------------------
+
+    // ---------------------Backtracking Finished--------------------------------
+
+    // -----------------------------Undo-----------------------------------------
 
     // --- Undo Methods (Simplified Stubs - Requires Proper Implementation) ---
     public void undoLine0() {
@@ -787,62 +748,34 @@ public class LCSProblem extends Problem {
     public void undoLine11() {
         /* Restore state, line=5 or 6 */
     }
-    
-    public void undoLine12() {
-        
-    }
-    
-    //----------------------------Undo Backtracking-----------------------------
-    
-    public void undoLine100() {
-        
-    }
-    
-    public void undoLine101() {
-        
-    }
-    
-    public void undoLine102() {
-        
-    }
-    
-    public void undoLine103() {
-        
-    }
-    
-    public void undoLine104() {
-        
-    }
-    
-    public void undoLine105() {
-        
-    }
-    
-    public void undoLine106() {
-        
-    }
-    
-    public void undoLine107() {
-        
-    }
-    
-    public void undoLine108() {
-        
-    }
-    
-    public void undoLine109() {
-        
-    }
-    
-    public void undoLine110() {
-        
-    }
-    
-    public void undoLine111() {
-        
-    }
-    
-    public void undoLine112() {
-        
-    }
+
+    public void undoLine12() {}
+
+    // ----------------------------Undo Backtracking-----------------------------
+
+    public void undoLine100() {}
+
+    public void undoLine101() {}
+
+    public void undoLine102() {}
+
+    public void undoLine103() {}
+
+    public void undoLine104() {}
+
+    public void undoLine105() {}
+
+    public void undoLine106() {}
+
+    public void undoLine107() {}
+
+    public void undoLine108() {}
+
+    public void undoLine109() {}
+
+    public void undoLine110() {}
+
+    public void undoLine111() {}
+
+    public void undoLine112() {}
 }

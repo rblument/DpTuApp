@@ -58,7 +58,7 @@ public class TutoringSessionView extends GPanel {
     public CodeView getCodeView() {
         return codeView;
     }
-    
+
     public BacktrackingCodeView getBacktrackingCodeView() {
         return backtrackingCodeView;
     }
@@ -103,7 +103,7 @@ public class TutoringSessionView extends GPanel {
      * <p>Changes (April 17, 2025): Exposed SubSequenceView through a getter to allow dynamic
      * updates (Updating input strings based on user input from InputViews)
      *
-     * @param tableView 
+     * @param tableView
      */
     public void setTableView(SubproblemTableView tableView) {
         if (this.tableView != null) {
@@ -313,7 +313,8 @@ public class TutoringSessionView extends GPanel {
     /**
      * Update displayed state of a problem after a change Is called whenever problem model has been
      * modified
-     * @param session 
+     *
+     * @param session
      */
     public void problemUpdated(TutoringSession session) {
         System.out.println("DEBUG: TutoringSessionView.problemUpdated called");
@@ -329,13 +330,12 @@ public class TutoringSessionView extends GPanel {
         tableView.setModel(currentProblem);
         updateView(currentProblem);
     }
-    
+
     public void showBacktrackingPanel(boolean backtrackingOn) {
         if (backtrackingOn) {
             codeView.setVisible(false);
             backtrackingCodeView.setVisible(true);
-        }
-        else {
+        } else {
             backtrackingCodeView.setVisible(false);
             codeView.setVisible(true);
         }

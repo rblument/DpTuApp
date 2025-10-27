@@ -55,10 +55,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     JScrollPane sp; // Scroll pane containing the table
     Object[][] tableData; // 2D array holding table cell values
     String[] columnHeaders; // Array holding the table's column headers
-    
-    /**
-     * Constructor
-     */
+
+    /** Constructor */
     public SubproblemTableView() {
 
         // Initialize Swing components and layout
@@ -185,7 +183,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                                 component.setBackground(Color.WHITE); // unvisited
                                 break;
                         }
-                        
+
                         return component;
                     }
                 };
@@ -204,7 +202,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                         return false;
                     }
                 });
-        
+
         // Configure column widths and cell renderers
         /* TODO: this code doesn't seem to do anything? But I think it might
         be useful if someone wants to play with setAutoResizeMode. The table
@@ -227,8 +225,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             // Set width for the first "header" column
             columnModel.getColumn(0).setPreferredWidth(150);
         }
-        
-        
+
         // Set header height
         table.getTableHeader().setPreferredSize(new Dimension(25, 45));
 

@@ -52,7 +52,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
 
     /** Button to reset the algorithm to its initial state */
     private JButton resetButton;
-    
+
     private JButton backtrackButton;
 
     /** Spinner that allows selection of number of steps to execute */
@@ -181,14 +181,14 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                     }
                 });
         resetButton.setEnabled(false); // Initially disabled
-        
+
         backtrackButton = new JButton("Backtrack");
         backtrackButton.setToolTipText("Find the problem solution");
         backtrackButton.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null){
+                        if (model != null) {
                             MainFrame.instance().getView().showBacktrackingPanel(true);
                             model.backtrackingOn();
                         }
@@ -289,7 +289,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-        
+
         addc(
                 backtrackButton,
                 5,
@@ -343,10 +343,9 @@ public class StepViewPanel extends GPanel implements ProblemListener {
             // Update status label with current line number or other relevant info
             if (model.hasFinished()) {
                 statusLabel.setText("Finished!");
-            }
-            else {
-                int displayNum = (model.getCurrentLineNumber() 
-                        % model.getBacktrackingStartNum()) + 1;
+            } else {
+                int displayNum =
+                        (model.getCurrentLineNumber() % model.getBacktrackingStartNum()) + 1;
                 statusLabel.setText("Line: " + displayNum);
             }
         } else {

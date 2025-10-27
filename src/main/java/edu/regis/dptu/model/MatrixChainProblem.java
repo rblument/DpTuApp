@@ -112,7 +112,7 @@ public class MatrixChainProblem extends Problem {
     public ProblemKind getType() {
         return ProblemKind.MATRIX_CHAIN;
     }
-    
+
     /**
      * Returns the current execution state of the algorithm.
      *
@@ -121,13 +121,13 @@ public class MatrixChainProblem extends Problem {
     public EXECUTION_STATE getExecutionState() {
         return executionState;
     }
-    
+
     @Override
     public boolean backtrackReady() {
         // TODO
         return false;
     }
-    
+
     @Override
     public void backtrackingOn() {
         // TODO
@@ -165,7 +165,7 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>");
         codeStatements.add("<html><pre>return m</pre></html>"); // final result
     }
-    
+
     @Override
     protected void loadBacktrackingCodeStatements() {
         // TODO
@@ -404,5 +404,4 @@ public class MatrixChainProblem extends Problem {
         executionState = EXECUTION_STATE.C_LOOP;
         variables.put("c", (int) variables.get("n"));
     }
-    
 }

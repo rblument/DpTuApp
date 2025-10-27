@@ -124,7 +124,7 @@ public class SubSequenceCanvasView extends JPanel {
             g.drawString("Invalid input!", 20, 30);
         }
 
-        //draw the words in black
+        // draw the words in black
         int x1 = 20;
         int y1 = 30;
         g.setColor(Color.BLACK);
@@ -134,21 +134,23 @@ public class SubSequenceCanvasView extends JPanel {
         int y2 = 60;
         g.drawString(word2, x2, y2);
 
-        //draw over the black with green
-        g.setColor(new Color(0,220,0));
+        // draw over the black with green
+        g.setColor(new Color(0, 220, 0));
         int count = 0;
 
         int idx1 = word1.length() - 1;
         int idx2 = word2.length() - 1;
-        //find the last occurrence of the last letter of the lcs within word1 & word2
-        for (int i = lcs.length() - 1;i >= 0; i--) {
+        // find the last occurrence of the last letter of the lcs within word1 & word2
+        for (int i = lcs.length() - 1; i >= 0; i--) {
             idx1 = word1.lastIndexOf(lcs.charAt(i), idx1);
             idx2 = word2.lastIndexOf(lcs.charAt(i), idx2);
             if (count < highlightIndex && idx1 != -1 && idx2 != -1) {
-                g.drawString(String.valueOf(lcs.charAt(i)),
+                g.drawString(
+                        String.valueOf(lcs.charAt(i)),
                         x1 + g.getFontMetrics().stringWidth(word1.substring(0, idx1)),
                         y1);
-                g.drawString(String.valueOf(lcs.charAt(i)),
+                g.drawString(
+                        String.valueOf(lcs.charAt(i)),
                         x2 + g.getFontMetrics().stringWidth(word2.substring(0, idx2)),
                         y2);
                 count++;
