@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
@@ -18,16 +20,16 @@ import edu.regis.dptu.model.ProblemKind;
  * @author EverettCV
  */
 public class ProblemInputView extends JPanel {
+    
+    private static final Logger LOGGER = Logger.getLogger(ProblemInputView.class.getName());
 
     private JPanel activeInputPanel;
 
     public ProblemInputView() {
         super(new BorderLayout());
-        System.out.println("Beginning of problemView, inside constructor");
     }
 
     public void setModel(Problem problem) {
-        System.out.println("Inside setModel()");
         if (problem == null) {
             setNullDummy("No problem selected. Choose a problem to begin.");
             return;
@@ -38,24 +40,23 @@ public class ProblemInputView extends JPanel {
 
         switch (kind) {
             case LCS_PROBLEM:
-                System.out.println("Setting currentPanel to LCSInputView");
+                LOGGER.log(Level.INFO, "Setting currentPanel to LCSInputView");
                 currentPanel = new LCSInputView();
                 break;
             case MATRIX_CHAIN:
-                System.out.println("Setting currentPanel to MatrixInputView");
+                LOGGER.log(Level.INFO, "Setting currentPanel to MatrixInputView");
                 currentPanel = new MatrixInputView();
                 break;
             case KNAPSACK_0_1:
-                System.out.println("Setting currentPanel to KnapsackInputView");
+                LOGGER.log(Level.INFO, "Setting currentPanel to KnapsackInputView");
                 currentPanel = new KnapsackInputView();
                 // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are
                 // implemented:
                 // KnapsackInputView knapsackInputView = new KnapsackInputView();
                 // add(knapsackInputView, BorderLayout.CENTER);
-                System.out.println("Knapsack input view not yet implemented.");
                 break;
             default:
-                currentPanel = nullDummy("Unknwon probelm type: " + kind);
+                currentPanel = nullDummy("Unknown problem type: " + kind);
                 break;
         }
 

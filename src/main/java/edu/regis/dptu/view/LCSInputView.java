@@ -1,6 +1,5 @@
 package edu.regis.dptu.view;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,13 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.regis.dptu.model.LCSProblem;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
- * tutoring problem.
- *
- * <p>Changes (April 17, 2025): - Connected input fields to SubSequenceView and SubproblemTableView
- * to update dynamically. - Submit button functionality added to trigger view updates.
+ * tutoring problem. Updates all views accordingly.
+ * 
  *
  * @author EverettCV
  */
@@ -32,7 +31,7 @@ public class LCSInputView extends JPanel {
     private String string1;
     private String string2;
 
-    private TutoringSessionView grandparentView;
+    private TutoringSessionView tsView;
 
     public LCSInputView() {
 
@@ -76,13 +75,8 @@ public class LCSInputView extends JPanel {
     /**
      * Handles user input when Submit button is clicked.
      *
-     * <p>- Captures input strings - Updates SubSequenceView (updates strings and lengths displayed)
-     * - Updates SubproblemTableView (rebuilds the matrix dynamically)
-     *
-     * <p>Changes (April 17, 2025): - Added dynamic updating of SubSequenceView and
-     * SubproblemTableView based on user inputs.
-     *
-     * @author EverettCV
+     * Captures input strings - Updates all Views
+     * 
      */
     public void submitInputs() {
         string1 = inputField1.getText();
@@ -91,29 +85,22 @@ public class LCSInputView extends JPanel {
         System.out.println("Submitted String 1: " + string1);
         System.out.println("Submitted String 2: " + string2);
 
-        Container tempView = this.getParent().getParent();
-        // For now, use getParent().getParent() to find TutoringSessionView instance
-        // This code is fragile, if you've changed the component heirarchy you
-        // Will likely have to edit this as well
-        try {
-            if (tempView instanceof TutoringSessionView) {
-                grandparentView = (TutoringSessionView) tempView;
-                LCSProblem newProblem = new LCSProblem(string1, string2);
-                grandparentView.getTableView().setModel(newProblem);
-                grandparentView.getSubSeqView().setModel(newProblem);
-                grandparentView.getStepViewPanel().setModel(newProblem);
-                grandparentView.getCodeView().setModel(newProblem);
-                grandparentView.getVariablesView().setModel(newProblem);
-            } else {
-                System.out.println(
-                        "LCSInputView: getParent().getParent() did not lead to "
-                                + "TutoringSessionView");
-            }
-        } catch (NullPointerException e) {
-            System.out.println(e);
+        if (string1.length() > 0 && string2.length() > 0) {
+            tsView = MainFrame.instance().getView();
+            LCSProblem newProblem = new LCSProblem(string1, string2);
+            tsView.getTableView().setModel(newProblem);
+            tsView.getSubSeqView().setModel(newProblem);
+            tsView.getStepViewPanel().setModel(newProblem);
+            tsView.getCodeView().setModel(newProblem);
+            tsView.getBacktrackingCodeView().setModel(newProblem);
+            tsView.getVariablesView().setModel(newProblem);
         }
-
-        // TODO: Add input validation (e.g., prevent empty submissions).
+        else {
+            JFrame jFrame = new JFrame();
+            JOptionPane.showMessageDialog(jFrame,
+                    "Please enter two strings (no empty strings)", 
+                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // Getters for future use if needed

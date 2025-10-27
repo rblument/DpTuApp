@@ -64,13 +64,24 @@ public abstract class Problem extends TitledModel {
 
     /** The variable name containing the matrix cell table for this problem. */
     protected String tableVariable;
+    
+    /** The name of the internal table that keeps track of highlighting */
+    protected String backtrackingTableVariable;
 
     /** The algorithmic solution to this dynamic programming problem as textual lines of code. */
     protected ArrayList<String> codeStatements;
+    
+    /** The algorithmic for backtracking and finding the final solution from the table. */
+    protected ArrayList<String> backtrackingCodeStatements;
 
     /** The currently line number to execute */
     protected int currentLineNumber = 0;
-
+    
+    protected final int BACKTRACKING_START_NUM = 100;
+    protected final int HIT = 1;
+    protected final int MISS = 0;
+    protected final int ADD_TO_LCS = 2;
+    
     /**
      * A history of the line numbers that were executed prior to the current line number.
      *
@@ -82,14 +93,16 @@ public abstract class Problem extends TitledModel {
     protected ArrayList<ProblemListener> problemListeners;
 
     /**
-     * Return the type of this problem.
+     * Return the type of this Dynamic Programming problem.
      *
      * @return
      */
     public abstract ProblemKind getType();
 
     /**
-     * Method that determines if the subclass has completed Used to disable functionality in the UI
+     * Method that determines if the subclass has completed with either the
+     * dp algorithm or the backtracking algorithm.
+     * Used to disable functionality in the UI
      *
      * @return whether the problem has finished
      */
@@ -100,6 +113,23 @@ public abstract class Problem extends TitledModel {
 
     /** Loads the pseudo-code statements for display. */
     protected abstract void loadCodeStatements();
+    
+    protected abstract void loadBacktrackingCodeStatements();
+    
+    /** 
+     * This is to prevent the user from hitting the backtrack button before
+     * the dp table is filled in completely. 
+     * @return 
+     */
+    public abstract boolean backtrackReady();
+    
+    /**
+     * Takes care of all housekeeping required to switch from dp algorithm to
+     * backtracking algorithm. Also called when restarting backtracking
+     */
+    public abstract void backtrackingOn();
+    
+    
 
     /** Instantiate a Dynamic Programming problem with a DEFAULT_ID. */
     public Problem() {
@@ -116,6 +146,7 @@ public abstract class Problem extends TitledModel {
 
         variables = new HashMap<>();
         codeStatements = new ArrayList<>();
+        backtrackingCodeStatements = new ArrayList<>();
         executionHistory = new ArrayList<>();
         problemListeners = new ArrayList<>();
     }
@@ -135,9 +166,23 @@ public abstract class Problem extends TitledModel {
     public void setCodeStatements(ArrayList<String> codeStatements) {
         this.codeStatements = codeStatements;
     }
+    
+    public ArrayList<String> getBacktrackingCodeStatements() {
+        return backtrackingCodeStatements;
+    }
+    
+    public void setBacktrackingCodeStatements(ArrayList<String> backtrackingStatements) {
+        this.backtrackingCodeStatements = backtrackingStatements;
+    }
+    
 
+    
     public int getCurrentLineNumber() {
         return currentLineNumber;
+    }
+    
+    public int getBacktrackingStartNum() {
+        return BACKTRACKING_START_NUM;
     }
 
     public void setCurrentLineNumber(int currentLineNumber) {

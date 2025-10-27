@@ -30,6 +30,7 @@ public class TutoringSessionView extends GPanel {
     private VariablesView variablesView;
     private JLabel subproblemView;
     private CodeView codeView;
+    private BacktrackingCodeView backtrackingCodeView;
 
     private ProblemInputView problemInputView;
     private SubSequenceView subSeqView;
@@ -56,6 +57,10 @@ public class TutoringSessionView extends GPanel {
 
     public CodeView getCodeView() {
         return codeView;
+    }
+    
+    public BacktrackingCodeView getBacktrackingCodeView() {
+        return backtrackingCodeView;
     }
 
     public SubproblemTableView getTableView() {
@@ -98,7 +103,7 @@ public class TutoringSessionView extends GPanel {
      * <p>Changes (April 17, 2025): Exposed SubSequenceView through a getter to allow dynamic
      * updates (Updating input strings based on user input from InputViews)
      *
-     * @return the SubSequenceView displayed in the tutoring session
+     * @param tableView 
      */
     public void setTableView(SubproblemTableView tableView) {
         if (this.tableView != null) {
@@ -136,7 +141,8 @@ public class TutoringSessionView extends GPanel {
 
         subSeqView = new SubSequenceView(); // Original init
         tableView = new SubproblemTableView();
-        codeView = new CodeView(tableView); // Original init
+        codeView = new CodeView(); // Original init
+        backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
 
         // We'll add these components later
@@ -166,6 +172,20 @@ public class TutoringSessionView extends GPanel {
                 5);
         addc(
                 codeView,
+                0,
+                1,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                backtrackingCodeView,
                 0,
                 1,
                 1,
@@ -283,6 +303,7 @@ public class TutoringSessionView extends GPanel {
         subSeqView.setModel(currentProblem);
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
+        backtrackingCodeView.setModel(currentProblem);
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
 
@@ -292,6 +313,7 @@ public class TutoringSessionView extends GPanel {
     /**
      * Update displayed state of a problem after a change Is called whenever problem model has been
      * modified
+     * @param session 
      */
     public void problemUpdated(TutoringSession session) {
         System.out.println("DEBUG: TutoringSessionView.problemUpdated called");
@@ -302,8 +324,20 @@ public class TutoringSessionView extends GPanel {
         subSeqView.setModel(currentProblem);
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
+        backtrackingCodeView.setModel(currentProblem);
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
         updateView(currentProblem);
+    }
+    
+    public void showBacktrackingPanel(boolean backtrackingOn) {
+        if (backtrackingOn) {
+            codeView.setVisible(false);
+            backtrackingCodeView.setVisible(true);
+        }
+        else {
+            backtrackingCodeView.setVisible(false);
+            codeView.setVisible(true);
+        }
     }
 }
