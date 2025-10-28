@@ -69,10 +69,9 @@ public class ProblemInputView extends JPanel {
         panel.add(new JLabel(text, JLabel.CENTER), BorderLayout.CENTER);
         return panel;
     }
-    
+
     public LCSInputView getLcsInputView() {
-        return (activeInputPanel instanceof LCSInputView)
-                ? (LCSInputView) activeInputPanel : null;
+        return (activeInputPanel instanceof LCSInputView) ? (LCSInputView) activeInputPanel : null;
     }
 
     private void swapView(JPanel currentView) {
