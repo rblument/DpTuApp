@@ -44,15 +44,15 @@ public class VariablesView extends GPanel {
 
     private void initializeComponents() {
         rName = new JLabel("r = ");
-        rValue = new JLabel("13");
+        rValue = new JLabel("");
         cName = new JLabel("c = ");
-        cValue = new JLabel("13");
+        cValue = new JLabel("");
         jName = new JLabel("j = ");
-        jValue = new JLabel("10");
+        jValue = new JLabel("");
         iName = new JLabel("i = ");
-        iValue = new JLabel("10");
+        iValue = new JLabel("");
         lName = new JLabel("l = ");
-        lValue = new JLabel("10");
+        lValue = new JLabel("");
     }
 
     private void layoutComponents() {

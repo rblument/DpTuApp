@@ -266,8 +266,6 @@ public class TutoringSessionView extends GPanel {
     }
 
     private void updateView(Problem currentProblem) {
-        System.out.println("DEBUG: TutoringSessionView.updateView called.");
-
         problemInputView.setModel(currentProblem);
 
         revalidate();
@@ -287,6 +285,10 @@ public class TutoringSessionView extends GPanel {
         tableView.setModel(currentProblem);
 
         updateView(currentProblem);
+    }
+    
+    public ProblemInputView getProblemInputView() {
+        return problemInputView;
     }
 
     /**

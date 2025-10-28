@@ -12,14 +12,29 @@
  */
 package edu.regis.dptu.view.act;
 
+import com.google.gson.Gson;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
+import edu.regis.dptu.model.User;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.view.SplashFrame;
+import edu.regis.dptu.svc.ClientRequest;
+import edu.regis.dptu.svc.ServerRequestType;
+import edu.regis.dptu.svc.SvcFacade;
+import edu.regis.dptu.svc.TutorReply;
+import edu.regis.dptu.dao.AccountDAO;
+import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.err.NonRecoverableException;
+import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * An (MVC) controller handling a GUI gesture representing a user's request to login to the tutor
@@ -49,15 +64,59 @@ public class SignInAction extends DpTuGuiAction {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
+        Gson gson = new Gson();
+        SplashFrame frame = SplashFrame.instance();
+        User account = frame.getUser();
         // Create a temporary test session for development
         Account testAccount = new Account("test@regis.edu");
         testAccount.setFirstName("Test");
         testAccount.setLastName("User");
+        ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
+        request.setData(gson.toJson(account));
+        TutorReply reply = SvcFacade.instance().tutorRequest(request);
+        
+        switch (reply.getStatus()) {
+            case "Authenticated":
+                try {
+                    AccountDAO accDao = new AccountDAO();
+                    Account studentAccount = accDao.retrieve(account.getUserId());
+                    Student student = new Student(studentAccount);
+                    
+                    if (student.getStudentModel().getSessions().isEmpty()) {
+                        frame.setIsFirstLogin(true);
+                    }
+                    TutoringSession studentSession = new TutoringSession(student);
+                    SplashFrame.instance().initializeDashboard(studentSession);
+                }
+                catch (ObjNotFoundException e) {
+                    System.out.println("No account found");
+                }
+                catch (NonRecoverableException e) {
+                    System.out.println(e.getMessage());
+                }
+                
+                break;
+            case "InvalidPassword":
+                JOptionPane.showMessageDialog(null, "Authentication Error: " + 
+                        "Invalid Password!");
+                break;
+            case "UnknownUser":
+                JOptionPane.showMessageDialog(null, "Authentication Error: " +
+                        "Unknown User ID!");
+            default:
+                JOptionPane.showMessageDialog(null, "Unknown Error Occured, " + 
+                        "Please try again!");
+            
+        }
 
-        Student testStudent = new Student(testAccount);
-        TutoringSession testSession = new TutoringSession(testStudent);
-
-        // Initialize dashboard with test session
-        SplashFrame.instance().initializeDashboard(testSession);
+//        Student testStudent = new Student(testAccount);
+//        TutoringSession testSession = new TutoringSession(testStudent);
+//        
+//        System.out.println(testAccount.getUserId());
+//        
+//        System.out.println(testSession.getProblem());
+//        
+//        // Initialize dashboard with test session
+//        SplashFrame.instance().initializeDashboard(testSession);
     }
 }

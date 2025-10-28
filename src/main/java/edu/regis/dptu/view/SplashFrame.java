@@ -52,6 +52,8 @@ public class SplashFrame extends JFrame {
 
     /** The single instance of this frame. */
     private static final SplashFrame SINGLETON;
+    
+    private boolean firstLogin = false;
 
     /** Create the singleton for this JFrame */
     static {
@@ -65,6 +67,23 @@ public class SplashFrame extends JFrame {
      */
     public static SplashFrame instance() {
         return SINGLETON;
+    }
+    
+    /**
+     * Called if we determined that the user is logging in for the first time
+     * @param value true if first login, false otherwise
+     */
+    public void setIsFirstLogin(boolean value) {
+        this.firstLogin = value;
+    }
+    /**
+     * Get whether or not this is the first login
+     * @return ture if first login, false otherwise
+     */
+    public boolean getIsFirstLogin() {
+        boolean reset = firstLogin;
+        firstLogin = false;
+        return reset;
     }
 
     /** The current tutoring session. */
@@ -324,11 +343,26 @@ public class SplashFrame extends JFrame {
         } else {
             this.tutoringSession.setProblem(problem);
         }
+        
+       
 
         // Pass the new session to the MainFrame
         MainFrame.instance().setModel(tutoringSession);
 
         // Show the MainFrame (lesson view)
         MainFrame.instance().setVisible(true);
+        
+         TutoringSessionView tsv = MainFrame.instance().getView();
+        // If it's first login, attempt to get the LCSinput view and set
+        // The default strings
+        if (getIsFirstLogin()) {
+            ProblemInputView piv = tsv.getProblemInputView();
+            if (piv != null) {
+                LCSInputView lcs = piv.getLcsInputView();
+                if (lcs != null) {
+                    lcs.setDefaultStrings("skullandbones", "lullabybabies");
+                }
+            }
+        }
     }
 }

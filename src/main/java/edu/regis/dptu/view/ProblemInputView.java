@@ -23,11 +23,9 @@ public class ProblemInputView extends JPanel {
 
     public ProblemInputView() {
         super(new BorderLayout());
-        System.out.println("Beginning of problemView, inside constructor");
     }
 
     public void setModel(Problem problem) {
-        System.out.println("Inside setModel()");
         if (problem == null) {
             setNullDummy("No problem selected. Choose a problem to begin.");
             return;
@@ -70,6 +68,11 @@ public class ProblemInputView extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JLabel(text, JLabel.CENTER), BorderLayout.CENTER);
         return panel;
+    }
+    
+    public LCSInputView getLcsInputView() {
+        return (activeInputPanel instanceof LCSInputView)
+                ? (LCSInputView) activeInputPanel : null;
     }
 
     private void swapView(JPanel currentView) {
