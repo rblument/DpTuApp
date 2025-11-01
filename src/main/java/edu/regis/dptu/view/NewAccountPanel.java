@@ -18,10 +18,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +48,6 @@ import edu.regis.dptu.view.act.SignInAction;
 public class NewAccountPanel extends GPanel {
 
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
 
     /** A regex pattern used to validate user email ids (e.g. "rick@regis.edu"). */
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -162,10 +159,6 @@ public class NewAccountPanel extends GPanel {
         secAnswer.setText("");
     }
 
-    // Used to get focus
-    // public JTextField getFNameComp() {
-    // return fName;
-    // }
     private void initComponents() {
         LoginDocumentListener docListener = new LoginDocumentListener();
 
@@ -189,7 +182,7 @@ public class NewAccountPanel extends GPanel {
         pass2.getDocument().addDocumentListener(docListener);
 
         String s1[] = {"What city were you born in?", "What is your mother's maiden name?"};
-        secQuestions = new JComboBox(s1);
+        secQuestions = new JComboBox<String>(s1);
 
         secAnswer = new JPasswordField(20);
         secAnswer.getDocument().addDocumentListener(docListener);
@@ -961,23 +954,23 @@ public class NewAccountPanel extends GPanel {
     }
 
     /** Encrypt the given password using MD5 */
-    private String encryptMD5(String password) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            byte[] data = password.getBytes();
+    // private String encryptMD5(String password) {
+    //     try {
+    //         MessageDigest m = MessageDigest.getInstance("MD5");
+    //         byte[] data = password.getBytes();
 
-            m.update(data, 0, data.length);
+    //         m.update(data, 0, data.length);
 
-            BigInteger i = new BigInteger(1, m.digest());
+    //         BigInteger i = new BigInteger(1, m.digest());
 
-            return String.format("%1$032X", i).toLowerCase();
+    //         return String.format("%1$032X", i).toLowerCase();
 
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.toString());
-        }
+    //     } catch (NoSuchAlgorithmException e) {
+    //         LOGGER.severe(e.toString());
+    //     }
 
-        return "";
-    }
+    //     return "";
+    // }
 
     /**
      * Encrypt the given password using SHA-256

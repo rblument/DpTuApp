@@ -13,6 +13,7 @@
 package edu.regis.dptu.view.act;
 
 import java.awt.Image;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -27,6 +28,8 @@ import edu.regis.dptu.util.ImgFactory;
  * @author rickb
  */
 public abstract class DpTuGuiAction extends AbstractAction {
+    protected static final Logger LOGGER = Logger.getLogger(DpTuGuiAction.class.getName());
+
     public DpTuGuiAction(String name) {
         super(name);
     }

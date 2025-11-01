@@ -55,7 +55,11 @@ public abstract class MySqlDAO {
      */
     public static boolean IS_LOADED = false;
 
-    /** If it hasn't already been loaded, explicitly load the MySql driver. */
+    /**
+     * If it hasn't already been loaded, explicitly load the MySql driver. Suppress the warning for
+     * the old school reflection method
+     */
+    @SuppressWarnings("deprecation")
     public MySqlDAO() {
         if (!IS_LOADED) {
             try {

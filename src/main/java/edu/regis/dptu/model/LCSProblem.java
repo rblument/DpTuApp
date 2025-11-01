@@ -63,6 +63,10 @@ public class LCSProblem extends Problem {
      */
     private EXECUTION_STATE executionState;
 
+    public LCSProblem() {
+        this(Model.DEFAULT_ID, "skullandbones", "lullabybabies");
+    }
+
     /**
      * Initialize this problem with the given input sequences.
      *

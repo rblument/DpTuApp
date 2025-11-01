@@ -1,12 +1,14 @@
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.ProblemListener;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
@@ -18,19 +20,22 @@ import edu.regis.dptu.model.ProblemKind;
  * @author EverettCV
  */
 public class ProblemInputView extends JPanel {
+    /** The logger for the class */
+    private static final Logger LOGGER = Logger.getLogger(ProblemInputView.class.getName());
+
+    private ProblemListener submitListener;
 
     private JPanel activeInputPanel;
 
-    public ProblemInputView() {
+    public ProblemInputView(ProblemListener listener) {
         super(new BorderLayout());
-        System.out.println("Beginning of problemView, inside constructor");
+        submitListener = listener;
+        ProblemInputView.LOGGER.log(Level.INFO, "Initializing ProblemInputView");
     }
 
     public void setModel(Problem problem) {
-        System.out.println("Inside setModel()");
         if (problem == null) {
-            setNullDummy("No problem selected. Choose a problem to begin.");
-            return;
+            throw new NullPointerException("ProblemInputView: problem is null when setting Model");
         }
 
         ProblemKind kind = problem.getType();
@@ -38,38 +43,30 @@ public class ProblemInputView extends JPanel {
 
         switch (kind) {
             case LCS_PROBLEM:
-                System.out.println("Setting currentPanel to LCSInputView");
-                currentPanel = new LCSInputView();
+                ProblemInputView.LOGGER.log(Level.INFO, "Setting currentPanel to LCSInputView");
+                currentPanel = new LCSInputView(submitListener);
                 break;
             case MATRIX_CHAIN:
-                System.out.println("Setting currentPanel to MatrixInputView");
+                ProblemInputView.LOGGER.log(Level.INFO, "Setting currentPanel to MatrixInputView");
                 currentPanel = new MatrixInputView();
                 break;
             case KNAPSACK_0_1:
-                System.out.println("Setting currentPanel to KnapsackInputView");
+                ProblemInputView.LOGGER.log(
+                        Level.INFO, "Setting currentPanel to KnapsackInputView");
                 currentPanel = new KnapsackInputView();
                 // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are
                 // implemented:
                 // KnapsackInputView knapsackInputView = new KnapsackInputView();
                 // add(knapsackInputView, BorderLayout.CENTER);
-                System.out.println("Knapsack input view not yet implemented.");
+                ProblemInputView.LOGGER.log(
+                        Level.SEVERE, "Knapsack input view not yet implemented.");
                 break;
             default:
-                currentPanel = nullDummy("Unknwon probelm type: " + kind);
-                break;
+                throw new IllegalArgumentException(
+                        "ProblemInputView: unsupported problem kind: " + kind);
         }
 
         swapView(currentPanel);
-    }
-
-    private void setNullDummy(String text) {
-        swapView(nullDummy(text));
-    }
-
-    private JPanel nullDummy(String text) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel(text, JLabel.CENTER), BorderLayout.CENTER);
-        return panel;
     }
 
     private void swapView(JPanel currentView) {
