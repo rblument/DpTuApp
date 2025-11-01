@@ -20,6 +20,8 @@ import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
 public class SeeOneAction extends DpTuGuiAction {
@@ -49,7 +51,10 @@ public class SeeOneAction extends DpTuGuiAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         try {
-            Problem problem = problemDAO.retrieve(0);
+            DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
+            ProblemKind kind = dashboard.getSelectedProblemKind();
+
+            Problem problem = problemDAO.retrieveByKind(kind);
 
             SplashFrame.instance().selectLessonScreen(problem);
 

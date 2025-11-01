@@ -70,6 +70,41 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
         }
     }
 
+    @Override
+    public Problem retrieveByKind(ProblemKind kind)
+            throws ObjNotFoundException, NonRecoverableException {
+        final String sql =
+                "SELECT Id, SubTypeId, Title, Description FROM Problem WHERE ProblemType = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, kind.toString());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Problem problem = retrieveProblemSubType(rs.getInt(1), kind, rs.getInt(2), conn);
+
+                problem.setTitle(rs.getString(3));
+                problem.setDescription(rs.getString(4));
+
+                return problem;
+
+            } else {
+                throw new ObjNotFoundException("Problem Kind:" + kind.toString());
+            }
+        } catch (SQLException e) {
+            throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
     private Problem retrieveProblemSubType(int id, ProblemKind type, int subTypeId, Connection conn)
             throws NonRecoverableException {
         switch (type) {
