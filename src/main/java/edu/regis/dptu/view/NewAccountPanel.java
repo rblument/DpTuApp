@@ -18,8 +18,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +48,9 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class NewAccountPanel extends GPanel {
+
+    /** Events of interest occurring in this class are logged to this logger. */
+    private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
 
     /** Events of interest occurring in this class are logged to this logger. */
 
@@ -954,23 +959,23 @@ public class NewAccountPanel extends GPanel {
     }
 
     /** Encrypt the given password using MD5 */
-    // private String encryptMD5(String password) {
-    //     try {
-    //         MessageDigest m = MessageDigest.getInstance("MD5");
-    //         byte[] data = password.getBytes();
+    public static String encryptMD5(String password) {
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            byte[] data = password.getBytes();
 
-    //         m.update(data, 0, data.length);
+            m.update(data, 0, data.length);
 
-    //         BigInteger i = new BigInteger(1, m.digest());
+            BigInteger i = new BigInteger(1, m.digest());
 
-    //         return String.format("%1$032X", i).toLowerCase();
+            return String.format("%1$032X", i).toLowerCase();
 
-    //     } catch (NoSuchAlgorithmException e) {
-    //         LOGGER.severe(e.toString());
-    //     }
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.severe(e.toString());
+        }
 
-    //     return "";
-    // }
+        return "";
+    }
 
     /**
      * Encrypt the given password using SHA-256
