@@ -133,6 +133,18 @@ public class MatrixChainProblem extends Problem {
         // TODO
     }
 
+    @Override
+    public boolean undoingBacktrackButton() {
+        // TODO
+        return false;
+    }
+    
+    @Override
+    public boolean canStepBack() {
+        // TODO
+        return false;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
@@ -179,7 +191,7 @@ public class MatrixChainProblem extends Problem {
         int n = (int) variables.get("n");
 
         System.out.println("ExecutionState: " + executionState);
-        System.out.println("Current line: " + currentLineNumber);
+        System.out.println("Current line: " + nextLineNumber);
         System.out.println("DP Table (m):");
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -194,7 +206,7 @@ public class MatrixChainProblem extends Problem {
     public void executeLine0() {
         variables.put("i", 0);
         executionState = EXECUTION_STATE.R_LOOP;
-        currentLineNumber = 1;
+        nextLineNumber = 1;
     }
 
     /**
@@ -212,11 +224,11 @@ public class MatrixChainProblem extends Problem {
             // Move to chain length iteration
             variables.put("c", 1);
             executionState = EXECUTION_STATE.C_LOOP;
-            currentLineNumber = 2;
+            nextLineNumber = 2;
         } else {
             // Continue along the diagonal
             variables.put("i", i + 1);
-            currentLineNumber = 1;
+            nextLineNumber = 1;
         }
     }
 
@@ -229,10 +241,10 @@ public class MatrixChainProblem extends Problem {
         int n = (int) variables.get("n");
         if (c == n) {
             executionState = EXECUTION_STATE.POST;
-            currentLineNumber = 9;
+            nextLineNumber = 9;
         } else {
             variables.put("i", 0);
-            currentLineNumber = 3;
+            nextLineNumber = 3;
         }
     }
 
@@ -247,9 +259,9 @@ public class MatrixChainProblem extends Problem {
         if (i > n - c - 1) {
             // End of i-loop for this chain length
             variables.put("c", c + 1);
-            currentLineNumber = 2;
+            nextLineNumber = 2;
         } else {
-            currentLineNumber = 4;
+            nextLineNumber = 4;
         }
     }
 
@@ -259,7 +271,7 @@ public class MatrixChainProblem extends Problem {
         int c = (int) variables.get("c");
         int j = i + c;
         variables.put("j", j);
-        currentLineNumber = 5;
+        nextLineNumber = 5;
     }
 
     /**
@@ -273,7 +285,7 @@ public class MatrixChainProblem extends Problem {
         mHistory.push(new int[] {i, j, m[i][j]});
         m[i][j] = Integer.MAX_VALUE;
         variables.put("k", i);
-        currentLineNumber = 6;
+        nextLineNumber = 6;
     }
 
     /**
@@ -286,9 +298,9 @@ public class MatrixChainProblem extends Problem {
         if (k >= j) {
             int i = (int) variables.get("i");
             variables.put("i", i + 1);
-            currentLineNumber = 3;
+            nextLineNumber = 3;
         } else {
-            currentLineNumber = 7;
+            nextLineNumber = 7;
         }
     }
 
@@ -305,7 +317,7 @@ public class MatrixChainProblem extends Problem {
         // cost = cost_left + cost_right + multiplication cost
         int cost = m[i][k] + m[k + 1][j] + d.get(i) * d.get(k + 1) * d.get(j + 1);
         variables.put("cost", cost);
-        currentLineNumber = 8;
+        nextLineNumber = 8;
     }
 
     /**
@@ -323,7 +335,7 @@ public class MatrixChainProblem extends Problem {
         }
         int k = (int) variables.get("k");
         variables.put("k", k + 1);
-        currentLineNumber = 6;
+        nextLineNumber = 6;
     }
 
     /** Executes line 9: marks algorithm as complete. */

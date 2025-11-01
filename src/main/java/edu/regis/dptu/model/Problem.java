@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 public abstract class Problem extends TitledModel {
 
     /** The time between steps when running all */
-    private static final int RUN_STEP_INTERVAL = 500;
+    private static final int RUN_STEP_INTERVAL = 00;
 
     /** The logger for the class */
     private static final Logger LOGGER = Logger.getLogger(Problem.class.getName());
@@ -74,13 +74,14 @@ public abstract class Problem extends TitledModel {
     /** The algorithmic for backtracking and finding the final solution from the table. */
     protected ArrayList<String> backtrackingCodeStatements;
 
-    /** The currently line number to execute */
-    protected int currentLineNumber = 0;
+    /** The number of the line that will execute the next time "step forward" is clicked */
+    protected int nextLineNumber = 0;
 
     protected final int BACKTRACKING_START_NUM = 100;
     protected final int HIT = 1;
     protected final int MISS = 0;
     protected final int ADD_TO_SOLUTION = 2;
+    protected final int UNVISITED = -1;
 
     /**
      * A history of the line numbers that were executed prior to the current line number.
@@ -98,6 +99,10 @@ public abstract class Problem extends TitledModel {
      * @return
      */
     public abstract ProblemKind getType();
+    
+    public int getNextLineNumber() {
+        return nextLineNumber;
+    }
 
     /**
      * Method that determines if the subclass has completed with either the dp algorithm or the
@@ -114,6 +119,12 @@ public abstract class Problem extends TitledModel {
     protected abstract void loadCodeStatements();
 
     protected abstract void loadBacktrackingCodeStatements();
+    
+    /**
+     * This prevents user from pressing the "step back" button when they shouldn't
+     * @return 
+     */
+    public abstract boolean canStepBack();
 
     /**
      * This is to prevent the user from hitting the backtrack button before the dp table is filled
@@ -128,6 +139,18 @@ public abstract class Problem extends TitledModel {
      * algorithm. Also called when restarting backtracking
      */
     public abstract void backtrackingOn();
+    
+    /**
+     * When the backtracking button has been clicked, but the step forward
+     * button has not yet executed any backtracking steps, this method will
+     * return true (to help the undo button) and reset the nextLineNumber.
+     * This is needed because when going backwards from the backtracking 
+     * algorithm into the DP algorithm, the code view needs to change from
+     * BacktrackingCodeView to CodeView, which cannot be handled from within
+     * the Problem object, since it does not know about views.
+     * @return 
+     */
+    public abstract boolean undoingBacktrackButton();
 
     /** Instantiate a Dynamic Programming problem with a DEFAULT_ID. */
     public Problem() {
@@ -174,7 +197,7 @@ public abstract class Problem extends TitledModel {
     }
 
     public int getCurrentLineNumber() {
-        return currentLineNumber;
+        return nextLineNumber;
     }
 
     public int getBacktrackingStartNum() {
@@ -182,7 +205,7 @@ public abstract class Problem extends TitledModel {
     }
 
     public void setCurrentLineNumber(int currentLineNumber) {
-        this.currentLineNumber = currentLineNumber;
+        this.nextLineNumber = currentLineNumber;
     }
 
     public String getTableVariable() {
@@ -232,8 +255,8 @@ public abstract class Problem extends TitledModel {
 
     /** Execute the current line of code and then update to the "next" line of code to execute. */
     public void step() {
-        executionHistory.add(currentLineNumber);
-        String methodName = "executeLine" + currentLineNumber;
+        executionHistory.add(nextLineNumber);
+        String methodName = "executeLine" + nextLineNumber;
         executeMethod(methodName);
 
         // Notify listeners that the problem has been updated
@@ -278,12 +301,10 @@ public abstract class Problem extends TitledModel {
 
             String methodName = "undoLine" + previousLineNumber;
             executeMethod(methodName);
-
-            if (previousLineNumber != 0) {
-                lastItemPos--;
-
-                currentLineNumber = executionHistory.get(lastItemPos);
-            }
+            
+            /* Whatever line we removed from the history, that's the line that
+            we want to execute again if we click "step forward" */
+            nextLineNumber = previousLineNumber;
 
             // Notify listeners that the problem has been updated
             notifyProblemListeners();
