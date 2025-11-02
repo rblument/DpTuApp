@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 public abstract class Problem extends TitledModel {
 
     /** The time between steps when running all */
-    private static final int RUN_STEP_INTERVAL = 00;
+    private static final int RUN_STEP_INTERVAL = 500;
 
     /** The logger for the class */
     private static final Logger LOGGER = Logger.getLogger(Problem.class.getName());
