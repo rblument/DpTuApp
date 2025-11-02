@@ -99,7 +99,7 @@ public abstract class Problem extends TitledModel {
      * @return
      */
     public abstract ProblemKind getType();
-    
+
     public int getNextLineNumber() {
         return nextLineNumber;
     }
@@ -119,10 +119,11 @@ public abstract class Problem extends TitledModel {
     protected abstract void loadCodeStatements();
 
     protected abstract void loadBacktrackingCodeStatements();
-    
+
     /**
      * This prevents user from pressing the "step back" button when they shouldn't
-     * @return 
+     *
+     * @return
      */
     public abstract boolean canStepBack();
 
@@ -139,16 +140,16 @@ public abstract class Problem extends TitledModel {
      * algorithm. Also called when restarting backtracking
      */
     public abstract void backtrackingOn();
-    
+
     /**
-     * When the backtracking button has been clicked, but the step forward
-     * button has not yet executed any backtracking steps, this method will
-     * return true (to help the undo button) and reset the nextLineNumber.
-     * This is needed because when going backwards from the backtracking 
-     * algorithm into the DP algorithm, the code view needs to change from
-     * BacktrackingCodeView to CodeView, which cannot be handled from within
-     * the Problem object, since it does not know about views.
-     * @return 
+     * When the backtracking button has been clicked, but the step forward button has not yet
+     * executed any backtracking steps, this method will return true (to help the undo button) and
+     * reset the nextLineNumber. This is needed because when going backwards from the backtracking
+     * algorithm into the DP algorithm, the code view needs to change from BacktrackingCodeView to
+     * CodeView, which cannot be handled from within the Problem object, since it does not know
+     * about views.
+     *
+     * @return
      */
     public abstract boolean undoingBacktrackButton();
 
@@ -301,7 +302,7 @@ public abstract class Problem extends TitledModel {
 
             String methodName = "undoLine" + previousLineNumber;
             executeMethod(methodName);
-            
+
             /* Whatever line we removed from the history, that's the line that
             we want to execute again if we click "step forward" */
             nextLineNumber = previousLineNumber;

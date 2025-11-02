@@ -53,7 +53,7 @@ public class LCSProblemTest {
 
         int n = problem.getVariableValue("n");
         int m = problem.getVariableValue("m");
-        
+
         assertEquals(x.length(), n);
         assertEquals(y.length(), m);
         assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
@@ -61,7 +61,7 @@ public class LCSProblemTest {
         assertEquals(0, problem.getCurrentLineNumber());
         problem.step(); // executeLine0 LCS(x,y);
         assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
-        
+
         int r = 0;
 
         // Execute the r loop
@@ -88,7 +88,7 @@ public class LCSProblemTest {
         assertEquals(3, problem.getCurrentLineNumber());
         problem.step(); // Line 3 one last time; sets execution state to I_LOOP and goto Line 5
         assertEquals(-1, problem.getVariableValue("c"));
-        
+
         for (int i = 0; i < n; i++) {
             assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
             assertEquals(5, problem.getCurrentLineNumber());
@@ -112,9 +112,9 @@ public class LCSProblemTest {
             }
             assertEquals(6, problem.getCurrentLineNumber());
             problem.step(); // Line 6 one last time to break the j loop
-            //assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
+            // assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
         }
-        
+
         assertEquals(5, problem.getCurrentLineNumber());
         problem.step(); // Line 5 one last time to break the i loop and go to line 11
 
@@ -126,24 +126,24 @@ public class LCSProblemTest {
 
         assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
 
-        //---------------------------Backtracking-------------------------------
-        
+        // ---------------------------Backtracking-------------------------------
+
         int row = n;
         int col = m;
-        
+
         problem.backtrackingOn();
         assertEquals(LCSProblem.EXECUTION_STATE.B_PRE, problem.getExecutionState());
-        
+
         problem.step(); // Line 100 Backtrack(table)
         problem.step(); // Line 101 row = ... col = ...
         assertEquals(LCSProblem.EXECUTION_STATE.B_WHILE, problem.getExecutionState());
-        
+
         while (row >= 1 && col >= 1) {
             assertEquals(102, problem.getNextLineNumber());
             problem.step(); // Line 102 while
             assertEquals(LCSProblem.EXECUTION_STATE.B_IF, problem.getExecutionState());
             // if
-            if (x.charAt(row-1) == y.charAt(col-1)) {
+            if (x.charAt(row - 1) == y.charAt(col - 1)) {
                 assertEquals(103, problem.getNextLineNumber());
                 problem.step(); // Line 103 if x[row] == y[col]
                 problem.step(); // Line 104 add to front of LCS
@@ -152,24 +152,22 @@ public class LCSProblemTest {
                 problem.step(); // Line 106 col--
                 col--;
                 assertEquals(LCSProblem.EXECUTION_STATE.B_WHILE, problem.getExecutionState());
-            }
-            else {
+            } else {
                 // if evaluated false
                 assertEquals(103, problem.getNextLineNumber());
                 problem.step(); // Line 103 if (now evaluating false)
                 assertEquals(LCSProblem.EXECUTION_STATE.B_ELIF, problem.getExecutionState());
                 // else if
                 int[][] lTable = (int[][]) problem.getVariableObject("l");
-                if (lTable[row-1][col] >= lTable[row][col-1]) {
+                if (lTable[row - 1][col] >= lTable[row][col - 1]) {
                     assertEquals(107, problem.getNextLineNumber());
                     problem.step(); // Line 107 else if
                     assertEquals(108, problem.getNextLineNumber());
                     problem.step(); // Line 108 row--
                     row--;
                     assertEquals(LCSProblem.EXECUTION_STATE.B_WHILE, problem.getExecutionState());
-                }
-                else {
-                    //else if evaluated false
+                } else {
+                    // else if evaluated false
                     assertEquals(107, problem.getNextLineNumber());
                     problem.step(); // Line 107 else if
                     assertEquals(LCSProblem.EXECUTION_STATE.B_ELSE, problem.getExecutionState());
@@ -181,26 +179,26 @@ public class LCSProblemTest {
                 }
             }
         }
-        //break while loop
+        // break while loop
         problem.step(); // Line 102 while
         assertEquals(LCSProblem.EXECUTION_STATE.B_RETRN, problem.getExecutionState());
         problem.step(); // Line 111 return LCS
         assertEquals(LCSProblem.EXECUTION_STATE.B_POST, problem.getExecutionState());
-        
-        //-------------------------------UNDO-----------------------------------
-        
-        //------------------------UNDO BACKTRACKING-----------------------------
+
+        // -------------------------------UNDO-----------------------------------
+
+        // ------------------------UNDO BACKTRACKING-----------------------------
 
         problem.undo(); // Line 111
         assertEquals(LCSProblem.EXECUTION_STATE.B_RETRN, problem.getExecutionState());
-        
+
         problem.undo(); // Line 102 - the last while that breaks the loop
         assertEquals(LCSProblem.EXECUTION_STATE.B_WHILE, problem.getExecutionState());
-        
+
         while (row < n || col < m) {
             // check for nearby highlighted cells
             int[][] bTable = (int[][]) problem.getVariableObject("b");
-            if (bTable[row][col+1] != -1) {
+            if (bTable[row][col + 1] != -1) {
                 // if we're here, then we wound up in the else case
                 problem.undo(); // Line 110 col--
                 col++;
@@ -213,8 +211,7 @@ public class LCSProblemTest {
                 assertEquals(LCSProblem.EXECUTION_STATE.B_IF, problem.getExecutionState());
                 problem.undo(); // Line 102 while
                 assertEquals(LCSProblem.EXECUTION_STATE.B_WHILE, problem.getExecutionState());
-            }
-            else if (bTable[row+1][col] != -1) {
+            } else if (bTable[row + 1][col] != -1) {
                 // if we're here, we wound up in the else if case
                 problem.undo(); // Line 108 row--
                 row++;
@@ -225,8 +222,7 @@ public class LCSProblemTest {
                 assertEquals(LCSProblem.EXECUTION_STATE.B_IF, problem.getExecutionState());
                 problem.undo(); // Line 102 while
                 assertEquals(LCSProblem.EXECUTION_STATE.B_WHILE, problem.getExecutionState());
-            }
-            else {
+            } else {
                 // If we're here, the if statement was true
                 problem.undo(); // Line 106 col--
                 col++;
@@ -244,26 +240,25 @@ public class LCSProblemTest {
         problem.undo(); // Line 100 Backtrack(table)
         problem.undoingBacktrackButton(); // back to LCS algorithm
         assertEquals(LCSProblem.EXECUTION_STATE.POST, problem.getExecutionState());
-        
-        //----------------------------UNDO LCS----------------------------------
-        
+
+        // ----------------------------UNDO LCS----------------------------------
+
         problem.undo(); // Line 11 return LCS
         assertEquals(LCSProblem.EXECUTION_STATE.RETRN, problem.getExecutionState());
-        
+
         problem.undo(); // Line 5 last time checking i loop
         assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-        for (int i = n-1; i >= 0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             problem.undo(); // Line 6 last time checking j loop
             assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
-            for (int j = m-1; j >= 0; j--) {
+            for (int j = m - 1; j >= 0; j--) {
                 String word1 = problem.getX();
                 String word2 = problem.getY();
                 if (word1.charAt(i) == word2.charAt(j)) {
                     problem.undo(); // Line 8 L[i,j] = L[i-1,j-1] + 1
                     problem.undo(); // Line 7 if xi == yj
                     problem.undo(); // Line 6 for j=0 to m-1
-                }
-                else {
+                } else {
                     problem.undo(); // Line 10 L[i,j] = max...
                     problem.undo(); // Line 9 else
                     problem.undo(); // Line 7 if xi == yj
@@ -273,7 +268,7 @@ public class LCSProblemTest {
             problem.undo(); // Line 5 for i=0 to n-1
             assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
         }
-        
+
         problem.undo(); // Line 3 last time checking c loop
         assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
         for (int c = 0; c < m; c++) {
@@ -286,7 +281,7 @@ public class LCSProblemTest {
             problem.undo(); // Line 2 L[r,-1] = 0
             problem.undo(); // Line 1 r loop
         }
-        
+
         problem.undo(); // Line 0 LCS(x,y)
         assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
 

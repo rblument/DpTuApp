@@ -138,13 +138,13 @@ public class MatrixChainProblem extends Problem {
         // TODO
         return false;
     }
-    
+
     @Override
     public boolean canStepBack() {
         // TODO
         return false;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
