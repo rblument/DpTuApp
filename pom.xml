@@ -5,12 +5,14 @@
     <artifactId>DpTuApp</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>edu.regis.dptuapp.DpTuApp</exec.mainClass>
     </properties>
+
     <repositories>
         <repository>
           <id>CronApp</id>
@@ -18,13 +20,14 @@
           <url>	https://artifactory.cronapp.io/public-release/</url>
         </repository>
     </repositories>
+
     <build>
         <resources>
-        <resource>
-            <directory>
-                src/main/java/resources
-            </directory>
-        </resource>
+            <resource>
+                <directory>
+                    src/main/java/resources
+                </directory>
+            </resource>
         </resources>
     
         <plugins>
@@ -33,6 +36,7 @@
                 <version>3.2.1</version>
                 
             </plugin>
+
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -68,8 +72,8 @@
                 </executions>
             </plugin>
         </plugins>
-    
     </build>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson-extras -->
         <dependency>
@@ -77,22 +81,26 @@
             <artifactId>gson-extras</artifactId>
             <version>2.8.5</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.6</version>
         </dependency>
+
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>9.0.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -100,6 +108,7 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -107,6 +116,7 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
@@ -114,5 +124,41 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Start Logging Dependencies -->
+        <dependency>
+            <!-- SLF4J (Simple Logging Facade for Java) Logging API, Abstracts Specific Logging Backends-->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+        <dependency>
+            <!-- Log4j2 API, Abstracted by SLF4J-->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+        <dependency>
+            <!--Log4j2 Core Logging Engine, Abstracted by SLF4J-->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+        <dependency>
+            <!--Bridges Log4j2 to SLF4J-->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+
+        <dependency>
+            <!-- Route java.util.logging (JUL) to Log4j2 -->
+            <!-- To activate, run with: -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>2.23.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- End Logging Dependencies -->
     </dependencies>
+
 </project>
