@@ -11,7 +11,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
-        <repositories>
+    <repositories>
         <repository>
           <id>CronApp</id>
           <name>CronApp Repository</name>
@@ -20,11 +20,11 @@
     </repositories>
     <build>
         <resources>
-        <resource>
-            <directory>
-                src/main/java/resources
-            </directory>
-        </resource>
+            <resource>
+                <directory>
+                    src/main/java/resources
+                </directory>
+            </resource>
         </resources>
     
         <plugins>
@@ -110,7 +110,7 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
-            <version>2.0.9</version> <!-- Use the latest version available -->
+            <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
 
