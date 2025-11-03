@@ -54,24 +54,10 @@ public class DpTuTutor implements TutorSvc {
     private static final int DEFAULT_COURSE_ID = 1;
 
     /**
-     * The maximum number of characters allowed for encoding a example ASCII encoding request from
-     * the student.
-     */
-    private static final int MAX_ASCII_SIZE = 20;
-
-    private static final int MAX_BITS_SIZE = 32;
-
-    /**
      * Handler for logging non-exception messages from this class versus thrown exception, which are
      * logged by the exception.
      */
     private static final Logger LOGGER = Logger.getLogger(DpTuTutor.class.getName());
-
-    /**
-     * The current tutoring session, which contains information on the current Student,
-     * StudentModel, Course, Task, Step, etc.
-     */
-    private TutoringSession session;
 
     /** Convenience reference to the student currently being tutored. */
     private Student student;
@@ -128,8 +114,6 @@ public class DpTuTutor implements TutorSvc {
                             reply.setData("Student model not found for: " + userId);
                             return reply;
                         }
-
-                        session = ServiceFactory.findSessionSvc().retrieve(student);
 
                     } else {
                         TutorReply reply = new TutorReply(":ERR");
@@ -312,10 +296,6 @@ public class DpTuTutor implements TutorSvc {
     // TO_DO: this is stubbed in
     public TutorReply completeCellStep(StepCompletion completion) {
         TutorReply reply = new TutorReply(":StepCompletionReply");
-
-        // As adding one bit doesn't require any additional information,
-        // the data is the string with one '1' bit added.
-        String data = completion.getData();
 
         // TO_DO: look up the problem given to the student , then check if one bit
         // added

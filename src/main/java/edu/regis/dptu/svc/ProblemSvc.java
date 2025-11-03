@@ -15,6 +15,7 @@ package edu.regis.dptu.svc;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemKind;
 
 /**
  * Specifies the API for Problem life-cycle maintenance (database persistence).
@@ -22,6 +23,16 @@ import edu.regis.dptu.model.Problem;
  * @author rickb
  */
 public interface ProblemSvc {
+    /**
+     * Locate and return the Problem with the given kind.
+     *
+     * @param kind the problem kind of the problem
+     * @return The Problem of type ProblemKind
+     * @exception ObjNotFoundException No Problem with the given kind exists.
+     * @throws NonRecoverableException also see getCause().getErrorCode()..
+     */
+    Problem retrieveByKind(ProblemKind kind) throws ObjNotFoundException, NonRecoverableException;
+
     /**
      * Locate and return the Problem with the given id.
      *

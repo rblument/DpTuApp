@@ -13,6 +13,8 @@
 package edu.regis.dptu.view;
 
 import java.awt.GridBagConstraints;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 
@@ -26,6 +28,10 @@ import edu.regis.dptu.model.TutoringSession;
  * @author rickb (Modified by Assistant for Functional Integration & Debug)
  */
 public class TutoringSessionView extends GPanel {
+
+    /** The logger for the class */
+    private static final Logger LOGGER = Logger.getLogger(TutoringSessionView.class.getName());
+
     private TutoringSession model;
     private VariablesView variablesView;
     private JLabel subproblemView;
@@ -45,7 +51,7 @@ public class TutoringSessionView extends GPanel {
      * layout.
      */
     public TutoringSessionView() {
-        System.out.println("DEBUG: TutoringSessionView constructor called.");
+        TutoringSessionView.LOGGER.log(Level.INFO, "Initiating TutoringSessionView");
         initializeComponents(); // Creates components and sets up model sharing
         layoutComponents(); // Uses original layout constraints
     }
@@ -133,11 +139,19 @@ public class TutoringSessionView extends GPanel {
      * relevant views get the *same* Problem model instance.
      */
     private void initializeComponents() {
-        System.out.println("DEBUG: TutoringSessionView initializing components...");
+        TutoringSessionView.LOGGER.log(Level.INFO, "TutoringSessionView initializing components");
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
 
-        problemInputView = new ProblemInputView();
+        problemInputView =
+                new ProblemInputView(
+                        problem -> {
+                            tableView.setModel(problem);
+                            subSeqView.setModel(problem);
+                            stepViewPanel.setModel(problem);
+                            codeView.setModel(problem);
+                            variablesView.setModel(problem);
+                        });
 
         subSeqView = new SubSequenceView(); // Original init
         tableView = new SubproblemTableView();
@@ -148,7 +162,6 @@ public class TutoringSessionView extends GPanel {
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
-        System.out.println("DEBUG: TutoringSessionView components initialized.");
     }
 
     /** Layout the child components in this view using **ORIGINAL** constraints. */
@@ -286,7 +299,7 @@ public class TutoringSessionView extends GPanel {
     }
 
     private void updateView(Problem currentProblem) {
-        System.out.println("DEBUG: TutoringSessionView.updateView called.");
+        TutoringSessionView.LOGGER.log(Level.INFO, "TutoringSessionView updating view");
 
         problemInputView.setModel(currentProblem);
 
@@ -294,7 +307,7 @@ public class TutoringSessionView extends GPanel {
         repaint();
     }
 
-    void setModel(TutoringSession model) {
+    public void setModel(TutoringSession model) {
         this.model = model;
 
         Problem currentProblem = null;
@@ -308,36 +321,5 @@ public class TutoringSessionView extends GPanel {
         tableView.setModel(currentProblem);
 
         updateView(currentProblem);
-    }
-
-    /**
-     * Update displayed state of a problem after a change Is called whenever problem model has been
-     * modified
-     *
-     * @param session
-     */
-    public void problemUpdated(TutoringSession session) {
-        System.out.println("DEBUG: TutoringSessionView.problemUpdated called");
-        if (session == null) return;
-        Problem currentProblem = session.getProblem();
-        if (currentProblem == null) return;
-
-        subSeqView.setModel(currentProblem);
-        stepViewPanel.setModel(currentProblem);
-        codeView.setModel(currentProblem);
-        backtrackingCodeView.setModel(currentProblem);
-        variablesView.setModel(currentProblem);
-        tableView.setModel(currentProblem);
-        updateView(currentProblem);
-    }
-
-    public void showBacktrackingPanel(boolean backtrackingOn) {
-        if (backtrackingOn) {
-            codeView.setVisible(false);
-            backtrackingCodeView.setVisible(true);
-        } else {
-            backtrackingCodeView.setVisible(false);
-            codeView.setVisible(true);
-        }
     }
 }
