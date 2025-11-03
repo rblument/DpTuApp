@@ -9,9 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -87,9 +85,9 @@ public class LCSInputView extends JPanel {
     public void submitInputs() {
         string1 = inputField1.getText();
         string2 = inputField2.getText();
-       // Remove whitespace
-       string1 = string1.replaceAll("\\s", "");
-       string2 = string2.replaceAll("\\s", "");
+        // Remove whitespace
+        string1 = string1.replaceAll("\\s", "");
+        string2 = string2.replaceAll("\\s", "");
 
         LCSInputView.LOGGER.log(Level.INFO, "Submitted String 1: " + string1);
         LCSInputView.LOGGER.log(Level.INFO, "Submitted String 2: " + string2);
