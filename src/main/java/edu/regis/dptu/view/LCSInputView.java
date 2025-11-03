@@ -18,10 +18,7 @@ import edu.regis.dptu.model.ProblemListener;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
- * tutoring problem.
- *
- * <p>Changes (April 17, 2025): - Connected input fields to SubSequenceView and SubproblemTableView
- * to update dynamically. - Submit button functionality added to trigger view updates.
+ * tutoring problem. Updates all views accordingly.
  *
  * @author EverettCV
  */
@@ -83,17 +80,14 @@ public class LCSInputView extends JPanel {
     /**
      * Handles user input when Submit button is clicked.
      *
-     * <p>- Captures input strings - Updates SubSequenceView (updates strings and lengths displayed)
-     * - Updates SubproblemTableView (rebuilds the matrix dynamically)
-     *
-     * <p>Changes (April 17, 2025): - Added dynamic updating of SubSequenceView and
-     * SubproblemTableView based on user inputs.
-     *
-     * @author EverettCV
+     * <p>Captures input strings - Updates all Views
      */
     public void submitInputs() {
         string1 = inputField1.getText();
         string2 = inputField2.getText();
+        // Remove whitespace
+        string1 = string1.replaceAll("\\s", "");
+        string2 = string2.replaceAll("\\s", "");
 
         LCSInputView.LOGGER.log(Level.INFO, "Submitted String 1: " + string1);
         LCSInputView.LOGGER.log(Level.INFO, "Submitted String 2: " + string2);
