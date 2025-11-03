@@ -14,13 +14,20 @@ package edu.regis.dptu.view.act;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 
+import edu.regis.dptu.dao.ProblemDAO;
+import edu.regis.dptu.err.NonRecoverableException;
+import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
 public class SeeOneAction extends DpTuGuiAction {
     private static final SeeOneAction SINGLETON;
+
+    private final ProblemDAO problemDAO;
 
     static {
         SINGLETON = new SeeOneAction();
@@ -32,6 +39,7 @@ public class SeeOneAction extends DpTuGuiAction {
 
     private SeeOneAction() {
         super("See One");
+        this.problemDAO = new ProblemDAO();
 
         putValue(SHORT_DESCRIPTION, "Start a teaching session");
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
@@ -42,21 +50,17 @@ public class SeeOneAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        try {
+            DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
+            ProblemKind kind = dashboard.getSelectedProblemKind();
 
-        // Get the DashboardPanel from the SplashFrame
-        DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
+            Problem problem = problemDAO.retrieveByKind(kind);
 
-        if (dashboard == null) {
-            System.err.println("DashboardPanel not initialized. Defaulting to LCS_PROBLEM.");
-            SplashFrame.instance().selectLessonScreen(ProblemKind.LCS_PROBLEM);
-            return;
+            SplashFrame.instance().selectLessonScreen(problem);
+
+        } catch (ObjNotFoundException | NonRecoverableException e) {
+            SeeOneAction.LOGGER.log(Level.SEVERE, e.getMessage());
+            SplashFrame.instance().showError("Error", "Failed to load problem");
         }
-
-        // Get the selected TaskKind from the DashboardPanel
-        ProblemKind selectedKind = dashboard.getSelectedProblemKind();
-        System.out.println("SeeOneAction selected TaskKind: " + selectedKind);
-
-        // Call SplashFrame to transition to the lesson screen with this TaskKind
-        SplashFrame.instance().selectLessonScreen(selectedKind);
     }
 }

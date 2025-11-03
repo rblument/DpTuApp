@@ -63,8 +63,6 @@ public class DpTuApp {
 
         LOGGER.info("DpTu properties initialization completed.");
 
-        System.out.println("Finished initializing");
-
         try {
             LOGGER.info(" Starting DpTu Server (Tutoring Service)...");
             // ToDo: Separate the initialization of client and server

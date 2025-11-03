@@ -223,7 +223,7 @@ public class HintTextField extends JTextField {
                             if (isFirstEdit) {
                                 tf.setCaretPosition(0);
                             } else {
-                                int offset = tf.viewToModel(e.getPoint());
+                                int offset = tf.viewToModel2D(e.getPoint());
                                 tf.setCaretPosition(offset);
                             }
                         }

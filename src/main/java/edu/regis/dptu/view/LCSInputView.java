@@ -5,6 +5,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.ProblemListener;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
@@ -22,6 +25,12 @@ import edu.regis.dptu.model.LCSProblem;
  * @author EverettCV
  */
 public class LCSInputView extends JPanel {
+
+    /** The logger for the class */
+    private static final Logger LOGGER = Logger.getLogger(LCSInputView.class.getName());
+
+    private ProblemListener submitListener;
+
     private JTextField inputField1;
     private JTextField inputField2;
     private JButton submitButton;
@@ -30,9 +39,8 @@ public class LCSInputView extends JPanel {
     private String string1;
     private String string2;
 
-    private TutoringSessionView tsView;
-
-    public LCSInputView() {
+    public LCSInputView(ProblemListener listener) {
+        submitListener = listener;
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -83,34 +91,10 @@ public class LCSInputView extends JPanel {
        string1 = string1.replaceAll("\\s", "");
        string2 = string2.replaceAll("\\s", "");
 
-        System.out.println("Submitted String 1: " + string1);
-        System.out.println("Submitted String 2: " + string2);
+        LCSInputView.LOGGER.log(Level.INFO, "Submitted String 1: " + string1);
+        LCSInputView.LOGGER.log(Level.INFO, "Submitted String 2: " + string2);
 
-        if (string1.length() > 0 && string2.length() > 0) {
-            tsView = MainFrame.instance().getView();
-            LCSProblem newProblem = new LCSProblem(string1, string2);
-            tsView.getTableView().setModel(newProblem);
-            tsView.getSubSeqView().setModel(newProblem);
-            tsView.getStepViewPanel().setModel(newProblem);
-            tsView.getCodeView().setModel(newProblem);
-            tsView.getBacktrackingCodeView().setModel(newProblem);
-            tsView.getVariablesView().setModel(newProblem);
-        } else {
-            JFrame jFrame = new JFrame();
-            JOptionPane.showMessageDialog(
-                    jFrame,
-                    "Please enter two strings (no empty strings)",
-                    "Invalid Input",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    // Getters for future use if needed
-    public String getString1() {
-        return string1;
-    }
-
-    public String getString2() {
-        return string2;
+        LCSProblem newProblem = new LCSProblem(string1, string2);
+        submitListener.problemUpdated(newProblem);
     }
 }

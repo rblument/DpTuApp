@@ -27,9 +27,6 @@ public class ImgFactory {
     /** Directory in the Resource path where the images are located. */
     private static final String DIRECTORY = "/";
 
-    /** File extension for the associated image. */
-    private static final String SUFFIX = ".png";
-
     /**
      * Create an Image Icon by loading its corresponding png image.
      *

@@ -16,7 +16,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,7 +25,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
 
 import edu.regis.dptu.model.User;
 import edu.regis.dptu.util.SHA_256;
@@ -43,7 +41,6 @@ import edu.regis.dptu.view.act.SignInAction;
  */
 public class SplashPanel extends GPanel {
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(SplashPanel.class.getName());
 
     /** The user model displayed in this view. */
     private User model;
@@ -528,8 +525,6 @@ public class SplashPanel extends GPanel {
 
         /** If the userId or password fields are empty, disable the OK 'Login' button. */
         private void enableButtons(DocumentEvent e) {
-            Document document = (Document) e.getDocument();
-
             if ((userId.getDocument().getLength() == 0)
                     || (password.getDocument().getLength() == 0)) {
                 signInBut.setEnabled(false);

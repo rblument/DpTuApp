@@ -22,9 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import edu.regis.dptu.model.Account;
-import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
-import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
 
@@ -73,9 +71,6 @@ public class SplashFrame extends JFrame {
     /** A CardLayout containing all main panels (SPLASH, NEW_USER, DASHBOARD, etc.). */
     private JPanel cards;
 
-    /** The name of the currently selected panel */
-    private String selectedPanel;
-
     /**
      * The splash panel, which displays splash information, sign-in fields, and a link to create new
      * student account panel.
@@ -90,9 +85,6 @@ public class SplashFrame extends JFrame {
 
     /** The panel that allows users to select a type of service. */
     private DashboardPanel dashboardPanel;
-
-    /** View for lesson session functionality. */
-    private LessonSessionView lessonSessionView;
 
     /**
      * The number of consecutive illegal passwords attempted by the current user attempting to login
@@ -150,15 +142,13 @@ public class SplashFrame extends JFrame {
 
             signInAttempts++;
 
-            JOptionPane.showMessageDialog(this, msg, "SignIn Error", JOptionPane.ERROR_MESSAGE);
-
+            showError("SignIn Error", msg);
         } else {
             String msg =
                     "You exceeded the max number of sign in attempts\n"
                             + "Please contact the DpTu administrator";
 
-            JOptionPane.showMessageDialog(this, msg, "SignIn Error", JOptionPane.ERROR_MESSAGE);
-
+            showError("SignIn Error", msg);
             this.dispose();
             System.exit(1);
         }
@@ -216,18 +206,11 @@ public class SplashFrame extends JFrame {
     public void unknownUser() {
         User user = splashPanel.getModel();
 
-        JOptionPane.showMessageDialog(
-                this,
+        showError(
+                "Warning",
                 user.getUserId()
                         + " is not a known user.\n\n"
-                        + "Perhaps, try creating a 'New User' first.",
-                "Warning",
-                JOptionPane.ERROR_MESSAGE);
-    }
-
-    /** Select the lesson screen panel */
-    public void selectLessonScreen() {
-        selectPanel(LESSON);
+                        + "Perhaps, try creating a 'New User' first.");
     }
 
     /** Select the practice screen panel */
@@ -249,7 +232,6 @@ public class SplashFrame extends JFrame {
     private void selectPanel(String name) {
         CardLayout cl = (CardLayout) (cards.getLayout());
         cl.show(cards, name);
-        selectedPanel = name;
 
         if (name.equals(SPLASH)) {
             JButton but = splashPanel.getSigninButton();
@@ -268,10 +250,6 @@ public class SplashFrame extends JFrame {
 
         cards.add(splashPanel, SPLASH);
         cards.add(newAccountPanel, NEW_USER);
-
-        // Initialize lesson view if needed
-        lessonSessionView = new LessonSessionView();
-        // cards.add(lessonSessionView, LESSON);
     }
 
     /**
@@ -285,39 +263,11 @@ public class SplashFrame extends JFrame {
     }
 
     /**
-     * Select the lesson screen for the given problem type (TaskKind). Creates a new TutoringSession
-     * with the appropriate Problem. @author EverettCV
+     * Select the lesson screen for the problem. Creates a new TutoringSession
+     *
+     * @author EverettCV
      */
-    public void selectLessonScreen(ProblemKind kind) {
-
-        // Step 1: Create the correct Problem subclass based on TaskKind
-        Problem problem;
-
-        switch (kind) {
-            case LCS_PROBLEM:
-                // ToDO, this should be obtained from the Task
-                problem = new LCSProblem("skullandbones", "lullabybabies");
-                break;
-            /*
-                        case MATRIX_CHAIN:
-                            problem = new MatrixChainProblem(new int[][]{
-                                {10, 20},
-                                {20, 30},
-                                {30, 40}
-                            });  // default values, can be changed to whatever
-                            break;
-                        case KNAPSACK_0_1:
-                            //problem = new KnapsackProblem(new int[]{1, 2, 3}, new int[]{6, 10, 12}, 5); Once the KnapsackProblem.java is implemented, uncomment this to allow them to select it
-                            System.out.println("KnapsackProblem not yet implemented. Defaulting to LCSProblem");
-                            problem = new LCSProblem("skullandbones", "lullabybabies");
-                            break;
-            */
-            default:
-                // Fallback to LCS if somehow another TaskKind got through
-                problem = new LCSProblem("skullandbones", "skullandbones");
-                break;
-        }
-
+    public void selectLessonScreen(Problem problem) {
         // Create or update the TutoringSession
         if (this.tutoringSession == null) {
             this.tutoringSession = new TutoringSession(getAccount(), problem);
@@ -330,5 +280,9 @@ public class SplashFrame extends JFrame {
 
         // Show the MainFrame (lesson view)
         MainFrame.instance().setVisible(true);
+    }
+
+    public void showError(String title, String errorMsg) {
+        JOptionPane.showMessageDialog(this, errorMsg, title, JOptionPane.ERROR_MESSAGE);
     }
 }
