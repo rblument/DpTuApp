@@ -286,7 +286,7 @@ public class TutoringSessionView extends GPanel {
 
         updateView(currentProblem);
     }
-    
+
     public ProblemInputView getProblemInputView() {
         return problemInputView;
     }
