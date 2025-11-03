@@ -1,11 +1,12 @@
 package edu.regis.dptu.view;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.ProblemListener;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
@@ -24,6 +26,12 @@ import edu.regis.dptu.model.LCSProblem;
  * @author EverettCV
  */
 public class LCSInputView extends JPanel {
+
+    /** The logger for the class */
+    private static final Logger LOGGER = Logger.getLogger(LCSInputView.class.getName());
+
+    private ProblemListener submitListener;
+
     private JTextField inputField1;
     private JTextField inputField2;
     private JButton submitButton;
@@ -32,9 +40,8 @@ public class LCSInputView extends JPanel {
     private String string1;
     private String string2;
 
-    private TutoringSessionView grandparentView;
-
-    public LCSInputView() {
+    public LCSInputView(ProblemListener listener) {
+        submitListener = listener;
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -88,40 +95,10 @@ public class LCSInputView extends JPanel {
         string1 = inputField1.getText();
         string2 = inputField2.getText();
 
-        System.out.println("Submitted String 1: " + string1);
-        System.out.println("Submitted String 2: " + string2);
+        LCSInputView.LOGGER.log(Level.INFO, "Submitted String 1: " + string1);
+        LCSInputView.LOGGER.log(Level.INFO, "Submitted String 2: " + string2);
 
-        Container tempView = this.getParent().getParent();
-        // For now, use getParent().getParent() to find TutoringSessionView instance
-        // This code is fragile, if you've changed the component heirarchy you
-        // Will likely have to edit this as well
-        try {
-            if (tempView instanceof TutoringSessionView) {
-                grandparentView = (TutoringSessionView) tempView;
-                LCSProblem newProblem = new LCSProblem(string1, string2);
-                grandparentView.getTableView().setModel(newProblem);
-                grandparentView.getSubSeqView().setModel(newProblem);
-                grandparentView.getStepViewPanel().setModel(newProblem);
-                grandparentView.getCodeView().setModel(newProblem);
-                grandparentView.getVariablesView().setModel(newProblem);
-            } else {
-                System.out.println(
-                        "LCSInputView: getParent().getParent() did not lead to "
-                                + "TutoringSessionView");
-            }
-        } catch (NullPointerException e) {
-            System.out.println(e);
-        }
-
-        // TODO: Add input validation (e.g., prevent empty submissions).
-    }
-
-    // Getters for future use if needed
-    public String getString1() {
-        return string1;
-    }
-
-    public String getString2() {
-        return string2;
+        LCSProblem newProblem = new LCSProblem(string1, string2);
+        submitListener.problemUpdated(newProblem);
     }
 }

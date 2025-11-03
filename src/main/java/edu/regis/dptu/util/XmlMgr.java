@@ -202,10 +202,7 @@ public class XmlMgr {
         try {
             InputStream in = new FileInputStream(findFile(fileName));
 
-            if (in == null) throw new ObjNotFoundException(DATA_DIRECTORY + fileName);
-
             return findRoot(in);
-
         } catch (FileNotFoundException e) {
             throw new ObjNotFoundException(fileName, e);
         }

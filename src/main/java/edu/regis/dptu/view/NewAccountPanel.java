@@ -52,6 +52,8 @@ public class NewAccountPanel extends GPanel {
     /** Events of interest occurring in this class are logged to this logger. */
     private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
 
+    /** Events of interest occurring in this class are logged to this logger. */
+
     /** A regex pattern used to validate user email ids (e.g. "rick@regis.edu"). */
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -162,10 +164,6 @@ public class NewAccountPanel extends GPanel {
         secAnswer.setText("");
     }
 
-    // Used to get focus
-    // public JTextField getFNameComp() {
-    // return fName;
-    // }
     private void initComponents() {
         LoginDocumentListener docListener = new LoginDocumentListener();
 
@@ -189,7 +187,7 @@ public class NewAccountPanel extends GPanel {
         pass2.getDocument().addDocumentListener(docListener);
 
         String s1[] = {"What city were you born in?", "What is your mother's maiden name?"};
-        secQuestions = new JComboBox(s1);
+        secQuestions = new JComboBox<String>(s1);
 
         secAnswer = new JPasswordField(20);
         secAnswer.getDocument().addDocumentListener(docListener);
@@ -961,7 +959,7 @@ public class NewAccountPanel extends GPanel {
     }
 
     /** Encrypt the given password using MD5 */
-    private String encryptMD5(String password) {
+    public static String encryptMD5(String password) {
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
             byte[] data = password.getBytes();
