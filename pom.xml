@@ -9,9 +9,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <exec.mainClass>edu.regis.dptuapp.DpTuApp</exec.mainClass>
+        <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
-        <repositories>
+    <repositories>
         <repository>
           <id>CronApp</id>
           <name>CronApp Repository</name>
@@ -20,11 +20,11 @@
     </repositories>
     <build>
         <resources>
-        <resource>
-            <directory>
-                src/main/java/resources
-            </directory>
-        </resource>
+            <resource>
+                <directory>
+                    src/main/java/resources
+                </directory>
+            </resource>
         </resources>
     
         <plugins>
@@ -110,9 +110,49 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
-            <version>2.0.9</version> <!-- Use the latest version available -->
+            <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Start Logging Dependencies -->
+        <!-- SLF4J API, Abstracts Chosen Logging Engine -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+
+        <!-- Log4j2 Core + API, Our Logging Engine -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+
+        <!-- SLF4J > Log4j2 Binding (routes SLF4J calls to Log4j2) -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+
+        <!-- I'm going to keep this commented until we implement it. -->
+        <!-- Route java.util.logging (JUL) to Log4j2 -->
+        <!-- To activate, run with: -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -->
+        <!--
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>2.23.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        -->
+
 
     </dependencies>
 </project>

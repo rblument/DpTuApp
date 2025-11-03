@@ -2,3 +2,4 @@ target/
 .DS_Store
 nbproject/
 src/main/java/resources/Data/
+.vscode/settings.json
