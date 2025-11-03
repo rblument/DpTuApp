@@ -127,9 +127,14 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null) {
+                        // When we step back from backtracking alg into LCS alg
+                        if (model.undoingBacktrackButton()) {
+                            MainFrame.instance().getView().showBacktrackingPanel(false);
+                            updateView();
+                        }
+                        // Normal "step back" behavior
+                        else {
                             model.undo();
-                            // updateView() will be called via problemUpdated listener
                         }
                     }
                 });
@@ -326,7 +331,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     private void updateView() {
         boolean modelExists = (model != null);
         // Check if model exists before accessing its state
-        boolean canStepBack = modelExists && model.getCurrentLineNumber() > 0;
+        boolean canStepBack = modelExists && model.canStepBack();
         boolean canStepForward = modelExists && !model.hasFinished();
         boolean canRun = modelExists && !model.hasFinished();
         boolean canReset = modelExists;
