@@ -67,10 +67,7 @@ public class SignInAction extends DpTuGuiAction {
         Gson gson = new Gson();
         SplashFrame frame = SplashFrame.instance();
         User account = frame.getUser();
-        // Create a temporary test session for development
-        Account testAccount = new Account("test@regis.edu");
-        testAccount.setFirstName("Test");
-        testAccount.setLastName("User");
+        
         ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
         request.setData(gson.toJson(account));
         TutorReply reply = SvcFacade.instance().tutorRequest(request);
@@ -108,15 +105,5 @@ public class SignInAction extends DpTuGuiAction {
                         "Please try again!");
             
         }
-
-//        Student testStudent = new Student(testAccount);
-//        TutoringSession testSession = new TutoringSession(testStudent);
-//        
-//        System.out.println(testAccount.getUserId());
-//        
-//        System.out.println(testSession.getProblem());
-//        
-//        // Initialize dashboard with test session
-//        SplashFrame.instance().initializeDashboard(testSession);
     }
 }
