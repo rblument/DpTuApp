@@ -56,12 +56,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     Object[][] tableData; // 2D array holding table cell values
     String[] columnHeaders; // Array holding the table's column headers
 
-    /**
-     * Constructor initializes the view with two input strings.
-     *
-     * @param string1 X-axis labels (to build rows)
-     * @param string2 Y-axis labels (to build columns)
-     */
+    /** Constructor */
     public SubproblemTableView() {
 
         // Initialize Swing components and layout
@@ -101,6 +96,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                     String s2 = ((LCSProblem) model).getY();
                     updateStrings(s1, s2);
             }
+            TableColumnModel columnModel = table.getColumnModel();
+            columnModel.getColumn(0).setPreferredWidth(150);
             updateView();
 
             setVisible(true);
@@ -156,6 +153,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 new JTable() {
                     @Override
                     public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+                        Component component = super.prepareRenderer(renderer, row, col);
                         if (col < 1) {
                             // Use header renderer for first column
                             return this.getTableHeader()
@@ -167,10 +165,26 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                                             false,
                                             row,
                                             col);
-                        } else {
-                            // Default rendering for other cells
-                            return super.prepareRenderer(renderer, row, col);
                         }
+                        // For highlighting during backtracking phase
+                        int[][] bTable = (int[][]) model.getVariableObject("b");
+                        switch (bTable[row][col - 1]) {
+                            case 0:
+                                component.setBackground(Color.GRAY); // miss
+                                break;
+                            case 1:
+                                component.setBackground(Color.YELLOW); // hit
+                                break;
+                            case 2:
+                                component.setBackground(Color.GREEN); // added
+                                break;
+                            default:
+                                // i.e. if bTable[row][col] == -1
+                                component.setBackground(Color.WHITE); // unvisited
+                                break;
+                        }
+
+                        return component;
                     }
                 };
 
@@ -190,6 +204,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 });
 
         // Configure column widths and cell renderers
+        /* TODO: this code doesn't seem to do anything? But I think it might
+        be useful if someone wants to play with setAutoResizeMode. The table
+        becomes unreadable with a long y-string.
+        */
         TableColumnModel columnModel = table.getColumnModel();
         if (columnModel.getColumnCount() > 1) {
             CustomRenderer cellRenderer = new CustomRenderer(Color.BLACK);
@@ -207,6 +225,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             // Set width for the first "header" column
             columnModel.getColumn(0).setPreferredWidth(150);
         }
+
         // Set header height
         table.getTableHeader().setPreferredSize(new Dimension(25, 45));
 

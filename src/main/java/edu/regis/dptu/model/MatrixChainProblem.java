@@ -104,7 +104,7 @@ public class MatrixChainProblem extends Problem {
     }
 
     /**
-     * Return the type of this Dynamic Programming problem.
+     * {@iniheritDoc}
      *
      * @return ProblemKind.MATRIX_CHAIN
      */
@@ -113,10 +113,31 @@ public class MatrixChainProblem extends Problem {
         return ProblemKind.MATRIX_CHAIN;
     }
 
+    /**
+     * Returns the current execution state of the algorithm.
+     *
+     * @return The current EXECUTION_STATE
+     */
+    public EXECUTION_STATE getExecutionState() {
+        return executionState;
+    }
+
+    @Override
+    public boolean backtrackReady() {
+        // TODO
+        return false;
+    }
+
+    @Override
+    public void backtrackingOn() {
+        // TODO
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
-        return executionState == EXECUTION_STATE.POST;
+        // TODO
+        return false;
     }
 
     /** {@inheritDoc} */
@@ -145,13 +166,9 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add("<html><pre>return m</pre></html>"); // final result
     }
 
-    /**
-     * Returns the current execution state of the algorithm.
-     *
-     * @return The current EXECUTION_STATE
-     */
-    public EXECUTION_STATE getExecutionState() {
-        return executionState;
+    @Override
+    protected void loadBacktrackingCodeStatements() {
+        // TODO
     }
 
     /**

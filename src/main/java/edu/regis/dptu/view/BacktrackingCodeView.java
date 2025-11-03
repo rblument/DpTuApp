@@ -12,7 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-// import edu.regis.dptu.model.LCSProblem; // Keep import if needed, though model is passed in
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
@@ -24,50 +23,36 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
 /**
- * Displays the Code Panel section of the Tutoring Session GUI. This panel will display code
- * statements from the CodeModel.
- *
- * @author cadencea
+ * @author Gary
  */
-public class CodeView extends GPanel implements ProblemListener {
-
+public class BacktrackingCodeView extends GPanel implements ProblemListener {
     /**
-     * Declares the CodeView model (a Problem object) displayed in this view along with the
-     * necessary arrayLists for the code statements.
+     * Declares the BacktrackingCodeView model (a Problem object) displayed in this view along with
+     * the necessary arrayLists for the code statements.
      */
     private Problem model; // Initialize as null, will be set by setModel
 
-    private ArrayList<String> statementStrings;
-    private ArrayList<JLabel> statementJLabels;
+    private ArrayList<String> backtrackingStatementStrings;
+    private ArrayList<JLabel> backtrackingStatementJLabels;
 
-    /** Used as a background color */
-    private static final Color MEDIUM_GRAY = new Color(215, 215, 215);
+    // Used as a background color
+    private static final Color LT_BLUE = new Color(220, 245, 255);
 
-    /** Initialize this view including creating and laying out its child components. */
-    public CodeView() {
-        // Initialize label list
-        statementJLabels = new ArrayList<>();
+    /** Constructor. */
+    public BacktrackingCodeView() {
+        backtrackingStatementJLabels = new ArrayList<>();
 
         // Making it look pretty
-        setBorder(BorderFactory.createTitledBorder("Pseudocode"));
-        setBackground(MEDIUM_GRAY);
+        setBorder(BorderFactory.createTitledBorder("Backtracking Code"));
+        setBackground(LT_BLUE);
 
         // Components will be initialized and laid out when setModel is called
     }
 
     /**
-     * Returns the model currently displayed in this view.
-     *
-     * @return a CodeModel
-     */
-    public Problem getModel() {
-        return model;
-    }
-
-    /**
      * Display the given model in this view.
      *
-     * @param model a CodeModel.
+     * @param model a Problem object
      */
     public void setModel(Problem model) {
         // NOTE: Cannot remove listener from the old model
@@ -81,16 +66,11 @@ public class CodeView extends GPanel implements ProblemListener {
         layoutComponents();
 
         // Add listener to the new model if it's not null
-        if (this.model != null) {
-            // Assuming addProblemListener handles duplicates or it's acceptable
-            // if the same listener is added multiple times if setModel is called repeatedly
-            // with the same model instance (which shouldn't typically happen).
-            this.model.addProblemListener(this);
-
-            setVisible(true);
-        } else {
-            setVisible(false);
-        }
+        // Assuming addProblemListener handles duplicates or it's acceptable
+        // if the same listener is added multiple times if setModel is called repeatedly
+        // with the same model instance (which shouldn't typically happen).
+        this.model.addProblemListener(this);
+        setVisible(false); // This view won't be used immediately
 
         // Update the view to reflect the initial state of the new model
         updateView();
@@ -100,21 +80,15 @@ public class CodeView extends GPanel implements ProblemListener {
         repaint();
     }
 
-    /** Create the child GUI components appearing in this frame. */
+    /**
+     * Uses pseudocode statements from the Problem instance to populate a list of JLabels for
+     * display onscreen
+     */
     private void initializeComponents() {
-        /**
-         * grabs the statement strings from the model and creates JLabels for each in an ArrayList
-         */
-        if (model != null) {
-            statementStrings = model.getCodeStatements();
-            statementJLabels = new ArrayList<>(); // Ensure it's a new list
-            for (int i = 0; i < statementStrings.size(); i++) {
-                statementJLabels.add(new JLabel(statementStrings.get(i)));
-            }
-        } else {
-            // Handle case where model is null (e.g., clear lists)
-            statementStrings = new ArrayList<>();
-            statementJLabels = new ArrayList<>();
+        backtrackingStatementStrings = model.getBacktrackingCodeStatements();
+        backtrackingStatementJLabels = new ArrayList<>(); // Ensure it's a new list
+        for (int i = 0; i < backtrackingStatementStrings.size(); i++) {
+            backtrackingStatementJLabels.add(new JLabel(backtrackingStatementStrings.get(i)));
         }
     }
 
@@ -125,7 +99,7 @@ public class CodeView extends GPanel implements ProblemListener {
      * <p>The loop iterates through the statementJLabels list and adds the component.
      */
     private void layoutComponents() {
-        for (int i = 0; i < statementJLabels.size(); i++) {
+        for (int i = 0; i < backtrackingStatementJLabels.size(); i++) {
             // Line Numbers
             addc(
                     new JLabel(String.valueOf(i + 1)),
@@ -143,7 +117,7 @@ public class CodeView extends GPanel implements ProblemListener {
                     1);
             // Code Statements
             addc(
-                    statementJLabels.get(i),
+                    backtrackingStatementJLabels.get(i),
                     1,
                     i,
                     1,
@@ -162,8 +136,8 @@ public class CodeView extends GPanel implements ProblemListener {
     /** Update the view based on the current state of the model (highlighting). */
     private void updateView() {
         // Reset background of all labels first
-        if (statementJLabels != null) {
-            for (JLabel label : statementJLabels) {
+        if (backtrackingStatementJLabels != null) {
+            for (JLabel label : backtrackingStatementJLabels) {
                 if (label != null) {
                     label.setBackground(null);
                     label.setOpaque(false);
@@ -172,10 +146,10 @@ public class CodeView extends GPanel implements ProblemListener {
         }
 
         // Highlight the current line if model and labels are valid
-        if (model != null && statementJLabels != null) {
-            int currentLineNumber = model.getCurrentLineNumber();
-            if (currentLineNumber >= 0 && currentLineNumber < statementJLabels.size()) {
-                JLabel currentLabel = statementJLabels.get(currentLineNumber);
+        if (model != null && backtrackingStatementJLabels != null) {
+            int currentLineNumber = model.getCurrentLineNumber() - model.getBacktrackingStartNum();
+            if (currentLineNumber >= 0 && currentLineNumber < backtrackingStatementJLabels.size()) {
+                JLabel currentLabel = backtrackingStatementJLabels.get(currentLineNumber);
                 if (currentLabel != null) {
                     currentLabel.setBackground(Color.YELLOW);
                     currentLabel.setOpaque(true);
@@ -188,9 +162,8 @@ public class CodeView extends GPanel implements ProblemListener {
     }
 
     /**
-     * Takes the updated problem and updated the view to match the model's state.
-     *
-     * <p>For CodeView this highlights the JLabel with the line currently being used in the model.
+     * Takes the updated problem and updated the view to match the model's state. Highlights the
+     * JLabel with the line currently being used in the model.
      *
      * @param problem The updated problem instance.
      */

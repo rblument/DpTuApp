@@ -36,6 +36,7 @@ public class TutoringSessionView extends GPanel {
     private VariablesView variablesView;
     private JLabel subproblemView;
     private CodeView codeView;
+    private BacktrackingCodeView backtrackingCodeView;
 
     private ProblemInputView problemInputView;
     private SubSequenceView subSeqView;
@@ -62,6 +63,10 @@ public class TutoringSessionView extends GPanel {
 
     public CodeView getCodeView() {
         return codeView;
+    }
+
+    public BacktrackingCodeView getBacktrackingCodeView() {
+        return backtrackingCodeView;
     }
 
     public SubproblemTableView getTableView() {
@@ -104,7 +109,7 @@ public class TutoringSessionView extends GPanel {
      * <p>Changes (April 17, 2025): Exposed SubSequenceView through a getter to allow dynamic
      * updates (Updating input strings based on user input from InputViews)
      *
-     * @return the SubSequenceView displayed in the tutoring session
+     * @param tableView
      */
     public void setTableView(SubproblemTableView tableView) {
         if (this.tableView != null) {
@@ -150,7 +155,8 @@ public class TutoringSessionView extends GPanel {
 
         subSeqView = new SubSequenceView(); // Original init
         tableView = new SubproblemTableView();
-        codeView = new CodeView(tableView); // Original init
+        codeView = new CodeView(); // Original init
+        backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
 
         // We'll add these components later
@@ -179,6 +185,20 @@ public class TutoringSessionView extends GPanel {
                 5);
         addc(
                 codeView,
+                0,
+                1,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                backtrackingCodeView,
                 0,
                 1,
                 1,
@@ -296,6 +316,7 @@ public class TutoringSessionView extends GPanel {
         subSeqView.setModel(currentProblem);
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
+        backtrackingCodeView.setModel(currentProblem);
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
 
