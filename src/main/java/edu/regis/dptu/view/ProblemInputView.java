@@ -25,8 +25,6 @@ public class ProblemInputView extends JPanel {
 
     private ProblemListener submitListener;
 
-    private static final Logger LOGGER = Logger.getLogger(ProblemInputView.class.getName());
-
     private JPanel activeInputPanel;
 
     public ProblemInputView(ProblemListener listener) {
