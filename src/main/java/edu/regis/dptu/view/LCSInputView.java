@@ -79,6 +79,9 @@ public class LCSInputView extends JPanel {
     public void submitInputs() {
         string1 = inputField1.getText();
         string2 = inputField2.getText();
+       // Remove whitespace
+       string1 = string1.replaceAll("\\s", "");
+       string2 = string2.replaceAll("\\s", "");
 
         System.out.println("Submitted String 1: " + string1);
         System.out.println("Submitted String 2: " + string2);
