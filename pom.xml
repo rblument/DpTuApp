@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <exec.mainClass>edu.regis.dptuapp.DpTuApp</exec.mainClass>
+        <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
         <repositories>
         <repository>
