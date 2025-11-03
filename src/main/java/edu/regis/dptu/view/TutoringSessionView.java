@@ -322,13 +322,12 @@ public class TutoringSessionView extends GPanel {
 
         updateView(currentProblem);
     }
-    
+
     public void showBacktrackingPanel(boolean backtrackingOn) {
         if (backtrackingOn) {
             codeView.setVisible(false);
             backtrackingCodeView.setVisible(true);
-        }
-        else {
+        } else {
             backtrackingCodeView.setVisible(false);
             codeView.setVisible(true);
         }
