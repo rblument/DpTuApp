@@ -12,6 +12,8 @@
  */
 package edu.regis.dptu.dao;
 
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,6 +32,8 @@ import edu.regis.dptu.svc.AccountSvc;
  * @author rickb
  */
 public class AccountDAO extends MySqlDAO implements AccountSvc {
+    private static final Logger log = LoggerFactory.getLogger(AccountDAO.class);
+
 
     /** Initialize this DAO via the parent constructor. */
     public AccountDAO() {

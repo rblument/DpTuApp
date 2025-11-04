@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,6 +49,8 @@ import edu.regis.dptu.err.XmlException;
  * @author rickb
  */
 public class XmlMgr {
+    private static final Logger log = LoggerFactory.getLogger(XmlMgr.class);
+
     /** Log unexpected events to this logger. */
     private static final Logger LOGGER = Logger.getLogger(XmlMgr.class.getName());
 

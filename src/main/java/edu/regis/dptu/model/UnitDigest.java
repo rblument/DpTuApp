@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A descriptive summary of a unit as used in a tutoring session, which eliminates the need to
  * return an entire unit to the GUI.
@@ -19,6 +22,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class UnitDigest extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(UnitDigest.class);
+
     /** The courseId to which the unit belongs. */
     private int courseId;
 

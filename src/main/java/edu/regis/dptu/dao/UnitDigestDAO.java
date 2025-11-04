@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,6 +33,8 @@ import edu.regis.dptu.model.UnitDigest;
  * @author benm
  */
 public class UnitDigestDAO extends MySqlDAO {
+    private static final Logger log = LoggerFactory.getLogger(UnitDigestDAO.class);
+
     /** Initialize this DAO via the parent constructor. */
     public UnitDigestDAO() {
         super();

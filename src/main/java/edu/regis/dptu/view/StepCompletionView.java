@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.BorderLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Font;
 
@@ -34,6 +36,8 @@ import edu.regis.dptu.view.act.RequestHintAction;
  * types (cell completion, row initialization, etc.).
  */
 public class StepCompletionView extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(StepCompletionView.class);
+
 
     // The current step being worked on
     protected Step currentStep;

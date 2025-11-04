@@ -1,5 +1,8 @@
 package edu.regis.dptu.view;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,6 +21,8 @@ import javax.swing.JTextField;
  * LCSInputView.java
  */
 public class MatrixInputView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(MatrixInputView.class);
+
     public MatrixInputView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

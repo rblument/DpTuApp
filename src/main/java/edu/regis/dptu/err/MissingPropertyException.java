@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.err;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Thrown when a property cannot be found in a "*.properties" file.
  *
@@ -21,6 +24,8 @@ package edu.regis.dptu.err;
  * @author rickb
  */
 public class MissingPropertyException extends DpTuException {
+    private static final Logger log = LoggerFactory.getLogger(MissingPropertyException.class);
+
     /**
      * Construct this new instance with the given message.
      *

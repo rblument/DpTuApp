@@ -1,6 +1,8 @@
 package edu.regis.dptu.view;
 
-import java.awt.GridBagConstraints;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
@@ -19,6 +21,8 @@ import javax.swing.JTextField;
  * LCSInputView.java
  */
 public class KnapsackInputView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(KnapsackInputView.class);
+
     public KnapsackInputView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

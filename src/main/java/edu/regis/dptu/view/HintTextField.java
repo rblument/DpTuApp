@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.Color;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -35,6 +37,8 @@ import javax.swing.text.DocumentFilter;
  * @author rickb
  */
 public class HintTextField extends JTextField {
+    private static final Logger log = LoggerFactory.getLogger(HintTextField.class);
+
     /** The initial default 'hint' displayed as gray text in the field. */
     protected String hint = "";
 

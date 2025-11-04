@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -35,6 +38,8 @@ import edu.regis.dptu.svc.SessionSvc;
  * @author rickb
  */
 public class SessionDAO extends MySqlDAO implements SessionSvc {
+    private static final Logger log = LoggerFactory.getLogger(SessionDAO.class);
+
     /** Initialize this DAO via the parent constructor. */
     public SessionDAO() {
         super();

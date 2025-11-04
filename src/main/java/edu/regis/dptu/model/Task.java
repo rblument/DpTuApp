@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 /**
@@ -26,6 +29,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Task extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Task.class);
+
     /** Indicates the type of task the student trying to complete. */
     private TaskKind kind = TaskKind.PROBLEM;
 

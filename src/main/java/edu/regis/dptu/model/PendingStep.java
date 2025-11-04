@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 /**
@@ -24,6 +27,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class PendingStep {
+    private static final Logger log = LoggerFactory.getLogger(PendingStep.class);
+
     /** The auto-generated database id for this pending step. */
     private int id;
 

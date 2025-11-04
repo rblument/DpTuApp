@@ -13,6 +13,9 @@
 
 package edu.regis.dptu;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -30,6 +33,8 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class DpTuApp {
+    private static final Logger log = LoggerFactory.getLogger(DpTuApp.class);
+
     /** Property file located on the CLASSPATH, which is used to configure the LOGGER. */
     private static final String LOGGER_PROPERTIES = "/Logging.properties";
 

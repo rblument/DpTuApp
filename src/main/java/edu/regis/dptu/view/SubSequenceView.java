@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.BorderLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -38,6 +40,8 @@ import edu.regis.dptu.model.ProblemListener;
  * @author Sofia Reyes
  */
 class SubSequenceView extends JPanel implements ProblemListener {
+    private static final Logger log = LoggerFactory.getLogger(SubSequenceView.class);
+
 
     private static final java.util.logging.Logger LOGGER =
             java.util.logging.Logger.getLogger(SubSequenceView.class.getName());

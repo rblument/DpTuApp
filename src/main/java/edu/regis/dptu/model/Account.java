@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A Decorator wrapping user and student information sans the student model.
  *
@@ -21,6 +24,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class Account {
+    private static final Logger log = LoggerFactory.getLogger(Account.class);
+
     /** The user's login id (e.g. "name@university.edu"). */
     protected String userId;
 

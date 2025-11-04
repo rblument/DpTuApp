@@ -5,6 +5,9 @@
  */
 package edu.regis.dptu.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,6 +20,8 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.JProgressBar;
 
 public class CustomProgressBar extends JProgressBar {
+    private static final Logger log = LoggerFactory.getLogger(CustomProgressBar.class);
+
     private static final int ARC_WIDTH = 10;
     private static final int ARC_HEIGHT = 10;
     private Color progressColor = new Color(241, 196, 0);

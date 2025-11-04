@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +37,8 @@ import java.util.logging.Logger;
  * @author rickb
  */
 public class LCSProblem extends Problem {
+    private static final Logger log = LoggerFactory.getLogger(LCSProblem.class);
+
 
     /** The logger for the class */
     private static final Logger LOGGER = Logger.getLogger(LCSProblem.class.getName());

@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ import java.util.logging.Logger;
  * @author rickb
  */
 public abstract class Problem extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Problem.class);
+
 
     /** The time between steps when running all */
     private static final int RUN_STEP_INTERVAL = 500;

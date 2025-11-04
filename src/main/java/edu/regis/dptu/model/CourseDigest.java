@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A descriptive summary of a course as used in a tutoring session, which eliminates the need to
  * return an entire course to the GUI.
@@ -19,6 +22,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class CourseDigest extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(CourseDigest.class);
+
     /** The primary pedagogical approach initially used to start task selection. */
     private TaskSelectionKind primaryPedagogy;
 

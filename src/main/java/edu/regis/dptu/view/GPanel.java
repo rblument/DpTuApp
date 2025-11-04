@@ -13,7 +13,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.Component;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -28,6 +30,8 @@ import javax.swing.JPanel;
  * @author rickb
  */
 public class GPanel extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(GPanel.class);
+
     /** Initialize this panel with a GridBagLayout. */
     public GPanel() {
         setLayout(new GridBagLayout());

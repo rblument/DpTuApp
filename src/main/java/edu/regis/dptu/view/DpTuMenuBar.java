@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import javax.swing.JMenu;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
@@ -24,6 +26,8 @@ import edu.regis.dptu.view.act.SaveSessionAction;
  * @author rickb
  */
 public class DpTuMenuBar extends JMenuBar {
+    private static final Logger log = LoggerFactory.getLogger(DpTuMenuBar.class);
+
     /**
      * Constructor for the DpTuMenuBar class. Initializes the menu bar by creating the File menu.
      */

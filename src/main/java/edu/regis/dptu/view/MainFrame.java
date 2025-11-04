@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.Dimension;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -30,6 +32,8 @@ import edu.regis.dptu.view.act.ActionFactory;
  * @author rickb
  */
 public class MainFrame extends JFrame implements WindowListener {
+    private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
+
     /** The singleton instance of this frame. */
     private static final MainFrame SINGLETON;
 

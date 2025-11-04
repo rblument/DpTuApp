@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 
 /**
@@ -22,6 +25,8 @@ import java.io.Serializable;
  * @author rickb
  */
 public abstract class Model implements Serializable {
+    private static final Logger log = LoggerFactory.getLogger(Model.class);
+
     /** A default identifier indicating a model that has not been saved to the database. */
     public static final int DEFAULT_ID = -1;
 

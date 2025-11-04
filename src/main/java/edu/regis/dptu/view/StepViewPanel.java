@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.Color;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -37,6 +39,8 @@ import edu.regis.dptu.model.ProblemListener;
  * @author Shamar Henry
  */
 public class StepViewPanel extends GPanel implements ProblemListener {
+    private static final Logger log = LoggerFactory.getLogger(StepViewPanel.class);
+
 
     /** The problem model that this view controls. */
     private Problem model; // Initialize as null

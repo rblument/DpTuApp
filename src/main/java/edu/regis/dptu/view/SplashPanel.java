@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.Color;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -40,6 +42,8 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class SplashPanel extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(SplashPanel.class);
+
     /** Events of interest occurring in this class are logged to this logger. */
 
     /** The user model displayed in this view. */

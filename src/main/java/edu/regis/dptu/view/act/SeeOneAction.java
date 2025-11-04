@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view.act;
 
-import java.awt.event.ActionEvent;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 
@@ -25,6 +27,8 @@ import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
 public class SeeOneAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(SeeOneAction.class);
+
     private static final SeeOneAction SINGLETON;
 
     private final ProblemDAO problemDAO;

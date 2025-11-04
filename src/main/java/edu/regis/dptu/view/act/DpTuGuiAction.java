@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view.act;
 
-import java.awt.Image;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.Image;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -28,6 +30,8 @@ import edu.regis.dptu.util.ImgFactory;
  * @author rickb
  */
 public abstract class DpTuGuiAction extends AbstractAction {
+    private static final Logger log = LoggerFactory.getLogger(DpTuGuiAction.class);
+
     protected static final Logger LOGGER = Logger.getLogger(DpTuGuiAction.class.getName());
 
     public DpTuGuiAction(String name) {

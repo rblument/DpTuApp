@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-// Keep ALL original imports
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;// Keep ALL original imports
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -48,6 +50,8 @@ import edu.regis.dptu.model.ProblemListener;
  * @author Corey Brantley (Modified by Assistant for Update Logic)
  */
 public class SubproblemTableView extends GPanel implements ProblemListener {
+    private static final Logger log = LoggerFactory.getLogger(SubproblemTableView.class);
+
 
     // Model representing the dynamic programming problem
     private Problem model;

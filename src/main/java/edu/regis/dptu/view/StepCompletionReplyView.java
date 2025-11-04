@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.CardLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +30,8 @@ import javax.swing.JTextArea;
  * @author rickb
  */
 public class StepCompletionReplyView extends GPanel implements ActionListener {
+    private static final Logger log = LoggerFactory.getLogger(StepCompletionReplyView.class);
+
     /** Message displayed to the student. */
     private JTextArea msg;
 

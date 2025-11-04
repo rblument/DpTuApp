@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.BorderLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,6 +42,8 @@ import edu.regis.dptu.model.aol.AssessmentLevel;
  * with different status indicators (not started, in progress, completed).
  */
 public class StepSelectorView extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(StepSelectorView.class);
+
 
     /** Enum representing the different step selections available. */
     public enum StepSelection {

@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.aol.StudentModel;
 
 /**
@@ -21,6 +24,8 @@ import edu.regis.dptu.model.aol.StudentModel;
  * @author rickb
  */
 public class Student {
+    private static final Logger log = LoggerFactory.getLogger(Student.class);
+
     /** The account associated with this student. */
     private final Account account;
 

@@ -1,5 +1,8 @@
 package edu.regis.dptu.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -41,6 +44,8 @@ import edu.regis.dptu.svc.StudentModelSvc;
  * @author rickb
  */
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
+    private static final Logger log = LoggerFactory.getLogger(StudentModelDAO.class);
+
 
     private static final Logger LOGGER = Logger.getLogger(StudentModelDAO.class.getName());
 

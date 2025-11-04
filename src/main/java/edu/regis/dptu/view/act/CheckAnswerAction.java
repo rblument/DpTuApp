@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.view.act;
 
-import java.awt.event.ActionEvent;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
@@ -26,6 +28,8 @@ import edu.regis.dptu.view.MainFrame;
  * integrated.
  */
 public class CheckAnswerAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(CheckAnswerAction.class);
+
     /** The singleton instance of this action. */
     private static final CheckAnswerAction SINGLETON;
 

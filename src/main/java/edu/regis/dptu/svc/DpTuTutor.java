@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.svc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
@@ -49,6 +52,8 @@ import edu.regis.dptu.util.SHA_256;
  * @author rickb
  */
 public class DpTuTutor implements TutorSvc {
+    private static final Logger log = LoggerFactory.getLogger(DpTuTutor.class);
+
 
     /** The id of the default course taught by the this tutor (Dynamic Programming). */
     private static final int DEFAULT_COURSE_ID = 1;

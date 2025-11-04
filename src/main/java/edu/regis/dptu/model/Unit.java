@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +24,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Unit extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Unit.class);
+
     /** The pedagogical approach used to select the next task within this unit. */
     private TaskSelectionKind pedagogy;
 

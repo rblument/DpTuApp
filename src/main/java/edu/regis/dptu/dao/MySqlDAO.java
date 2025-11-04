@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -27,6 +30,8 @@ import edu.regis.dptu.util.ResourceMgr;
  * @author Rickb
  */
 public abstract class MySqlDAO {
+    private static final Logger log = LoggerFactory.getLogger(MySqlDAO.class);
+
     /** The host where MySQL resides (see /resources/DpTu.Properties). */
     public static final String DB_HOST_PROP = "edu.regis.dptu.DB_HOST";
 

@@ -1,6 +1,8 @@
 package edu.regis.dptu.view;
 
-import java.awt.BorderLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +22,8 @@ import edu.regis.dptu.model.ProblemListener;
  * @author EverettCV
  */
 public class ProblemInputView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(ProblemInputView.class);
+
     /** The logger for the class */
     private static final Logger LOGGER = Logger.getLogger(ProblemInputView.class.getName());
 

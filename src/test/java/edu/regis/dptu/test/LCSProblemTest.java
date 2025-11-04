@@ -12,7 +12,9 @@
  */
 package edu.regis.dptu.test;
 
-import org.junit.jupiter.api.AfterAll;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,8 @@ import edu.regis.dptu.model.LCSProblem;
  * @author rickb
  */
 public class LCSProblemTest {
+    private static final Logger log = LoggerFactory.getLogger(LCSProblemTest.class);
+
 
     public LCSProblemTest() {}
 
