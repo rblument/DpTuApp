@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class NonRecoverableException extends DpTuException {
     private static final Logger log = LoggerFactory.getLogger(NonRecoverableException.class);
     private static final java.util.logging.Logger julLogger =
-        java.util.logging.Logger.getLogger(NonRecoverableException.class.getName());
+            java.util.logging.Logger.getLogger(NonRecoverableException.class.getName());
 
     /**
      * Initialize this new instance with the given message and log the exception.

@@ -65,7 +65,8 @@ public class SvcFacade {
     }
 
     /** Handler for logging messages. */
-    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(SvcFacade.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(SvcFacade.class.getName());
 
     /**
      * The computer host to which DpTu tutor requests are delegated.

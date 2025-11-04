@@ -50,7 +50,8 @@ public class DashboardPanel extends GPanel {
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
-    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(DashboardPanel.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(DashboardPanel.class.getName());
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;

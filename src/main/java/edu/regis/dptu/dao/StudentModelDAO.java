@@ -45,7 +45,8 @@ import edu.regis.dptu.svc.StudentModelSvc;
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
     private static final Logger log = LoggerFactory.getLogger(StudentModelDAO.class);
 
-    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(StudentModelDAO.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(StudentModelDAO.class.getName());
 
     /** Initialize this DAO via the parent constructor. */
     public StudentModelDAO() {

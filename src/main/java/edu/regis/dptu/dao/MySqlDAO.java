@@ -51,7 +51,8 @@ public abstract class MySqlDAO {
      */
     public static String URL;
 
-    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(MySqlDAO.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(MySqlDAO.class.getName());
 
     /**
      * Utility indicating whether the DriverClass was explictly loaded (in order to overcome errors

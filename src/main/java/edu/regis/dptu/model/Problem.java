@@ -40,7 +40,8 @@ public abstract class Problem extends TitledModel {
     private static final int RUN_STEP_INTERVAL = 500;
 
     /** The logger for the class */
-    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(Problem.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(Problem.class.getName());
 
     /**
      * The type of this Dynamic Programming problem, which must be assigned when instantiating a
