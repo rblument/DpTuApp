@@ -13,7 +13,7 @@
 package edu.regis.dptu.view.act;
 
 import java.awt.Image;
-import java.util.logging.Logger;
+
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;

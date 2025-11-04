@@ -2,7 +2,7 @@ package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import javax.swing.JPanel;
 
