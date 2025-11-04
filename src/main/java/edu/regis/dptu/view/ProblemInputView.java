@@ -1,7 +1,7 @@
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
-import java.util.logging.Level;
+
 
 import javax.swing.JPanel;
 
@@ -35,7 +35,7 @@ public class ProblemInputView extends JPanel {
     public ProblemInputView(ProblemListener listener) {
         super(new BorderLayout());
         submitListener = listener;
-        ProblemInputView.julLogger.log(Level.INFO, "Initializing ProblemInputView");
+        ProblemInputView.julLogger.log(java.util.logging.Level.INFO, "Initializing ProblemInputView");
     }
 
     public void setModel(Problem problem) {
@@ -48,24 +48,24 @@ public class ProblemInputView extends JPanel {
 
         switch (kind) {
             case LCS_PROBLEM:
-                ProblemInputView.julLogger.log(Level.INFO, "Setting currentPanel to LCSInputView");
+                ProblemInputView.julLogger.log(java.util.logging.Level.INFO, "Setting currentPanel to LCSInputView");
                 currentPanel = new LCSInputView(submitListener);
                 break;
             case MATRIX_CHAIN:
                 ProblemInputView.julLogger.log(
-                        Level.INFO, "Setting currentPanel to MatrixInputView");
+                        java.util.logging.Level.INFO, "Setting currentPanel to MatrixInputView");
                 currentPanel = new MatrixInputView();
                 break;
             case KNAPSACK_0_1:
                 ProblemInputView.julLogger.log(
-                        Level.INFO, "Setting currentPanel to KnapsackInputView");
+                        java.util.logging.Level.INFO, "Setting currentPanel to KnapsackInputView");
                 currentPanel = new KnapsackInputView();
                 // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are
                 // implemented:
                 // KnapsackInputView knapsackInputView = new KnapsackInputView();
                 // add(knapsackInputView, BorderLayout.CENTER);
                 ProblemInputView.julLogger.log(
-                        Level.SEVERE, "Knapsack input view not yet implemented.");
+                        java.util.logging.Level.SEVERE, "Knapsack input view not yet implemented.");
                 break;
             default:
                 throw new IllegalArgumentException(

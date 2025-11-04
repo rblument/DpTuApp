@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
+
 
 import com.google.gson.Gson;
 
@@ -126,9 +126,9 @@ public class SvcFacade {
             return in.readLine();
 
         } catch (UnknownHostException e) {
-            julLogger.log(Level.SEVERE, "Unknown Host", e);
+            julLogger.log(java.util.logging.Level.SEVERE, "Unknown Host", e);
         } catch (IOException e) {
-            julLogger.log(Level.SEVERE, "IOException client", e);
+            julLogger.log(java.util.logging.Level.SEVERE, "IOException client", e);
         } finally {
             // Kludgy, but tries to close an open socket and its associated
             // input and output streams in every possible error scenario
@@ -139,12 +139,12 @@ public class SvcFacade {
                 try {
                     if (in != null) in.close();
                 } catch (IOException e) {
-                    julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
+                    julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
                 } finally {
                     try {
                         if (client != null) client.close();
                     } catch (IOException e) {
-                        julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
                     }
                 }
             }

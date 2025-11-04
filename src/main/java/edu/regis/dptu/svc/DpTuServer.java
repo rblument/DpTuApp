@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
+
 
 import com.google.gson.Gson;
 
@@ -61,7 +61,7 @@ public class DpTuServer implements Runnable {
             }
 
         } catch (IOException e) {
-            julLogger.log(Level.SEVERE, "EncryptionServer.run()", e);
+            julLogger.log(java.util.logging.Level.SEVERE, "EncryptionServer.run()", e);
         }
     }
 
@@ -111,7 +111,7 @@ public class DpTuServer implements Runnable {
                 out.flush();
 
             } catch (IOException e) {
-                julLogger.log(Level.SEVERE, "EncryptionConnection.run()", e);
+                julLogger.log(java.util.logging.Level.SEVERE, "EncryptionConnection.run()", e);
             } finally {
                 // About as ugly as it gets, but the following code ensures that
                 // we've at least tried to close an open socket and its associated
@@ -127,14 +127,14 @@ public class DpTuServer implements Runnable {
                             in.close();
                         }
                     } catch (IOException e) {
-                        julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
                     } finally {
                         try {
                             if (client != null) {
                                 client.close();
                             }
                         } catch (IOException e) {
-                            julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
+                            julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
                         }
                     }
                 }

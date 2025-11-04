@@ -5,7 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
+
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -93,8 +93,8 @@ public class LCSInputView extends JPanel {
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
 
-        LCSInputView.julLogger.log(Level.INFO, "Submitted String 1: " + string1);
-        LCSInputView.julLogger.log(Level.INFO, "Submitted String 2: " + string2);
+        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 1: " + string1);
+        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 2: " + string2);
 
         LCSProblem newProblem = new LCSProblem(string1, string2);
         submitListener.problemUpdated(newProblem);

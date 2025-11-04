@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
+
 
 import edu.regis.dptu.err.MissingPropertyException;
 
@@ -98,7 +98,7 @@ public class ResourceMgr {
             msgs = ResourceBundle.getBundle(UI_RESOURCE_PATH, locale);
 
         } catch (MissingPropertyException e) {
-            julLogger.log(Level.SEVERE, "Missing Property", e);
+            julLogger.log(java.util.logging.Level.SEVERE, "Missing Property", e);
         }
     }
 
@@ -152,9 +152,9 @@ public class ResourceMgr {
             properties.load(strm);
 
         } catch (FileNotFoundException e) {
-            julLogger.log(Level.ALL, "PropertyMgr-ERR_100: {0}", e.toString());
+            julLogger.log(java.util.logging.Level.ALL, "PropertyMgr-ERR_100: {0}", e.toString());
         } catch (IOException e) {
-            julLogger.log(Level.ALL, "PropertyMgr-ERR_101: {0}", e.toString());
+            julLogger.log(java.util.logging.Level.ALL, "PropertyMgr-ERR_101: {0}", e.toString());
         }
     }
 }

@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -274,7 +274,7 @@ public class XmlMgr {
         NodeList nodes = root.getElementsByTagName(tag);
 
         if (nodes.getLength() == 0) {
-            julLogger.log(Level.ALL, "XmlMgr: Unknown tag: {0}", tag);
+            julLogger.log(java.util.logging.Level.ALL, "XmlMgr: Unknown tag: {0}", tag);
             return "";
         } else {
             Node node = nodes.item(0);
@@ -283,7 +283,7 @@ public class XmlMgr {
                 Element element = (Element) node;
                 return element.getTextContent();
             } else {
-                julLogger.log(Level.ALL, "XmlMgr: Unknown tag type: {1}", tag);
+                julLogger.log(java.util.logging.Level.ALL, "XmlMgr: Unknown tag type: {1}", tag);
                 return "";
             }
         }
@@ -312,7 +312,7 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals(""))
-            julLogger.log(Level.ALL, "Missing or empty attribute {0}", attributeName);
+            julLogger.log(java.util.logging.Level.ALL, "Missing or empty attribute {0}", attributeName);
 
         return val;
     }
@@ -340,13 +340,13 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            julLogger.log(Level.ALL, "Missing or empty int attribute {0}", attributeName);
+            julLogger.log(java.util.logging.Level.ALL, "Missing or empty int attribute {0}", attributeName);
             return -1;
         } else {
             try {
                 return Integer.parseInt(val);
             } catch (NumberFormatException e) {
-                julLogger.log(Level.ALL, "Expected an int attribute value: {1}", attributeName);
+                julLogger.log(java.util.logging.Level.ALL, "Expected an int attribute value: {1}", attributeName);
                 return -1;
             }
         }
@@ -363,14 +363,14 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            julLogger.log(Level.ALL, "Missing or empty float attribute {0}", attributeName);
+            julLogger.log(java.util.logging.Level.ALL, "Missing or empty float attribute {0}", attributeName);
             return 0.0f;
         } else {
             try {
                 return Float.parseFloat(val);
 
             } catch (NumberFormatException e) {
-                julLogger.log(Level.ALL, "Expected a float attribute value: {1}", attributeName);
+                julLogger.log(java.util.logging.Level.ALL, "Expected a float attribute value: {1}", attributeName);
                 return 0.0f;
             }
         }
@@ -389,7 +389,7 @@ public class XmlMgr {
 
         switch (val) {
             case "":
-                julLogger.log(Level.ALL, "Missing or empty boolean attribute {0}", attributeName);
+                julLogger.log(java.util.logging.Level.ALL, "Missing or empty boolean attribute {0}", attributeName);
                 return false;
             case "true":
             case "yes":
@@ -398,7 +398,7 @@ public class XmlMgr {
             case "no":
                 return false;
             default:
-                julLogger.log(Level.ALL, "Expected a boolean attribute value: {1}", attributeName);
+                julLogger.log(java.util.logging.Level.ALL, "Expected a boolean attribute value: {1}", attributeName);
                 return false;
         }
     }

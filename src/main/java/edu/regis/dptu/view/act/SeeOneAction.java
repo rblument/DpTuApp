@@ -14,7 +14,7 @@ package edu.regis.dptu.view.act;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.logging.Level;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class SeeOneAction extends DpTuGuiAction {
             SplashFrame.instance().selectLessonScreen(problem);
 
         } catch (ObjNotFoundException | NonRecoverableException e) {
-            SeeOneAction.julLogger.log(Level.SEVERE, e.getMessage());
+            SeeOneAction.julLogger.log(java.util.logging.Level.SEVERE, e.getMessage());
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }

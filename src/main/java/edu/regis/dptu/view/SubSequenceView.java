@@ -17,7 +17,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.util.logging.Level;
+
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -187,7 +187,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
             this.model.addProblemListener(this);
 
             julLogger.log(
-                    Level.INFO,
+                    java.util.logging.Level.INFO,
                     "SubSequenceView: model set ({0}), updating view",
                     this.model.getClass().getSimpleName());
 
@@ -206,7 +206,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
     @Override
     public void problemUpdated(Problem problem) {
 
-        julLogger.log(Level.FINE, "SubSequenceView: problemUpdated called");
+        julLogger.log(java.util.logging.Level.FINE, "SubSequenceView: problemUpdated called");
 
         // Update the UI on the Swing thread to avoid race conditions.
         SwingUtilities.invokeLater(this::updateView);
@@ -229,7 +229,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
             updateWords(x, y);
         } else if (model != null) {
             julLogger.log(
-                    Level.FINE,
+                    java.util.logging.Level.FINE,
                     "SubSequenceView: model is not LCSProblem; " + "no word update performed");
         }
 

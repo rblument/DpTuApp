@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -297,7 +297,7 @@ public abstract class Problem extends TitledModel {
         int size = executionHistory.size();
 
         if (size == 0) {
-            Problem.julLogger.log(Level.WARNING, "Cannot undo past Line 0");
+            Problem.julLogger.log(java.util.logging.Level.WARNING, "Cannot undo past Line 0");
 
         } else {
             int lastItemPos = size - 1;
@@ -342,15 +342,15 @@ public abstract class Problem extends TitledModel {
             method.invoke(this);
 
         } catch (NoSuchMethodException ex) {
-            Problem.julLogger.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Problem.julLogger.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Problem.julLogger.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Problem.julLogger.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Problem.julLogger.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
 

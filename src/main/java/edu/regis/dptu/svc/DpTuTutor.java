@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 import java.util.Random;
-import java.util.logging.Level;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public class DpTuTutor implements TutorSvc {
     public TutorReply request(ClientRequest request) {
         // Uses reflection to invoke a method derived from the request name in
         // the client request (e.g., ":SignIn" invokes "signIn(...)").
-        DpTuTutor.julLogger.log(Level.INFO, request.getRequestType().getRequestName());
+        DpTuTutor.julLogger.log(java.util.logging.Level.INFO, request.getRequestType().getRequestName());
 
         // Efficiently produce "signIn" from ":SignIn", for example.
         char c[] = request.getRequestType().getRequestName().toCharArray();
@@ -132,11 +132,11 @@ public class DpTuTutor implements TutorSvc {
                 }
 
                 String msg = "Session verified for " + request.getUserId();
-                DpTuTutor.julLogger.log(Level.INFO, msg);
+                DpTuTutor.julLogger.log(java.util.logging.Level.INFO, msg);
                 break;
 
             default: // e.g., signIn itself, newAccount
-                DpTuTutor.julLogger.log(Level.INFO, "No token verification required");
+                DpTuTutor.julLogger.log(java.util.logging.Level.INFO, "No token verification required");
         }
 
         // Security token has been verified or not required (e.g., signIn, createAccount).
@@ -242,7 +242,7 @@ public class DpTuTutor implements TutorSvc {
         } catch (ObjNotFoundException e) {
             return new TutorReply("UnknownUser");
         } catch (NonRecoverableException ex) {
-            DpTuTutor.julLogger.log(Level.SEVERE, null, ex);
+            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
             return new TutorReply();
         }
     }
@@ -474,9 +474,9 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutorReply createError(String errMsg, Exception ex) {
         if (ex == null) {
-            DpTuTutor.julLogger.log(Level.SEVERE, errMsg);
+            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, errMsg);
         } else {
-            DpTuTutor.julLogger.log(Level.SEVERE, errMsg, ex);
+            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, errMsg, ex);
         }
 
         return new TutorReply(":ERR", errMsg);

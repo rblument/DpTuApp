@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Arrays;
-import java.util.logging.Level;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -228,7 +228,7 @@ public class DashboardPanel extends GPanel {
         // Gracefully handle if the model objects don't exist.
         if (model == null || model.getStudent() == null) {
             julLogger.log(
-                    Level.WARNING,
+                    java.util.logging.Level.WARNING,
                     "DashboardPanel: model or student is null, " + "skipping scaffold level rules");
             return;
         }
@@ -236,7 +236,7 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         var studentModel = model.getStudent().getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        julLogger.log(Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
+        julLogger.log(java.util.logging.Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

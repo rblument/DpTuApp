@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -211,13 +211,13 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     break;
             }
 
-            julLogger.log(Level.FINE, "Executing statement: {0}", stmt.toString());
+            julLogger.log(java.util.logging.Level.FINE, "Executing statement: {0}", stmt.toString());
 
             stmt.execute();
 
         } catch (SQLException e) {
             julLogger.log(
-                    Level.SEVERE,
+                    java.util.logging.Level.SEVERE,
                     "SQL Error - State: {0}, Code: {1}",
                     new Object[] {e.getSQLState(), e.getErrorCode()});
             throw new NonRecoverableException("StudentModelDAO-ERR-4" + e.toString(), e);

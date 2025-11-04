@@ -13,7 +13,7 @@
 package edu.regis.dptu.model;
 
 import java.util.Iterator;
-import java.util.logging.Level;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -335,24 +335,24 @@ public class LCSProblem extends Problem {
      */
     public void prettyPrint() {
         // Original prettyPrint code retained
-        LCSProblem.julLogger.log(Level.INFO, "--- LCSProblem State ---");
-        LCSProblem.julLogger.log(Level.INFO, "ExecutionState: " + executionState);
-        LCSProblem.julLogger.log(Level.INFO, "Current Line #: " + nextLineNumber);
-        LCSProblem.julLogger.log(Level.INFO, "r (array idx): " + variables.get("r"));
-        LCSProblem.julLogger.log(Level.INFO, "c (array idx): " + variables.get("c"));
-        LCSProblem.julLogger.log(Level.INFO, "i (array idx): " + variables.get("i"));
-        LCSProblem.julLogger.log(Level.INFO, "j (array idx): " + variables.get("j"));
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "--- LCSProblem State ---");
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "ExecutionState: " + executionState);
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "Current Line #: " + nextLineNumber);
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "r (array idx): " + variables.get("r"));
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "c (array idx): " + variables.get("c"));
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "i (array idx): " + variables.get("i"));
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "j (array idx): " + variables.get("j"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
         int[][] subproblemL = (int[][]) variables.get("l");
 
-        LCSProblem.julLogger.log(Level.INFO, "DP Table (l):");
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "DP Table (l):");
         System.out.print("       "); // Align header
         for (int q = 0; q <= m; q++) {
             System.out.printf("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
         }
-        LCSProblem.julLogger.log(Level.INFO, "");
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "");
 
         for (int p = 0; p <= n; p++) {
             System.out.printf("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
@@ -361,9 +361,9 @@ public class LCSProblem extends Problem {
                 System.out.printf(
                         "%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
             }
-            LCSProblem.julLogger.log(Level.INFO, "|");
+            LCSProblem.julLogger.log(java.util.logging.Level.INFO, "|");
         }
-        LCSProblem.julLogger.log(Level.INFO, "------------------------");
+        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "------------------------");
     }
 
     // -----------------------LCS Algorithm--------------------------------------

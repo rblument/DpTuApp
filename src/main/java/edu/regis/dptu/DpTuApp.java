@@ -15,7 +15,7 @@ package edu.regis.dptu;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
+
 import java.util.logging.LogManager;
 
 import org.slf4j.Logger;
@@ -96,7 +96,7 @@ public class DpTuApp {
             julLogger.info("DpTu Initialization successful.");
 
         } catch (InterruptedException ex) {
-            Logger.getLogger(DpTuApp.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DpTuApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (SecurityException e) {
             julLogger.severe("Couldn't create Data directory in NetBeans Project.");
             julLogger.severe("Perhaps, try changing permissions.");
