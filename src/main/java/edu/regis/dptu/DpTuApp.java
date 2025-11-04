@@ -13,12 +13,12 @@
 
 package edu.regis.dptu;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.svc.DpTuServer;
 import edu.regis.dptu.util.ResourceMgr;
@@ -55,7 +55,10 @@ public class DpTuApp {
                 LogManager.getLogManager().readConfiguration(strm);
                 julLogger.info("Message logging initialization completed.");
             } else {
-                julLogger.severe("Logging.properties not found at " + julLogger_PROPERTIES + " on the classpath.");
+                julLogger.severe(
+                        "Logging.properties not found at "
+                                + julLogger_PROPERTIES
+                                + " on the classpath.");
             }
         } catch (IOException e) {
             julLogger.log(java.util.logging.Level.SEVERE, "Error loading logging.properties", e);
