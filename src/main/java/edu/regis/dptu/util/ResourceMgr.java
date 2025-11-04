@@ -20,7 +20,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-
 import edu.regis.dptu.err.MissingPropertyException;
 
 /**

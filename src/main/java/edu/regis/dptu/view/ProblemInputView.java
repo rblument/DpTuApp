@@ -3,7 +3,6 @@ package edu.regis.dptu.view;
 import java.awt.BorderLayout;
 import java.util.logging.Level;
 
-
 import javax.swing.JPanel;
 
 import org.slf4j.Logger;

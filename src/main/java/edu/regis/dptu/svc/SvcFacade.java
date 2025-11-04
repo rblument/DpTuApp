@@ -20,7 +20,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 
-
 import com.google.gson.Gson;
 
 /**

@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

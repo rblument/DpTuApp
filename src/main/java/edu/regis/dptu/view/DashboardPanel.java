@@ -11,7 +11,6 @@ import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
