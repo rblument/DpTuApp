@@ -51,7 +51,8 @@ public class ProblemInputView extends JPanel {
                 currentPanel = new LCSInputView(submitListener);
                 break;
             case MATRIX_CHAIN:
-                ProblemInputView.julLogger.log(Level.INFO, "Setting currentPanel to MatrixInputView");
+                ProblemInputView.julLogger.log(
+                        Level.INFO, "Setting currentPanel to MatrixInputView");
                 currentPanel = new MatrixInputView();
                 break;
             case KNAPSACK_0_1:

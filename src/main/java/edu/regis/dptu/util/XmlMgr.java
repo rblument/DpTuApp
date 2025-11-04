@@ -310,7 +310,8 @@ public class XmlMgr {
     public static String getAttribute(Element element, String attributeName) {
         String val = element.getAttribute(attributeName);
 
-        if (val.equals("")) julLogger.log(Level.ALL, "Missing or empty attribute {0}", attributeName);
+        if (val.equals(""))
+            julLogger.log(Level.ALL, "Missing or empty attribute {0}", attributeName);
 
         return val;
     }

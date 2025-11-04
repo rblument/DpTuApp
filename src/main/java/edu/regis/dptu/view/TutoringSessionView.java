@@ -142,7 +142,8 @@ public class TutoringSessionView extends GPanel {
      * relevant views get the *same* Problem model instance.
      */
     private void initializeComponents() {
-        TutoringSessionView.julLogger.log(Level.INFO, "TutoringSessionView initializing components");
+        TutoringSessionView.julLogger.log(
+                Level.INFO, "TutoringSessionView initializing components");
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
 
