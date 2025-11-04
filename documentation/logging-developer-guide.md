@@ -140,7 +140,7 @@ src/main/resources/Logging.properties
 - [ ] Replace `System.out.println` and `printStackTrace()`
 - [ ] If you *must* use JUL temporarily, use the `julLogger` pattern (fully-qualified names)
 
-## Migration Plan (In Progress)
+## Migration Plan Epic (DPTU-89, In Progress)
 
 | Task | Status | JIRA |
 |------|--------|------|
@@ -152,3 +152,4 @@ src/main/resources/Logging.properties
 | Centralize Exception and Error Logging (e.g., `printStackTrace()`calls) | Backlog | DPTU-79 |
 | Migrate remaining JUL loggers → SLF4J | Backlog | DPTU-85 |
 | Remove JUL configuration & bridge all logging to Log4j2 | Backlog | DPTU-86 |
+| Create a GitHub workflow that identifies undesirable logging code and makes sure logging is actually used | Backlog | DPTU-87 |
