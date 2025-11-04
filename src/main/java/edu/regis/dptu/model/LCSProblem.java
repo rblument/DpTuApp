@@ -14,7 +14,6 @@ package edu.regis.dptu.model;
 
 import java.util.Iterator;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -338,10 +337,14 @@ public class LCSProblem extends Problem {
         LCSProblem.julLogger.log(java.util.logging.Level.INFO, "--- LCSProblem State ---");
         LCSProblem.julLogger.log(java.util.logging.Level.INFO, "ExecutionState: " + executionState);
         LCSProblem.julLogger.log(java.util.logging.Level.INFO, "Current Line #: " + nextLineNumber);
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "r (array idx): " + variables.get("r"));
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "c (array idx): " + variables.get("c"));
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "i (array idx): " + variables.get("i"));
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "j (array idx): " + variables.get("j"));
+        LCSProblem.julLogger.log(
+                java.util.logging.Level.INFO, "r (array idx): " + variables.get("r"));
+        LCSProblem.julLogger.log(
+                java.util.logging.Level.INFO, "c (array idx): " + variables.get("c"));
+        LCSProblem.julLogger.log(
+                java.util.logging.Level.INFO, "i (array idx): " + variables.get("i"));
+        LCSProblem.julLogger.log(
+                java.util.logging.Level.INFO, "j (array idx): " + variables.get("j"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");

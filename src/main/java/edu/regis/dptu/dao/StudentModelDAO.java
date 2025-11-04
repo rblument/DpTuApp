@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,7 +210,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     break;
             }
 
-            julLogger.log(java.util.logging.Level.FINE, "Executing statement: {0}", stmt.toString());
+            julLogger.log(
+                    java.util.logging.Level.FINE, "Executing statement: {0}", stmt.toString());
 
             stmt.execute();
 

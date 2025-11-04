@@ -15,7 +15,6 @@ package edu.regis.dptu;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.logging.LogManager;
 
 import org.slf4j.Logger;

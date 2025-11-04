@@ -14,7 +14,6 @@ package edu.regis.dptu.view;
 
 import java.awt.GridBagConstraints;
 
-
 import javax.swing.JLabel;
 
 import org.slf4j.Logger;
@@ -55,7 +54,8 @@ public class TutoringSessionView extends GPanel {
      * layout.
      */
     public TutoringSessionView() {
-        TutoringSessionView.julLogger.log(java.util.logging.Level.INFO, "Initiating TutoringSessionView");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "Initiating TutoringSessionView");
         initializeComponents(); // Creates components and sets up model sharing
         layoutComponents(); // Uses original layout constraints
     }
@@ -304,7 +304,8 @@ public class TutoringSessionView extends GPanel {
     }
 
     private void updateView(Problem currentProblem) {
-        TutoringSessionView.julLogger.log(java.util.logging.Level.INFO, "TutoringSessionView updating view");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "TutoringSessionView updating view");
 
         problemInputView.setModel(currentProblem);
 

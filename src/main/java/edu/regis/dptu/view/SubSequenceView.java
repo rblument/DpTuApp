@@ -18,7 +18,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

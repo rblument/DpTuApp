@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
 import com.google.gson.Gson;
 
 /**
@@ -127,14 +126,20 @@ public class DpTuServer implements Runnable {
                             in.close();
                         }
                     } catch (IOException e) {
-                        julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(
+                                java.util.logging.Level.SEVERE,
+                                "Unable to close client socket in",
+                                e);
                     } finally {
                         try {
                             if (client != null) {
                                 client.close();
                             }
                         } catch (IOException e) {
-                            julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
+                            julLogger.log(
+                                    java.util.logging.Level.SEVERE,
+                                    "Unable to close client socket in",
+                                    e);
                         }
                     }
                 }

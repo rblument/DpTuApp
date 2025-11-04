@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-
 import com.google.gson.Gson;
 
 /**
@@ -139,12 +138,16 @@ public class SvcFacade {
                 try {
                     if (in != null) in.close();
                 } catch (IOException e) {
-                    julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
+                    julLogger.log(
+                            java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
                 } finally {
                     try {
                         if (client != null) client.close();
                     } catch (IOException e) {
-                        julLogger.log(java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(
+                                java.util.logging.Level.SEVERE,
+                                "Unable to close client socket in",
+                                e);
                     }
                 }
             }

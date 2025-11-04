@@ -15,7 +15,6 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

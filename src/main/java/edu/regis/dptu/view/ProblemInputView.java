@@ -2,7 +2,6 @@ package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
 
-
 import javax.swing.JPanel;
 
 import org.slf4j.Logger;
@@ -35,7 +34,8 @@ public class ProblemInputView extends JPanel {
     public ProblemInputView(ProblemListener listener) {
         super(new BorderLayout());
         submitListener = listener;
-        ProblemInputView.julLogger.log(java.util.logging.Level.INFO, "Initializing ProblemInputView");
+        ProblemInputView.julLogger.log(
+                java.util.logging.Level.INFO, "Initializing ProblemInputView");
     }
 
     public void setModel(Problem problem) {
@@ -48,7 +48,8 @@ public class ProblemInputView extends JPanel {
 
         switch (kind) {
             case LCS_PROBLEM:
-                ProblemInputView.julLogger.log(java.util.logging.Level.INFO, "Setting currentPanel to LCSInputView");
+                ProblemInputView.julLogger.log(
+                        java.util.logging.Level.INFO, "Setting currentPanel to LCSInputView");
                 currentPanel = new LCSInputView(submitListener);
                 break;
             case MATRIX_CHAIN:

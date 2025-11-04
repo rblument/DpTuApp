@@ -10,7 +10,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Arrays;
 
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -236,7 +235,10 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         var studentModel = model.getStudent().getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        julLogger.log(java.util.logging.Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
+        julLogger.log(
+                java.util.logging.Level.INFO,
+                "DashboardPanel: applying scaffold level rules for {0}",
+                lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

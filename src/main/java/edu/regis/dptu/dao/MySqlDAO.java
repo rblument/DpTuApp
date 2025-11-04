@@ -15,7 +15,6 @@ package edu.regis.dptu.dao;
 import java.sql.Connection;
 import java.sql.Statement;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,14 +89,18 @@ public abstract class MySqlDAO {
                 IS_LOADED = true;
 
             } catch (MissingPropertyException e) {
-                julLogger.log(java.util.logging.Level.INFO, "Missing DB property: {0}", e.toString());
+                julLogger.log(
+                        java.util.logging.Level.INFO, "Missing DB property: {0}", e.toString());
             } catch (ClassNotFoundException e) {
                 julLogger.log(
                         java.util.logging.Level.SEVERE,
                         "MySqlDao-ERR-1: Illegal driver class name {0}",
                         e.toString());
             } catch (InstantiationException e) {
-                julLogger.log(java.util.logging.Level.SEVERE, "MySqlDao-ERR-2: Illegal instance {0}", e.toString());
+                julLogger.log(
+                        java.util.logging.Level.SEVERE,
+                        "MySqlDao-ERR-2: Illegal instance {0}",
+                        e.toString());
             } catch (IllegalAccessException e) {
                 julLogger.log(
                         java.util.logging.Level.SEVERE,
@@ -119,7 +122,10 @@ public abstract class MySqlDAO {
             try {
                 stmt.close();
             } catch (Exception e) {
-                julLogger.log(java.util.logging.Level.INFO, "MySqlDao-ERR-4: stmt.close() {0}", e.toString());
+                julLogger.log(
+                        java.util.logging.Level.INFO,
+                        "MySqlDao-ERR-4: stmt.close() {0}",
+                        e.toString());
             }
         }
 
@@ -127,7 +133,8 @@ public abstract class MySqlDAO {
             try {
                 conn.close();
             } catch (Exception e) {
-                julLogger.log(java.util.logging.Level.INFO, "MySqlDao-ERR-5: close() {0}", e.toString());
+                julLogger.log(
+                        java.util.logging.Level.INFO, "MySqlDao-ERR-5: close() {0}", e.toString());
             }
         }
     }
@@ -144,7 +151,8 @@ public abstract class MySqlDAO {
                 conn.setAutoCommit(true); // Convenience
                 conn.close();
             } catch (Exception e) {
-                julLogger.log(java.util.logging.Level.INFO, "MySqlDao-ERR-6: close() {0}", e.toString());
+                julLogger.log(
+                        java.util.logging.Level.INFO, "MySqlDao-ERR-6: close() {0}", e.toString());
             }
         }
     }
@@ -160,7 +168,8 @@ public abstract class MySqlDAO {
             try {
                 stmt.close();
             } catch (Exception e) {
-                julLogger.log(java.util.logging.Level.INFO, "MySqlDao-ERR-7: close() {0}", e.toString());
+                julLogger.log(
+                        java.util.logging.Level.INFO, "MySqlDao-ERR-7: close() {0}", e.toString());
             }
         }
     }
