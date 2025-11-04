@@ -17,6 +17,9 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An implementation of the SHA-256 algorithm.
  *
@@ -29,6 +32,8 @@ import java.nio.charset.Charset;
  * @author unknown
  */
 public class SHA_256 {
+    private static final Logger log = LoggerFactory.getLogger(SHA_256.class);
+
     /** The singleton instance of this frame. */
     private static final SHA_256 SINGLETON;
 

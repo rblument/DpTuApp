@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Specifies the course, unit, task, and step that pedagogically addresses a knowledge component.
  *
@@ -19,6 +22,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class ExercisingLocation extends Model {
+    private static final Logger log = LoggerFactory.getLogger(ExercisingLocation.class);
+
     /** The id of the associated course. */
     private int courseId;
 

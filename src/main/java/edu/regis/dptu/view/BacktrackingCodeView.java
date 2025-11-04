@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -26,6 +29,8 @@ import edu.regis.dptu.model.ProblemListener;
  * @author Gary
  */
 public class BacktrackingCodeView extends GPanel implements ProblemListener {
+    private static final Logger log = LoggerFactory.getLogger(BacktrackingCodeView.class);
+
     /**
      * Declares the BacktrackingCodeView model (a Problem object) displayed in this view along with
      * the necessary arrayLists for the code statements.

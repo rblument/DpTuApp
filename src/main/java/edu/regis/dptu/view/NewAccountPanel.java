@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +36,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
@@ -48,9 +50,11 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class NewAccountPanel extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
 
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(NewAccountPanel.class.getName());
 
     /** Events of interest occurring in this class are logged to this logger. */
 
@@ -971,7 +975,7 @@ public class NewAccountPanel extends GPanel {
             return String.format("%1$032X", i).toLowerCase();
 
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.toString());
+            julLogger.severe(e.toString());
         }
 
         return "";

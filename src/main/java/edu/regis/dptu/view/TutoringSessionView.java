@@ -13,10 +13,11 @@
 package edu.regis.dptu.view;
 
 import java.awt.GridBagConstraints;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JLabel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.TutoringSession;
@@ -28,9 +29,11 @@ import edu.regis.dptu.model.TutoringSession;
  * @author rickb (Modified by Assistant for Functional Integration & Debug)
  */
 public class TutoringSessionView extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(TutoringSessionView.class);
 
     /** The logger for the class */
-    private static final Logger LOGGER = Logger.getLogger(TutoringSessionView.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(TutoringSessionView.class.getName());
 
     private TutoringSession model;
     private VariablesView variablesView;
@@ -51,7 +54,8 @@ public class TutoringSessionView extends GPanel {
      * layout.
      */
     public TutoringSessionView() {
-        TutoringSessionView.LOGGER.log(Level.INFO, "Initiating TutoringSessionView");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "Initiating TutoringSessionView");
         initializeComponents(); // Creates components and sets up model sharing
         layoutComponents(); // Uses original layout constraints
     }
@@ -139,7 +143,8 @@ public class TutoringSessionView extends GPanel {
      * relevant views get the *same* Problem model instance.
      */
     private void initializeComponents() {
-        TutoringSessionView.LOGGER.log(Level.INFO, "TutoringSessionView initializing components");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "TutoringSessionView initializing components");
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
 
@@ -299,7 +304,8 @@ public class TutoringSessionView extends GPanel {
     }
 
     private void updateView(Problem currentProblem) {
-        TutoringSessionView.LOGGER.log(Level.INFO, "TutoringSessionView updating view");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "TutoringSessionView updating view");
 
         problemInputView.setModel(currentProblem);
 

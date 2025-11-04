@@ -12,12 +12,17 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A suggestion as to the next Step the Student should perform in the tutor.
  *
  * @author rickb
  */
 public class Hint extends Model {
+    private static final Logger log = LoggerFactory.getLogger(Hint.class);
+
     // Todo: level? Scaffolding??
 
     /** The hint string, which can be displayed to the student user. */

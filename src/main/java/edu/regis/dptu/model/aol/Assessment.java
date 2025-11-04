@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model.aol;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.KnowledgeComponent;
 import edu.regis.dptu.model.Model;
 
@@ -21,6 +24,8 @@ import edu.regis.dptu.model.Model;
  * @author rickb
  */
 public class Assessment extends Model {
+    private static final Logger log = LoggerFactory.getLogger(Assessment.class);
+
     /** The knowledge component assessed in this assessment */
     private KnowledgeComponent outcome;
 

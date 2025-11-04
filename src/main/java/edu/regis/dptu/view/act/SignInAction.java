@@ -15,6 +15,9 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;
@@ -29,6 +32,8 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class SignInAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(SignInAction.class);
+
     private static final SignInAction SINGLETON;
 
     static {

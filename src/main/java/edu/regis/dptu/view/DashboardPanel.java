@@ -9,8 +9,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.TutoringSession;
@@ -30,6 +31,8 @@ import edu.regis.dptu.view.act.SeeOneAction;
 import edu.regis.dptu.view.act.TeachOneAction;
 
 public class DashboardPanel extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(DashboardPanel.class);
+
     private TutoringSession model;
 
     private JButton logOutButton;
@@ -46,7 +49,8 @@ public class DashboardPanel extends GPanel {
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
-    private static final Logger LOGGER = Logger.getLogger(DashboardPanel.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(DashboardPanel.class.getName());
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;
@@ -222,8 +226,8 @@ public class DashboardPanel extends GPanel {
 
         // Gracefully handle if the model objects don't exist.
         if (model == null || model.getStudent() == null) {
-            LOGGER.log(
-                    Level.WARNING,
+            julLogger.log(
+                    java.util.logging.Level.WARNING,
                     "DashboardPanel: model or student is null, " + "skipping scaffold level rules");
             return;
         }
@@ -231,7 +235,10 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         var studentModel = model.getStudent().getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        LOGGER.log(Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
+        julLogger.log(
+                java.util.logging.Level.INFO,
+                "DashboardPanel: applying scaffold level rules for {0}",
+                lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

@@ -19,6 +19,9 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This is the Subsequence Canvas view. Two words are displayed aside each other, and shows a
  * step-by-step process to finding the LCS.
@@ -26,6 +29,7 @@ import javax.swing.JPanel;
  * @author Sofia Reyes
  */
 public class SubSequenceCanvasView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(SubSequenceCanvasView.class);
 
     private String word1;
     private String word2;

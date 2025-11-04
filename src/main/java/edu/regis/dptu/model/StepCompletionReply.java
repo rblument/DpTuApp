@@ -12,12 +12,17 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Captures the tutor's reply to a previous step completed requests.
  *
  * @author rickb
  */
 public class StepCompletionReply {
+    private static final Logger log = LoggerFactory.getLogger(StepCompletionReply.class);
+
     /** Was the student's submitted answer correct. */
     private boolean isCorrect;
 

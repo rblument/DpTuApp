@@ -26,6 +26,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.User;
 import edu.regis.dptu.util.SHA_256;
 import edu.regis.dptu.view.act.NewUserAction;
@@ -40,6 +43,8 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class SplashPanel extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(SplashPanel.class);
+
     /** Events of interest occurring in this class are logged to this logger. */
 
     /** The user model displayed in this view. */

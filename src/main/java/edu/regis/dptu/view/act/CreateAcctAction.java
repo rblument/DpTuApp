@@ -17,6 +17,9 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 import edu.regis.dptu.model.Account;
@@ -33,6 +36,7 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class CreateAcctAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(CreateAcctAction.class);
 
     /** The single instance of this create account action. */
     private static final CreateAcctAction SINGLETON;

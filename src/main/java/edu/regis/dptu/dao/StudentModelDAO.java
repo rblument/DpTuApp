@@ -8,8 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
@@ -41,8 +42,10 @@ import edu.regis.dptu.svc.StudentModelSvc;
  * @author rickb
  */
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
+    private static final Logger log = LoggerFactory.getLogger(StudentModelDAO.class);
 
-    private static final Logger LOGGER = Logger.getLogger(StudentModelDAO.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(StudentModelDAO.class.getName());
 
     /** Initialize this DAO via the parent constructor. */
     public StudentModelDAO() {
@@ -207,13 +210,14 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     break;
             }
 
-            LOGGER.log(Level.FINE, "Executing statement: {0}", stmt.toString());
+            julLogger.log(
+                    java.util.logging.Level.FINE, "Executing statement: {0}", stmt.toString());
 
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.log(
-                    Level.SEVERE,
+            julLogger.log(
+                    java.util.logging.Level.SEVERE,
                     "SQL Error - State: {0}, Code: {1}",
                     new Object[] {e.getSQLState(), e.getErrorCode()});
             throw new NonRecoverableException("StudentModelDAO-ERR-4" + e.toString(), e);

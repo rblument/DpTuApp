@@ -20,6 +20,9 @@ import java.awt.Insets;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A utility JPanel with a GridBagLayout and a convenience addc method.
  *
@@ -28,6 +31,8 @@ import javax.swing.JPanel;
  * @author rickb
  */
 public class GPanel extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(GPanel.class);
+
     /** Initialize this panel with a GridBagLayout. */
     public GPanel() {
         setLayout(new GridBagLayout());

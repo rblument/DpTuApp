@@ -15,9 +15,14 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.view.MainFrame;
 
 public class DoOneAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(DoOneAction.class);
+
     private static final DoOneAction SINGLETON;
 
     static {

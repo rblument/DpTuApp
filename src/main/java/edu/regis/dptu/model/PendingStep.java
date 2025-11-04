@@ -14,6 +14,9 @@ package edu.regis.dptu.model;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The current step within a pending task that a student needs to complete as part of the current
  * tutoring session.
@@ -24,6 +27,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class PendingStep {
+    private static final Logger log = LoggerFactory.getLogger(PendingStep.class);
+
     /** The auto-generated database id for this pending step. */
     private int id;
 

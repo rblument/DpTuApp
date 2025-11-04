@@ -12,12 +12,17 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents a step that the student completed.
  *
  * @author rickb
  */
 public class StepCompletion {
+    private static final Logger log = LoggerFactory.getLogger(StepCompletion.class);
+
     /** The step that was completed. */
     private Step step;
 

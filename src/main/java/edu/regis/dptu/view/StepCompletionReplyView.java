@@ -21,6 +21,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Displays the result of a student completing a step, which gives the student a suggestion as to
  * what to do next, but allows alternative choices.
@@ -28,6 +31,8 @@ import javax.swing.JTextArea;
  * @author rickb
  */
 public class StepCompletionReplyView extends GPanel implements ActionListener {
+    private static final Logger log = LoggerFactory.getLogger(StepCompletionReplyView.class);
+
     /** Message displayed to the student. */
     private JTextArea msg;
 

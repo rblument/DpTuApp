@@ -12,12 +12,17 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A model with a title and description.
  *
  * @author rickb
  */
 public abstract class TitledModel extends Model {
+    private static final Logger log = LoggerFactory.getLogger(TitledModel.class);
+
     /** The title or name of this model, which can be displayed to the user. */
     protected String title;
 

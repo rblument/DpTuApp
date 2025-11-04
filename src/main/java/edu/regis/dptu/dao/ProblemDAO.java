@@ -18,6 +18,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.LCSProblem;
@@ -26,6 +29,7 @@ import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.svc.ProblemSvc;
 
 public class ProblemDAO extends MySqlDAO implements ProblemSvc {
+    private static final Logger log = LoggerFactory.getLogger(ProblemDAO.class);
 
     /** Instantiate this Course DAO with default values. */
     public ProblemDAO() {}

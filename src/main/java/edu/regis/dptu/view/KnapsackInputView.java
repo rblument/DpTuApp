@@ -9,6 +9,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * Currently, KnapsackInputView is thought to be designed as a Single Input field with an Add button
  * to then append it to a list with all inputs, that can then be passed to a display variable in another View,
@@ -19,6 +22,8 @@ import javax.swing.JTextField;
  * LCSInputView.java
  */
 public class KnapsackInputView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(KnapsackInputView.class);
+
     public KnapsackInputView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

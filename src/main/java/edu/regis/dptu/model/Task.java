@@ -14,6 +14,9 @@ package edu.regis.dptu.model;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A multi-minute activity that can be skipped or interchanged with other tasks, whose steps the
  * student is expected to perform.
@@ -26,6 +29,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Task extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Task.class);
+
     /** Indicates the type of task the student trying to complete. */
     private TaskKind kind = TaskKind.PROBLEM;
 

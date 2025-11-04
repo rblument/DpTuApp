@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.TutoringSession;
 
@@ -26,6 +29,8 @@ import edu.regis.dptu.model.TutoringSession;
  * @author rickb
  */
 public class StudentModel {
+    private static final Logger log = LoggerFactory.getLogger(StudentModel.class);
+
     /**
      * Convenience reference to the user id (email) of the student associated with this student
      * model.

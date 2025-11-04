@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.svc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.dao.AccountDAO;
 import edu.regis.dptu.dao.CourseDAO;
 import edu.regis.dptu.dao.ProblemDAO;
@@ -28,6 +31,8 @@ import edu.regis.dptu.dao.StudentModelDAO;
  * @author rickb
  */
 public class ServiceFactory {
+    private static final Logger log = LoggerFactory.getLogger(ServiceFactory.class);
+
     /**
      * Return a reference to a User service.
      *

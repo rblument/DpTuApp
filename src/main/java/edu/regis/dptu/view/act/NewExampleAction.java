@@ -17,6 +17,9 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.view.MainFrame;
 
 /**
@@ -26,6 +29,8 @@ import edu.regis.dptu.view.MainFrame;
  * integrated.
  */
 public class NewExampleAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(NewExampleAction.class);
+
     /** The singleton instance of this action. */
     private static final NewExampleAction SINGLETON;
 

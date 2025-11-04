@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.err;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Thrown when an unexpected, non-recoverable error occurred associated with processing an XML file
  * in the XmlMgr.
@@ -19,6 +22,8 @@ package edu.regis.dptu.err;
  * @author Rickb
  */
 public class XmlException extends DpTuException {
+    private static final Logger log = LoggerFactory.getLogger(XmlException.class);
+
     /**
      * Initialize this exception with the given message.
      *

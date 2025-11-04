@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A task that a student needs to complete as part of the current tutoring session (this may be the
  * current task or one that is still to be completed).
@@ -22,6 +25,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class PendingTask {
+    private static final Logger log = LoggerFactory.getLogger(PendingTask.class);
+
     /** The static course task that is associated with this pending task. */
     private Task task;
 

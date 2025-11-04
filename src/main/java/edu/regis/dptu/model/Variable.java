@@ -12,10 +12,15 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author rickb
  */
 public class Variable {
+    private static final Logger log = LoggerFactory.getLogger(Variable.class);
+
     private String name;
 
     private DataType dataType;

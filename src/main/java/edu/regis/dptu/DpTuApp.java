@@ -15,9 +15,10 @@ package edu.regis.dptu;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.svc.DpTuServer;
 import edu.regis.dptu.util.ResourceMgr;
@@ -30,44 +31,48 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class DpTuApp {
-    /** Property file located on the CLASSPATH, which is used to configure the LOGGER. */
-    private static final String LOGGER_PROPERTIES = "/Logging.properties";
+    private static final Logger log = LoggerFactory.getLogger(DpTuApp.class);
+
+    /** Property file located on the CLASSPATH, which is used to configure the julLogger. */
+    private static final String julLogger_PROPERTIES = "/Logging.properties";
 
     // ./resources/logging.properties
-
-    /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(DpTuApp.class.getName());
+    /** Events of interest occurring in this class are logged to this JUL logger. */
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(DpTuApp.class.getName());
 
     /**
-     * Main entry point for the DpTut application, which will display the UI.
+     * Main entry point for the DpTu application, which will display the UI.
      *
      * @param args ignored
      */
     public static void main(String[] args) {
-        LOGGER.info("DpTuApp Initializing...:");
+        julLogger.info("DpTuApp initializing…");
 
-        try {
-            final InputStream strm = DpTuApp.class.getResourceAsStream(LOGGER_PROPERTIES);
-
-            LogManager.getLogManager().readConfiguration(strm);
-
-            LOGGER.info("Message logging initialization completed.");
+        // Load JUL configuration from classpath (optional while migrating to SLF4J/Log4j2)
+        try (InputStream strm = DpTuApp.class.getResourceAsStream(julLogger_PROPERTIES)) {
+            if (strm != null) {
+                LogManager.getLogManager().readConfiguration(strm);
+                julLogger.info("Message logging initialization completed.");
+            } else {
+                julLogger.severe(
+                        "Logging.properties not found at "
+                                + julLogger_PROPERTIES
+                                + " on the classpath.");
+            }
         } catch (IOException e) {
-
-            LOGGER.severe("Error loading ./logging.properties");
-            LOGGER.severe(e.getMessage());
+            julLogger.log(java.util.logging.Level.SEVERE, "Error loading logging.properties", e);
         }
 
         // Initializes the properties from DpTu.properties and sets the locale.
         ResourceMgr.instance();
-
-        LOGGER.info("DpTu properties initialization completed.");
+        julLogger.info("DpTu properties initialization completed.");
 
         try {
-            LOGGER.info(" Starting DpTu Server (Tutoring Service)...");
+            julLogger.info("Starting DpTu Server (Tutoring Service)...");
             // ToDo: Separate the initialization of client and server
             // Start the socket server for the DpTu tutor.
-            (new Thread(new DpTuServer())).start();
+            new Thread(new DpTuServer()).start();
 
             // ToDo: This puts the main client UI thread to sleep to give the
             // server a chance to finish starting. This won't be required once
@@ -75,9 +80,9 @@ public class DpTuApp {
             // from the GUI client since the server should "always" be running.
             Thread.sleep(4000);
 
-            LOGGER.info(" Server is running.");
+            julLogger.info(" Server is running.");
 
-            LOGGER.info(" Starting Client GUI...");
+            julLogger.info(" Starting Client GUI...");
 
             // Force the creation of the MainFrame singleton, which is not
             // made visible to the user until after they sign-in.
@@ -88,13 +93,14 @@ public class DpTuApp {
             // If sign-in is successful the MainFrame is displayed.
             SplashFrame.instance();
 
-            LOGGER.info("DpTu Initialization successful.");
+            julLogger.info("DpTu Initialization successful.");
 
         } catch (InterruptedException ex) {
-            Logger.getLogger(DpTuApp.class.getName()).log(Level.SEVERE, null, ex);
+            julLogger.log(java.util.logging.Level.SEVERE, "Interrupted during startup", ex);
+            Thread.currentThread().interrupt();
         } catch (SecurityException e) {
-            LOGGER.severe("Couldn't create Data directory in NetBeans Project.");
-            LOGGER.severe("Perhaps, try changing permissions.");
+            julLogger.severe("Couldn't create Data directory in NetBeans Project.");
+            julLogger.severe("Perhaps, try changing permissions.");
         }
     }
 }

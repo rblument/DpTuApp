@@ -16,8 +16,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Dynamic Programming problem that a student is attempting to solve.
@@ -32,12 +33,14 @@ import java.util.logging.Logger;
  * @author rickb
  */
 public abstract class Problem extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Problem.class);
 
     /** The time between steps when running all */
     private static final int RUN_STEP_INTERVAL = 500;
 
     /** The logger for the class */
-    private static final Logger LOGGER = Logger.getLogger(Problem.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(Problem.class.getName());
 
     /**
      * The type of this Dynamic Programming problem, which must be assigned when instantiating a
@@ -293,7 +296,7 @@ public abstract class Problem extends TitledModel {
         int size = executionHistory.size();
 
         if (size == 0) {
-            Problem.LOGGER.log(Level.WARNING, "Cannot undo past Line 0");
+            Problem.julLogger.log(java.util.logging.Level.WARNING, "Cannot undo past Line 0");
 
         } else {
             int lastItemPos = size - 1;
@@ -338,15 +341,15 @@ public abstract class Problem extends TitledModel {
             method.invoke(this);
 
         } catch (NoSuchMethodException ex) {
-            Problem.LOGGER.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Problem.LOGGER.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Problem.LOGGER.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Problem.LOGGER.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Problem.LOGGER.log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
 

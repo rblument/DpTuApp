@@ -14,7 +14,9 @@ package edu.regis.dptu.view.act;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.logging.Level;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
@@ -25,6 +27,8 @@ import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
 public class SeeOneAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(SeeOneAction.class);
+
     private static final SeeOneAction SINGLETON;
 
     private final ProblemDAO problemDAO;
@@ -59,7 +63,7 @@ public class SeeOneAction extends DpTuGuiAction {
             SplashFrame.instance().selectLessonScreen(problem);
 
         } catch (ObjNotFoundException | NonRecoverableException e) {
-            SeeOneAction.LOGGER.log(Level.SEVERE, e.getMessage());
+            SeeOneAction.julLogger.log(java.util.logging.Level.SEVERE, e.getMessage());
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }

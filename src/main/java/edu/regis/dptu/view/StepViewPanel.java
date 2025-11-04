@@ -27,6 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -37,6 +40,7 @@ import edu.regis.dptu.model.ProblemListener;
  * @author Shamar Henry
  */
 public class StepViewPanel extends GPanel implements ProblemListener {
+    private static final Logger log = LoggerFactory.getLogger(StepViewPanel.class);
 
     /** The problem model that this view controls. */
     private Problem model; // Initialize as null

@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.err;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Thrown when there is an inconsistency in the database, which should never happen (a programmer
  * error).
@@ -19,6 +22,8 @@ package edu.regis.dptu.err;
  * @author rickb
  */
 public class InconsistentDBException extends NonRecoverableException {
+    private static final Logger log = LoggerFactory.getLogger(InconsistentDBException.class);
+
     /**
      * Initialize this new instance with the given message and log the exception.
      *

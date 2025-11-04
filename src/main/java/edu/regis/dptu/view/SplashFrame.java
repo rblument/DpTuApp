@@ -21,6 +21,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.TutoringSession;
@@ -33,6 +36,8 @@ import edu.regis.dptu.model.User;
  * @author rickb (modified)
  */
 public class SplashFrame extends JFrame {
+    private static final Logger log = LoggerFactory.getLogger(SplashFrame.class);
+
     /** Name of the splash panel in this frame's primary card layout panel. */
     public static final String SPLASH = "SplashPanel";
 

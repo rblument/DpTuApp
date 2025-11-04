@@ -3,6 +3,9 @@ package edu.regis.dptu.dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.err.NonRecoverableException;
 
 /**
@@ -12,6 +15,8 @@ import edu.regis.dptu.err.NonRecoverableException;
  * @author benm
  */
 public abstract class Transactionable extends MySqlDAO {
+    private static final Logger log = LoggerFactory.getLogger(Transactionable.class);
+
     /**
      * Start a transaction on the connection
      *
