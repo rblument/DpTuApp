@@ -65,7 +65,7 @@ public class SvcFacade {
     }
 
     /** Handler for logging messages. */
-    private static final Logger LOGGER = Logger.getLogger(SvcFacade.class.getName());
+    private static final Logger julLogger = Logger.getLogger(SvcFacade.class.getName());
 
     /**
      * The computer host to which DpTu tutor requests are delegated.
@@ -125,9 +125,9 @@ public class SvcFacade {
             return in.readLine();
 
         } catch (UnknownHostException e) {
-            LOGGER.log(Level.SEVERE, "Unknown Host", e);
+            julLogger.log(Level.SEVERE, "Unknown Host", e);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "IOException client", e);
+            julLogger.log(Level.SEVERE, "IOException client", e);
         } finally {
             // Kludgy, but tries to close an open socket and its associated
             // input and output streams in every possible error scenario
@@ -138,12 +138,12 @@ public class SvcFacade {
                 try {
                     if (in != null) in.close();
                 } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Unable to close client socket in", e);
+                    julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
                 } finally {
                     try {
                         if (client != null) client.close();
                     } catch (IOException e) {
-                        LOGGER.log(Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
                     }
                 }
             }

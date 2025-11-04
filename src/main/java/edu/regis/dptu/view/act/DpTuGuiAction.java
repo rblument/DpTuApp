@@ -32,7 +32,7 @@ import edu.regis.dptu.util.ImgFactory;
 public abstract class DpTuGuiAction extends AbstractAction {
     private static final Logger log = LoggerFactory.getLogger(DpTuGuiAction.class);
 
-    protected static final Logger LOGGER = Logger.getLogger(DpTuGuiAction.class.getName());
+    protected static final Logger julLogger = Logger.getLogger(DpTuGuiAction.class.getName());
 
     public DpTuGuiAction(String name) {
         super(name);

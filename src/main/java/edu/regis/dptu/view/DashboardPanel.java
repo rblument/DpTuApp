@@ -50,7 +50,7 @@ public class DashboardPanel extends GPanel {
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
-    private static final Logger LOGGER = Logger.getLogger(DashboardPanel.class.getName());
+    private static final Logger julLogger = Logger.getLogger(DashboardPanel.class.getName());
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;
@@ -226,7 +226,7 @@ public class DashboardPanel extends GPanel {
 
         // Gracefully handle if the model objects don't exist.
         if (model == null || model.getStudent() == null) {
-            LOGGER.log(
+            julLogger.log(
                     Level.WARNING,
                     "DashboardPanel: model or student is null, " + "skipping scaffold level rules");
             return;
@@ -235,7 +235,7 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         var studentModel = model.getStudent().getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        LOGGER.log(Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
+        julLogger.log(Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

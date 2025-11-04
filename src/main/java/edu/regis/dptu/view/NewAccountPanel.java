@@ -53,7 +53,7 @@ public class NewAccountPanel extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
 
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
+    private static final Logger julLogger = Logger.getLogger(NewAccountPanel.class.getName());
 
     /** Events of interest occurring in this class are logged to this logger. */
 
@@ -974,7 +974,7 @@ public class NewAccountPanel extends GPanel {
             return String.format("%1$032X", i).toLowerCase();
 
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.toString());
+            julLogger.severe(e.toString());
         }
 
         return "";

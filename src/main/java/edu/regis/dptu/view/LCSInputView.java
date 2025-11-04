@@ -28,7 +28,7 @@ public class LCSInputView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(LCSInputView.class);
 
     /** The logger for the class */
-    private static final Logger LOGGER = Logger.getLogger(LCSInputView.class.getName());
+    private static final Logger julLogger = Logger.getLogger(LCSInputView.class.getName());
 
     private ProblemListener submitListener;
 
@@ -92,8 +92,8 @@ public class LCSInputView extends JPanel {
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
 
-        LCSInputView.LOGGER.log(Level.INFO, "Submitted String 1: " + string1);
-        LCSInputView.LOGGER.log(Level.INFO, "Submitted String 2: " + string2);
+        LCSInputView.julLogger.log(Level.INFO, "Submitted String 1: " + string1);
+        LCSInputView.julLogger.log(Level.INFO, "Submitted String 2: " + string2);
 
         LCSProblem newProblem = new LCSProblem(string1, string2);
         submitListener.problemUpdated(newProblem);

@@ -45,7 +45,7 @@ import edu.regis.dptu.svc.StudentModelSvc;
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
     private static final Logger log = LoggerFactory.getLogger(StudentModelDAO.class);
 
-    private static final Logger LOGGER = Logger.getLogger(StudentModelDAO.class.getName());
+    private static final Logger julLogger = Logger.getLogger(StudentModelDAO.class.getName());
 
     /** Initialize this DAO via the parent constructor. */
     public StudentModelDAO() {
@@ -210,12 +210,12 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     break;
             }
 
-            LOGGER.log(Level.FINE, "Executing statement: {0}", stmt.toString());
+            julLogger.log(Level.FINE, "Executing statement: {0}", stmt.toString());
 
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.log(
+            julLogger.log(
                     Level.SEVERE,
                     "SQL Error - State: {0}, Code: {1}",
                     new Object[] {e.getSQLState(), e.getErrorCode()});

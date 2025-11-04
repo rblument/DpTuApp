@@ -37,7 +37,7 @@ public class DpTuServer implements Runnable {
     public static final int PORT = 53637;
 
     /** Handler for logging messages. */
-    private static final Logger LOGGER = Logger.getLogger(DpTuServer.class.getName());
+    private static final Logger julLogger = Logger.getLogger(DpTuServer.class.getName());
 
     /** The socket listening for connections from the client */
     private ServerSocket server;
@@ -60,7 +60,7 @@ public class DpTuServer implements Runnable {
             }
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "EncryptionServer.run()", e);
+            julLogger.log(Level.SEVERE, "EncryptionServer.run()", e);
         }
     }
 
@@ -110,7 +110,7 @@ public class DpTuServer implements Runnable {
                 out.flush();
 
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "EncryptionConnection.run()", e);
+                julLogger.log(Level.SEVERE, "EncryptionConnection.run()", e);
             } finally {
                 // About as ugly as it gets, but the following code ensures that
                 // we've at least tried to close an open socket and its associated
@@ -126,14 +126,14 @@ public class DpTuServer implements Runnable {
                             in.close();
                         }
                     } catch (IOException e) {
-                        LOGGER.log(Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
                     } finally {
                         try {
                             if (client != null) {
                                 client.close();
                             }
                         } catch (IOException e) {
-                            LOGGER.log(Level.SEVERE, "Unable to close client socket in", e);
+                            julLogger.log(Level.SEVERE, "Unable to close client socket in", e);
                         }
                     }
                 }

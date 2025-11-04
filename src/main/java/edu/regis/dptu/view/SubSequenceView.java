@@ -43,7 +43,7 @@ import edu.regis.dptu.model.ProblemListener;
 class SubSequenceView extends JPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubSequenceView.class);
 
-    private static final java.util.logging.Logger LOGGER =
+    private static final java.util.logging.Logger julLogger =
             java.util.logging.Logger.getLogger(SubSequenceView.class.getName());
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2, wordLabel1, wordLabel2;
@@ -186,14 +186,14 @@ class SubSequenceView extends JPanel implements ProblemListener {
 
             this.model.addProblemListener(this);
 
-            LOGGER.log(
+            julLogger.log(
                     Level.INFO,
                     "SubSequenceView: model set ({0}), updating view",
                     this.model.getClass().getSimpleName());
 
             updateView();
         } else {
-            LOGGER.warning("SubSequenceView: setModel called with a null model");
+            julLogger.warning("SubSequenceView: setModel called with a null model");
         }
     }
 
@@ -206,7 +206,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
     @Override
     public void problemUpdated(Problem problem) {
 
-        LOGGER.log(Level.FINE, "SubSequenceView: problemUpdated called");
+        julLogger.log(Level.FINE, "SubSequenceView: problemUpdated called");
 
         // Update the UI on the Swing thread to avoid race conditions.
         SwingUtilities.invokeLater(this::updateView);
@@ -228,7 +228,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
             // Update the view with the current words.
             updateWords(x, y);
         } else if (model != null) {
-            LOGGER.log(
+            julLogger.log(
                     Level.FINE,
                     "SubSequenceView: model is not LCSProblem; " + "no word update performed");
         }
