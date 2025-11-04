@@ -12,10 +12,10 @@
  */
 package edu.regis.dptu.model;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 /**
  * The current step within a pending task that a student needs to complete as part of the current

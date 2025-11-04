@@ -12,9 +12,10 @@
  */
 package edu.regis.dptu.test;
 
-
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import edu.regis.dptu.model.LCSProblem;
+import org.slf4j.LoggerFactory;
+
+import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -26,7 +27,6 @@ import edu.regis.dptu.model.ProblemListener;
  */
 public class TestStepExecution implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(TestStepExecution.class);
-
 
     /** Main entry point for the test */
     public static void main(String[] args) {

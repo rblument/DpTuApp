@@ -12,10 +12,10 @@
  */
 package edu.regis.dptu.model;
 
+import java.io.Serializable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
 
 /**
  * A domain model with a unique id

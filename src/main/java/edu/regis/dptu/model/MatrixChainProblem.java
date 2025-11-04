@@ -12,11 +12,11 @@
  */
 package edu.regis.dptu.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Stack;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MatrixChainProblem implements the dynamic programming algorithm for the Matrix Chain
@@ -30,7 +30,6 @@ import java.util.Stack;
  */
 public class MatrixChainProblem extends Problem {
     private static final Logger log = LoggerFactory.getLogger(MatrixChainProblem.class);
-
 
     /**
      * Enumeration of execution states corresponding to each loop or phase in the matrix chain

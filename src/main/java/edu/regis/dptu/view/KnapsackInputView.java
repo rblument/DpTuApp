@@ -1,8 +1,6 @@
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.GridBagConstraints;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
@@ -10,6 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Currently, KnapsackInputView is thought to be designed as a Single Input field with an Add button

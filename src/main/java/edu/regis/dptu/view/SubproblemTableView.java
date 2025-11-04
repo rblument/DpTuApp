@@ -12,9 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;// Keep ALL original imports
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,6 +34,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
@@ -51,7 +51,6 @@ import edu.regis.dptu.model.ProblemListener;
  */
 public class SubproblemTableView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubproblemTableView.class);
-
 
     // Model representing the dynamic programming problem
     private Problem model;

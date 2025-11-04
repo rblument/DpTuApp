@@ -12,9 +12,7 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Font;
 
@@ -23,6 +21,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepCompletion;
@@ -37,7 +38,6 @@ import edu.regis.dptu.view.act.RequestHintAction;
  */
 public class StepCompletionView extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(StepCompletionView.class);
-
 
     // The current step being worked on
     protected Step currentStep;

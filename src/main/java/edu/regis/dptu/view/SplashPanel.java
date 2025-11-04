@@ -12,9 +12,7 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.Color;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -27,6 +25,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.User;
 import edu.regis.dptu.util.SHA_256;

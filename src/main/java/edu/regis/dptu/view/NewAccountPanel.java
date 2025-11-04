@@ -12,9 +12,7 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.Color;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -39,6 +37,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
@@ -51,7 +52,6 @@ import edu.regis.dptu.view.act.SignInAction;
  */
 public class NewAccountPanel extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
-
 
     /** Events of interest occurring in this class are logged to this logger. */
     private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());

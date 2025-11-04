@@ -12,9 +12,7 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.Color;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -29,6 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -40,7 +41,6 @@ import edu.regis.dptu.model.ProblemListener;
  */
 public class StepViewPanel extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(StepViewPanel.class);
-
 
     /** The problem model that this view controls. */
     private Problem model; // Initialize as null

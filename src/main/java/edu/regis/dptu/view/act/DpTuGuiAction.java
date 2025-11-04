@@ -12,13 +12,14 @@
  */
 package edu.regis.dptu.view.act;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.Image;
+import java.awt.Image;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.util.ImgFactory;
 

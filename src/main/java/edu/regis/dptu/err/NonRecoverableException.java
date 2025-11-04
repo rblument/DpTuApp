@@ -12,11 +12,11 @@
  */
 package edu.regis.dptu.err;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An unexpected exception that the user cannot recovered from, which is logged.

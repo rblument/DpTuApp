@@ -12,9 +12,7 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -26,6 +24,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
@@ -41,7 +42,6 @@ import edu.regis.dptu.model.ProblemListener;
  */
 class SubSequenceView extends JPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubSequenceView.class);
-
 
     private static final java.util.logging.Logger LOGGER =
             java.util.logging.Logger.getLogger(SubSequenceView.class.getName());

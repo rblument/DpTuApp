@@ -12,9 +12,7 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.BorderLayout;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,6 +30,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Task;
@@ -43,7 +44,6 @@ import edu.regis.dptu.model.aol.AssessmentLevel;
  */
 public class StepSelectorView extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(StepSelectorView.class);
-
 
     /** Enum representing the different step selections available. */
     public enum StepSelection {

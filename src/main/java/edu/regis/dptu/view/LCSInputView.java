@@ -1,8 +1,6 @@
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.GridBagConstraints;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -15,6 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -26,7 +27,6 @@ import edu.regis.dptu.model.ProblemListener;
  */
 public class LCSInputView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(LCSInputView.class);
-
 
     /** The logger for the class */
     private static final Logger LOGGER = Logger.getLogger(LCSInputView.class.getName());

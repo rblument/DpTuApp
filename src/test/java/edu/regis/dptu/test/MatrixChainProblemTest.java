@@ -12,9 +12,9 @@
  */
 package edu.regis.dptu.test;
 
-
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +25,6 @@ import edu.regis.dptu.model.MatrixChainProblem;
  */
 public class MatrixChainProblemTest {
     private static final Logger log = LoggerFactory.getLogger(MatrixChainProblemTest.class);
-
 
     @Test
     public void testMatrixChainExecution() {

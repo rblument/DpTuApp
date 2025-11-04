@@ -12,12 +12,12 @@
  */
 package edu.regis.dptu.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a Longest Common Subsequence Dynamic Programming problem with inputs sequences
@@ -38,7 +38,6 @@ import java.util.logging.Logger;
  */
 public class LCSProblem extends Problem {
     private static final Logger log = LoggerFactory.getLogger(LCSProblem.class);
-
 
     /** The logger for the class */
     private static final Logger LOGGER = Logger.getLogger(LCSProblem.class.getName());

@@ -12,11 +12,11 @@
  */
 package edu.regis.dptu.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Dynamic Programming tutoring session, which is displayed in the tutor view.

@@ -12,10 +12,10 @@
  */
 package edu.regis.dptu.model;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 /**
  * A semantically cohesive collection of tasks within a course that a student is expected to master

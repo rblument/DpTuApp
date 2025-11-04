@@ -12,12 +12,13 @@
  */
 package edu.regis.dptu.view.act;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.event.ActionEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.KeyStroke;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.util.ImgFactory;
 
@@ -28,7 +29,6 @@ import edu.regis.dptu.util.ImgFactory;
  */
 public class SaveSessionAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(SaveSessionAction.class);
-
 
     /**
      * Create the singleton for this action, which occurs when this class is loaded by the Java

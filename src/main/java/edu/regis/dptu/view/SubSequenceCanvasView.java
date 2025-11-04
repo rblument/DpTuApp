@@ -12,14 +12,15 @@
  */
 package edu.regis.dptu.view;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;import java.awt.Color;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the Subsequence Canvas view. Two words are displayed aside each other, and shows a
@@ -29,7 +30,6 @@ import javax.swing.JPanel;
  */
 public class SubSequenceCanvasView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(SubSequenceCanvasView.class);
-
 
     private String word1;
     private String word2;
