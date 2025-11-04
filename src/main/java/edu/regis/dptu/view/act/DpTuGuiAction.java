@@ -12,27 +12,25 @@
  */
 package edu.regis.dptu.view.act;
 
-import java.awt.Image;
-
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.Image;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 
 import edu.regis.dptu.util.ImgFactory;
 
 /**
- * Abstract root for all GUI actions in the SpTu application.
+ * Abstract root for all GUI actions in the DpTu application.
  *
  * <p>Provides support for loading image icons and assigning the GUI controller.
- *
- * @author rickb
  */
 public abstract class DpTuGuiAction extends AbstractAction {
     private static final Logger log = LoggerFactory.getLogger(DpTuGuiAction.class);
 
-    protected static final Logger julLogger = Logger.getLogger(DpTuGuiAction.class.getName());
+    protected static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(DpTuGuiAction.class.getName());
 
     public DpTuGuiAction(String name) {
         super(name);
