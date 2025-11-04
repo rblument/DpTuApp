@@ -39,7 +39,7 @@ public class LCSProblem extends Problem {
     private static final Logger log = LoggerFactory.getLogger(LCSProblem.class);
 
     /** The logger for the class */
-    private static final Logger julLogger = Logger.getLogger(LCSProblem.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(LCSProblem.class.getName());
 
     /**
      * Current state of execution capturing which of the loops are current. Note if the

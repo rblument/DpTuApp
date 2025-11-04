@@ -60,7 +60,7 @@ public class DpTuTutor implements TutorSvc {
      * Handler for logging non-exception messages from this class versus thrown exception, which are
      * logged by the exception.
      */
-    private static final Logger julLogger = Logger.getLogger(DpTuTutor.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(DpTuTutor.class.getName());
 
     /** Convenience reference to the student currently being tutored. */
     private Student student;

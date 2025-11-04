@@ -12,8 +12,6 @@
  */
 package edu.regis.dptu.err;
 
-import java.util.logging.Level;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +26,8 @@ import org.slf4j.LoggerFactory;
  */
 public class NonRecoverableException extends DpTuException {
     private static final Logger log = LoggerFactory.getLogger(NonRecoverableException.class);
+    private static final java.util.logging.Logger julLogger =
+        java.util.logging.Logger.getLogger(NonRecoverableException.class.getName());
 
     /**
      * Initialize this new instance with the given message and log the exception.
@@ -37,8 +37,7 @@ public class NonRecoverableException extends DpTuException {
     public NonRecoverableException(String msg) {
         super(msg);
 
-        Logger.getLogger(NonRecoverableException.class.getName())
-                .log(Level.SEVERE, "DpTuException: {0}", msg);
+        julLogger.log(java.util.logging.Level.SEVERE, "DpTuException: {0}", msg);
     }
 
     /**
@@ -51,6 +50,6 @@ public class NonRecoverableException extends DpTuException {
     public NonRecoverableException(String msg, Throwable cause) {
         super(msg, cause);
 
-        Logger.getLogger(NonRecoverableException.class.getName()).log(Level.SEVERE, msg, cause);
+        julLogger.log(java.util.logging.Level.SEVERE, msg, cause);
     }
 }

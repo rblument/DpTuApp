@@ -40,7 +40,7 @@ public class DpTuApp {
     // ./resources/logging.properties
 
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger julLogger = Logger.getLogger(DpTuApp.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(DpTuApp.class.getName());
 
     /**
      * Main entry point for the DpTut application, which will display the UI.

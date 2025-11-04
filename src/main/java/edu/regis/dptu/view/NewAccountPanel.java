@@ -53,7 +53,7 @@ public class NewAccountPanel extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
 
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger julLogger = Logger.getLogger(NewAccountPanel.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(NewAccountPanel.class.getName());
 
     /** Events of interest occurring in this class are logged to this logger. */
 

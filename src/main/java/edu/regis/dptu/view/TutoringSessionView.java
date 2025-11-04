@@ -33,7 +33,7 @@ public class TutoringSessionView extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(TutoringSessionView.class);
 
     /** The logger for the class */
-    private static final Logger julLogger = Logger.getLogger(TutoringSessionView.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(TutoringSessionView.class.getName());
 
     private TutoringSession model;
     private VariablesView variablesView;

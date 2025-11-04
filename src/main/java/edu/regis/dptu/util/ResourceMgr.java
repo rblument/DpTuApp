@@ -31,7 +31,7 @@ import edu.regis.dptu.err.MissingPropertyException;
  */
 public class ResourceMgr {
     /** Logger for any errors occurring in this Singleton. */
-    private static final Logger julLogger = Logger.getLogger("ResourceMgr.class");
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger("ResourceMgr.class");
 
     /** The singleton instance of this ResourceMgr. */
     private static final ResourceMgr SINGLETON;

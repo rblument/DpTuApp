@@ -37,7 +37,7 @@ public class DpTuServer implements Runnable {
     public static final int PORT = 53637;
 
     /** Handler for logging messages. */
-    private static final Logger julLogger = Logger.getLogger(DpTuServer.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(DpTuServer.class.getName());
 
     /** The socket listening for connections from the client */
     private ServerSocket server;

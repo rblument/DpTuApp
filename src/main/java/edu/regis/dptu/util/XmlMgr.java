@@ -50,7 +50,7 @@ public class XmlMgr {
     private static final Logger log = LoggerFactory.getLogger(XmlMgr.class);
 
     /** Log unexpected events to this logger. */
-    private static final Logger julLogger = Logger.getLogger(XmlMgr.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(XmlMgr.class.getName());
 
     /** Data directory containing data files within the current NetBeans project. */
     private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";

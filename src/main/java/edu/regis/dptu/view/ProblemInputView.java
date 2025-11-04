@@ -25,7 +25,7 @@ public class ProblemInputView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(ProblemInputView.class);
 
     /** The logger for the class */
-    private static final Logger julLogger = Logger.getLogger(ProblemInputView.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(ProblemInputView.class.getName());
 
     private ProblemListener submitListener;
 

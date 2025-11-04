@@ -28,7 +28,7 @@ public class LCSInputView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(LCSInputView.class);
 
     /** The logger for the class */
-    private static final Logger julLogger = Logger.getLogger(LCSInputView.class.getName());
+    private static final java.util.logging.Logger julLogger =  java.util.logging.Logger.getLogger(LCSInputView.class.getName());
 
     private ProblemListener submitListener;
 
