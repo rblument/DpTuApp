@@ -76,16 +76,6 @@ public class ProblemInputView extends JPanel {
         swapView(currentPanel);
     }
 
-    private void setNullDummy(String text) {
-        swapView(nullDummy(text));
-    }
-
-    private JPanel nullDummy(String text) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel(text, JLabel.CENTER), BorderLayout.CENTER);
-        return panel;
-    }
-
     public LCSInputView getLcsInputView() {
         return (activeInputPanel instanceof LCSInputView) ? (LCSInputView) activeInputPanel : null;
     }

@@ -124,28 +124,12 @@ public class LCSInputView extends JPanel {
         // Remove whitespace
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
+        
+        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 1: " + string1);
+        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 2: " + string2);
 
-        Container tempView = this.getParent().getParent();
-        // For now, use getParent().getParent() to find TutoringSessionView instance
-        // This code is fragile, if you've changed the component heirarchy you
-        // Will likely have to edit this as well
-        try {
-            if (tempView instanceof TutoringSessionView) {
-                grandparentView = (TutoringSessionView) tempView;
-                LCSProblem newProblem = new LCSProblem(string1, string2);
-                grandparentView.getTableView().setModel(newProblem);
-                grandparentView.getSubSeqView().setModel(newProblem);
-                grandparentView.getStepViewPanel().setModel(newProblem);
-                grandparentView.getCodeView().setModel(newProblem);
-                grandparentView.getVariablesView().setModel(newProblem);
-            } else {
-                System.out.println(
-                        "LCSInputView: getParent().getParent() did not lead to "
-                                + "TutoringSessionView");
-            }
-        } catch (NullPointerException e) {
-            System.out.println(e);
-        }
+        LCSProblem newProblem = new LCSProblem(string1, string2);
+        submitListener.problemUpdated(newProblem);
 
         // TODO: Add input validation (e.g., prevent empty submissions).
     }
@@ -168,10 +152,4 @@ public class LCSInputView extends JPanel {
     public String getString1() {
         return string1;
     }
-        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 1: " + string1);
-        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 2: " + string2);
-
-        LCSProblem newProblem = new LCSProblem(string1, string2);
-        submitListener.problemUpdated(newProblem);
-    }
-}
+ }
