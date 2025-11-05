@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A timeout starts a clock ticking and performs the associated event, if the expected action, task,
  * or step containing the timeout isn't performed.
@@ -22,6 +25,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class Timeout {
+    private static final Logger log = LoggerFactory.getLogger(Timeout.class);
+
     /** The type of action that initialized this timeout. */
     protected final String type;
 

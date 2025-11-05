@@ -18,8 +18,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 
@@ -66,7 +64,8 @@ public class SvcFacade {
     }
 
     /** Handler for logging messages. */
-    private static final Logger LOGGER = Logger.getLogger(SvcFacade.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(SvcFacade.class.getName());
 
     /**
      * The computer host to which DpTu tutor requests are delegated.
@@ -126,9 +125,9 @@ public class SvcFacade {
             return in.readLine();
 
         } catch (UnknownHostException e) {
-            LOGGER.log(Level.SEVERE, "Unknown Host", e);
+            julLogger.log(java.util.logging.Level.SEVERE, "Unknown Host", e);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "IOException client", e);
+            julLogger.log(java.util.logging.Level.SEVERE, "IOException client", e);
         } finally {
             // Kludgy, but tries to close an open socket and its associated
             // input and output streams in every possible error scenario
@@ -139,12 +138,16 @@ public class SvcFacade {
                 try {
                     if (in != null) in.close();
                 } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Unable to close client socket in", e);
+                    julLogger.log(
+                            java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
                 } finally {
                     try {
                         if (client != null) client.close();
                     } catch (IOException e) {
-                        LOGGER.log(Level.SEVERE, "Unable to close client socket in", e);
+                        julLogger.log(
+                                java.util.logging.Level.SEVERE,
+                                "Unable to close client socket in",
+                                e);
                     }
                 }
             }

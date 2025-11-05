@@ -17,6 +17,9 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An implementation of the SHA-256 algorithm.
  *
@@ -29,6 +32,8 @@ import java.nio.charset.Charset;
  * @author unknown
  */
 public class SHA_256 {
+    private static final Logger log = LoggerFactory.getLogger(SHA_256.class);
+
     /** The singleton instance of this frame. */
     private static final SHA_256 SINGLETON;
 
@@ -104,84 +109,6 @@ public class SHA_256 {
         String digestStr = bytesToHex(digest);
 
         return digestStr;
-    }
-
-    private static String hexToBin(String hexString) {
-        StringBuffer buffer = new StringBuffer();
-        for (int pos = 0; pos < hexString.length(); pos++) {
-            switch (hexString.charAt(pos)) {
-                case '0':
-                    buffer.append("0000");
-                    break;
-
-                case '1':
-                    buffer.append("0001");
-                    break;
-
-                case '2':
-                    buffer.append("0010");
-                    break;
-
-                case '3':
-                    buffer.append("0011");
-                    break;
-
-                case '4':
-                    buffer.append("0100");
-                    break;
-
-                case '5':
-                    buffer.append("0101");
-                    break;
-
-                case '6':
-                    buffer.append("0110");
-                    break;
-
-                case '7':
-                    buffer.append("0111");
-                    break;
-
-                case '8':
-                    buffer.append("1000");
-                    break;
-
-                case '9':
-                    buffer.append("1001");
-                    break;
-
-                case 'A':
-                case 'a':
-                    buffer.append("1010");
-                    break;
-
-                case 'B':
-                case 'b':
-                    buffer.append("1011");
-                    break;
-
-                case 'C':
-                case 'c':
-                    buffer.append("1100");
-                    break;
-
-                case 'D':
-                case 'd':
-                    buffer.append("1101");
-                    break;
-
-                case 'E':
-                case 'e':
-                    buffer.append("1110");
-                    break;
-
-                default: // 'F'
-                    buffer.append("1111");
-                    break;
-            }
-        }
-
-        return buffer.toString();
     }
 
     private static String bytesToHex(byte[] hash) {

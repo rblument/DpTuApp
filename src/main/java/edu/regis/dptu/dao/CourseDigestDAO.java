@@ -18,6 +18,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.err.IllegalArgException;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
@@ -30,6 +33,8 @@ import edu.regis.dptu.model.TaskSelectionKind;
  * @author benm
  */
 public class CourseDigestDAO extends MySqlDAO {
+    private static final Logger log = LoggerFactory.getLogger(CourseDigestDAO.class);
+
     /** Initialize this DAO via the parent constructor. */
     public CourseDigestDAO() {
         super();

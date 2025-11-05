@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +36,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
@@ -48,9 +50,13 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class NewAccountPanel extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
 
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(NewAccountPanel.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(NewAccountPanel.class.getName());
+
+    /** Events of interest occurring in this class are logged to this logger. */
 
     /** A regex pattern used to validate user email ids (e.g. "rick@regis.edu"). */
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -162,10 +168,6 @@ public class NewAccountPanel extends GPanel {
         secAnswer.setText("");
     }
 
-    // Used to get focus
-    // public JTextField getFNameComp() {
-    // return fName;
-    // }
     private void initComponents() {
         LoginDocumentListener docListener = new LoginDocumentListener();
 
@@ -189,7 +191,7 @@ public class NewAccountPanel extends GPanel {
         pass2.getDocument().addDocumentListener(docListener);
 
         String s1[] = {"What city were you born in?", "What is your mother's maiden name?"};
-        secQuestions = new JComboBox(s1);
+        secQuestions = new JComboBox<String>(s1);
 
         secAnswer = new JPasswordField(20);
         secAnswer.getDocument().addDocumentListener(docListener);
@@ -961,7 +963,7 @@ public class NewAccountPanel extends GPanel {
     }
 
     /** Encrypt the given password using MD5 */
-    private String encryptMD5(String password) {
+    public static String encryptMD5(String password) {
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
             byte[] data = password.getBytes();
@@ -973,7 +975,7 @@ public class NewAccountPanel extends GPanel {
             return String.format("%1$032X", i).toLowerCase();
 
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.toString());
+            julLogger.severe(e.toString());
         }
 
         return "";

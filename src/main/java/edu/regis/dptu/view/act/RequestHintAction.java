@@ -17,6 +17,9 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.view.MainFrame;
 
 /**
@@ -26,6 +29,8 @@ import edu.regis.dptu.view.MainFrame;
  * integrated.
  */
 public class RequestHintAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(RequestHintAction.class);
+
     /** The singleton instance of this action. */
     private static final RequestHintAction SINGLETON;
 
@@ -62,12 +67,11 @@ public class RequestHintAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        // This is a stub implementation
-        // The full implementation will be added when StepCompletionView is integrated
+        System.out.println("Hint requested.");
+        // Show a simple static hint message to the student
+        // Basic implementation for DPTU-45
+        String hintText = "Try focusing on how this step connects to the previous subproblem.";
         JOptionPane.showMessageDialog(
-                MainFrame.instance(),
-                "Hint functionality will be available in a future update.",
-                "Feature Not Available",
-                JOptionPane.INFORMATION_MESSAGE);
+                MainFrame.instance(), hintText, "Hint", JOptionPane.INFORMATION_MESSAGE);
     }
 }

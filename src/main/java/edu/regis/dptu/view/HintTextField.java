@@ -23,6 +23,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A JTextField with default text appearing in grey that disappears when a user enters anything, but
  * reappears if the all user enter text is removed.
@@ -35,6 +38,8 @@ import javax.swing.text.DocumentFilter;
  * @author rickb
  */
 public class HintTextField extends JTextField {
+    private static final Logger log = LoggerFactory.getLogger(HintTextField.class);
+
     /** The initial default 'hint' displayed as gray text in the field. */
     protected String hint = "";
 
@@ -223,7 +228,7 @@ public class HintTextField extends JTextField {
                             if (isFirstEdit) {
                                 tf.setCaretPosition(0);
                             } else {
-                                int offset = tf.viewToModel(e.getPoint());
+                                int offset = tf.viewToModel2D(e.getPoint());
                                 tf.setCaretPosition(offset);
                             }
                         }

@@ -86,6 +86,7 @@ _if using Netbeans_
 
 _otherwise_
    - `mvn exec:java -Dexec.mainClass="edu.regis.dptu.DpTuApp"`
+   - `find src -name "*.java" | entr -r mvn compile exec:java -Dexec.mainClass="edu.regis.dptu.DpTuApp"` if wanting hot reload
 
 2. Using the GUI:
    - Splash Screen: Choose "Sign In" or "New User".

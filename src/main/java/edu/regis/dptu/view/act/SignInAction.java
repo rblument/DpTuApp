@@ -14,7 +14,9 @@ package edu.regis.dptu.view.act;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JOptionPane;
 
@@ -42,7 +44,8 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class SignInAction extends DpTuGuiAction {
-    private static final Logger LOGGER = Logger.getLogger(SignInAction.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(SignInAction.class);
+
     private static final SignInAction SINGLETON;
 
     static {

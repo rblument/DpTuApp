@@ -15,6 +15,9 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.view.SplashFrame;
 
 /**
@@ -24,6 +27,8 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class BackAction extends DpTuGuiAction {
+    private static final Logger log = LoggerFactory.getLogger(BackAction.class);
+
     /** The single instance of this new user action. */
     private static final BackAction SINGLETON;
 

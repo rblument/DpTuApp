@@ -8,8 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.TutoringSession;
@@ -29,8 +31,9 @@ import edu.regis.dptu.view.act.SeeOneAction;
 import edu.regis.dptu.view.act.TeachOneAction;
 
 public class DashboardPanel extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(DashboardPanel.class);
+
     private TutoringSession model;
-    private static boolean welcome = false;
 
     private JButton logOutButton;
     private JButton settingsButton;
@@ -41,31 +44,24 @@ public class DashboardPanel extends GPanel {
     private CustomProgressBar doOneProgressBar;
     private CustomProgressBar teachOneProgressBar;
     private JLabel welcomeLabel;
-
-    // ADDED: Problem selector combo box
     private JComboBox<String> problemSelector; // @author EverettCV
 
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
-    private static final Logger LOGGER = Logger.getLogger(DashboardPanel.class.getName());
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(DashboardPanel.class.getName());
 
     public DashboardPanel(TutoringSession tutoringSession) {
         model = tutoringSession;
 
-        if (!welcome) {
-            welcome = true;
-            System.out.println(
-                    "DashboardPanel initialized for user: "
-                            + tutoringSession.getStudent().getAccount().getFirstName());
-            String welcomeMessage =
-                    "Welcome, "
-                            + tutoringSession.getStudent().getAccount().getFirstName()
-                            + "! "
-                            + "Your session has successfully started.";
-            JOptionPane.showMessageDialog(
-                    null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
-        }
+        String welcomeMessage =
+                "Welcome, "
+                        + tutoringSession.getStudent().getAccount().getFirstName()
+                        + "! "
+                        + "Your session has successfully started.";
+        JOptionPane.showMessageDialog(
+                null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
 
         initializeComponents();
         layoutComponents();
@@ -73,6 +69,24 @@ public class DashboardPanel extends GPanel {
 
     public void setModel(TutoringSession model) {
         this.model = model;
+    }
+
+    /**
+     * Return the TaskKind corresponding to the currently selected problem in the drop-down.
+     *
+     * @return the selected problem kind
+     */
+    public ProblemKind getSelectedProblemKind() {
+        String selectedTitle = problemSelector.getSelectedItem().toString();
+
+        if (selectedTitle == null) {
+            return ProblemKind.LCS_PROBLEM;
+        }
+
+        return Arrays.stream(ProblemKind.values())
+                .filter(kind -> kind.title().equals(selectedTitle))
+                .findFirst()
+                .orElse(ProblemKind.LCS_PROBLEM);
     }
 
     private void initializeComponents() {
@@ -124,19 +138,12 @@ public class DashboardPanel extends GPanel {
         // Apply scaffold level rules for which buttons are visible.
         applyScaffoldLevelRules();
 
-        // ADDED: Problem selector dropdown for choosing problem type (LCS, Matrix, Knapsack)
         problemSelector =
-                new JComboBox<>(
-                        new String[] {
-                            "Longest Common Subsequence",
-                            "Matrix Chain Multiplication",
-                            "Knapsack Problem"
-                        });
-        problemSelector.setSelectedIndex(0); // Default to LCS
-
-        // TODO: Hook this selection into SeeOneAction, DoOneAction, TeachOneAction
-        // TODO: Replace String-based selection with a proper ProblemType enum for clean
-        // future-proofing
+                new JComboBox<String>(
+                        Arrays.stream(ProblemKind.values())
+                                .map(ProblemKind::title)
+                                .toArray(String[]::new));
+        problemSelector.setSelectedIndex(0);
     }
 
     private void layoutComponents() {
@@ -206,35 +213,8 @@ public class DashboardPanel extends GPanel {
         return column;
     }
 
-    private void doOneButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        SplashFrame.instance().selectPracticeScreen();
-    }
-
-    private void seeOneButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        SplashFrame.instance().selectLessonScreen();
-    }
-
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         SplashFrame.instance().logout();
-    }
-
-    /**
-     * Return the TaskKind corresponding to the currently selected problem in the drop-down.
-     *
-     * @return TaskKind @author EverettCV
-     */
-    public ProblemKind getSelectedProblemKind() {
-        int index = problemSelector.getSelectedIndex();
-        switch (index) {
-            case 0:
-                return ProblemKind.LCS_PROBLEM;
-            case 1:
-                return ProblemKind.MATRIX_CHAIN;
-            case 2:
-                return ProblemKind.KNAPSACK_0_1;
-            default:
-                return ProblemKind.LCS_PROBLEM; // Fallback
-        }
     }
 
     /**
@@ -246,8 +226,8 @@ public class DashboardPanel extends GPanel {
 
         // Gracefully handle if the model objects don't exist.
         if (model == null || model.getStudent() == null) {
-            LOGGER.log(
-                    Level.WARNING,
+            julLogger.log(
+                    java.util.logging.Level.WARNING,
                     "DashboardPanel: model or student is null, " + "skipping scaffold level rules");
             return;
         }
@@ -255,7 +235,10 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         var studentModel = model.getStudent().getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        LOGGER.log(Level.INFO, "DashboardPanel: applying scaffold level rules for {0}", lvl);
+        julLogger.log(
+                java.util.logging.Level.INFO,
+                "DashboardPanel: applying scaffold level rules for {0}",
+                lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

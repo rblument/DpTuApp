@@ -1,6 +1,5 @@
 package edu.regis.dptu.view;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -14,18 +13,27 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.ProblemListener;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
- * tutoring problem.
- *
- * <p>Changes (April 17, 2025): - Connected input fields to SubSequenceView and SubproblemTableView
- * to update dynamically. - Submit button functionality added to trigger view updates.
+ * tutoring problem. Updates all views accordingly.
  *
  * @author EverettCV
  */
 public class LCSInputView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(LCSInputView.class);
+
+    /** The logger for the class */
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(LCSInputView.class.getName());
+
+    private ProblemListener submitListener;
+
     private JTextField inputField1;
     private JTextField inputField2;
     private JButton submitButton;
@@ -37,8 +45,9 @@ public class LCSInputView extends JPanel {
     private boolean inputListenersAttached = false;
 
     private TutoringSessionView grandparentView;
-
-    public LCSInputView() {
+  
+    public LCSInputView(ProblemListener listener) {
+        submitListener = listener;
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -107,17 +116,14 @@ public class LCSInputView extends JPanel {
     /**
      * Handles user input when Submit button is clicked.
      *
-     * <p>- Captures input strings - Updates SubSequenceView (updates strings and lengths displayed)
-     * - Updates SubproblemTableView (rebuilds the matrix dynamically)
-     *
-     * <p>Changes (April 17, 2025): - Added dynamic updating of SubSequenceView and
-     * SubproblemTableView based on user inputs.
-     *
-     * @author EverettCV
+     * <p>Captures input strings - Updates all Views
      */
     public void submitInputs() {
         string1 = inputField1.getText();
         string2 = inputField2.getText();
+        // Remove whitespace
+        string1 = string1.replaceAll("\\s", "");
+        string2 = string2.replaceAll("\\s", "");
 
         Container tempView = this.getParent().getParent();
         // For now, use getParent().getParent() to find TutoringSessionView instance
@@ -162,8 +168,10 @@ public class LCSInputView extends JPanel {
     public String getString1() {
         return string1;
     }
+        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 1: " + string1);
+        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 2: " + string2);
 
-    public String getString2() {
-        return string2;
+        LCSProblem newProblem = new LCSProblem(string1, string2);
+        submitListener.problemUpdated(newProblem);
     }
 }

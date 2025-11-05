@@ -16,8 +16,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Dynamic Programming problem that a student is attempting to solve.
@@ -32,6 +33,14 @@ import java.util.logging.Logger;
  * @author rickb
  */
 public abstract class Problem extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Problem.class);
+
+    /** The time between steps when running all */
+    private static final int RUN_STEP_INTERVAL = 500;
+
+    /** The logger for the class */
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(Problem.class.getName());
 
     /**
      * The type of this Dynamic Programming problem, which must be assigned when instantiating a
@@ -59,11 +68,23 @@ public abstract class Problem extends TitledModel {
     /** The variable name containing the matrix cell table for this problem. */
     protected String tableVariable;
 
+    /** The name of the internal table that keeps track of highlighting */
+    protected String backtrackingTableVariable;
+
     /** The algorithmic solution to this dynamic programming problem as textual lines of code. */
     protected ArrayList<String> codeStatements;
 
-    /** The currently line number to execute */
-    protected int currentLineNumber = 0;
+    /** The algorithmic for backtracking and finding the final solution from the table. */
+    protected ArrayList<String> backtrackingCodeStatements;
+
+    /** The number of the line that will execute the next time "step forward" is clicked */
+    protected int nextLineNumber = 0;
+
+    protected final int BACKTRACKING_START_NUM = 100;
+    protected final int HIT = 1;
+    protected final int MISS = 0;
+    protected final int ADD_TO_SOLUTION = 2;
+    protected final int UNVISITED = -1;
 
     /**
      * A history of the line numbers that were executed prior to the current line number.
@@ -76,14 +97,64 @@ public abstract class Problem extends TitledModel {
     protected ArrayList<ProblemListener> problemListeners;
 
     /**
-     * Return the type of this problem.
+     * Return the type of this Dynamic Programming problem.
      *
      * @return
      */
     public abstract ProblemKind getType();
 
+    public int getNextLineNumber() {
+        return nextLineNumber;
+    }
+
+    /**
+     * Method that determines if the subclass has completed with either the dp algorithm or the
+     * backtracking algorithm. Used to disable functionality in the UI
+     *
+     * @return whether the problem has finished
+     */
+    public abstract boolean hasFinished();
+
+    /** Method that resets the problem */
+    public abstract void reset();
+
     /** Loads the pseudo-code statements for display. */
     protected abstract void loadCodeStatements();
+
+    protected abstract void loadBacktrackingCodeStatements();
+
+    /**
+     * This prevents user from pressing the "step back" button when they shouldn't
+     *
+     * @return
+     */
+    public abstract boolean canStepBack();
+
+    /**
+     * This is to prevent the user from hitting the backtrack button before the dp table is filled
+     * in completely.
+     *
+     * @return
+     */
+    public abstract boolean backtrackReady();
+
+    /**
+     * Takes care of all housekeeping required to switch from dp algorithm to backtracking
+     * algorithm. Also called when restarting backtracking
+     */
+    public abstract void backtrackingOn();
+
+    /**
+     * When the backtracking button has been clicked, but the step forward button has not yet
+     * executed any backtracking steps, this method will return true (to help the undo button) and
+     * reset the nextLineNumber. This is needed because when going backwards from the backtracking
+     * algorithm into the DP algorithm, the code view needs to change from BacktrackingCodeView to
+     * CodeView, which cannot be handled from within the Problem object, since it does not know
+     * about views.
+     *
+     * @return
+     */
+    public abstract boolean undoingBacktrackButton();
 
     /** Instantiate a Dynamic Programming problem with a DEFAULT_ID. */
     public Problem() {
@@ -100,6 +171,7 @@ public abstract class Problem extends TitledModel {
 
         variables = new HashMap<>();
         codeStatements = new ArrayList<>();
+        backtrackingCodeStatements = new ArrayList<>();
         executionHistory = new ArrayList<>();
         problemListeners = new ArrayList<>();
     }
@@ -116,16 +188,28 @@ public abstract class Problem extends TitledModel {
         return codeStatements;
     }
 
-    public void setCodeStatements(ArrayList codeStatements) {
+    public void setCodeStatements(ArrayList<String> codeStatements) {
         this.codeStatements = codeStatements;
     }
 
+    public ArrayList<String> getBacktrackingCodeStatements() {
+        return backtrackingCodeStatements;
+    }
+
+    public void setBacktrackingCodeStatements(ArrayList<String> backtrackingStatements) {
+        this.backtrackingCodeStatements = backtrackingStatements;
+    }
+
     public int getCurrentLineNumber() {
-        return currentLineNumber;
+        return nextLineNumber;
+    }
+
+    public int getBacktrackingStartNum() {
+        return BACKTRACKING_START_NUM;
     }
 
     public void setCurrentLineNumber(int currentLineNumber) {
-        this.currentLineNumber = currentLineNumber;
+        this.nextLineNumber = currentLineNumber;
     }
 
     public String getTableVariable() {
@@ -137,7 +221,7 @@ public abstract class Problem extends TitledModel {
     }
 
     public ArrayList<String> getVariableNames() {
-        return new ArrayList(variables.keySet());
+        return new ArrayList<String>(variables.keySet());
     }
 
     public int getVariableValue(String variableName) {
@@ -175,8 +259,8 @@ public abstract class Problem extends TitledModel {
 
     /** Execute the current line of code and then update to the "next" line of code to execute. */
     public void step() {
-        executionHistory.add(currentLineNumber);
-        String methodName = "executeLine" + currentLineNumber;
+        executionHistory.add(nextLineNumber);
+        String methodName = "executeLine" + nextLineNumber;
         executeMethod(methodName);
 
         // Notify listeners that the problem has been updated
@@ -184,14 +268,27 @@ public abstract class Problem extends TitledModel {
     }
 
     /**
-     * Execute the next n statements (forward).
+     * Execute the next n statements (forward). Will take a brief pause between steps so the user
+     * can follow
      *
      * @param n number of steps to execute
      */
     public void step(int n) {
-        for (int i = 0; i < n; i++) {
-            step();
-        }
+        final int[] count = {0};
+        javax.swing.Timer timer =
+                new javax.swing.Timer(
+                        RUN_STEP_INTERVAL,
+                        e -> {
+                            step();
+                            count[0]++;
+
+                            if (hasFinished() || count[0] >= n) {
+                                ((javax.swing.Timer) e.getSource()).stop();
+                                // Notify listeners that we've finished running steps
+                                notifyProblemListeners();
+                            }
+                        });
+        timer.start();
     }
 
     /** Take one step backward in the algorithm by undoing the */
@@ -199,7 +296,7 @@ public abstract class Problem extends TitledModel {
         int size = executionHistory.size();
 
         if (size == 0) {
-            System.out.println("Cannot undo past Line 0");
+            Problem.julLogger.log(java.util.logging.Level.WARNING, "Cannot undo past Line 0");
 
         } else {
             int lastItemPos = size - 1;
@@ -209,26 +306,13 @@ public abstract class Problem extends TitledModel {
             String methodName = "undoLine" + previousLineNumber;
             executeMethod(methodName);
 
-            if (previousLineNumber != 0) {
-                lastItemPos--;
-
-                currentLineNumber = executionHistory.get(lastItemPos);
-            }
+            /* Whatever line we removed from the history, that's the line that
+            we want to execute again if we click "step forward" */
+            nextLineNumber = previousLineNumber;
 
             // Notify listeners that the problem has been updated
             notifyProblemListeners();
         }
-    }
-
-    /** Reset the problem to its initial state. */
-    public void reset() {
-        currentLineNumber = 0;
-        executionHistory.clear();
-
-        // Additional reset logic implemented by subclasses
-
-        // Notify listeners that the problem has been updated
-        notifyProblemListeners();
     }
 
     /**
@@ -248,7 +332,8 @@ public abstract class Problem extends TitledModel {
      * @param methodName
      */
     public void executeMethod(String methodName) {
-        Class clazz = this.getClass();
+        // wildcard the generic to avoid build warnings
+        Class<?> clazz = this.getClass();
 
         try {
             Method method = clazz.getDeclaredMethod(methodName);
@@ -256,15 +341,15 @@ public abstract class Problem extends TitledModel {
             method.invoke(this);
 
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
 

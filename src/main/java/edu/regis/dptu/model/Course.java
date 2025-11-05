@@ -14,6 +14,9 @@ package edu.regis.dptu.model;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.err.ObjNotFoundException;
 
 /**
@@ -22,6 +25,8 @@ import edu.regis.dptu.err.ObjNotFoundException;
  * @author rickb
  */
 public class Course extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Course.class);
+
     /**
      * The primary pedagogical approach initially used to start task selection.
      *

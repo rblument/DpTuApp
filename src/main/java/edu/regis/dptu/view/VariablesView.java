@@ -16,12 +16,17 @@ import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Problem;
 
 /**
  * @author danielaflores
  */
 public class VariablesView extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(VariablesView.class);
+
     private Problem model;
     private JLabel rName, rValue, cName, cValue, iName, iValue, jName, jValue, lName, lValue;
 

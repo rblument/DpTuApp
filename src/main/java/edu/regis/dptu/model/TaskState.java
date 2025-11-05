@@ -15,6 +15,9 @@ package edu.regis.dptu.model;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * To provide appropriate hints to the student, we need to keep track of what task steps they've
  * already performed.
@@ -22,6 +25,8 @@ import java.util.LinkedList;
  * @author rickb
  */
 public class TaskState {
+    private static final Logger log = LoggerFactory.getLogger(TaskState.class);
+
     /** The sequence id, zero-indexed, of the currently expected task. */
     private int currentTask = 0;
 

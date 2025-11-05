@@ -18,17 +18,19 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Provides support for loading image icons from files on the CLASSPATH.
  *
  * @author rickb
  */
 public class ImgFactory {
+    private static final Logger log = LoggerFactory.getLogger(ImgFactory.class);
+
     /** Directory in the Resource path where the images are located. */
     private static final String DIRECTORY = "/";
-
-    /** File extension for the associated image. */
-    private static final String SUFFIX = ".png";
 
     /**
      * Create an Image Icon by loading its corresponding png image.

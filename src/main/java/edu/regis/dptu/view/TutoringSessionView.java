@@ -16,6 +16,9 @@ import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.TutoringSession;
 
@@ -26,10 +29,17 @@ import edu.regis.dptu.model.TutoringSession;
  * @author rickb (Modified by Assistant for Functional Integration & Debug)
  */
 public class TutoringSessionView extends GPanel {
+    private static final Logger log = LoggerFactory.getLogger(TutoringSessionView.class);
+
+    /** The logger for the class */
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(TutoringSessionView.class.getName());
+
     private TutoringSession model;
     private VariablesView variablesView;
     private JLabel subproblemView;
     private CodeView codeView;
+    private BacktrackingCodeView backtrackingCodeView;
 
     private ProblemInputView problemInputView;
     private SubSequenceView subSeqView;
@@ -44,7 +54,8 @@ public class TutoringSessionView extends GPanel {
      * layout.
      */
     public TutoringSessionView() {
-        System.out.println("DEBUG: TutoringSessionView constructor called.");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "Initiating TutoringSessionView");
         initializeComponents(); // Creates components and sets up model sharing
         layoutComponents(); // Uses original layout constraints
     }
@@ -56,6 +67,10 @@ public class TutoringSessionView extends GPanel {
 
     public CodeView getCodeView() {
         return codeView;
+    }
+
+    public BacktrackingCodeView getBacktrackingCodeView() {
+        return backtrackingCodeView;
     }
 
     public SubproblemTableView getTableView() {
@@ -98,7 +113,7 @@ public class TutoringSessionView extends GPanel {
      * <p>Changes (April 17, 2025): Exposed SubSequenceView through a getter to allow dynamic
      * updates (Updating input strings based on user input from InputViews)
      *
-     * @return the SubSequenceView displayed in the tutoring session
+     * @param tableView
      */
     public void setTableView(SubproblemTableView tableView) {
         if (this.tableView != null) {
@@ -128,21 +143,30 @@ public class TutoringSessionView extends GPanel {
      * relevant views get the *same* Problem model instance.
      */
     private void initializeComponents() {
-        System.out.println("DEBUG: TutoringSessionView initializing components...");
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "TutoringSessionView initializing components");
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
 
-        problemInputView = new ProblemInputView();
+        problemInputView =
+                new ProblemInputView(
+                        problem -> {
+                            tableView.setModel(problem);
+                            subSeqView.setModel(problem);
+                            stepViewPanel.setModel(problem);
+                            codeView.setModel(problem);
+                            variablesView.setModel(problem);
+                        });
 
         subSeqView = new SubSequenceView(); // Original init
         tableView = new SubproblemTableView();
-        codeView = new CodeView(tableView); // Original init
+        codeView = new CodeView(); // Original init
+        backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
 
         // We'll add these components later
         // stepCompletionView = new StepCompletionView();
         // stepSelectorView = new StepSelectorView();
-        System.out.println("DEBUG: TutoringSessionView components initialized.");
     }
 
     /** Layout the child components in this view using **ORIGINAL** constraints. */
@@ -166,6 +190,20 @@ public class TutoringSessionView extends GPanel {
                 5);
         addc(
                 codeView,
+                0,
+                1,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                backtrackingCodeView,
                 0,
                 1,
                 1,
@@ -266,13 +304,16 @@ public class TutoringSessionView extends GPanel {
     }
 
     private void updateView(Problem currentProblem) {
+        TutoringSessionView.julLogger.log(
+                java.util.logging.Level.INFO, "TutoringSessionView updating view");
+
         problemInputView.setModel(currentProblem);
 
         revalidate();
         repaint();
     }
 
-    void setModel(TutoringSession model) {
+    public void setModel(TutoringSession model) {
         this.model = model;
 
         Problem currentProblem = null;
@@ -281,6 +322,7 @@ public class TutoringSessionView extends GPanel {
         subSeqView.setModel(currentProblem);
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
+        backtrackingCodeView.setModel(currentProblem);
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
 
@@ -307,5 +349,14 @@ public class TutoringSessionView extends GPanel {
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
         updateView(currentProblem);
+    }
+    public void showBacktrackingPanel(boolean backtrackingOn) {
+        if (backtrackingOn) {
+            codeView.setVisible(false);
+            backtrackingCodeView.setVisible(true);
+        } else {
+            backtrackingCodeView.setVisible(false);
+            codeView.setVisible(true);
+        }
     }
 }

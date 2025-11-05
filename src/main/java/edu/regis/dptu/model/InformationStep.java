@@ -12,12 +12,17 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A step subtype in which the student must acknowledge a message from the tutor.
  *
  * @author rickb
  */
 public class InformationStep {
+    private static final Logger log = LoggerFactory.getLogger(InformationStep.class);
+
     /** The message the student must acknowledge. */
     private String msg;
 

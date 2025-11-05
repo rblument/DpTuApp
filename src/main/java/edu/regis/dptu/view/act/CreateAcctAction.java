@@ -14,9 +14,11 @@ package edu.regis.dptu.view.act;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -34,8 +36,7 @@ import edu.regis.dptu.view.SplashFrame;
  * @author rickb
  */
 public class CreateAcctAction extends DpTuGuiAction {
-    /** Exceptions occurring in this class are also logged to this logger. */
-    private static final Logger LOGGER = Logger.getLogger(CreateAcctAction.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(CreateAcctAction.class);
 
     /** The single instance of this create account action. */
     private static final CreateAcctAction SINGLETON;

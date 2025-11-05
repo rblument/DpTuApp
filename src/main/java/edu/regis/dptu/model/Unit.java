@@ -14,6 +14,9 @@ package edu.regis.dptu.model;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A semantically cohesive collection of tasks within a course that a student is expected to master
  * before moving to the next unit using Mastery Learning per VanLehn (2006).
@@ -21,6 +24,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Unit extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Unit.class);
+
     /** The pedagogical approach used to select the next task within this unit. */
     private TaskSelectionKind pedagogy;
 

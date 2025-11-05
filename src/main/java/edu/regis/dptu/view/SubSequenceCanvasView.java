@@ -19,6 +19,9 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This is the Subsequence Canvas view. Two words are displayed aside each other, and shows a
  * step-by-step process to finding the LCS.
@@ -26,9 +29,10 @@ import javax.swing.JPanel;
  * @author Sofia Reyes
  */
 public class SubSequenceCanvasView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(SubSequenceCanvasView.class);
 
-    private String mainSeq;
-    private String subSeq;
+    private String word1;
+    private String word2;
     private String lcs;
     private int highlightIndex = 0;
 
@@ -37,9 +41,9 @@ public class SubSequenceCanvasView extends JPanel {
      * @param word2
      */
     public SubSequenceCanvasView(String word1, String word2) {
-        mainSeq = word1;
-        subSeq = word2;
-        lcs = findLCS(mainSeq, subSeq);
+        this.word1 = word1;
+        this.word2 = word2;
+        lcs = findLCS(this.word1, this.word2);
 
         setLayout(null);
         setPreferredSize(new Dimension(600, 300));
@@ -51,7 +55,7 @@ public class SubSequenceCanvasView extends JPanel {
      * @return mainSeq
      */
     public String getWord1() {
-        return mainSeq;
+        return word1;
     }
 
     /**
@@ -60,7 +64,7 @@ public class SubSequenceCanvasView extends JPanel {
      * @return subSeq
      */
     public String getWord2() {
-        return subSeq;
+        return word2;
     }
 
     /**
@@ -90,7 +94,7 @@ public class SubSequenceCanvasView extends JPanel {
                 lcsBuild.append(main.charAt(i - 1));
                 i--;
                 j--;
-            } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            } else if (dp[i - 1][j] >= dp[i][j - 1]) {
                 i--;
             } else {
                 j--;
@@ -102,7 +106,7 @@ public class SubSequenceCanvasView extends JPanel {
 
     /** When the button is pressed, it highlights the sequence of the two words. */
     public void highlightLCS() {
-        if (highlightIndex < lcs.length() - 1) {
+        if (highlightIndex < lcs.length()) {
             highlightIndex++;
             repaint();
         }
@@ -119,39 +123,44 @@ public class SubSequenceCanvasView extends JPanel {
         super.paintComponent(g);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
 
-        if (mainSeq == null || subSeq == null) {
+        if (word1 == null || word2 == null) {
             g.setColor(Color.RED);
             g.drawString("Invalid input!", 20, 30);
         }
 
+        // draw the words in black
         int x1 = 20;
         int y1 = 30;
         g.setColor(Color.BLACK);
-        g.drawString(mainSeq, x1, y1);
+        g.drawString(word1, x1, y1);
 
         int x2 = 20;
         int y2 = 60;
-        g.drawString(subSeq, x2, y2);
+        g.drawString(word2, x2, y2);
 
-        g.setColor(Color.red);
+        // draw over the black with green
+        g.setColor(new Color(0, 220, 0));
         int count = 0;
-        int lcsIndex = 0;
-        for (char c : lcs.toCharArray()) {
-            int idx1 = mainSeq.indexOf(c, lcsIndex);
-            int idx2 = subSeq.indexOf(c, lcsIndex);
 
+        int idx1 = word1.length() - 1;
+        int idx2 = word2.length() - 1;
+        // find the last occurrence of the last letter of the lcs within word1 & word2
+        for (int i = lcs.length() - 1; i >= 0; i--) {
+            idx1 = word1.lastIndexOf(lcs.charAt(i), idx1);
+            idx2 = word2.lastIndexOf(lcs.charAt(i), idx2);
             if (count < highlightIndex && idx1 != -1 && idx2 != -1) {
                 g.drawString(
-                        String.valueOf(c),
-                        x1 + g.getFontMetrics().stringWidth(mainSeq.substring(0, idx1)),
+                        String.valueOf(lcs.charAt(i)),
+                        x1 + g.getFontMetrics().stringWidth(word1.substring(0, idx1)),
                         y1);
                 g.drawString(
-                        String.valueOf(c),
-                        x2 + g.getFontMetrics().stringWidth(subSeq.substring(0, idx2)),
+                        String.valueOf(lcs.charAt(i)),
+                        x2 + g.getFontMetrics().stringWidth(word2.substring(0, idx2)),
                         y2);
-                lcsIndex = idx1 + 1;
                 count++;
             }
+            idx1--;
+            idx2--;
         }
     }
 
@@ -165,8 +174,8 @@ public class SubSequenceCanvasView extends JPanel {
      * @param word1 The new main sequence string
      */
     public void setWord1(String word1) {
-        this.mainSeq = word1;
-        lcs = findLCS(mainSeq, subSeq);
+        this.word1 = word1;
+        lcs = findLCS(this.word1, word2);
         highlightIndex = 0;
         repaint();
     }
@@ -181,8 +190,8 @@ public class SubSequenceCanvasView extends JPanel {
      * @param word2 The new sub sequence string
      */
     public void setWord2(String word2) {
-        this.subSeq = word2;
-        lcs = findLCS(mainSeq, subSeq);
+        this.word2 = word2;
+        lcs = findLCS(word1, this.word2);
         highlightIndex = 0;
         repaint();
     }

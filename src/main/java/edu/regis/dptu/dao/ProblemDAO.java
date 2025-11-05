@@ -18,6 +18,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.LCSProblem;
@@ -26,6 +29,7 @@ import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.svc.ProblemSvc;
 
 public class ProblemDAO extends MySqlDAO implements ProblemSvc {
+    private static final Logger log = LoggerFactory.getLogger(ProblemDAO.class);
 
     /** Instantiate this Course DAO with default values. */
     public ProblemDAO() {}
@@ -61,10 +65,45 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 return problem;
 
             } else {
-                throw new ObjNotFoundException("Course Id:" + problemId);
+                throw new ObjNotFoundException("Problem Id:" + problemId);
             }
         } catch (SQLException e) {
-            throw new NonRecoverableException("ProblemDAO-ERR-1" + e.toString(), e);
+            throw new NonRecoverableException("ProblemDAO-ERR-1 " + e.toString(), e);
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
+    public Problem retrieveByKind(ProblemKind kind)
+            throws ObjNotFoundException, NonRecoverableException {
+        final String sql =
+                "SELECT Id, SubTypeId, Title, Description FROM Problem WHERE ProblemType = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, kind.toString());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Problem problem = retrieveProblemSubType(rs.getInt(1), kind, rs.getInt(2), conn);
+
+                problem.setTitle(rs.getString(3));
+                problem.setDescription(rs.getString(4));
+
+                return problem;
+
+            } else {
+                throw new ObjNotFoundException("Problem Kind:" + kind.toString());
+            }
+        } catch (SQLException e) {
+            throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(conn, stmt);
         }
@@ -122,7 +161,7 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             }
 
         } catch (SQLException e) {
-            throw new NonRecoverableException("ProblemDAO-ERR-2" + e.toString(), e);
+            throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
         }

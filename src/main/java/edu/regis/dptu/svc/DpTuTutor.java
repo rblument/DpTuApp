@@ -16,8 +16,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,29 +50,17 @@ import edu.regis.dptu.util.SHA_256;
  * @author rickb
  */
 public class DpTuTutor implements TutorSvc {
+    private static final Logger log = LoggerFactory.getLogger(DpTuTutor.class);
 
     /** The id of the default course taught by the this tutor (Dynamic Programming). */
     private static final int DEFAULT_COURSE_ID = 1;
 
     /**
-     * The maximum number of characters allowed for encoding a example ASCII encoding request from
-     * the student.
-     */
-    private static final int MAX_ASCII_SIZE = 20;
-
-    private static final int MAX_BITS_SIZE = 32;
-
-    /**
      * Handler for logging non-exception messages from this class versus thrown exception, which are
      * logged by the exception.
      */
-    private static final Logger LOGGER = Logger.getLogger(DpTuTutor.class.getName());
-
-    /**
-     * The current tutoring session, which contains information on the current Student,
-     * StudentModel, Course, Task, Step, etc.
-     */
-    private TutoringSession session;
+    private static final java.util.logging.Logger julLogger =
+            java.util.logging.Logger.getLogger(DpTuTutor.class.getName());
 
     /** Convenience reference to the student currently being tutored. */
     private Student student;
@@ -92,7 +81,8 @@ public class DpTuTutor implements TutorSvc {
     public TutorReply request(ClientRequest request) {
         // Uses reflection to invoke a method derived from the request name in
         // the client request (e.g., ":SignIn" invokes "signIn(...)").
-        DpTuTutor.LOGGER.log(Level.INFO, request.getRequestType().getRequestName());
+        DpTuTutor.julLogger.log(
+                java.util.logging.Level.INFO, request.getRequestType().getRequestName());
 
         // Efficiently produce "signIn" from ":SignIn", for example.
         char c[] = request.getRequestType().getRequestName().toCharArray();
@@ -129,8 +119,6 @@ public class DpTuTutor implements TutorSvc {
                             return reply;
                         }
 
-                        session = ServiceFactory.findSessionSvc().retrieve(student);
-
                     } else {
                         TutorReply reply = new TutorReply(":ERR");
                         reply.setData("Illegal Security Token");
@@ -144,11 +132,12 @@ public class DpTuTutor implements TutorSvc {
                 }
 
                 String msg = "Session verified for " + request.getUserId();
-                DpTuTutor.LOGGER.log(Level.INFO, msg);
+                DpTuTutor.julLogger.log(java.util.logging.Level.INFO, msg);
                 break;
 
             default: // e.g., signIn itself, newAccount
-                DpTuTutor.LOGGER.log(Level.INFO, "No token verification required");
+                DpTuTutor.julLogger.log(
+                        java.util.logging.Level.INFO, "No token verification required");
         }
 
         // Security token has been verified or not required (e.g., signIn, createAccount).
@@ -254,7 +243,7 @@ public class DpTuTutor implements TutorSvc {
         } catch (ObjNotFoundException e) {
             return new TutorReply("UnknownUser");
         } catch (NonRecoverableException ex) {
-            DpTuTutor.LOGGER.log(Level.SEVERE, null, ex);
+            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
             return new TutorReply();
         }
     }
@@ -312,10 +301,6 @@ public class DpTuTutor implements TutorSvc {
     // TO_DO: this is stubbed in
     public TutorReply completeCellStep(StepCompletion completion) {
         TutorReply reply = new TutorReply(":StepCompletionReply");
-
-        // As adding one bit doesn't require any additional information,
-        // the data is the string with one '1' bit added.
-        String data = completion.getData();
 
         // TO_DO: look up the problem given to the student , then check if one bit
         // added
@@ -490,9 +475,9 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutorReply createError(String errMsg, Exception ex) {
         if (ex == null) {
-            DpTuTutor.LOGGER.log(Level.SEVERE, errMsg);
+            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, errMsg);
         } else {
-            DpTuTutor.LOGGER.log(Level.SEVERE, errMsg, ex);
+            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, errMsg, ex);
         }
 
         return new TutorReply(":ERR", errMsg);

@@ -99,8 +99,6 @@ public class Step extends TitledModel {
     public Step(int id, int sequenceID, StepSubType subType, int solution) {
         super(id);
 
-        this.sequenceIndex = sequenceIndex;
-
         timeout = null;
 
         exercisedComponentIds = new ArrayList<>();

@@ -12,12 +12,17 @@
  */
 package edu.regis.dptu.err;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Thrown when an object isn't found (context specific).
  *
  * @author rickb
  */
 public class ObjNotFoundException extends DpTuException {
+    private static final Logger log = LoggerFactory.getLogger(ObjNotFoundException.class);
+
     /**
      * Initialize this exception with the given message.
      *

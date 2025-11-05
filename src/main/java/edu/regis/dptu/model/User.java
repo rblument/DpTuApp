@@ -12,6 +12,9 @@
  */
 package edu.regis.dptu.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A user with sign-in credentials consisting of a user id and password.
  *
@@ -20,6 +23,8 @@ package edu.regis.dptu.model;
  * @author rickb
  */
 public class User extends Model {
+    private static final Logger log = LoggerFactory.getLogger(User.class);
+
     /** The user's login id (e.g. "name@university.edu"). */
     protected String userId;
 

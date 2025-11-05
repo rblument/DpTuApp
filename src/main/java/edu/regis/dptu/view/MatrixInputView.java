@@ -9,6 +9,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * Currently, MatrixInputView is thought to be designed as a single Matrix Input Field with an Add button to append
  * a list with the Matrix constraints, and then that can be passed to a display variable in another View to be visualized and used. NOT IMPLEMENTED OR TESTED, JUST TEMPLATED.
@@ -18,6 +21,8 @@ import javax.swing.JTextField;
  * LCSInputView.java
  */
 public class MatrixInputView extends JPanel {
+    private static final Logger log = LoggerFactory.getLogger(MatrixInputView.class);
+
     public MatrixInputView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

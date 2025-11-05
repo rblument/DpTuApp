@@ -14,6 +14,9 @@ package edu.regis.dptu.model;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.aol.OutcomeGranularity;
 
 /**
@@ -25,6 +28,8 @@ import edu.regis.dptu.model.aol.OutcomeGranularity;
  * @author rickb
  */
 public class KnowledgeComponent extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(KnowledgeComponent.class);
+
     /** The Bloom Level associated with this outcome. */
     protected BloomLevel bloomLevel;
 

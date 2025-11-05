@@ -19,6 +19,9 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.view.act.ActionFactory;
 
@@ -30,6 +33,8 @@ import edu.regis.dptu.view.act.ActionFactory;
  * @author rickb
  */
 public class MainFrame extends JFrame implements WindowListener {
+    private static final Logger log = LoggerFactory.getLogger(MainFrame.class);
+
     /** The singleton instance of this frame. */
     private static final MainFrame SINGLETON;
 

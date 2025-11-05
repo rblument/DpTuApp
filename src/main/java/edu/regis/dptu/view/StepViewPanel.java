@@ -27,6 +27,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -37,6 +40,7 @@ import edu.regis.dptu.model.ProblemListener;
  * @author Shamar Henry
  */
 public class StepViewPanel extends GPanel implements ProblemListener {
+    private static final Logger log = LoggerFactory.getLogger(StepViewPanel.class);
 
     /** The problem model that this view controls. */
     private Problem model; // Initialize as null
@@ -52,6 +56,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
 
     /** Button to reset the algorithm to its initial state */
     private JButton resetButton;
+
+    private JButton backtrackButton;
 
     /** Spinner that allows selection of number of steps to execute */
     private JSpinner stepsSpinner;
@@ -125,9 +131,14 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null) {
+                        // When we step back from backtracking alg into LCS alg
+                        if (model.undoingBacktrackButton()) {
+                            MainFrame.instance().getView().showBacktrackingPanel(false);
+                            updateView();
+                        }
+                        // Normal "step back" behavior
+                        else {
                             model.undo();
-                            // updateView() will be called via problemUpdated listener
                         }
                     }
                 });
@@ -173,11 +184,26 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                     public void actionPerformed(ActionEvent e) {
                         if (model != null) {
                             model.reset();
+                            MainFrame.instance().getView().showBacktrackingPanel(false);
                             // updateView() will be called via problemUpdated listener
                         }
                     }
                 });
         resetButton.setEnabled(false); // Initially disabled
+
+        backtrackButton = new JButton("Backtrack");
+        backtrackButton.setToolTipText("Find the problem solution");
+        backtrackButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (model != null) {
+                            MainFrame.instance().getView().showBacktrackingPanel(true);
+                            model.backtrackingOn();
+                        }
+                    }
+                });
+        backtrackButton.setEnabled(false);
 
         // Steps spinner for selecting multiple steps
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 100, 1); // Default range
@@ -273,10 +299,25 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5);
 
+        addc(
+                backtrackButton,
+                5,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+
         // Add status label if it's part of the layout
         addc(
                 statusLabel,
-                5,
+                6,
                 0,
                 1,
                 1,
@@ -294,21 +335,28 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     private void updateView() {
         boolean modelExists = (model != null);
         // Check if model exists before accessing its state
-        boolean canStepBack = modelExists && model.getCurrentLineNumber() > 0;
-        boolean canStepForward =
-                modelExists; // Could add a check like !model.isFinished() if available
-        boolean canRun = modelExists; // Could add a check like !model.isFinished()
+        boolean canStepBack = modelExists && model.canStepBack();
+        boolean canStepForward = modelExists && !model.hasFinished();
+        boolean canRun = modelExists && !model.hasFinished();
         boolean canReset = modelExists;
+        boolean canBacktrack = modelExists && model.backtrackReady();
 
         stepBackButton.setEnabled(canStepBack);
         stepForwardButton.setEnabled(canStepForward);
         runStepsButton.setEnabled(canRun);
         resetButton.setEnabled(canReset);
         stepsSpinner.setEnabled(canRun); // Enable spinner when running is possible
+        backtrackButton.setEnabled(canBacktrack);
 
         if (modelExists) {
             // Update status label with current line number or other relevant info
-            statusLabel.setText("Line: " + model.getCurrentLineNumber()); // Example status
+            if (model.hasFinished()) {
+                statusLabel.setText("Finished!");
+            } else {
+                int displayNum =
+                        (model.getCurrentLineNumber() % model.getBacktrackingStartNum()) + 1;
+                statusLabel.setText("Line: " + displayNum);
+            }
         } else {
             statusLabel.setText("No model loaded");
         }
