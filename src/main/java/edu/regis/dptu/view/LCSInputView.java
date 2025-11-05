@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,10 @@ public class LCSInputView extends JPanel {
     // Variables to store submitted input
     private String string1;
     private String string2;
+
+    private boolean inputListenersAttached = false;
+
+    private TutoringSessionView grandparentView;
 
     public LCSInputView(ProblemListener listener) {
         submitListener = listener;
@@ -78,6 +84,33 @@ public class LCSInputView extends JPanel {
                         submitInputs();
                     }
                 });
+
+        // Listen for change in input boxes
+        DocumentListener inputBoxChange =
+                new DocumentListener() {
+                    private void onChange() {
+                        submitButton.setEnabled(true);
+                    }
+
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        onChange();
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        onChange();
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {}
+                };
+
+        if (!inputListenersAttached) {
+            inputListenersAttached = true;
+            inputField1.getDocument().addDocumentListener(inputBoxChange);
+            inputField2.getDocument().addDocumentListener(inputBoxChange);
+        }
     }
 
     /**
@@ -97,5 +130,26 @@ public class LCSInputView extends JPanel {
 
         LCSProblem newProblem = new LCSProblem(string1, string2);
         submitListener.problemUpdated(newProblem);
+
+        // TODO: Add input validation (e.g., prevent empty submissions).
+    }
+
+    /**
+     * Set the strings that should be shown when LCSInputView is created
+     *
+     * @param string1 First String
+     * @param string2 Second String
+     */
+    public void setDefaultStrings(String string1, String string2) {
+        inputField1.setText(string1);
+        inputField2.setText(string2);
+        System.out.println("DEBUG: STRING1 is " + string1);
+        System.out.println("DEBUG: LCSObject is " + this);
+        submitButton.setEnabled(false);
+    }
+
+    // Getters for future use if needed
+    public String getString1() {
+        return string1;
     }
 }

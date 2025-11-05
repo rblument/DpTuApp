@@ -76,6 +76,10 @@ public class ProblemInputView extends JPanel {
         swapView(currentPanel);
     }
 
+    public LCSInputView getLcsInputView() {
+        return (activeInputPanel instanceof LCSInputView) ? (LCSInputView) activeInputPanel : null;
+    }
+
     private void swapView(JPanel currentView) {
         if (activeInputPanel != null) remove(activeInputPanel);
         activeInputPanel = currentView;
