@@ -55,6 +55,7 @@ public class SplashFrame extends JFrame {
 
     /** The single instance of this frame. */
     private static final SplashFrame SINGLETON;
+
     private boolean isFirstLogin = false;
 
     /** Create the singleton for this JFrame */
@@ -82,6 +83,7 @@ public class SplashFrame extends JFrame {
 
     /**
      * Get whether or not this is the first login
+     *
      * @return true if first login, false otherwise
      */
     public boolean getIsFirstLogin() {

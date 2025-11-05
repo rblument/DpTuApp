@@ -45,7 +45,7 @@ public class LCSInputView extends JPanel {
     private boolean inputListenersAttached = false;
 
     private TutoringSessionView grandparentView;
-  
+
     public LCSInputView(ProblemListener listener) {
         submitListener = listener;
 
@@ -124,7 +124,7 @@ public class LCSInputView extends JPanel {
         // Remove whitespace
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
-        
+
         LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 1: " + string1);
         LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 2: " + string2);
 
@@ -152,4 +152,4 @@ public class LCSInputView extends JPanel {
     public String getString1() {
         return string1;
     }
- }
+}

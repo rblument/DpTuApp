@@ -350,6 +350,7 @@ public class TutoringSessionView extends GPanel {
         tableView.setModel(currentProblem);
         updateView(currentProblem);
     }
+
     public void showBacktrackingPanel(boolean backtrackingOn) {
         if (backtrackingOn) {
             codeView.setVisible(false);

@@ -15,10 +15,10 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JOptionPane;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.JOptionPane;
 
 import com.google.gson.Gson;
 
@@ -67,7 +67,7 @@ public class SignInAction extends DpTuGuiAction {
         Gson gson = new Gson();
         SplashFrame frame = SplashFrame.instance();
         User account = frame.getUser();
-        
+
         ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
         request.setData(gson.toJson(account));
         TutorReply reply = SvcFacade.instance().tutorRequest(request);
