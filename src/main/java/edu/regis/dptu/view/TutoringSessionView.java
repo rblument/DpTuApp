@@ -155,6 +155,7 @@ public class TutoringSessionView extends GPanel {
                             subSeqView.setModel(problem);
                             stepViewPanel.setModel(problem);
                             codeView.setModel(problem);
+                            backtrackingCodeView.setModel(problem);
                             variablesView.setModel(problem);
                         });
 
@@ -346,6 +347,7 @@ public class TutoringSessionView extends GPanel {
         subSeqView.setModel(currentProblem);
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
+        backtrackingCodeView.setModel(currentProblem);
         variablesView.setModel(currentProblem);
         tableView.setModel(currentProblem);
         updateView(currentProblem);
