@@ -779,7 +779,7 @@ public class LCSProblem extends Problem {
             executionState = EXECUTION_STATE.C_LOOP;
             int m = (int) variables.get("m");
             c = m;
-        } else { // Middle iteractions just decrement c
+        } else { // Middle iterations just decrement c
             c--;
         }
         variables.put("c", c);
