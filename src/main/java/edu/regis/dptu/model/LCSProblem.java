@@ -67,6 +67,11 @@ public class LCSProblem extends Problem {
 
     /** Input sequence 2. (Stored in variables map) */
     private final String y; // Keep original field if needed
+    
+    /**
+     * This keeps track of the lcs as determined by the backtracking algorithm
+     */
+    private String currentLcs = "";
 
     /**
      * The current state of the algorithm, before the loops, in a loop, and after all of the loops
@@ -137,6 +142,10 @@ public class LCSProblem extends Problem {
     public String getY() {
         return y;
     }
+    
+    public String getCurrentLcs() {
+        return currentLcs;
+    }
 
     /**
      * {@inheritDoc}
@@ -173,6 +182,8 @@ public class LCSProblem extends Problem {
                 bTable[row][col] = -1;
             }
         }
+        // Since we're resetting the backtracking table, we also reset the lcs
+        currentLcs = "";
     }
 
     /**
@@ -312,7 +323,7 @@ public class LCSProblem extends Problem {
         backtrackingCodeStatements.add(
                 "<html><pre><b>BACKTRACK(table L)</b></pre></html>"); // line 0
         backtrackingCodeStatements.add(
-                "<html><pre>row = x.length - 1, col = y.length - 1</pre></html>"); // line 1
+                "<html><pre>row = n - 1, col = m - 1</pre></html>"); // line 1
         backtrackingCodeStatements.add(
                 "<html><pre>while(row >= 0 && col >= 0)</pre></html>"); // line 2
         backtrackingCodeStatements.add("<html><pre>  if (x[row] == y[col])</pre></html>"); // line 3
@@ -669,6 +680,7 @@ public class LCSProblem extends Problem {
         int col = (int) variables.get("c");
         int[][] bTable = (int[][]) variables.get(backtrackingTableVariable);
         bTable[row][col] = ADD_TO_SOLUTION; // highlight in green
+        currentLcs = y.charAt(col - 1) + currentLcs;
         nextLineNumber = 105;
     }
 
@@ -899,6 +911,7 @@ public class LCSProblem extends Problem {
         int col = (int) variables.get("c");
         int[][] bTable = (int[][]) variables.get(backtrackingTableVariable);
         bTable[row][col] = HIT; // highlight in yellow
+        currentLcs = currentLcs.substring(1);
     }
 
     /** Undoes executeLine105: row-- */

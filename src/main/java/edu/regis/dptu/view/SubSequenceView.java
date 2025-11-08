@@ -69,10 +69,10 @@ class SubSequenceView extends JPanel implements ProblemListener {
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        lengthLabel1 = new JLabel("x=");
+        lengthLabel1 = new JLabel();
         lengthLabel1.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        lengthLabel2 = new JLabel("y=");
+        lengthLabel2 = new JLabel();
         lengthLabel2.setFont(new Font("Arial", Font.PLAIN, 16));
 
         stepButton = new JButton("Step LCS");
@@ -154,8 +154,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
      */
     public void updateWords(String word1, String word2) {
         // Update lengths
-        lengthLabel1.setText("x=" + word1.length());
-        lengthLabel2.setText("y=" + word2.length());
+        lengthLabel1.setText("n=" + word1.length());
+        lengthLabel2.setText("m=" + word2.length());
 
         wordLabel1.setText(word1);
         wordLabel2.setText(word2);
