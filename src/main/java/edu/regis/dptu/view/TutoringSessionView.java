@@ -31,10 +31,6 @@ import edu.regis.dptu.model.TutoringSession;
 public class TutoringSessionView extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(TutoringSessionView.class);
 
-    /** The logger for the class */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(TutoringSessionView.class.getName());
-
     private TutoringSession model;
     private VariablesView variablesView;
     private JLabel subproblemView;
@@ -54,8 +50,7 @@ public class TutoringSessionView extends GPanel {
      * layout.
      */
     public TutoringSessionView() {
-        TutoringSessionView.julLogger.log(
-                java.util.logging.Level.INFO, "Initiating TutoringSessionView");
+        TutoringSessionView.log.info("Initiating TutoringSessionView");
         initializeComponents(); // Creates components and sets up model sharing
         layoutComponents(); // Uses original layout constraints
     }
@@ -143,8 +138,7 @@ public class TutoringSessionView extends GPanel {
      * relevant views get the *same* Problem model instance.
      */
     private void initializeComponents() {
-        TutoringSessionView.julLogger.log(
-                java.util.logging.Level.INFO, "TutoringSessionView initializing components");
+        TutoringSessionView.log.info("TutoringSessionView initializing components");
         variablesView = new VariablesView();
         subproblemView = new JLabel("Subproblem View");
 
@@ -305,8 +299,7 @@ public class TutoringSessionView extends GPanel {
     }
 
     private void updateView(Problem currentProblem) {
-        TutoringSessionView.julLogger.log(
-                java.util.logging.Level.INFO, "TutoringSessionView updating view");
+        TutoringSessionView.log.info("TutoringSessionView updating view");
 
         problemInputView.setModel(currentProblem);
 

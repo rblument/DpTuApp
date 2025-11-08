@@ -203,7 +203,7 @@ public class SplashFrame extends JFrame {
      */
     public void initializeDashboard(TutoringSession session) {
         if (session == null) {
-            System.err.println("TutoringSession is null in initializeDashboard");
+            SplashFrame.log.error("TutoringSession is null in initializeDashboard");
             return;
         }
 

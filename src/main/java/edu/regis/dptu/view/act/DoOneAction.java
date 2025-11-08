@@ -15,15 +15,19 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import edu.regis.dptu.view.MainFrame;
+import edu.regis.dptu.dao.ProblemDAO;
+import edu.regis.dptu.err.NonRecoverableException;
+import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Mode;
+import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.view.DashboardPanel;
+import edu.regis.dptu.view.SplashFrame;
 
 public class DoOneAction extends DpTuGuiAction {
-    private static final Logger log = LoggerFactory.getLogger(DoOneAction.class);
-
     private static final DoOneAction SINGLETON;
+
+    private final ProblemDAO problemDAO;
 
     static {
         SINGLETON = new DoOneAction();
@@ -34,7 +38,8 @@ public class DoOneAction extends DpTuGuiAction {
     }
 
     private DoOneAction() {
-        super("Do One");
+        super(Mode.DO_ONE.title());
+        this.problemDAO = new ProblemDAO();
 
         putValue(SHORT_DESCRIPTION, "Start a \"do one\" (practice) session");
         putValue(MNEMONIC_KEY, KeyEvent.VK_D);
@@ -42,8 +47,15 @@ public class DoOneAction extends DpTuGuiAction {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        MainFrame frame = MainFrame.instance();
-        frame.setVisible(true);
-        // TODO: Add tutor notification in future sprint
+        try {
+            DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
+            ProblemKind kind = dashboard.getSelectedProblemKind();
+            Problem problem = problemDAO.retrieveByKind(kind);
+
+            SplashFrame.instance().selectLessonScreen(problem);
+        } catch (ObjNotFoundException | NonRecoverableException e) {
+            SeeOneAction.log.error(e.getMessage());
+            SplashFrame.instance().showError("Error", "Failed to load problem");
+        }
     }
 }
