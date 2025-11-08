@@ -67,10 +67,8 @@ public class LCSProblem extends Problem {
 
     /** Input sequence 2. (Stored in variables map) */
     private final String y; // Keep original field if needed
-    
-    /**
-     * This keeps track of the lcs as determined by the backtracking algorithm
-     */
+
+    /** This keeps track of the lcs as determined by the backtracking algorithm */
     private String currentLcs = "";
 
     /**
@@ -142,7 +140,7 @@ public class LCSProblem extends Problem {
     public String getY() {
         return y;
     }
-    
+
     public String getCurrentLcs() {
         return currentLcs;
     }

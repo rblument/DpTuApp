@@ -12,7 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.model.LCSProblem;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
@@ -20,6 +19,7 @@ import javax.swing.JLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -30,8 +30,24 @@ public class VariablesView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(VariablesView.class);
 
     private Problem problem;
-    private JLabel nName, nValue, mName, mValue, rName, rValue, cName, cValue, iName, iValue, 
-            jName, jValue, xrName, xrValue, ycName, ycValue, lcsName, lcsValue;
+    private JLabel nName,
+            nValue,
+            mName,
+            mValue,
+            rName,
+            rValue,
+            cName,
+            cValue,
+            iName,
+            iValue,
+            jName,
+            jValue,
+            xrName,
+            xrValue,
+            ycName,
+            ycValue,
+            lcsName,
+            lcsValue;
 
     public VariablesView() {
         initializeComponents();
@@ -40,7 +56,7 @@ public class VariablesView extends GPanel implements ProblemListener {
 
     public void setModel(Problem model) {
         this.problem = model;
-        
+
         if (this.problem != null) {
             this.problem.addProblemListener(this);
         }
@@ -280,7 +296,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-        
+
         addc(
                 ycName,
                 2,
@@ -310,7 +326,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-        
+
         addc(
                 lcsName,
                 2,
@@ -347,7 +363,7 @@ public class VariablesView extends GPanel implements ProblemListener {
             return;
         }
 
-        switch(problem.getType()) {
+        switch (problem.getType()) {
             case LCS_PROBLEM:
                 int r = problem.getVariableValue("r");
                 int c = problem.getVariableValue("c");
@@ -356,7 +372,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 int lineNum = problem.getNextLineNumber();
                 String x = ((LCSProblem) problem).getX();
                 String y = ((LCSProblem) problem).getY();
-                
+
                 /*
                 -1 is a flag value that says "this variables is not in play right now",
                 so we will not display that
@@ -369,9 +385,9 @@ public class VariablesView extends GPanel implements ProblemListener {
                 String jText = (j > -1) ? String.valueOf(problem.getVariableValue("j") - 1) : "";
                 String xrText;
                 String ycText;
-                
-                //-----------------------EXCEPTIONS-----------------------------
-                
+
+                // -----------------------EXCEPTIONS-----------------------------
+
                 // We want to see the chars when we're on the relevant line
                 if (lineNum == 7) {
                     xrText = String.valueOf(x.charAt(i - 1));
@@ -383,7 +399,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                     xrText = "";
                     ycText = "";
                 }
-                
+
                 // We want to see the while loop values before they are set
                 if (lineNum == 101) {
                     rText = String.valueOf(problem.getVariableValue("n") - 1);
@@ -395,15 +411,15 @@ public class VariablesView extends GPanel implements ProblemListener {
                 */
                 if (lineNum == 1) rText = String.valueOf(r);
                 if (lineNum == 3) {
-                    cText = (c== -1) ? String.valueOf(c + 1) : String.valueOf(c);
+                    cText = (c == -1) ? String.valueOf(c + 1) : String.valueOf(c);
                 }
                 if (lineNum == 5) {
-                    iText = (i== -1) ? String.valueOf(i + 1) : String.valueOf(i);
+                    iText = (i == -1) ? String.valueOf(i + 1) : String.valueOf(i);
                 }
                 if (lineNum == 6) {
-                    jText = (j== -1) ? String.valueOf(j + 1) : String.valueOf(j);
+                    jText = (j == -1) ? String.valueOf(j + 1) : String.valueOf(j);
                 }
-                
+
                 rValue.setText(rText);
                 cValue.setText(cText);
                 iValue.setText(iText);
