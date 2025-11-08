@@ -22,7 +22,7 @@
         <resources>
             <resource>
                 <directory>
-                    src/main/java/resources
+                    src/main/resources
                 </directory>
             </resource>
         </resources>
