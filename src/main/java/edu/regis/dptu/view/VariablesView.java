@@ -24,8 +24,8 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
 /**
- * So much of this code is specific to LCSProblem, it might be worthwhile to
- * write separate variable views for each problem type. -Gary 10/2025
+ * So much of this code is specific to LCSProblem, it might be worthwhile to write separate variable
+ * views for each problem type. -Gary 10/2025
  */
 public class VariablesView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(VariablesView.class);
@@ -386,7 +386,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 String xrText;
                 String ycText;
 
-                //-----------------------EXCEPTIONS-----------------------------
+                // -----------------------EXCEPTIONS-----------------------------
 
                 // We want to see the chars, but only when we're on the relevant line
 
@@ -430,7 +430,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 xrValue.setText(xrText);
                 ycValue.setText(ycText);
                 lcsValue.setText(((LCSProblem) problem).getCurrentLcs());
-                
+
                 break;
             default:
                 // Other problem types coming... soon?
