@@ -12,7 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.model.LCSProblem;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
@@ -20,6 +19,7 @@ import javax.swing.JLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
@@ -31,8 +31,24 @@ public class VariablesView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(VariablesView.class);
 
     private Problem problem;
-    private JLabel nName, nValue, mName, mValue, rName, rValue, cName, cValue, iName, iValue, 
-            jName, jValue, xrName, xrValue, ycName, ycValue, lcsName, lcsValue;
+    private JLabel nName,
+            nValue,
+            mName,
+            mValue,
+            rName,
+            rValue,
+            cName,
+            cValue,
+            iName,
+            iValue,
+            jName,
+            jValue,
+            xrName,
+            xrValue,
+            ycName,
+            ycValue,
+            lcsName,
+            lcsValue;
 
     public VariablesView() {
         initializeComponents();
@@ -347,7 +363,7 @@ public class VariablesView extends GPanel implements ProblemListener {
             return;
         }
 
-        switch(problem.getType()) {
+        switch (problem.getType()) {
             case LCS_PROBLEM:
                 int r = problem.getVariableValue("r");
                 int c = problem.getVariableValue("c");
@@ -373,6 +389,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 //-----------------------EXCEPTIONS-----------------------------
 
                 // We want to see the chars, but only when we're on the relevant line
+
                 if (lineNum == 7) {
                     xrText = String.valueOf(x.charAt(i - 1));
                     ycText = String.valueOf(y.charAt(j - 1));
