@@ -24,7 +24,8 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
 /**
- * @author danielaflores
+ * So much of this code is specific to LCSProblem, it might be worthwhile to
+ * write separate variable views for each problem type. -Gary 10/2025
  */
 public class VariablesView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(VariablesView.class);
@@ -40,7 +41,7 @@ public class VariablesView extends GPanel implements ProblemListener {
 
     public void setModel(Problem model) {
         this.problem = model;
-        
+
         if (this.problem != null) {
             this.problem.addProblemListener(this);
         }
@@ -49,7 +50,6 @@ public class VariablesView extends GPanel implements ProblemListener {
     }
 
     private void initializeComponents() {
-        // These will need to vary by problem type
         rName = new JLabel("row = ");
         rValue = new JLabel();
         cName = new JLabel("col = ");
@@ -280,7 +280,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-        
+
         addc(
                 ycName,
                 2,
@@ -310,7 +310,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-        
+
         addc(
                 lcsName,
                 2,
@@ -356,7 +356,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                 int lineNum = problem.getNextLineNumber();
                 String x = ((LCSProblem) problem).getX();
                 String y = ((LCSProblem) problem).getY();
-                
+
                 /*
                 -1 is a flag value that says "this variables is not in play right now",
                 so we will not display that
@@ -369,10 +369,10 @@ public class VariablesView extends GPanel implements ProblemListener {
                 String jText = (j > -1) ? String.valueOf(problem.getVariableValue("j") - 1) : "";
                 String xrText;
                 String ycText;
-                
+
                 //-----------------------EXCEPTIONS-----------------------------
-                
-                // We want to see the chars when we're on the relevant line
+
+                // We want to see the chars, but only when we're on the relevant line
                 if (lineNum == 7) {
                     xrText = String.valueOf(x.charAt(i - 1));
                     ycText = String.valueOf(y.charAt(j - 1));
@@ -383,7 +383,7 @@ public class VariablesView extends GPanel implements ProblemListener {
                     xrText = "";
                     ycText = "";
                 }
-                
+
                 // We want to see the while loop values before they are set
                 if (lineNum == 101) {
                     rText = String.valueOf(problem.getVariableValue("n") - 1);
@@ -395,15 +395,15 @@ public class VariablesView extends GPanel implements ProblemListener {
                 */
                 if (lineNum == 1) rText = String.valueOf(r);
                 if (lineNum == 3) {
-                    cText = (c== -1) ? String.valueOf(c + 1) : String.valueOf(c);
+                    cText = (c == -1) ? String.valueOf(c + 1) : String.valueOf(c);
                 }
                 if (lineNum == 5) {
-                    iText = (i== -1) ? String.valueOf(i + 1) : String.valueOf(i);
+                    iText = (i == -1) ? String.valueOf(i + 1) : String.valueOf(i);
                 }
                 if (lineNum == 6) {
-                    jText = (j== -1) ? String.valueOf(j + 1) : String.valueOf(j);
+                    jText = (j == -1) ? String.valueOf(j + 1) : String.valueOf(j);
                 }
-                
+
                 rValue.setText(rText);
                 cValue.setText(cText);
                 iValue.setText(iText);
@@ -413,6 +413,10 @@ public class VariablesView extends GPanel implements ProblemListener {
                 xrValue.setText(xrText);
                 ycValue.setText(ycText);
                 lcsValue.setText(((LCSProblem) problem).getCurrentLcs());
+                
+                break;
+            default:
+                // Other problem types coming... soon?
         }
     }
 
