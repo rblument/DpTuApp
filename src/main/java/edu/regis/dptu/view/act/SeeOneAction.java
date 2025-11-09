@@ -56,7 +56,7 @@ public class SeeOneAction extends DpTuGuiAction {
 
             Problem problem = problemDAO.retrieveByKind(kind);
 
-            SplashFrame.instance().selectLessonScreen(problem);
+            SplashFrame.instance().selectLessonScreen(problem, Mode.SEE_ONE);
 
         } catch (ObjNotFoundException | NonRecoverableException e) {
             SeeOneAction.log.error(e.getMessage());

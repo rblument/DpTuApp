@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
@@ -294,32 +295,14 @@ public class SplashFrame extends JFrame {
      *
      * @author EverettCV
      */
-    public void selectLessonScreen(Problem problem) {
-        // Create or update the TutoringSession
-        if (this.tutoringSession == null) {
-            this.tutoringSession = new TutoringSession(getAccount(), problem);
-        } else {
-            this.tutoringSession.setProblem(problem);
-        }
+    public void selectLessonScreen(Problem problem, Mode mode) {
+        this.tutoringSession.setProblem(problem);
+        this.tutoringSession.setMode(mode);
 
-        // Pass the new session to the MainFrame
-        MainFrame.instance().setModel(tutoringSession);
+        MainFrame.instance().getView().setModel(tutoringSession);
 
         // Show the MainFrame (lesson view)
         MainFrame.instance().setVisible(true);
-
-        TutoringSessionView tsv = MainFrame.instance().getView();
-        // If it's first login, attempt to get the LCSinput view and set
-        // The default strings
-        if (getIsFirstLogin()) {
-            ProblemInputView piv = tsv.getProblemInputView();
-            if (piv != null) {
-                LCSInputView lcs = piv.getLcsInputView();
-                if (lcs != null) {
-                    lcs.setDefaultStrings("skullandbones", "lullabybabies");
-                }
-            }
-        }
     }
 
     public void showError(String title, String errorMsg) {

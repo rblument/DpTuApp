@@ -52,7 +52,7 @@ public class DoOneAction extends DpTuGuiAction {
             ProblemKind kind = dashboard.getSelectedProblemKind();
             Problem problem = problemDAO.retrieveByKind(kind);
 
-            SplashFrame.instance().selectLessonScreen(problem);
+            SplashFrame.instance().selectLessonScreen(problem, Mode.DO_ONE);
         } catch (ObjNotFoundException | NonRecoverableException e) {
             SeeOneAction.log.error(e.getMessage());
             SplashFrame.instance().showError("Error", "Failed to load problem");
