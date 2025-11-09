@@ -70,7 +70,8 @@ public class SeeOneView extends GPanel implements ModeView {
         codeView = new CodeView(); // Original init
         backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
-    };
+    }
+    ;
 
     public void layoutComponents() {
         addc(
@@ -189,7 +190,8 @@ public class SeeOneView extends GPanel implements ModeView {
                 5,
                 5,
                 5); // Original
-    };
+    }
+    ;
 
     public void showBacktrackingPanel(boolean backtrackingOn) {
         if (backtrackingOn) {
@@ -199,5 +201,6 @@ public class SeeOneView extends GPanel implements ModeView {
             backtrackingCodeView.setVisible(false);
             codeView.setVisible(true);
         }
-    };
+    }
+    ;
 }

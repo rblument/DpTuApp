@@ -25,16 +25,18 @@ public class DoOneView extends GPanel implements ModeView {
         repaint();
     }
 
-
     private void initializeComponents() {
         DoOneView.log.info("DoOneView initializing components");
-    };
+    }
+    ;
 
     private void layoutComponents() {
         DoOneView.log.info("DoOneView layout components");
-    };
+    }
+    ;
 
     public void showBacktrackingPanel(boolean backtrackingOn) {
         DoOneView.log.info("DoOneView showBacktrackingPanel");
-    };
+    }
+    ;
 }

@@ -33,10 +33,13 @@ public class TutoringSessionView extends GPanel {
     private TutoringSession model;
     private ModeView currentModeView;
 
-    private static final Map<Mode, ModeView> modeViewStrategies = new HashMap<>() {{
-        put(Mode.SEE_ONE, new SeeOneView());
-        put(Mode.DO_ONE, new DoOneView());
-    }};
+    private static final Map<Mode, ModeView> modeViewStrategies =
+            new HashMap<>() {
+                {
+                    put(Mode.SEE_ONE, new SeeOneView());
+                    put(Mode.DO_ONE, new DoOneView());
+                }
+            };
 
     public TutoringSession getModel() {
         return model;
@@ -52,7 +55,8 @@ public class TutoringSessionView extends GPanel {
 
         currentModeView = modeViewStrategies.get(model.getMode());
         if (currentModeView == null) {
-            throw new IllegalArgumentException("TutoringSessionView: No view found for mode: " + model.getMode());
+            throw new IllegalArgumentException(
+                    "TutoringSessionView: No view found for mode: " + model.getMode());
         }
 
         currentModeView.setModel(model.getProblem());
