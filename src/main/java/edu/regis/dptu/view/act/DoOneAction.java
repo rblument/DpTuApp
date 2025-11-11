@@ -54,7 +54,7 @@ public class DoOneAction extends DpTuGuiAction {
 
             SplashFrame.instance().selectLessonScreen(problem, Mode.DO_ONE);
         } catch (ObjNotFoundException | NonRecoverableException e) {
-            SeeOneAction.log.error(e.getMessage());
+            DoOneAction.log.error(e.getMessage());
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }
