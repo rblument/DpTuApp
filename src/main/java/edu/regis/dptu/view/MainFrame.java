@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.view.act.ActionFactory;
 
 /**
@@ -57,15 +56,14 @@ public class MainFrame extends JFrame implements WindowListener {
     /** The size of this frame will the size of the user's screen minus this screen size inset. */
     private static final int SCREEN_SIZE_INSET = 50;
 
-    /** The DP tutoring session displayed in this frame. */
-    private TutoringSession model;
-
     /** The primary view displayed in this frame. */
     private TutoringSessionView view;
 
     /** Initialize and layout the child components displayed in this frame. */
     private MainFrame() {
         super("DpTu");
+
+        MainFrame.log.info("Initializing MainFrame");
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         screenSize.width = screenSize.width - SCREEN_SIZE_INSET;
@@ -86,29 +84,6 @@ public class MainFrame extends JFrame implements WindowListener {
     }
 
     /**
-     * Update the current model with changes made in this frame and return it.
-     *
-     * @return the Session model
-     */
-    public TutoringSession getModel() {
-        // Update the model with any changes from the view
-        updateModel();
-
-        return model;
-    }
-
-    /**
-     * Display the given model in this frame.
-     *
-     * @param model a Session model
-     */
-    public void setModel(TutoringSession model) {
-        this.model = model;
-        view.setModel(model);
-        updateView();
-    }
-
-    /**
      * Get the tutoring session view.
      *
      * @return The TutoringSessionView
@@ -122,8 +97,6 @@ public class MainFrame extends JFrame implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        // Save the session before closing
-        updateModel();
         this.dispose();
     }
 
@@ -150,15 +123,5 @@ public class MainFrame extends JFrame implements WindowListener {
     /** Layout the child components used in this frame. */
     private void layoutComponents() {
         setContentPane(view);
-    }
-
-    /** Update the current model with any changes made in this frame's view. */
-    private void updateModel() {
-        // Nothing to do here for now, as the model is updated through actions
-    }
-
-    /** Display the current model in this frame's view. */
-    private void updateView() {
-        // The view will update itself based on the model
     }
 }

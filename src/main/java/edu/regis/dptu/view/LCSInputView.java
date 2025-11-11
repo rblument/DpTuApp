@@ -28,10 +28,6 @@ import edu.regis.dptu.model.ProblemListener;
 public class LCSInputView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(LCSInputView.class);
 
-    /** The logger for the class */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(LCSInputView.class.getName());
-
     private ProblemListener submitListener;
 
     private JTextField inputField1;
@@ -43,8 +39,6 @@ public class LCSInputView extends JPanel {
     private String string2;
 
     private boolean inputListenersAttached = false;
-
-    private TutoringSessionView grandparentView;
 
     public LCSInputView(ProblemListener listener) {
         submitListener = listener;
@@ -125,8 +119,8 @@ public class LCSInputView extends JPanel {
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
 
-        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 1: " + string1);
-        LCSInputView.julLogger.log(java.util.logging.Level.INFO, "Submitted String 2: " + string2);
+        LCSInputView.log.info("Submitted String 1: " + string1);
+        LCSInputView.log.info("Submitted String 2: " + string2);
 
         LCSProblem newProblem = new LCSProblem(string1, string2);
         submitListener.problemUpdated(newProblem);
