@@ -55,6 +55,9 @@ public class TutoringSession {
     /** The overall problem being solved in this session. */
     private Problem problem;
 
+    /** The Mode the user is in--See One, Do One, or Teach One */
+    private Mode mode;
+
     /**
      * The current task list.
      *
@@ -156,11 +159,10 @@ public class TutoringSession {
         this.problem = problem;
     }
 
-    public PendingTask currentTask() {
+    public PendingTask getCurrentTask() {
         return tasks.get(0);
     }
 
-    // ToDo: change to PendingTask
     public void addTask(PendingTask task) {
         tasks.add(task);
     }
@@ -179,5 +181,13 @@ public class TutoringSession {
 
     public void removeTask(int taskId) {
         for (PendingTask task : tasks) if (task.getTask().getId() == taskId) removeTask(task);
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 }

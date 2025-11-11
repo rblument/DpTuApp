@@ -38,10 +38,6 @@ public abstract class Problem extends TitledModel {
     /** The time between steps when running all */
     private static final int RUN_STEP_INTERVAL = 500;
 
-    /** The logger for the class */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(Problem.class.getName());
-
     /**
      * The type of this Dynamic Programming problem, which must be assigned when instantiating a
      * subclass
@@ -296,7 +292,7 @@ public abstract class Problem extends TitledModel {
         int size = executionHistory.size();
 
         if (size == 0) {
-            Problem.julLogger.log(java.util.logging.Level.WARNING, "Cannot undo past Line 0");
+            Problem.log.warn("Cannot undo past Line 0");
 
         } else {
             int lastItemPos = size - 1;
@@ -341,15 +337,15 @@ public abstract class Problem extends TitledModel {
             method.invoke(this);
 
         } catch (NoSuchMethodException ex) {
-            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
+            Problem.log.error(null, ex);
         } catch (SecurityException ex) {
-            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
+            Problem.log.error(null, ex);
         } catch (IllegalAccessException ex) {
-            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
+            Problem.log.error(null, ex);
         } catch (IllegalArgumentException ex) {
-            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
+            Problem.log.error(null, ex);
         } catch (InvocationTargetException ex) {
-            Problem.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
+            Problem.log.error(null, ex);
         }
     }
 

@@ -33,7 +33,6 @@ import javax.swing.JScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.aol.AssessmentLevel;
@@ -230,29 +229,6 @@ public class StepSelectorView extends GPanel {
         // Add click listener
         label.addMouseListener(
                 new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        // Get the main frame view and tell it to display this step
-                        TutoringSessionView tsView = MainFrame.instance().getView();
-                        StepCompletionView scView = tsView.getStepCompletionView();
-
-                        // Update selection highlighting
-                        selectStep(selection);
-
-                        // Show the appropriate view for this step type
-                        scView.selectStepView(selection.getStepType());
-
-                        // Find the corresponding step in the task
-                        if (currentTask != null) {
-                            for (Step step : currentTask.getSteps()) {
-                                if (step.getSubType() == selection.getStepType()) {
-                                    scView.setStep(step);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
                     @Override
                     public void mouseEntered(MouseEvent e) {
                         if (currentSelection != selection) {

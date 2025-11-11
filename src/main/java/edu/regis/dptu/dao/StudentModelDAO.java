@@ -17,6 +17,7 @@ import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Course;
 import edu.regis.dptu.model.KnowledgeComponent;
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.StudentModelFieldKind;
@@ -43,9 +44,6 @@ import edu.regis.dptu.svc.StudentModelSvc;
  */
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
     private static final Logger log = LoggerFactory.getLogger(StudentModelDAO.class);
-
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(StudentModelDAO.class.getName());
 
     /** Initialize this DAO via the parent constructor. */
     public StudentModelDAO() {
@@ -210,14 +208,12 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     break;
             }
 
-            julLogger.log(
-                    java.util.logging.Level.FINE, "Executing statement: {0}", stmt.toString());
+            StudentModelDAO.log.trace("Executing statement: {0}", stmt.toString());
 
             stmt.execute();
 
         } catch (SQLException e) {
-            julLogger.log(
-                    java.util.logging.Level.SEVERE,
+            StudentModelDAO.log.error(
                     "SQL Error - State: {0}, Code: {1}",
                     new Object[] {e.getSQLState(), e.getErrorCode()});
             throw new NonRecoverableException("StudentModelDAO-ERR-4" + e.toString(), e);
@@ -289,13 +285,13 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
      * <p>If a lesson is not yet completed in a **previous category**, it will indicate that.
      *
      * @param userId The unique identifier of the student.
-     * @param learningCategory The learning category ("See One", "Do One", "Teach One").
+     * @param mode The learning category ("See One", "Do One", "Teach One").
      * @return A list of unfinished lesson names, formatted accordingly.
      * @throws ObjNotFoundException If the student record is not found.
      * @throws NonRecoverableException If a database error occurs.
      */
     @Override
-    public List<String> retrieveIncompleteLessons(String userId, String learningCategory)
+    public List<String> retrieveIncompleteLessons(String userId, Mode mode)
             throws ObjNotFoundException, NonRecoverableException {
 
         List<String> lessons = new ArrayList<>();
@@ -321,7 +317,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     // Determine category based on AssessmentLevel
                     switch (AssessmentLevel.fromString(assessmentLevel)) {
                         case NOT_STARTED:
-                            if (learningCategory.equalsIgnoreCase("See One")) {
+                            if (mode.equals(Mode.SEE_ONE)) {
                                 lessons.add(lessonTitle);
                             } else {
                                 // If user is in "Do One" or "Teach One" but hasn't done "See One"
@@ -329,7 +325,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                             }
                             break;
                         case IN_PROGRESS:
-                            if (learningCategory.equalsIgnoreCase("Do One")) {
+                            if (mode.equals(Mode.DO_ONE)) {
                                 lessons.add(lessonTitle);
                             } else {
                                 // If user is in "Teach One" but hasn't completed "Do One"
@@ -342,7 +338,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                         case MEDIUM:
                         case HIGH:
                         case VERY_HIGH:
-                            if (learningCategory.equalsIgnoreCase("Teach One")) {
+                            if (mode.equals(Mode.TEACH_ONE)) {
                                 lessons.add(lessonTitle);
                             }
                             break;

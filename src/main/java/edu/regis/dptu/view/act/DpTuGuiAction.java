@@ -28,10 +28,7 @@ import edu.regis.dptu.util.ImgFactory;
  * <p>Provides support for loading image icons and assigning the GUI controller.
  */
 public abstract class DpTuGuiAction extends AbstractAction {
-    private static final Logger log = LoggerFactory.getLogger(DpTuGuiAction.class);
-
-    protected static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(DpTuGuiAction.class.getName());
+    protected static final Logger log = LoggerFactory.getLogger(DpTuGuiAction.class);
 
     public DpTuGuiAction(String name) {
         super(name);

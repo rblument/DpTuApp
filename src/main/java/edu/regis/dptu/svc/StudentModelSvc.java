@@ -16,6 +16,7 @@ import java.util.List;
 
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.StudentModelFieldKind;
 import edu.regis.dptu.model.aol.Assessment;
@@ -70,12 +71,12 @@ public interface StudentModelSvc {
      * Retrieve a list of unfinished lessons for a student in a specific learning mode.
      *
      * @param userId the unique identifier for the student.
-     * @param learningCategory the category of learning (e.g., "See One", "Do One", "Teach One").
+     * @param mode the category of learning (e.g., "See One", "Do One", "Teach One").
      * @return a list of strings representing unfinished lesson names.
      * @throws ObjNotFoundException if the student record is not found.
      * @throws NonRecoverableException if a database error occurs.
      */
-    List<String> retrieveIncompleteLessons(String userId, String learningCategory)
+    List<String> retrieveIncompleteLessons(String userId, Mode mode)
             throws ObjNotFoundException, NonRecoverableException;
 
     /**
