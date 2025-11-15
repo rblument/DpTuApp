@@ -299,12 +299,14 @@ public class LCSProblem extends Problem {
         codeStatements.add(
                 "<html><pre>  <b>for</b> col = 0 to m-1 <b>do</b></pre></html>"); // Line 3
         codeStatements.add("<html><pre>    L[-1,col] = 0</pre></html>"); // Line 4
-        codeStatements.add("<html><pre>  <b>for</b> row = 0 to n-1 <b>do</b></pre></html>"); // Line 5
+        codeStatements.add(
+                "<html><pre>  <b>for</b> row = 0 to n-1 <b>do</b></pre></html>"); // Line 5
         codeStatements.add(
                 "<html><pre>    <b>for</b> col = 0 to m-1 <b>do</b></pre></html>"); // Line 6
         codeStatements.add(
                 "<html><pre>      <b>if</b> x[row] == y[col] <b>then</b></pre></html>"); // Line 7
-        codeStatements.add("<html><pre>        L[row, col] = L[row-1, col-1] + 1</pre></html>"); // Line 8
+        codeStatements.add(
+                "<html><pre>        L[row, col] = L[row-1, col-1] + 1</pre></html>"); // Line 8
         codeStatements.add("<html><pre>      <b>else</b></pre></html>"); // Line 9
         codeStatements.add(
                 "<html><pre>        L[row, col] = max(L[row-1, col], L[row, col-1])</pre></html>"); // Line 10
@@ -515,7 +517,9 @@ public class LCSProblem extends Problem {
         }
     }
 
-    /** Line 7: if x[row] == y[col] (DP indices) -> if x[row-1] == y[col-1] (String/Array indices) */
+    /**
+     * Line 7: if x[row] == y[col] (DP indices) -> if x[row-1] == y[col-1] (String/Array indices)
+     */
     public void executeLine7() {
         int r = (int) variables.get("r");
         int c = (int) variables.get("c");
@@ -568,8 +572,8 @@ public class LCSProblem extends Problem {
     }
 
     /**
-     * Line 10: L[row, col] = max(L[row-1, col], L[row, col-1]) (DP indices) Maps to subproblem[r][c] =
-     * max(subproblem[r-1][c], subproblem[r][c-1]) (Array indices)
+     * Line 10: L[row, col] = max(L[row-1, col], L[row, col-1]) (DP indices) Maps to
+     * subproblem[r][c] = max(subproblem[r-1][c], subproblem[r][c-1]) (Array indices)
      */
     public void executeLine10() {
         int[][] subproblemL = (int[][]) variables.get(tableVariable);

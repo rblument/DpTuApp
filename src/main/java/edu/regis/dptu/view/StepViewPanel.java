@@ -353,8 +353,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
             if (model.hasFinished()) {
                 statusLabel.setText("Finished!");
             } else {
-                int displayNum =
-                        (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
+                int displayNum = (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
                 statusLabel.setText(" Line: " + String.format("%2d", displayNum));
             }
         } else {
