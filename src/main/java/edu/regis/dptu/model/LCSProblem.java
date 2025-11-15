@@ -114,8 +114,6 @@ public class LCSProblem extends Problem {
         variables.put("m", m);
         variables.put("r", -1);
         variables.put("c", -1);
-        variables.put("i", -1);
-        variables.put("j", -1);
         // The DP table
         variables.put("l", new int[n + 1][m + 1]);
         // An internal table to keep track of highlighting for backtracking
@@ -159,7 +157,7 @@ public class LCSProblem extends Problem {
         return executionState;
     }
 
-    /** Initialize the DP table with -1 (or another indicator of uncomputed) */
+    /** Initialize the DP table with -1 (or another indicator of un-computed) */
     private void initializeTable() {
         int[][] initialTable = (int[][]) variables.get(tableVariable);
         for (int row = 0; row <= x.length(); row++) {
@@ -273,8 +271,6 @@ public class LCSProblem extends Problem {
         nextLineNumber = 0;
         variables.put("r", -1);
         variables.put("c", -1);
-        variables.put("i", -1);
-        variables.put("j", -1);
 
         initializeTable();
         initializeBacktrackingTable();
@@ -303,15 +299,15 @@ public class LCSProblem extends Problem {
         codeStatements.add(
                 "<html><pre>  <b>for</b> col = 0 to m-1 <b>do</b></pre></html>"); // Line 3
         codeStatements.add("<html><pre>    L[-1,col] = 0</pre></html>"); // Line 4
-        codeStatements.add("<html><pre>  <b>for</b> i = 0 to n-1 <b>do</b></pre></html>"); // Line 5
+        codeStatements.add("<html><pre>  <b>for</b> row = 0 to n-1 <b>do</b></pre></html>"); // Line 5
         codeStatements.add(
-                "<html><pre>    <b>for</b> j = 0 to m-1 <b>do</b></pre></html>"); // Line 6
+                "<html><pre>    <b>for</b> col = 0 to m-1 <b>do</b></pre></html>"); // Line 6
         codeStatements.add(
-                "<html><pre>      <b>if</b> x<sub>i</sub> == y<sub>j</sub> <b>then</b></pre></html>"); // Line 7
-        codeStatements.add("<html><pre>        L[i, j] = L[i-1, j-1] + 1</pre></html>"); // Line 8
+                "<html><pre>      <b>if</b> x[row] == y[col] <b>then</b></pre></html>"); // Line 7
+        codeStatements.add("<html><pre>        L[row, col] = L[row-1, col-1] + 1</pre></html>"); // Line 8
         codeStatements.add("<html><pre>      <b>else</b></pre></html>"); // Line 9
         codeStatements.add(
-                "<html><pre>        L[i, j] = max(L[i-1, j], L[i, j-1])</pre></html>"); // Line 10
+                "<html><pre>        L[row, col] = max(L[row-1, col], L[row, col-1])</pre></html>"); // Line 10
         codeStatements.add("<html><pre>  <b>return</b> L</pre></html>"); // Line 11
     }
 
@@ -350,10 +346,6 @@ public class LCSProblem extends Problem {
                 java.util.logging.Level.INFO, "r (array idx): " + variables.get("r"));
         LCSProblem.julLogger.log(
                 java.util.logging.Level.INFO, "c (array idx): " + variables.get("c"));
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "i (array idx): " + variables.get("i"));
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "j (array idx): " + variables.get("j"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
@@ -378,8 +370,8 @@ public class LCSProblem extends Problem {
         LCSProblem.julLogger.log(java.util.logging.Level.INFO, "------------------------");
     }
 
-    // -----------------------LCS Algorithm--------------------------------------
-    // --------------------------------------------------------------------------
+    // -----------------------LCS Algorithm-------------------------------------
+    // -------------------------------------------------------------------------
 
     /** LCS(x,y) - Line 0 (Implicit start) */
     public void executeLine0() {
@@ -471,103 +463,103 @@ public class LCSProblem extends Problem {
         nextLineNumber = 3; // Go back to check c loop condition
     }
 
-    /** for i = 0 to n-1 do (DP indices) -> for i = 1 to n (Array indices) Line 5 */
+    /** for row = 0 to n-1 do (DP indices) -> for row = 1 to n (Array indices) Line 5 */
     public void executeLine5() {
-        int i = (int) variables.get("i");
+        int r = (int) variables.get("r");
 
-        if (i == -1) { // First entry
-            i = 1; // Start array index i at 1 (DP index 0)
-            variables.put("i", i);
+        if (r == -1) { // First entry
+            r = 1; // Start array index row at 1 (DP index 0)
+            variables.put("r", r);
             executionState = EXECUTION_STATE.J_LOOP;
-            nextLineNumber = 6; // Enter j loop
+            nextLineNumber = 6; // Enter col loop (j loop)
         } else { // Subsequent iterations
-            i++; // Increment i (array index)
-            variables.put("i", i);
+            r++; // Increment row (array index)
+            variables.put("r", r);
             int n = (int) variables.get("n");
 
-            if (i == n + 1) { // Check boundary (array index up to n)
-                // Finished i loop
+            if (r == n + 1) { // Check boundary (array index up to n)
+                // Finished row loop
                 nextLineNumber = 11; // Go to return statement
                 executionState = EXECUTION_STATE.RETRN;
-                variables.put("i", -1); // Reset i
+                variables.put("r", -1); // Reset row
             } else {
-                // Continue i loop, reset j loop for the new i
-                nextLineNumber = 6; // Re-enter j loop
+                // Continue row loop, reset col loop for the new row
+                nextLineNumber = 6; // Re-enter col loop
                 executionState = EXECUTION_STATE.J_LOOP;
             }
         }
     }
 
-    /** for j = 0 to m-1 do (DP indices) -> for j = 1 to m (Array indices) Line 6 */
+    /** for col = 0 to m-1 do (DP indices) -> for col = 1 to m (Array indices) Line 6 */
     public void executeLine6() {
-        int j = (int) variables.get("j");
+        int c = (int) variables.get("c");
 
-        if (j == -1) { // First entry for current i
-            j = 1; // Start array index j at 1 (DP index 0)
-            variables.put("j", j);
+        if (c == -1) { // First entry for current row
+            c = 1; // Start array index col at 1 (DP index 0)
+            variables.put("c", c);
             nextLineNumber = 7; // Go to 'if' statement
-        } else { // Subsequent iterations for current i
-            j++; // Increment j (array index)
-            variables.put("j", j);
+        } else { // Subsequent iterations for current row
+            c++; // Increment col (array index)
+            variables.put("c", c);
             int m = (int) variables.get("m");
 
-            if (j == m + 1) { // Check boundary (array index up to m)
-                // Finished j loop for current i
-                nextLineNumber = 5; // Go back to outer i loop
+            if (c == m + 1) { // Check boundary (array index up to m)
+                // Finished col loop for current row
+                nextLineNumber = 5; // Go back to outer row loop
                 executionState = EXECUTION_STATE.I_LOOP; // Back to outer loop state
-                variables.put("j", -1); // Reset j
+                variables.put("c", -1); // Reset col
             } else {
-                // Continue j loop
+                // Continue col loop
                 nextLineNumber = 7; // Go back to 'if' statement
             }
         }
     }
 
-    /** Line 7: if x[i] == y[j] (DP indices) -> if x[i-1] == y[j-1] (String/Array indices) */
+    /** Line 7: if x[row] == y[col] (DP indices) -> if x[row-1] == y[col-1] (String/Array indices) */
     public void executeLine7() {
-        int i = (int) variables.get("i");
-        int j = (int) variables.get("j");
+        int r = (int) variables.get("r");
+        int c = (int) variables.get("c");
         String xStr = (String) variables.get("x");
         String yStr = (String) variables.get("y");
 
         // Adjust indices for 0-based String access
-        if (i > 0 && j > 0 && i <= xStr.length() && j <= yStr.length()) {
-            if (xStr.charAt(i - 1) == yStr.charAt(j - 1)) {
+        if (r > 0 && c > 0 && r <= xStr.length() && c <= yStr.length()) {
+            if (xStr.charAt(r - 1) == yStr.charAt(c - 1)) {
                 nextLineNumber = 8; // Match case
             } else {
                 nextLineNumber = 9; // No match case (line 9 is 'else')
             }
         } else {
             System.err.println(
-                    "ERROR: LCSProblem executeLine7 accessing String out of bounds: i="
-                            + i
-                            + ", j="
-                            + j);
-            nextLineNumber = 6; // Tentatively go back to j loop check
+                    "ERROR: LCSProblem executeLine7 accessing String out of bounds: r="
+                            + r
+                            + ", c="
+                            + c);
+            nextLineNumber = 6; // Tentatively go back to c loop check
         }
     }
 
     /**
-     * Line 8: L[i, j] = L[i-1, j-1] + 1 (DP indices) Maps to subproblem[i][j] =
-     * subproblem[i-1][j-1] + 1 (Array indices)
+     * Line 8: L[row, col] = L[row-1, col-1] + 1 (DP indices) Maps to subproblem[r][c] =
+     * subproblem[r-1][c-1] + 1 (Array indices)
      */
     public void executeLine8() {
         int[][] subproblemL = (int[][]) variables.get(tableVariable);
-        int i = (int) variables.get("i");
-        int j = (int) variables.get("j");
+        int r = (int) variables.get("r");
+        int c = (int) variables.get("c");
         // Bounds check for array access
         if (subproblemL != null
-                && i > 0
-                && j > 0
-                && i < subproblemL.length
-                && j < subproblemL[i].length) {
-            int newValue = subproblemL[i - 1][j - 1] + 1;
-            subproblemL[i][j] = newValue;
+                && r > 0
+                && c > 0
+                && r < subproblemL.length
+                && c < subproblemL[r].length) {
+            int newValue = subproblemL[r - 1][c - 1] + 1;
+            subproblemL[r][c] = newValue;
         } else {
             System.err.println(
-                    "ERROR: LCSProblem executeLine8 accessing out of bounds: i=" + i + ", j=" + j);
+                    "ERROR: LCSProblem executeLine8 accessing out of bounds: r=" + r + ", c=" + c);
         }
-        nextLineNumber = 6; // Go back to check j loop condition
+        nextLineNumber = 6; // Go back to check c loop condition
     }
 
     /** Line 9: else (No operation, just determines control flow) */
@@ -576,32 +568,32 @@ public class LCSProblem extends Problem {
     }
 
     /**
-     * Line 10: L[i, j] = max(L[i-1, j], L[i, j-1]) (DP indices) Maps to subproblem[i][j] =
-     * max(subproblem[i-1][j], subproblem[i][j-1]) (Array indices)
+     * Line 10: L[row, col] = max(L[row-1, col], L[row, col-1]) (DP indices) Maps to subproblem[r][c] =
+     * max(subproblem[r-1][c], subproblem[r][c-1]) (Array indices)
      */
     public void executeLine10() {
         int[][] subproblemL = (int[][]) variables.get(tableVariable);
-        int i = (int) variables.get("i");
-        int j = (int) variables.get("j");
+        int r = (int) variables.get("r");
+        int c = (int) variables.get("c");
         // Bounds check for array access
         if (subproblemL != null
-                && i > 0
-                && j > 0
-                && i < subproblemL.length
-                && j < subproblemL[i].length
-                && (i - 1) < subproblemL.length
-                && j < subproblemL[i - 1].length
-                && i < subproblemL.length
-                && (j - 1) < subproblemL[i].length) {
-            int valAbove = subproblemL[i - 1][j];
-            int valLeft = subproblemL[i][j - 1];
+                && r > 0
+                && c > 0
+                && r < subproblemL.length
+                && c < subproblemL[r].length
+                && (r - 1) < subproblemL.length
+                && c < subproblemL[r - 1].length
+                && r < subproblemL.length
+                && (c - 1) < subproblemL[r].length) {
+            int valAbove = subproblemL[r - 1][c];
+            int valLeft = subproblemL[r][c - 1];
             int newValue = Integer.max(valAbove, valLeft);
-            subproblemL[i][j] = newValue;
+            subproblemL[r][c] = newValue;
         } else {
             System.err.println(
-                    "ERROR: LCSProblem executeLine10 accessing out of bounds: i=" + i + ", j=" + j);
+                    "ERROR: LCSProblem executeLine10 accessing out of bounds: r=" + r + ", c=" + c);
         }
-        nextLineNumber = 6; // Go back to check j loop condition
+        nextLineNumber = 6; // Go back to check c loop condition
     }
 
     /** Line 11: return L */
@@ -617,9 +609,9 @@ public class LCSProblem extends Problem {
         }
     }
 
-    // ---------------------------LCS Algorithm Finished-------------------------
+    // ---------------------------LCS Algorithm Finished------------------------
 
-    // -----------------------Backtracking Algorithm Begins----------------------
+    // -----------------------Backtracking Algorithm Begins---------------------
 
     /**
      * Line: Backtrack(table) executionState has already been changed to B_PRE courtesy of the
@@ -745,9 +737,9 @@ public class LCSProblem extends Problem {
         executionState = EXECUTION_STATE.B_POST;
     }
 
-    // ---------------------Backtracking Finished--------------------------------
+    // ---------------------Backtracking Finished-------------------------------
 
-    // -----------------------------Undo-----------------------------------------
+    // -----------------------------Undo----------------------------------------
 
     /* method undo() in Problem.java handles resetting nextLineNumber and
     removing the last item from executionHistory
@@ -802,54 +794,54 @@ public class LCSProblem extends Problem {
         lTable[0][c] = -1; // -1 is the initial flag value
     }
 
-    /** Undoes executeLine5: for i = 0 to n-1 do */
+    /** Undoes executeLine5: for row = 0 to n-1 do */
     public void undoLine5() {
-        int i = (int) variables.get("i");
-        if (i == 1) { // First iteration goes back to initial flag value
-            i = -1;
+        int r = (int) variables.get("r");
+        if (r == 1) { // First iteration goes back to initial flag value
+            r = -1;
             executionState = EXECUTION_STATE.I_LOOP;
         }
-        // Last iteration returns to the i loop
+        // Last iteration returns to the r loop (i loop)
         else if (executionState == EXECUTION_STATE.RETRN) {
             executionState = EXECUTION_STATE.I_LOOP;
             int n = (int) variables.get("n");
-            i = n;
-        } else { // Other iterations just decrement i
-            i--;
+            r = n;
+        } else { // Other iterations just decrement row
+            r--;
             executionState = EXECUTION_STATE.I_LOOP;
         }
-        variables.put("i", i);
+        variables.put("r", r);
     }
 
-    /** Undoes executeLine6: for j = 0 to m-1 do */
+    /** Undoes executeLine6: for col = 0 to m-1 do */
     public void undoLine6() {
-        int j = (int) variables.get("j");
-        if (j == 1) { // First iteration goes back to initial flag value
-            j = -1;
+        int c = (int) variables.get("c");
+        if (c == 1) { // First iteration goes back to initial flag value
+            c = -1;
         }
-        // Last iteration returns to the j loop
+        // Last iteration returns to the col (j) loop
         else if (executionState == EXECUTION_STATE.I_LOOP) {
             executionState = EXECUTION_STATE.J_LOOP;
             int m = (int) variables.get("m");
-            j = m + 1;
-            j--;
-        } else { // Other iterations just decrement j
-            j--;
+            c = m + 1;
+            c--;
+        } else { // Other iterations just decrement col
+            c--;
         }
-        variables.put("j", j);
+        variables.put("c", c);
     }
 
-    /** Undoes executeLine7: if x[i] == y[j] */
+    /** Undoes executeLine7: if x[row] == y[col] */
     public void undoLine7() {
         // NOOP
     }
 
-    /** Undoes executeLine8: L[i,j] = L[i-1, j-1] + 1 */
+    /** Undoes executeLine8: L[row,col] = L[row-1, col-1] + 1 */
     public void undoLine8() {
-        int i = (int) variables.get("i");
-        int j = (int) variables.get("j");
+        int r = (int) variables.get("r");
+        int c = (int) variables.get("c");
         int[][] lTable = (int[][]) variables.get(tableVariable);
-        lTable[i][j] = -1; // Restore to flag value
+        lTable[r][c] = -1; // Restore to flag value
     }
 
     /** Undoes executeLine9: else */
@@ -857,12 +849,12 @@ public class LCSProblem extends Problem {
         // NOOP
     }
 
-    /** Undoes executeLine10: L[i, j] = max(L[i-1, j], L[i, j-1]) */
+    /** Undoes executeLine10: L[row, col] = max(L[row-1, col], L[row, col-1]) */
     public void undoLine10() {
-        int i = (int) variables.get("i");
-        int j = (int) variables.get("j");
+        int r = (int) variables.get("r");
+        int c = (int) variables.get("c");
         int[][] lTable = (int[][]) variables.get(tableVariable);
-        lTable[i][j] = -1; // Restore to flag value
+        lTable[r][c] = -1; // Restore to flag value
     }
 
     /** Undoes executeLine11: return L */
@@ -870,7 +862,7 @@ public class LCSProblem extends Problem {
         executionState = EXECUTION_STATE.RETRN;
     }
 
-    // ----------------------------Undo Backtracking-----------------------------
+    // ----------------------------Undo Backtracking----------------------------
 
     /** Undoes executeLine100: Backtrack(table) */
     public void undoLine100() {
