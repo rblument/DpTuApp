@@ -145,11 +145,12 @@ src/main/resources/Logging.properties
 | Task | Status | JIRA |
 |------|--------|------|
 | Create initial configurations and dependencies for Log4J2 and SLF4J | ✅ Done | DPTU-76 |
-| Standardize SLF4J logger declarations | 🟡 In review | DPTU-77 |
-| Create This Guide | 🟡 In review | DPTU-84 |
+| Standardize SLF4J logger declarations | ✅ Done | DPTU-77 |
+| Create This Guide | ✅ Done | DPTU-84 |
+| Temp. Bug Fix in Maven Versioning | 🟡 In review | DPTU-99 |
+| Remove JUL configuration & bridge all logging to Log4j2 | 🟡 In review | DPTU-86 |
 | Add SLF4J usage across codebase | Backlog | DPTU-80 |
 | Remove `System.out.println`, `System.err` calls | Backlog | DPTU-78 |
 | Centralize Exception and Error Logging (e.g., `printStackTrace()`calls) | Backlog | DPTU-79 |
 | Migrate remaining JUL loggers → SLF4J | Backlog | DPTU-85 |
-| Remove JUL configuration & bridge all logging to Log4j2 | Backlog | DPTU-86 |
 | Create a GitHub workflow that identifies undesirable logging code and makes sure logging is actually used | Backlog | DPTU-87 |

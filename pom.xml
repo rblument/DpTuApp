@@ -33,6 +33,7 @@
                 <version>3.2.1</version>
                 
             </plugin>
+            
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -67,6 +68,23 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- This is used to do the JUL bridging with SLF4J2 for logging.-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>edu.regis.dptu.DpTuApp</mainClass>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>java.util.logging.manager</key>
+                            <value>org.apache.logging.log4j.jul.LogManager</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
         </plugins>
     
     </build>
@@ -141,18 +159,14 @@
             <version>2.23.1</version>
         </dependency>
 
-        <!-- I'm going to keep this commented until we implement it. -->
         <!-- Route java.util.logging (JUL) to Log4j2 -->
         <!-- To activate, run with: -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -->
-        <!--
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jul</artifactId>
             <version>2.23.1</version>
             <scope>runtime</scope>
         </dependency>
-        -->
-
 
     </dependencies>
 </project>

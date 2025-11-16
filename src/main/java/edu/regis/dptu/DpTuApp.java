@@ -48,6 +48,8 @@ public class DpTuApp {
      */
     public static void main(String[] args) {
         julLogger.info("DpTuApp initializing…");
+        
+        log.error("Test for Harrison.");
 
         // Load JUL configuration from classpath (optional while migrating to SLF4J/Log4j2)
         try (InputStream strm = DpTuApp.class.getResourceAsStream(julLogger_PROPERTIES)) {
