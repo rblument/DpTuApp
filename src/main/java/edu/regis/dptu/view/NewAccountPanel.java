@@ -850,49 +850,49 @@ public class NewAccountPanel extends GPanel {
     private void enableButtons(Document e) {
         // Document document = (Document)e.getDocument();
         // fName.getDocument().getLength() !=0;
-        
+
         boolean isFNameValid = isFirstNameValid();
         boolean isLNameValid = isLastNameValid();
-        boolean isUserIdValid= isEmailValid();
+        boolean isUserIdValid = isEmailValid();
         boolean isPass1Valid = isPasswordValid();
         boolean isPass2Valid = isConfirmPassValid();
         boolean isSecAnswerValid = isSecurityAnswerValid();
-        
+
         // Set invalid fields border color to red
         fName.setBorder(BorderFactory.createLineBorder(isFNameValid ? Color.BLACK : Color.RED));
         lName.setBorder(BorderFactory.createLineBorder(isLNameValid ? Color.BLACK : Color.RED));
         userId.setBorder(BorderFactory.createLineBorder(isUserIdValid ? Color.BLACK : Color.RED));
         pass1.setBorder(BorderFactory.createLineBorder(isPass1Valid ? Color.BLACK : Color.RED));
         pass2.setBorder(BorderFactory.createLineBorder(isPass2Valid ? Color.BLACK : Color.RED));
-        secAnswer.setBorder(BorderFactory.createLineBorder(isSecAnswerValid ? Color.BLACK : Color.RED));
-        
+        secAnswer.setBorder(
+                BorderFactory.createLineBorder(isSecAnswerValid ? Color.BLACK : Color.RED));
+
         /*Display hint for which field is invalid.
         If you want to change the priority of which message shows first,
         change the order of if/else chain*/
         if (!isFNameValid) {
             msg.setText(("Invalid first name"));
-        }
-        else if (!isLNameValid) {
+        } else if (!isLNameValid) {
             msg.setText("Invalid last name");
-        }
-        else if (!isUserIdValid) {
+        } else if (!isUserIdValid) {
             msg.setText("Invalid email");
-        }
-        else if (!isPass1Valid) {
+        } else if (!isPass1Valid) {
             msg.setText("Invalid password");
-        }
-        else if (!isPass2Valid) {
+        } else if (!isPass2Valid) {
             msg.setText("Passwords do not match");
-        }
-        else if (!isSecAnswerValid) {
+        } else if (!isSecAnswerValid) {
             msg.setText("Invalid answer to security question");
-        }
-        else {
+        } else {
             msg.setText("");
         }
-        
-        boolean allValid = isFNameValid && isLNameValid && isUserIdValid &&
-                                isPass1Valid && isPass2Valid && isSecAnswerValid;
+
+        boolean allValid =
+                isFNameValid
+                        && isLNameValid
+                        && isUserIdValid
+                        && isPass1Valid
+                        && isPass2Valid
+                        && isSecAnswerValid;
         createAcctBut.setEnabled(allValid);
     }
 
@@ -996,24 +996,28 @@ public class NewAccountPanel extends GPanel {
             throw new RuntimeException(ex);
         }
     }
-    
+
     /**
      * Checks the validity of the first name field
+     *
      * @return true if valid, false otherwise
      */
     private boolean isFirstNameValid() {
         return !fName.isDefaultValue() && !fName.getText().trim().isEmpty();
     }
+
     /**
      * Checks the validity of the last name field
+     *
      * @return true if valid, false otherwise
      */
     private boolean isLastNameValid() {
         return !lName.isDefaultValue() && !lName.getText().trim().isEmpty();
     }
-    
+
     /**
      * Checks the validity of the User id field
+     *
      * @return true if valid, false otherwise
      */
     private boolean isEmailValid() {
@@ -1021,28 +1025,32 @@ public class NewAccountPanel extends GPanel {
             String email = userId.getDocument().getText(0, userId.getDocument().getLength());
             Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
             return matcher.find() && !email.equals(userId.getHint());
-        }
-        catch (BadLocationException e) {
+        } catch (BadLocationException e) {
             return false;
         }
     }
-    
+
     /**
      * returns the validity of the password field
+     *
      * @return true if valid, false otherwise
      */
     private boolean isPasswordValid() {
         return pass1.getPassword().length > 0;
     }
+
     /**
      * Checks the validity of the confirm password field
+     *
      * @return true if valid, false otherwise
      */
     private boolean isConfirmPassValid() {
         return samePasswords();
     }
+
     /**
      * Checks the validity of the Security answer field
+     *
      * @return true if valid, false otherwise
      */
     private boolean isSecurityAnswerValid() {
