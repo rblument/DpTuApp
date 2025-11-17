@@ -33,10 +33,10 @@ import javax.swing.JScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.aol.AssessmentLevel;
-import edu.regis.dptu.model.Mode;
 
 /**
  * A view that displays a list of available steps for the student to select. Steps can be marked
