@@ -18,10 +18,9 @@ import java.awt.event.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.regis.dptu.view.MainFrame;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.util.ResourceMgr;
-
+import edu.regis.dptu.view.MainFrame;
 
 public class TeachOneAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(TeachOneAction.class);
