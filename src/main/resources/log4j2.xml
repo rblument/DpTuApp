@@ -1,4 +1,5 @@
-<Configuration status="WARN">
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="TRACE">
 
   <Properties>
     <Property name="APP_NAME">dptu</Property>
@@ -12,8 +13,8 @@
     </Console>
 
     <RollingFile name="File"
-      fileName="${LOG_DIR}/${APP_NAME}.log"
-      filePattern="${LOG_DIR}/archive/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz">
+      fileName="${sys:LOG_DIR:-${sys:user.dir}/logs}/dptu.log"
+      filePattern="${sys:LOG_DIR:-${sys:user.dir}/logs}/dptu-%d{yyyy-MM-dd}-%i.log.gz">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1.} - %m%n"/>
       <Policies>
         <TimeBasedTriggeringPolicy/>
