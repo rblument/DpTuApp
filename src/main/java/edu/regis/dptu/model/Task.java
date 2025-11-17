@@ -84,7 +84,7 @@ public class Task extends TitledModel {
     }
 
     public void setSteps(ArrayList<Step> steps) {
-        System.out.println("Task.setSteps: " + steps);
+        log.info("Task.setSteps: " + steps);
         this.steps = steps;
     }
 
@@ -97,7 +97,7 @@ public class Task extends TitledModel {
     }
 
     public Step currentStep() {
-        System.out.println("*** Task.currentStep: " + steps.size());
+        log.info("*** Task.currentStep: " + steps.size());
         for (Step step : steps) if (step.getSequenceIndex() == currentStepIndex) return step;
 
         return null;

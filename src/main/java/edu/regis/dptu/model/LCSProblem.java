@@ -343,39 +343,34 @@ public class LCSProblem extends Problem {
      */
     public void prettyPrint() {
         // Original prettyPrint code retained
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "--- LCSProblem State ---");
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "ExecutionState: " + executionState);
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "Current Line #: " + nextLineNumber);
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "r (array idx): " + variables.get("r"));
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "c (array idx): " + variables.get("c"));
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "i (array idx): " + variables.get("i"));
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "j (array idx): " + variables.get("j"));
+        log.info("--- LCSProblem State ---");
+        log.info("ExecutionState: " + executionState);
+        log.info("Current Line #: " + nextLineNumber);
+        log.info("r (array idx): " + variables.get("r"));
+        log.info("c (array idx): " + variables.get("c"));
+        log.info("i (array idx): " + variables.get("i"));
+        log.info("j (array idx): " + variables.get("j"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
         int[][] subproblemL = (int[][]) variables.get("l");
 
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "DP Table (l):");
-        System.out.print("       "); // Align header
+        log.info("DP Table (l):");
+        log.info("       "); // Align header
         for (int q = 0; q <= m; q++) {
-            System.out.printf("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
+            log.info("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
         }
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "");
+        log.info("");
 
         for (int p = 0; p <= n; p++) {
-            System.out.printf("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
+            log.info("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
             for (int q = 0; q <= m; q++) {
                 int val = subproblemL[p][q];
-                System.out.printf(
-                        "%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
+                log.info("%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
             }
-            LCSProblem.julLogger.log(java.util.logging.Level.INFO, "|");
+            log.info("|");
         }
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "------------------------");
+        log.info("------------------------");
     }
 
     // -----------------------LCS Algorithm--------------------------------------

@@ -137,8 +137,8 @@ public class LCSInputView extends JPanel {
     public void setDefaultStrings(String string1, String string2) {
         inputField1.setText(string1);
         inputField2.setText(string2);
-        System.out.println("DEBUG: STRING1 is " + string1);
-        System.out.println("DEBUG: LCSObject is " + this);
+        log.debug("DEBUG: STRING1 is " + string1);
+        log.debug("DEBUG: LCSObject is " + this);
         submitButton.setEnabled(false);
     }
 

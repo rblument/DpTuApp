@@ -82,7 +82,7 @@ public class StudentModel {
      * @param assessment the assessment to add
      */
     public void addAssessment(int knowledgeComponentId, Assessment assessment) {
-        System.out.println("***** StuMod.addAssess: id: " + knowledgeComponentId);
+        log.info("***** StuMod.addAssess: id: " + knowledgeComponentId);
         assessments.put(knowledgeComponentId, assessment);
     }
 

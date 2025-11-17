@@ -112,6 +112,6 @@ public class Assessment extends Model {
     /** Increment the number of hints. */
     public void incrementHints() {
         hints++;
-        System.out.println("Hints incremented to " + hints);
+        log.info("Hints incremented to " + hints);
     }
 }

@@ -35,7 +35,7 @@ public class TestStepExecution implements ProblemListener {
 
     /** Run a simple test of LCSProblem step execution */
     public void runTest() {
-        System.out.println("=== Starting LCSProblem Step Execution Test ===");
+        log.info("=== Starting LCSProblem Step Execution Test ===");
 
         // Create an LCSProblem instance with test data
         LCSProblem problem = new LCSProblem("abc", "abd");
@@ -43,40 +43,40 @@ public class TestStepExecution implements ProblemListener {
         // Register as a listener
         problem.addProblemListener(this);
 
-        System.out.println("\n--- Testing step() ---");
-        System.out.println("Initial state: line " + problem.getCurrentLineNumber());
+        log.info("\n--- Testing step() ---");
+        log.info("Initial state: line " + problem.getCurrentLineNumber());
 
         // Test stepping forward
         for (int i = 0; i < 5; i++) {
-            System.out.println("\nExecuting step " + (i + 1));
+            log.info("\nExecuting step " + (i + 1));
             problem.step();
-            System.out.println("Current line: " + problem.getCurrentLineNumber());
+            log.info("Current line: " + problem.getCurrentLineNumber());
         }
 
-        System.out.println("\n--- Testing undo() ---");
+        log.info("\n--- Testing undo() ---");
         // Test undoing
         for (int i = 0; i < 3; i++) {
-            System.out.println("\nExecuting undo " + (i + 1));
+            log.info("\nExecuting undo " + (i + 1));
             problem.undo();
-            System.out.println("Current line: " + problem.getCurrentLineNumber());
+            log.info("Current line: " + problem.getCurrentLineNumber());
         }
 
-        System.out.println("\n--- Testing reset() ---");
+        log.info("\n--- Testing reset() ---");
         // Test resetting
         problem.reset();
-        System.out.println("After reset: line " + problem.getCurrentLineNumber());
+        log.info("After reset: line " + problem.getCurrentLineNumber());
 
-        System.out.println("\n--- Testing multiple steps ---");
+        log.info("\n--- Testing multiple steps ---");
         // Test multiple steps
         problem.step(3);
-        System.out.println("After 3 steps: line " + problem.getCurrentLineNumber());
+        log.info("After 3 steps: line " + problem.getCurrentLineNumber());
 
-        System.out.println("\n=== Test Complete ===");
+        log.info("\n=== Test Complete ===");
     }
 
     @Override
     public void problemUpdated(Problem problem) {
-        System.out.println(
+        log.info(
                 "LISTENER: Problem updated notification received. Current line: "
                         + problem.getCurrentLineNumber());
     }

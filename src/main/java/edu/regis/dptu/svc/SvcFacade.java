@@ -21,6 +21,9 @@ import java.net.UnknownHostException;
 
 import com.google.gson.Gson;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A Facade that standardizes requests from the GUI Client to the DpTu tutor server via a socket
  * connection with requests and replies encoded as JSon encoded object strings
@@ -42,6 +45,8 @@ import com.google.gson.Gson;
  * @author rickb
  */
 public class SvcFacade {
+    private static final Logger log = LoggerFactory.getLogger(SvcFacade.class);
+    
     /** The single instance of the tutor facade. */
     private static final SvcFacade SINGLETON;
 
@@ -90,11 +95,11 @@ public class SvcFacade {
         Gson gson = new Gson();
         // ToDo: remove debugging stmt.
         String jsonRequest = gson.toJson(request);
-        System.out.println("*** jasonRequest *" + jsonRequest + "*");
+        log.info("*** jasonRequest *" + jsonRequest + "*");
 
         String jsonReply = send(jsonRequest);
 
-        System.out.println("*** jsonReply: " + jsonReply);
+        log.info("*** jsonReply: " + jsonReply);
 
         return gson.fromJson(jsonReply, TutorReply.class);
     }

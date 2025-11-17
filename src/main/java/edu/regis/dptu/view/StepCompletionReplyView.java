@@ -58,7 +58,7 @@ public class StepCompletionReplyView extends GPanel implements ActionListener {
 
         selectPanel("ButtonPanel_3");
 
-        System.out.println("Size: " + correctAnswerBut.getSize());
+        log.info("Size: " + correctAnswerBut.getSize());
     }
 
     @Override
