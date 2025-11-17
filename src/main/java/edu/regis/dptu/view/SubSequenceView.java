@@ -69,11 +69,11 @@ class SubSequenceView extends JPanel implements ProblemListener {
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        lengthLabel1 = new JLabel("x=");
-        lengthLabel1.setFont(new Font("Arial", Font.PLAIN, 16));
+        lengthLabel1 = new JLabel();
+        lengthLabel1.setFont(new Font("Dialog", Font.PLAIN, 16));
 
-        lengthLabel2 = new JLabel("y=");
-        lengthLabel2.setFont(new Font("Arial", Font.PLAIN, 16));
+        lengthLabel2 = new JLabel();
+        lengthLabel2.setFont(new Font("Dialog", Font.PLAIN, 16));
 
         stepButton = new JButton("Step LCS");
         stepButton.addActionListener(e -> stepThroughLCS());
@@ -97,6 +97,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line1.add(lengthLabel1);
         wordLabel1 = new JLabel();
+        wordLabel1.setFont(new Font("Dialog", Font.PLAIN, 16));
         line1.add(wordLabel1);
 
         // Changed (April 17, 2025 - EverettCV): Now loads default value of the second variable
@@ -104,6 +105,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line2.add(lengthLabel2);
         wordLabel2 = new JLabel();
+        wordLabel2.setFont(new Font("Dialog", Font.PLAIN, 16));
         line2.add(wordLabel2);
 
         wordPanel.add(line1);
@@ -154,11 +156,11 @@ class SubSequenceView extends JPanel implements ProblemListener {
      */
     public void updateWords(String word1, String word2) {
         // Update lengths
-        lengthLabel1.setText("x=" + word1.length());
-        lengthLabel2.setText("y=" + word2.length());
+        lengthLabel1.setText("n=" + word1.length());
+        lengthLabel2.setText("m=" + word2.length());
 
-        wordLabel1.setText(word1);
-        wordLabel2.setText(word2);
+        wordLabel1.setText("x=" + word1);
+        wordLabel2.setText("y=" + word2);
 
         canvas.setWord1(word1);
         canvas.setWord2(word2);

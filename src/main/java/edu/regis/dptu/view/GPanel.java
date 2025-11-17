@@ -44,8 +44,8 @@ public class GPanel extends JPanel {
      * &nbsp;&nbsp; GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, &nbsp;&nbsp; 5,5,5,5);
      *
      * @param c the child component
-     * @param gridX the row in which the child component is anchored
-     * @param gridY the column in which the child component is anchored
+     * @param gridX the column in which the child component is anchored
+     * @param gridY the row in which the child component is anchored
      * @param gridWidth the rows spanned by the child component in the bag
      * @param gridHeight the cols spanned by the child component in the bag
      * @param weightx the amount of width scaling during panel expansion
@@ -59,8 +59,8 @@ public class GPanel extends JPanel {
      */
     public void addc(
             Component c,
-            int gridX,
-            int gridY,
+            int gridX, // column
+            int gridY, // row
             int gridWidth,
             int gridHeight,
             double weightx,
