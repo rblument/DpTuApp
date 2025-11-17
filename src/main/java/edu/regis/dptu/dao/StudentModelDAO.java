@@ -321,7 +321,11 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                                 lessons.add(lessonTitle);
                             } else {
                                 // If user is in "Do One" or "Teach One" but hasn't done "See One"
-                                lessons.add(lessonTitle + " (Complete in \"See One\" first)");
+                                lessons.add(
+                                        lessonTitle
+                                                + " (Complete in \""
+                                                + Mode.SEE_ONE.title()
+                                                + "\" first)");
                             }
                             break;
                         case IN_PROGRESS:
@@ -329,7 +333,11 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                                 lessons.add(lessonTitle);
                             } else {
                                 // If user is in "Teach One" but hasn't completed "Do One"
-                                lessons.add(lessonTitle + " (Complete in \"Do One\" first)");
+                                lessons.add(
+                                        lessonTitle
+                                                + " (Complete in \""
+                                                + Mode.DO_ONE.title()
+                                                + "\" first)");
                             }
                             break;
                         case COMPLETED:
