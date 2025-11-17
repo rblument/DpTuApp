@@ -51,12 +51,12 @@ public class MatrixChainProblemTest {
         problem.prettyPrint();
 
         // Now test undo all the way back to PRE
-        while (problem.getCurrentLineNumber() != 0) {
+        while (problem.getNextLineNumber() != 0) {
             problem.undo();
         }
 
         // Final state after undoing everything
-        assertTrue(problem.getCurrentLineNumber() == 0);
+        assertTrue(problem.getNextLineNumber() == 0);
 
         problem.prettyPrint();
     }
