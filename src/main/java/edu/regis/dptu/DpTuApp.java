@@ -50,7 +50,7 @@ public class DpTuApp {
         log.info("------------------------------------------------------------");
         log.info("Application STARTED at {}", java.time.LocalDateTime.now());
         log.info("------------------------------------------------------------\n");
-        
+
         // Load JUL configuration from classpath (optional while migrating to SLF4J/Log4j2)
         try (InputStream strm = DpTuApp.class.getResourceAsStream(julLogger_PROPERTIES)) {
             if (strm != null) {
