@@ -45,9 +45,6 @@ public class ProblemInputView extends JPanel {
         switch (kind) {
             case LCS_PROBLEM:
                 ProblemInputView.log.info("Setting currentPanel to LCSInputView");
-                LCSProblem lcsProblem = (LCSProblem) problem;
-                LCSInputView lcsInputView = new LCSInputView(submitListener);
-                lcsInputView.setDefaultStrings(lcsProblem.getX(), lcsProblem.getY());
                 currentPanel = new LCSInputView(submitListener);
                 break;
             case MATRIX_CHAIN:

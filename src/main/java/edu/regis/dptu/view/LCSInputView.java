@@ -119,13 +119,10 @@ public class LCSInputView extends JPanel {
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
 
-        LCSInputView.log.info("Submitted String 1: " + string1);
-        LCSInputView.log.info("Submitted String 2: " + string2);
-
-        LCSProblem newProblem = new LCSProblem(string1, string2);
-        submitListener.problemUpdated(newProblem);
-
-        // TODO: Add input validation (e.g., prevent empty submissions).
+        if (string1.length() > 0 && string2.length() > 0) {
+            LCSProblem newProblem = new LCSProblem(string1, string2);
+            submitListener.problemUpdated(newProblem);
+        }
     }
 
     /**
