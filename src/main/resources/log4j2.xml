@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="TRACE">
+<Configuration status="WARN"> <!-- This line is about how Log4J logs about itself.-->
 
   <Properties>
-    <Property name="APP_NAME">${sys:APP_NAME:-dptu}</Property>
+      
+    <!-- This line controls our app level logging.
+      It says to use the sys envvar first, then whatever is here second.-->
+    <Property name="ROOT_LEVEL">${sys:LOG_LEVEL:-DEBUG}</Property>
+      
+    <Property name="APP_NAME_PROP">${sys:APP_NAME:-dptu}</Property>
     
     <!-- If -DLOG_DIR is set, use that. Otherwise default to {user.dir}/logs -->
-    <Property name="LOG_DIR">${sys:LOG_DIR:-${sys:user.dir}/logs}</Property>
+    <Property name="LOG_DIR_PROP">${sys:LOG_DIR:-${sys:user.dir}/logs}</Property>
     
-    <Property name="ROOT_LEVEL">${sys:LOG_LEVEL:-INFO}</Property>
   </Properties>
 
   <Appenders>
@@ -16,8 +20,8 @@
     </Console>
 
     <RollingFile name="File"
-      fileName="${LOG_DIR}/${APP_NAME}.log"
-      filePattern="${LOG_DIR}/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz"
+      fileName="${LOG_DIR_PROP}/${APP_NAME_PROP}.log"
+      filePattern="${LOG_DIR_PROP}/${APP_NAME_PROP}-%d{yyyy-MM-dd}-%i.log.gz"
       append="true">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n%throwable"/>
       <Policies>

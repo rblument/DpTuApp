@@ -84,6 +84,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
+                    <mainClass>edu.regis.dptu.DpTuApp</mainClass>
                     <systemProperties>
                         <systemProperty>
                             <key>java.util.logging.manager</key>
@@ -92,7 +93,6 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-
 
         </plugins>
     
@@ -169,12 +169,10 @@
         </dependency>
 
         <!-- Route java.util.logging (JUL) to Log4j2 -->
-        <!-- To activate, run with: -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jul</artifactId>
             <version>2.23.1</version>
-            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
