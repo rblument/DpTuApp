@@ -3,23 +3,27 @@
 
   <Properties>
     <Property name="APP_NAME">dptu</Property>
-    <Property name="LOG_DIR">${sys:user.home}/.${APP_NAME}/logs</Property>
+    <Property name="LOG_DIR">${sys:user.dir}/logs</Property>
     <Property name="ROOT_LEVEL">${sys:LOG_LEVEL:-INFO}</Property>
   </Properties>
 
   <Appenders>
     <Console name="Console">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%t] %c{1.} - %m%n"/>
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"/>
     </Console>
 
     <RollingFile name="File"
-      fileName="${sys:LOG_DIR:-${sys:user.dir}/logs}/dptu.log"
-      filePattern="${sys:LOG_DIR:-${sys:user.dir}/logs}/dptu-%d{yyyy-MM-dd}-%i.log.gz">
-      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1.} - %m%n"/>
+      fileName="${LOG_DIR}/dptu.log"
+      filePattern="${LOG_DIR}/dptu-%d{yyyy-MM-dd}-%i.log.gz"
+      append="true"
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n%throwable"/>
       <Policies>
-        <TimeBasedTriggeringPolicy/>
-        <SizeBasedTriggeringPolicy size="10 MB"/>
+        <!-- rotate daily -->
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <!-- also rotate if file exceeds ~10MB in the same day -->
+        <SizeBasedTriggeringPolicy size="10MB"/>
       </Policies>
+      <!-- keep up to X archived files (older will be deleted) -->
       <DefaultRolloverStrategy max="14"/>
     </RollingFile>
   </Appenders>
@@ -30,5 +34,5 @@
       <AppenderRef ref="File"/>
     </Root>
   </Loggers>
-  
+ 
 </Configuration>
