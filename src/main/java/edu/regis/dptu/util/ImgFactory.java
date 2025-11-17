@@ -31,11 +31,12 @@ public class ImgFactory {
 
     /** Directory in the Resource path where the images are located. */
     private static final String DIRECTORY = "/";
-
+   
     /**
-     * Create an Image Icon by loading its corresponding png image.
-     *
-     * @param n The id of the image to load (e.g. 0 - 127).
+     * Create an Image Icon by loading its corresponding PNG image.
+     * 
+     * @param fileName The filename of the image to load
+     * @param altText The alternate text of the image to use
      * @return ImageIcon with the corresponding seven segment display.
      */
     public static ImageIcon createIcon(String fileName, String altText) {
@@ -49,7 +50,7 @@ public class ImgFactory {
             return ImageIO.read(ImgFactory.class.getResourceAsStream(path));
 
         } catch (IOException e) {
-            System.err.println("Couldn't find image file: " + path);
+            log.error("Couldn't find image file: " + path);
             return null;
         }
     }

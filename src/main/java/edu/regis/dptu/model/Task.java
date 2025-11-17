@@ -79,7 +79,7 @@ public class Task extends TitledModel {
     }
 
     public ArrayList<Step> getSteps() {
-        System.out.println("Task.getSteps: " + steps.size());
+        log.info("Task.getSteps: " + steps.size());
         return steps;
     }
 
