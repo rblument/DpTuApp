@@ -47,12 +47,11 @@ public class DpTuApp {
      * @param args ignored
      */
     public static void main(String[] args) {
-        
-        String julAnswer = "java.util.logging.manager = "
-                + System.getProperty("java.util.logging.manager");
+
+        String julAnswer =
+                "java.util.logging.manager = " + System.getProperty("java.util.logging.manager");
         log.debug(julAnswer);
 
-        
         log.info("------------------------------------------------------------");
         log.info("Application STARTED at {}", java.time.LocalDateTime.now());
         log.info("------------------------------------------------------------\n");
