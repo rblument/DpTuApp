@@ -41,7 +41,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.1</version>
-                
             </plugin>
             
             <plugin>
@@ -79,20 +78,25 @@
                 </executions>
             </plugin>
             
-            <!-- This is used to do the JUL bridging with SLF4J2 for logging.-->
+            <!-- create logs dir at project root -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
-                <configuration>
-                    <mainClass>edu.regis.dptu.DpTuApp</mainClass>
-                    <systemProperties>
-                        <systemProperty>
-                            <key>java.util.logging.manager</key>
-                            <value>org.apache.logging.log4j.jul.LogManager</value>
-                        </systemProperty>
-                    </systemProperties>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-logs-dir</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${project.basedir}/logs"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
