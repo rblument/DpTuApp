@@ -3,7 +3,10 @@
 
   <Properties>
     <Property name="APP_NAME">${sys:APP_NAME:-dptu}</Property>
-    <Property name="LOG_DIR">${sys:user.dir}/logs</Property>
+    
+    <!-- If -DLOG_DIR is set, use that. Otherwise default to {user.dir}/logs -->
+    <Property name="LOG_DIR">${sys:LOG_DIR:-${sys:user.dir}/logs}</Property>
+    
     <Property name="ROOT_LEVEL">${sys:LOG_LEVEL:-INFO}</Property>
   </Properties>
 
@@ -13,7 +16,7 @@
     </Console>
 
     <RollingFile name="File"
-      fileName="${LOG_DIR}/${APP_NAME}"
+      fileName="${LOG_DIR}/${APP_NAME}.log"
       filePattern="${LOG_DIR}/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz"
       append="true">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n%throwable"/>
