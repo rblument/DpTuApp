@@ -67,7 +67,7 @@ log.error("Failed to save record", exception);
 Configuration file is located at:
 
 ```
-src/main/resources/log4j2.properties
+src/main/resources/log4j2.xml
 ```
 
 This file controls:
@@ -84,7 +84,7 @@ During development, logs appear in the **console**.
 Logs files are also written to:
 
 ```
-~/.dptu/logs
+DpTuApp/logs
 ```
 
 ## Legacy JUL Logging (Temporary Compatibility)
@@ -98,6 +98,8 @@ private static final java.util.logging.Logger julLogger =
 
 julLogger.log(java.util.logging.Level.WARNING, "Old logging path still active");
 ```
+
+JUL logging configurations are being overwritten to use SLF4J2 settings (log4j2.xml).
 
 ### Rules for JUL Code During Migration
 - **Do not** import `java.util.logging.Logger`
