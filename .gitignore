@@ -3,3 +3,7 @@ target/
 nbproject/
 src/main/java/resources/Data/
 .vscode/settings.json
+
+### Logs ###
+logs/
+!logs/.gitkeep
