@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -DLOG_DIR=${project.dir}/logs</exec.vmArgs>
+                <exec.vmArgs>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -DLOG_DIR=logs</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
@@ -27,7 +27,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -DLOG_DIR=${project.dir}/logs -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.vmArgs>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -DLOG_DIR=logs -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
@@ -45,7 +45,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -DLOG_DIR=${project.dir}/logs</exec.vmArgs>
+                <exec.vmArgs>-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager -DLOG_DIR=logs</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
                 <exec.executable>java</exec.executable>
