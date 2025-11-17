@@ -850,64 +850,50 @@ public class NewAccountPanel extends GPanel {
     private void enableButtons(Document e) {
         // Document document = (Document)e.getDocument();
         // fName.getDocument().getLength() !=0;
-
-        boolean isValidFName = !fName.isDefaultValue();
-        if (isValidFName) {
-            fName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        } else {
-            fName.setBorder(BorderFactory.createLineBorder(Color.RED));
+        
+        boolean isFNameValid = isFirstNameValid();
+        boolean isLNameValid = isLastNameValid();
+        boolean isUserIdValid= isEmailValid();
+        boolean isPass1Valid = isPasswordValid();
+        boolean isPass2Valid = isConfirmPassValid();
+        boolean isSecAnswerValid = isSecurityAnswerValid();
+        
+        // Set invalid fields border color to red
+        fName.setBorder(BorderFactory.createLineBorder(isFNameValid ? Color.BLACK : Color.RED));
+        lName.setBorder(BorderFactory.createLineBorder(isLNameValid ? Color.BLACK : Color.RED));
+        userId.setBorder(BorderFactory.createLineBorder(isUserIdValid ? Color.BLACK : Color.RED));
+        pass1.setBorder(BorderFactory.createLineBorder(isPass1Valid ? Color.BLACK : Color.RED));
+        pass2.setBorder(BorderFactory.createLineBorder(isPass2Valid ? Color.BLACK : Color.RED));
+        secAnswer.setBorder(BorderFactory.createLineBorder(isSecAnswerValid ? Color.BLACK : Color.RED));
+        
+        /*Display hint for which field is invalid.
+        If you want to change the priority of which message shows first,
+        change the order of if/else chain*/
+        if (!isFNameValid) {
+            msg.setText(("Invalid first name"));
         }
-
-        boolean isValidLName = !lName.isDefaultValue();
-        if (isValidLName) {
-            lName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        } else {
-            lName.setBorder(BorderFactory.createLineBorder(Color.RED));
+        else if (!isLNameValid) {
+            msg.setText("Invalid last name");
         }
-
-        boolean isValidUserId = !userId.isDefaultValue();
-        if (isValidUserId) {
-            Document userIdDoc = userId.getDocument();
-            try {
-                String email = userIdDoc.getText(0, userIdDoc.getLength());
-
-                Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-                isValidUserId = matcher.find();
-
-                if (isValidUserId) {
-                    userId.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                } else {
-                    userId.setBorder(BorderFactory.createLineBorder(Color.RED));
-                }
-            } catch (BadLocationException er) {
-                // Cannot happen since 0 to length
-            }
-        } else {
-            userId.setBorder(BorderFactory.createLineBorder(Color.RED));
+        else if (!isUserIdValid) {
+            msg.setText("Invalid email");
         }
-
-        boolean isPass1Valid = pass1.getDocument().getLength() == 0;
-        if (isPass1Valid) {
-            pass1.setBorder(BorderFactory.createLineBorder(Color.RED));
-        } else {
-            pass1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        else if (!isPass1Valid) {
+            msg.setText("Invalid password");
         }
-
-        boolean isSamePass = samePasswords();
-        if (isSamePass) {
-            pass2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        } else {
-            pass2.setBorder(BorderFactory.createLineBorder(Color.RED));
+        else if (!isPass2Valid) {
+            msg.setText("Passwords do not match");
         }
-
-        if (isValidFName && isValidLName && isValidUserId && isSamePass) {
-            createAcctBut.setEnabled(true);
+        else if (!isSecAnswerValid) {
+            msg.setText("Invalid answer to security question");
+        }
+        else {
             msg.setText("");
-
-        } else {
-            createAcctBut.setEnabled(false);
-            msg.setText("(* Please fix problems highlighted in red.)");
         }
+        
+        boolean allValid = isFNameValid && isLNameValid && isUserIdValid &&
+                                isPass1Valid && isPass2Valid && isSecAnswerValid;
+        createAcctBut.setEnabled(allValid);
     }
 
     /**
@@ -1009,5 +995,57 @@ public class NewAccountPanel extends GPanel {
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
+    }
+    
+    /**
+     * Checks the validity of the first name field
+     * @return true if valid, false otherwise
+     */
+    private boolean isFirstNameValid() {
+        return !fName.isDefaultValue() && !fName.getText().trim().isEmpty();
+    }
+    /**
+     * Checks the validity of the last name field
+     * @return true if valid, false otherwise
+     */
+    private boolean isLastNameValid() {
+        return !lName.isDefaultValue() && !lName.getText().trim().isEmpty();
+    }
+    
+    /**
+     * Checks the validity of the User id field
+     * @return true if valid, false otherwise
+     */
+    private boolean isEmailValid() {
+        try {
+            String email = userId.getDocument().getText(0, userId.getDocument().getLength());
+            Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+            return matcher.find() && !email.equals(userId.getHint());
+        }
+        catch (BadLocationException e) {
+            return false;
+        }
+    }
+    
+    /**
+     * returns the validity of the password field
+     * @return true if valid, false otherwise
+     */
+    private boolean isPasswordValid() {
+        return pass1.getPassword().length > 0;
+    }
+    /**
+     * Checks the validity of the confirm password field
+     * @return true if valid, false otherwise
+     */
+    private boolean isConfirmPassValid() {
+        return samePasswords();
+    }
+    /**
+     * Checks the validity of the Security answer field
+     * @return true if valid, false otherwise
+     */
+    private boolean isSecurityAnswerValid() {
+        return secAnswer.getPassword().length > 0;
     }
 }
