@@ -49,8 +49,8 @@ public class LCSProblem extends Problem {
         PRE,
         R_LOOP,
         C_LOOP,
-        I_LOOP,
-        J_LOOP,
+        I_LOOP, // } These represent the nested
+        J_LOOP, // } for loop
         RETRN,
         POST,
         B_PRE,
