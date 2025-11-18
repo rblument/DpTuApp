@@ -617,12 +617,11 @@ public class LCSProblem extends Problem {
         }
     }
 
-    /** 
-     * This is basically a NOOP
-     * If we try to step past the end of the algorithm, this is the method
-     * that will execute. This can only happen if the user clicks the "run steps"
-     * button several times, launching multiple threads which interfere with the
-     * normal method of checking if the algorithm is finished.
+    /**
+     * This is basically a NOOP If we try to step past the end of the algorithm, this is the method
+     * that will execute. This can only happen if the user clicks the "run steps" button several
+     * times, launching multiple threads which interfere with the normal method of checking if the
+     * algorithm is finished.
      */
     public void executeLine12() {
         int lastLineIndex = executionHistory.size() - 1;
@@ -888,7 +887,7 @@ public class LCSProblem extends Problem {
     public void undoLine11() {
         executionState = EXECUTION_STATE.RETRN;
     }
-    
+
     public void undoLine12() {
         // NOOP
     }
@@ -987,6 +986,6 @@ public class LCSProblem extends Problem {
     }
 
     public void undoLine112() {
-    // NOOP    
+        // NOOP
     }
 }
