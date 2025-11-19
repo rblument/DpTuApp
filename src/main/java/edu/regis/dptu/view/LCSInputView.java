@@ -124,7 +124,7 @@ public class LCSInputView extends JPanel {
             LCSProblem newProblem = new LCSProblem(string1, string2);
             submitListener.problemUpdated(newProblem);
         } else {
-            String msg = "Strings must contain at least one letter, number,  or symbol.";
+            String msg = "Strings must contain at least one letter, number, or symbol.";
             JOptionPane.showMessageDialog(this, msg, "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
     }
