@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.ProblemListener;
-import javax.swing.JOptionPane;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
