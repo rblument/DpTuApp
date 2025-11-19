@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.ProblemListener;
+import javax.swing.JOptionPane;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
@@ -122,6 +123,9 @@ public class LCSInputView extends JPanel {
         if (string1.length() > 0 && string2.length() > 0) {
             LCSProblem newProblem = new LCSProblem(string1, string2);
             submitListener.problemUpdated(newProblem);
+        } else {
+            String msg = "Strings must contain at least one letter, number,  or symbol.";
+            JOptionPane.showMessageDialog(this, msg, "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
     }
 
