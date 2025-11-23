@@ -347,6 +347,13 @@ public class MatrixChainProblem extends Problem {
         executionState = EXECUTION_STATE.POST;
     }
 
+    /** Undoes executeLine0: resets i and returns to PRE state. */
+    public void undoLine0() {
+        variables.put("i", 0);
+        executionState = EXECUTION_STATE.PRE;
+        nextLineNumber = 0;
+    }
+
     /**
      * Undoes the effects of executeLine1 (m[i][i] assignment). Restores previous value from
      * history.
