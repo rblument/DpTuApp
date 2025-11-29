@@ -17,12 +17,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +47,20 @@ class SubSequenceView extends JPanel implements ProblemListener {
 
     private static final java.util.logging.Logger julLogger =
             java.util.logging.Logger.getLogger(SubSequenceView.class.getName());
+    
+    private static final int MAX_LABEL_CHARS = 20;
+    private static final int CHAR_WIDTH_PX = 16;
+    private static final int MIN_CANVAS_WIDTH = 100;
+    private static final int MAX_CANVAS_WIDTH = 4000;
+    private static final int CANv_HORIZONTAL_PADDING = 40;
+    private static final int DEFAULT_CANV_HEIGHT = 300;
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2, wordLabel1, wordLabel2;
     private JButton stepButton;
     public SubSequenceCanvasView canvas;
+    
+    private JScrollPane canvasScrollPane;
+    
     private Problem model;
 
     public SubSequenceView() {
@@ -84,9 +97,12 @@ class SubSequenceView extends JPanel implements ProblemListener {
     /** The components of the view are displayed in specific positions. */
     private void layoutComponents() {
         setLayout(new BorderLayout());
+        
+        JPanel topPanel = new JPanel(new BorderLayout());
 
         // Display 'Subsequence Highlighter'
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        topPanel.add(titleLabel, BorderLayout.NORTH);
 
         // Displaying words
         JPanel wordPanel = new JPanel();
@@ -110,18 +126,24 @@ class SubSequenceView extends JPanel implements ProblemListener {
 
         wordPanel.add(line1);
         wordPanel.add(line2);
+        
+        topPanel.add(wordPanel, BorderLayout.SOUTH);
 
         // nvas added
-        JPanel canvasPanel = new JPanel();
-        canvasPanel.add(canvas);
-
+        canvasScrollPane = new JScrollPane(canvas);
+        canvasScrollPane.setBorder(null);
+        canvasScrollPane.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        canvasScrollPane.setVerticalScrollBarPolicy(
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        
+        canvasScrollPane.getViewport().setBackground(Color.WHITE);
         // Button added
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        canvasPanel.add(stepButton);
+        buttonPanel.add(stepButton);
 
-        add(titleLabel, BorderLayout.NORTH);
-        add(wordPanel, BorderLayout.NORTH);
-        add(canvasPanel, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
+        add(canvasScrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -155,22 +177,52 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * @param word2 Updated second string input
      */
     public void updateWords(String word1, String word2) {
+        if (word1 == null)
+            word1 = "";
+        if (word2 == null)
+            word2 = "";
+        
+        
         // Update lengths
         lengthLabel1.setText("n=" + word1.length());
         lengthLabel2.setText("m=" + word2.length());
+        
+        String compactOne = compactWord(word1);
+        String compactTwo = compactWord(word2);
 
-        wordLabel1.setText("x=" + word1);
-        wordLabel2.setText("y=" + word2);
+        wordLabel1.setText("x=" + compactOne);
+        wordLabel2.setText("y=" + compactTwo);
+        
+        wordLabel1.setToolTipText(word1.isEmpty() ? null : word1);
+        wordLabel2.setToolTipText(word2.isEmpty() ? null : word2);
 
         canvas.setWord1(word1);
         canvas.setWord2(word2);
-
-        canvas.setPreferredSize(new Dimension(600, 300));
+        
+        // Get text font metrics no matter what we change font to
+        FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
+        
+        int width1 = fm.stringWidth(word1);
+        int width2 = fm.stringWidth(word2);
+        int maxTextWidth = Math.max(width1, width2);
+        
+        int desiredWidth = maxTextWidth + CANv_HORIZONTAL_PADDING;
+        desiredWidth = Math.max(MIN_CANVAS_WIDTH, desiredWidth);
+        desiredWidth = Math.min(MAX_CANVAS_WIDTH, desiredWidth);
+        
+        int desiredHeight = DEFAULT_CANV_HEIGHT;
+        if (canvas.getPreferredSize() != null)
+            desiredHeight = canvas.getPreferredSize().height;
+        
+        canvas.setPreferredSize(new Dimension(desiredWidth, desiredHeight));
         canvas.revalidate();
         canvas.repaint();
-
-        repaint();
+        
+        if (canvasScrollPane != null)
+            canvasScrollPane.revalidate();
+        
         revalidate();
+        repaint();
     }
 
     /**
@@ -235,5 +287,21 @@ class SubSequenceView extends JPanel implements ProblemListener {
         }
 
         // setModel() handles if(model = null).
+    }
+    
+    private String compactWord(String word) {
+        if (word == null) {
+            return "";
+        }
+        
+        if (word.length() <= MAX_LABEL_CHARS) {
+            return word;
+        }
+        
+        int keep = MAX_LABEL_CHARS / 3;
+        String start = word.substring(0, keep);
+        String end = word.substring(word.length() - keep);
+        
+        return start + "..." + end;
     }
 }
