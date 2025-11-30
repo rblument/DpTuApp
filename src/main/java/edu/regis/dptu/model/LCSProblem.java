@@ -613,7 +613,19 @@ public class LCSProblem extends Problem {
         }
     }
 
-    // ---------------------------LCS Algorithm Finished------------------------
+    /**
+     * This is basically a NOOP If we try to step past the end of the algorithm, this is the method
+     * that will execute. This can only happen if the user clicks the "run steps" button several
+     * times, launching multiple threads which interfere with the normal method of checking if the
+     * algorithm is finished.
+     */
+    public void executeLine12() {
+        int lastLineIndex = executionHistory.size() - 1;
+        // Remove any record of this line executing
+        executionHistory.remove(lastLineIndex);
+    }
+
+    // ---------------------------LCS Algorithm Finished-------------------------
 
     // -----------------------Backtracking Algorithm Begins---------------------
 
@@ -741,7 +753,13 @@ public class LCSProblem extends Problem {
         executionState = EXECUTION_STATE.B_POST;
     }
 
-    // ---------------------Backtracking Finished-------------------------------
+    /** This is basically a NOOP. We will remove it from executionHistory */
+    public void executeLine112() {
+        int lastLineIndex = executionHistory.size() - 1;
+        executionHistory.remove(lastLineIndex);
+    }
+
+    // ---------------------Backtracking Finished--------------------------------
 
     // -----------------------------Undo----------------------------------------
 
@@ -866,7 +884,11 @@ public class LCSProblem extends Problem {
         executionState = EXECUTION_STATE.RETRN;
     }
 
-    // ----------------------------Undo Backtracking----------------------------
+    public void undoLine12() {
+        // NOOP
+    }
+
+    // ----------------------------Undo Backtracking-----------------------------
 
     /** Undoes executeLine100: Backtrack(table) */
     public void undoLine100() {
@@ -957,5 +979,9 @@ public class LCSProblem extends Problem {
     /** Undoes executeLine111: Return LCS */
     public void undoLine111() {
         executionState = EXECUTION_STATE.B_RETRN;
+    }
+
+    public void undoLine112() {
+        // NOOP
     }
 }
