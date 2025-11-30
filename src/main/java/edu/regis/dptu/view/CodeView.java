@@ -176,9 +176,9 @@ public class CodeView extends GPanel implements ProblemListener {
 
         // Highlight the current line if model and labels are valid
         if (model != null && statementJLabels != null) {
-            int currentLineNumber = model.getCurrentLineNumber();
-            if (currentLineNumber >= 0 && currentLineNumber < statementJLabels.size()) {
-                JLabel currentLabel = statementJLabels.get(currentLineNumber);
+            int nextLineNumber = model.getNextLineNumber();
+            if (nextLineNumber >= 0 && nextLineNumber < statementJLabels.size()) {
+                JLabel currentLabel = statementJLabels.get(nextLineNumber);
                 if (currentLabel != null) {
                     currentLabel.setBackground(Color.YELLOW);
                     currentLabel.setOpaque(true);

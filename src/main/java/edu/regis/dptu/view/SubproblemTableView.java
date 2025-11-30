@@ -261,7 +261,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
      */
     private void buildColumnHeaders(String string) {
         List<String> headers = new ArrayList<String>();
-        headers.add("(i,j)"); // Top-left corner label
+        headers.add("table"); // Top-left corner label
         headers.add("-1"); // Base case column
         for (int i = 0; i < string.length(); i++) {
             // HTML formatting to center label and index
