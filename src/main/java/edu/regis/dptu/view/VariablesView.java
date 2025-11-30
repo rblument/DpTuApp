@@ -39,10 +39,6 @@ public class VariablesView extends GPanel implements ProblemListener {
             rValue,
             cName,
             cValue,
-            iName,
-            iValue,
-            jName,
-            jValue,
             xrName,
             xrValue,
             ycName,
@@ -70,10 +66,6 @@ public class VariablesView extends GPanel implements ProblemListener {
         rValue = new JLabel();
         cName = new JLabel("col = ");
         cValue = new JLabel();
-        jName = new JLabel("j = ");
-        jValue = new JLabel();
-        iName = new JLabel("i = ");
-        iValue = new JLabel();
         nName = new JLabel("n = ");
         nValue = new JLabel();
         mName = new JLabel("m = ");
@@ -148,69 +140,9 @@ public class VariablesView extends GPanel implements ProblemListener {
                 5);
 
         addc(
-                iName,
-                0,
-                2,
-                1,
-                1,
-                0.0,
-                0.0,
-                GridBagConstraints.NORTHEAST,
-                GridBagConstraints.NONE,
-                5,
-                5,
-                5,
-                5);
-
-        addc(
-                iValue,
-                1,
-                2,
-                1,
-                1,
-                0.0,
-                0.0,
-                GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
-                5,
-                5,
-                5,
-                5);
-
-        addc(
-                jName,
-                0,
-                3,
-                1,
-                1,
-                0.0,
-                0.0,
-                GridBagConstraints.NORTHEAST,
-                GridBagConstraints.NONE,
-                5,
-                5,
-                5,
-                5);
-
-        addc(
-                jValue,
-                1,
-                3,
-                1,
-                1,
-                0.0,
-                0.0,
-                GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
-                5,
-                5,
-                5,
-                5);
-
-        addc(
                 nName,
                 0,
-                4,
+                2,
                 1,
                 1,
                 0.0,
@@ -225,7 +157,7 @@ public class VariablesView extends GPanel implements ProblemListener {
         addc(
                 nValue,
                 1,
-                4,
+                2,
                 1,
                 1,
                 0.0,
@@ -240,7 +172,7 @@ public class VariablesView extends GPanel implements ProblemListener {
         addc(
                 mName,
                 0,
-                5,
+                3,
                 1,
                 1,
                 0.0,
@@ -255,7 +187,7 @@ public class VariablesView extends GPanel implements ProblemListener {
         addc(
                 mValue,
                 1,
-                5,
+                3,
                 1,
                 1,
                 0.0,
@@ -367,11 +299,13 @@ public class VariablesView extends GPanel implements ProblemListener {
             case LCS_PROBLEM:
                 int r = problem.getVariableValue("r");
                 int c = problem.getVariableValue("c");
-                int i = problem.getVariableValue("i");
-                int j = problem.getVariableValue("j");
                 int lineNum = problem.getNextLineNumber();
                 String x = ((LCSProblem) problem).getX();
                 String y = ((LCSProblem) problem).getY();
+                String rText;
+                String cText;
+                String xrText;
+                String ycText;
 
                 /*
                 -1 is a flag value that says "this variables is not in play right now",
@@ -379,21 +313,14 @@ public class VariablesView extends GPanel implements ProblemListener {
                 Also, the table starts with -1, but Java arrays start with 0, so we
                 must adjust
                 */
-                String rText = (r > -1) ? String.valueOf(problem.getVariableValue("r") - 1) : "";
-                String cText = (c > -1) ? String.valueOf(problem.getVariableValue("c") - 1) : "";
-                String iText = (i > -1) ? String.valueOf(problem.getVariableValue("i") - 1) : "";
-                String jText = (j > -1) ? String.valueOf(problem.getVariableValue("j") - 1) : "";
-                String xrText;
-                String ycText;
+                rText = (r > -1) ? String.valueOf(problem.getVariableValue("r") - 1) : "";
+                cText = (c > -1) ? String.valueOf(problem.getVariableValue("c") - 1) : "";
 
-                // -----------------------EXCEPTIONS-----------------------------
+                // -----------------------EXCEPTIONS----------------------------
 
                 // We want to see the chars, but only when we're on the relevant line
 
-                if (lineNum == 7) {
-                    xrText = String.valueOf(x.charAt(i - 1));
-                    ycText = String.valueOf(y.charAt(j - 1));
-                } else if (lineNum == 103 || lineNum == 104) {
+                if (lineNum == 7 || lineNum == 103 || lineNum == 104) {
                     xrText = String.valueOf(x.charAt(r - 1));
                     ycText = String.valueOf(y.charAt(c - 1));
                 } else {
@@ -415,16 +342,14 @@ public class VariablesView extends GPanel implements ProblemListener {
                     cText = (c == -1) ? String.valueOf(c + 1) : String.valueOf(c);
                 }
                 if (lineNum == 5) {
-                    iText = (i == -1) ? String.valueOf(i + 1) : String.valueOf(i);
+                    rText = (r == -1) ? String.valueOf(r + 1) : String.valueOf(r);
                 }
                 if (lineNum == 6) {
-                    jText = (j == -1) ? String.valueOf(j + 1) : String.valueOf(j);
+                    cText = (c == -1) ? String.valueOf(c + 1) : String.valueOf(c);
                 }
 
                 rValue.setText(rText);
                 cValue.setText(cText);
-                iValue.setText(iText);
-                jValue.setText(jText);
                 nValue.setText(String.valueOf(x.length()));
                 mValue.setText(String.valueOf(y.length()));
                 xrValue.setText(xrText);
