@@ -35,7 +35,6 @@ public class MatrixChainProblemTest {
 
         // Step through all lines until execution is complete
         while (problem.getExecutionState() != MatrixChainProblem.EXECUTION_STATE.POST) {
-            //            System.out.println("hello");
             problem.step();
         }
 
