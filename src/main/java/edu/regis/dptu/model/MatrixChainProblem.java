@@ -50,7 +50,7 @@ public class MatrixChainProblem extends Problem {
     // Stack to record changes to m[i][j] for undo functionality
     private Stack<int[]> mHistory = new Stack<>();
 
-    //For storing split points
+    // For storing split points
     private Stack<int[]> sHistory = new Stack<>();
 
     // Backtracking parenthesization result
@@ -58,7 +58,7 @@ public class MatrixChainProblem extends Problem {
 
     // backtracking table for highlighting
     private int[][] bTable;
-    
+
     // Enum backtracking states
     public enum B_STATE {
         B_PRE,
@@ -69,7 +69,7 @@ public class MatrixChainProblem extends Problem {
         B_CLOSE,
         B_POST
     }
-    
+
     private B_STATE bState;
 
     // Stack for backtracking
@@ -77,7 +77,7 @@ public class MatrixChainProblem extends Problem {
 
     // Marker for ")"
     private static final String CLOSE_PAREN = ")";
-    
+
     /**
      * Constructor initializes the DP variables, dimension list "d", and the empty cost table "m"
      * with -1 placeholders. Sets initial execution state and loads code statements.
@@ -116,10 +116,9 @@ public class MatrixChainProblem extends Problem {
         variables.put("k", 0);
         variables.put("d", d);
         variables.put("m", new int[n][n]);
-        variables.put("s", new int[n][n]);        // splits
-        variables.put("b", new int[n][n]);        // backtracking highlight
+        variables.put("s", new int[n][n]); // splits
+        variables.put("b", new int[n][n]); // backtracking highlight
         bTable = (int[][]) variables.get("b");
-        
 
         // Specify which variable represents the DP table
         tableVariable = "m";
@@ -137,11 +136,10 @@ public class MatrixChainProblem extends Problem {
 
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
-                s[x][y] = -1;           // no split recorded yet
-                b[x][y] = UNVISITED;    // highlight table
+                s[x][y] = -1; // no split recorded yet
+                b[x][y] = UNVISITED; // highlight table
             }
         }
-                
 
         // Set initial execution state and task kind
         executionState = EXECUTION_STATE.PRE;
@@ -172,20 +170,20 @@ public class MatrixChainProblem extends Problem {
     @Override
     public boolean backtrackReady() {
         return executionState == EXECUTION_STATE.POST
-            || (bState != null && bState != B_STATE.B_POST);
+                || (bState != null && bState != B_STATE.B_POST);
     }
 
     @Override
     public void backtrackingOn() {
         nextLineNumber = BACKTRACKING_START_NUM;
         bState = B_STATE.B_PRE;
-        
+
         // Clear b table
         int[][] b = (int[][]) variables.get("b");
         for (int[] row : b) {
             java.util.Arrays.fill(row, UNVISITED);
         }
-        
+
         currentParens = "";
         btStack.clear();
 
@@ -206,8 +204,7 @@ public class MatrixChainProblem extends Problem {
     /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
-        return executionState == EXECUTION_STATE.POST
-            || (bState == B_STATE.B_POST);
+        return executionState == EXECUTION_STATE.POST || (bState == B_STATE.B_POST);
     }
 
     /** {@inheritDoc} */
@@ -432,7 +429,7 @@ public class MatrixChainProblem extends Problem {
             // Record split
             int[][] s = (int[][]) variables.get("s");
             sHistory.push(new int[] {i, j, s[i][j]});
-            s[i][j] = k; 
+            s[i][j] = k;
         }
         int k = (int) variables.get("k");
         variables.put("k", k + 1);
@@ -448,7 +445,7 @@ public class MatrixChainProblem extends Problem {
     public void executeLine100() {
         currentParens = "";
         btStack.clear();
-        btStack.push(new int[]{0, (int)variables.get("n") - 1});
+        btStack.push(new int[] {0, (int) variables.get("n") - 1});
         bState = B_STATE.B_PRE;
         nextLineNumber = 101;
     }
@@ -503,7 +500,7 @@ public class MatrixChainProblem extends Problem {
     public void executeLine104() {
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
-        
+
         int[][] s = (int[][]) variables.get("s");
         int k = s[i][j];
         variables.put("k", k);
@@ -513,8 +510,8 @@ public class MatrixChainProblem extends Problem {
 
         // Order: closing paren
         btStack.push(CLOSE_PAREN);
-        btStack.push(new int[]{k + 1, j});
-        btStack.push(new int[]{i, k});
+        btStack.push(new int[] {k + 1, j});
+        btStack.push(new int[] {i, k});
 
         nextLineNumber = 101;
         bState = B_STATE.B_SPLIT;
@@ -524,8 +521,7 @@ public class MatrixChainProblem extends Problem {
     public void executeLine118() {
         bState = B_STATE.B_POST;
     }
-        
-        
+
     /** Undoes executeLine0: resets i and returns to PRE state. */
     public void undoLine0() {
         variables.put("i", 0);
@@ -603,7 +599,7 @@ public class MatrixChainProblem extends Problem {
             int[][] s = (int[][]) variables.get("s");
             s[prev[0]][prev[1]] = prev[2];
         }
-        
+
         int k = (int) variables.get("k") - 1;
         variables.put("k", k);
     }
@@ -625,7 +621,7 @@ public class MatrixChainProblem extends Problem {
     }
 
     public void undoLine102() {
-        //none
+        // none
     }
 
     public void undoLine103() {
@@ -635,8 +631,7 @@ public class MatrixChainProblem extends Problem {
 
         // remove A + i
         if (currentParens.endsWith("A" + i)) {
-            currentParens = currentParens.substring(0,
-                currentParens.length() - ("A" + i).length());
+            currentParens = currentParens.substring(0, currentParens.length() - ("A" + i).length());
         }
     }
 
@@ -647,13 +642,11 @@ public class MatrixChainProblem extends Problem {
 
         // undo "("
         if (currentParens.endsWith("(")) {
-            currentParens = currentParens.substring(0,
-                currentParens.length() - 1);
+            currentParens = currentParens.substring(0, currentParens.length() - 1);
         }
     }
 
     public void undoLine118() {
         bState = B_STATE.B_WHILE;
     }
-
 }
