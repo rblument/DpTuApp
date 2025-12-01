@@ -44,6 +44,8 @@ public class MatrixChainProblem extends Problem {
         POST
     }
 
+    // DPTU-102: Reset implementation completed in DPTU-101
+
     // Current state of execution within the algorithm
     private EXECUTION_STATE executionState;
 
