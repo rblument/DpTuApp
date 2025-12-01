@@ -254,6 +254,12 @@ public abstract class Problem extends TitledModel {
     }
 
     public void addProblemListener(ProblemListener listener) {
+    if (listener == null) {
+        throw new NullPointerException("ProblemListener cannot be null");
+    }
+
+    // Prevent the same listener from being added multiple times
+    if (!problemListeners.contains(listener)) {
         problemListeners.add(listener);
     }
 
