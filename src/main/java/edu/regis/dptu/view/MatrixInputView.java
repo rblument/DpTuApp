@@ -11,7 +11,8 @@ import javax.swing.JTextField;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//DPTU-104: MatrixInputView input field already implemented in 103
+
+// DPTU-104: MatrixInputView input field already implemented in 103
 
 /*
  * Currently, MatrixInputView is thought to be designed as a single Matrix Input Field with an Add button to append
