@@ -78,9 +78,7 @@ public class MatrixInputView extends JPanel {
         removeButton.addActionListener(e -> handleRemoveSelected());
     }
 
-    /**
-     * Reads the text field, checks it, and if valid adds a matrix to the list.
-     */
+    /** Reads the text field, checks it, and if valid adds a matrix to the list. */
     private void handleAddMatrix() {
         String text = matrixField.getText().trim();
         if (text.isEmpty()) {
@@ -115,9 +113,7 @@ public class MatrixInputView extends JPanel {
         }
     }
 
-    /**
-     * Removes the selected matrix from both the list on screen and the backing list.
-     */
+    /** Removes the selected matrix from both the list on screen and the backing list. */
     private void handleRemoveSelected() {
         int index = matrixList.getSelectedIndex();
         if (index >= 0 && index < matrixDimensions.size()) {
@@ -127,9 +123,7 @@ public class MatrixInputView extends JPanel {
         }
     }
 
-    /**
-     * Turns a string like "10x20", "10 20", or "10,20" into two ints: rows and cols.
-     */
+    /** Turns a string like "10x20", "10 20", or "10,20" into two ints: rows and cols. */
     private int[] parseMatrixDimensions(String input) {
         // Split on x, comma, or whitespace
         String[] tokens = input.toLowerCase().split("[x,\\s]+");
@@ -142,28 +136,21 @@ public class MatrixInputView extends JPanel {
         return new int[] {rows, cols};
     }
 
-    /**
-     * Shows a simple warning popup if the input is not valid.
-     */
+    /** Shows a simple warning popup if the input is not valid. */
     private void showValidationError(String message) {
         JOptionPane.showMessageDialog(
-                this,
-                message,
-                "Invalid Matrix Input",
-                JOptionPane.WARNING_MESSAGE);
+                this, message, "Invalid Matrix Input", JOptionPane.WARNING_MESSAGE);
     }
 
     /**
-     * Returns a copy of all matrix sizes that have been added so far.
-     * Each entry is {rows, cols}.
+     * Returns a copy of all matrix sizes that have been added so far. Each entry is {rows, cols}.
      */
     public List<int[]> getMatrixDimensions() {
         return new ArrayList<>(matrixDimensions);
     }
 
     /**
-     * Clears everything in this view: text field and list.
-     * Can be called when the problem is reset.
+     * Clears everything in this view: text field and list. Can be called when the problem is reset.
      */
     public void clearAll() {
         matrixDimensions.clear();
