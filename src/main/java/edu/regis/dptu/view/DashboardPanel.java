@@ -180,13 +180,10 @@ public class DashboardPanel extends GPanel {
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
         add(copyright, BorderLayout.SOUTH);
     }
-    
+
     private void displayWelcomeDialog() {
         String welcomeMessage =
-                "Welcome, "
-                        + firstName
-                        + "! "
-                        + "Your session has successfully started.";
+                "Welcome, " + firstName + "! " + "Your session has successfully started.";
         JOptionPane.showMessageDialog(
                 null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
     }

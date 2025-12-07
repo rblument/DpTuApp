@@ -157,11 +157,11 @@ public class SplashFrame extends JFrame {
     public Account getAccount() {
         return newAccountPanel.getModel();
     }
-    
+
     public Student getStudent() {
         return student;
     }
-    
+
     public void setStudent(Student student) {
         this.student = student;
     }
