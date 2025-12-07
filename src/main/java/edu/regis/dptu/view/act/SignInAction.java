@@ -23,12 +23,13 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import edu.regis.dptu.dao.AccountDAO;
+import edu.regis.dptu.dao.StudentModelDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
-import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
+import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.svc.ClientRequest;
 import edu.regis.dptu.svc.ServerRequestType;
 import edu.regis.dptu.svc.SvcFacade;
@@ -66,24 +67,28 @@ public class SignInAction extends DpTuGuiAction {
     public void actionPerformed(ActionEvent evt) {
         Gson gson = new Gson();
         SplashFrame frame = SplashFrame.instance();
-        User account = frame.getUser();
+        User user = frame.getUser();
 
         ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
-        request.setData(gson.toJson(account));
+        request.setData(gson.toJson(user));
         TutorReply reply = SvcFacade.instance().tutorRequest(request);
 
         switch (reply.getStatus()) {
             case "Authenticated":
                 try {
                     AccountDAO accDao = new AccountDAO();
-                    Account studentAccount = accDao.retrieve(account.getUserId());
+                    Account studentAccount = accDao.retrieve(user.getUserId());
+                    StudentModelDAO smDao = new StudentModelDAO();
+                    StudentModel sm = smDao.retrieve(user.getUserId());
                     Student student = new Student(studentAccount);
+                    student.setStudentModel(sm);
+                    SplashFrame.instance().setStudent(student);
 
                     if (student.getStudentModel().getSessions().isEmpty()) {
                         frame.setIsFirstLogin(true);
                     }
-                    TutoringSession studentSession = new TutoringSession(student);
-                    SplashFrame.instance().initializeDashboard(studentSession);
+                    String name = studentAccount.getFirstName();
+                    SplashFrame.instance().initializeDashboard(name);
                 } catch (ObjNotFoundException e) {
                     System.out.println("No account found");
                 } catch (NonRecoverableException e) {

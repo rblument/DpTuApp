@@ -25,8 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
-import edu.regis.dptu.model.Mode;
-import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
 
@@ -93,8 +92,8 @@ public class SplashFrame extends JFrame {
         return reset;
     }
 
-    /** The current tutoring session. */
-    private TutoringSession tutoringSession;
+    /** All student info should reside here. */
+    private Student student;
 
     /** A CardLayout containing all main panels (SPLASH, NEW_USER, DASHBOARD, etc.). */
     private JPanel cards;
@@ -158,6 +157,14 @@ public class SplashFrame extends JFrame {
     public Account getAccount() {
         return newAccountPanel.getModel();
     }
+    
+    public Student getStudent() {
+        return student;
+    }
+    
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 
     /** Display to the user the result of an invalid password in a sign in. */
     public void invalidPass() {
@@ -200,23 +207,17 @@ public class SplashFrame extends JFrame {
     /**
      * Initialize and show dashboard for the given session.
      *
-     * @param session The current tutoring session
+     * @param firstName - The name of this user.
      */
-    public void initializeDashboard(TutoringSession session) {
-        if (session == null) {
-            SplashFrame.log.error("TutoringSession is null in initializeDashboard");
-            return;
-        }
-
-        this.tutoringSession = session;
+    public void initializeDashboard(String firstName) {
 
         // Create new dashboard if it doesn't exist
         if (this.dashboardPanel == null) {
-            this.dashboardPanel = new DashboardPanel(session);
+            this.dashboardPanel = new DashboardPanel(firstName);
             this.cards.add(dashboardPanel, DASHBOARD);
         } else {
             // Update existing dashboard
-            this.dashboardPanel.setModel(session);
+            dashboardPanel.setFirstName(firstName);
         }
 
         // Make sure the dashboard is visible
@@ -294,12 +295,11 @@ public class SplashFrame extends JFrame {
      * Select the lesson screen for the problem. Creates a new TutoringSession
      *
      * @author EverettCV
+     * @param ts - TutoringSession to be displayed for this lesson.
      */
-    public void selectLessonScreen(Problem problem, Mode mode) {
-        this.tutoringSession.setProblem(problem);
-        this.tutoringSession.setMode(mode);
+    public void selectLessonScreen(TutoringSession ts) {
 
-        MainFrame.instance().getView().setModel(tutoringSession);
+        MainFrame.instance().getView().setModel(ts);
 
         // Show the MainFrame (lesson view)
         MainFrame.instance().setVisible(true);

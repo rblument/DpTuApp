@@ -18,9 +18,11 @@ import java.awt.event.KeyEvent;
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
@@ -47,6 +49,7 @@ public class SeeOneAction extends DpTuGuiAction {
 
     /**
      * @author EverettCV
+     * @param evt
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
@@ -56,7 +59,10 @@ public class SeeOneAction extends DpTuGuiAction {
 
             Problem problem = problemDAO.retrieveByKind(kind);
 
-            SplashFrame.instance().selectLessonScreen(problem, Mode.SEE_ONE);
+            Account account = SplashFrame.instance().getAccount();
+            TutoringSession ts = new TutoringSession(account, problem);
+            ts.setMode(Mode.SEE_ONE);
+            SplashFrame.instance().selectLessonScreen(ts);
 
         } catch (ObjNotFoundException | NonRecoverableException e) {
             SeeOneAction.log.error(e.getMessage());

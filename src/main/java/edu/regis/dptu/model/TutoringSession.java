@@ -35,8 +35,8 @@ public class TutoringSession {
      */
     private String securityToken = "";
 
-    /** The student being tutored in this session. */
-    private Student student;
+    /** The email address of the student being tutored in this session. */
+    private String userId;
 
     /** A summary of the course currently being taught in this session. */
     private CourseDigest course;
@@ -69,23 +69,22 @@ public class TutoringSession {
     /**
      * Initialize this session with default information.
      *
-     * @param student the Student being tutored in this session.
+     * @param userId - The email address of the student associated with this session.
      */
-    public TutoringSession(Student student) {
-        this.student = student;
+    public TutoringSession(String userId) {
+        this.userId = userId;
         tasks = new ArrayList<>();
     }
 
     /**
-     * Initialize this session with an Account and a Problem. This constructor creates a new Student
-     * object from the Account.
+     * Initialize this session with an Account and a Problem.
      *
      * @param account the Account used to create the Student.
      * @param problem the Problem to be solved in this session.
      * @author EverettCV
      */
     public TutoringSession(Account account, Problem problem) {
-        this.student = new Student(account); // Create a new Student from Account
+        this.userId = account.getUserId();
         this.problem = problem;
         this.tasks = new ArrayList<>(); // Initialize tasks list
     }
@@ -107,16 +106,16 @@ public class TutoringSession {
     }
 
     /**
-     * Return the student being tutored in this tutoring session.
+     * Return the email of the student being tutored in this tutoring session.
      *
-     * @return a Student
+     * @return user's email address
      */
-    public Student getStudent() {
-        return student;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public CourseDigest getCourse() {

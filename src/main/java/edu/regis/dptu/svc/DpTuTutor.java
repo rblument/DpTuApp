@@ -169,6 +169,7 @@ public class DpTuTutor implements TutorSvc {
      *
      * @param jsonAcct a JSon encoded Account object
      * @return a TutorReply if successful the status is "Created", otherwise the status is "ERR".
+     * @throws edu.regis.dptu.err.NonRecoverableException
      */
     public TutorReply createAccount(String jsonAcct) throws NonRecoverableException {
         Account acct = gson.fromJson(jsonAcct, Account.class);
@@ -354,7 +355,7 @@ public class DpTuTutor implements TutorSvc {
             throws NonRecoverableException {
         Account account = student.getAccount();
 
-        TutoringSession tSession = new TutoringSession(student);
+        TutoringSession tSession = new TutoringSession(account.getUserId());
         tSession.setStartDate(new GregorianCalendar());
         tSession.setCourse(course.getDigest());
         tSession.setUnit(course.currentUnit().getDigest());

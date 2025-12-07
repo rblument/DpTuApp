@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ScaffoldLevel;
-import edu.regis.dptu.model.TutoringSession;
+import edu.regis.dptu.model.Student;
+import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.view.act.DoOneAction;
 import edu.regis.dptu.view.act.SeeOneAction;
@@ -34,7 +35,7 @@ import edu.regis.dptu.view.act.TeachOneAction;
 public class DashboardPanel extends GPanel {
     private static final Logger log = LoggerFactory.getLogger(DashboardPanel.class);
 
-    private TutoringSession model;
+    private String firstName;
 
     private JButton logOutButton;
     private JButton settingsButton;
@@ -50,23 +51,20 @@ public class DashboardPanel extends GPanel {
     private static final Color REGIS_BLUE = new Color(0, 43, 73);
     private static final Color REGIS_GOLD = new Color(241, 196, 0);
 
-    public DashboardPanel(TutoringSession tutoringSession) {
-        model = tutoringSession;
+    public DashboardPanel(String firstName) {
+        this.firstName = firstName;
 
-        String welcomeMessage =
-                "Welcome, "
-                        + tutoringSession.getStudent().getAccount().getFirstName()
-                        + "! "
-                        + "Your session has successfully started.";
-        JOptionPane.showMessageDialog(
-                null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
+        displayWelcomeDialog();
 
         initializeComponents();
         layoutComponents();
     }
 
-    public void setModel(TutoringSession model) {
-        this.model = model;
+    /* Greets user by name in JOptionPanne and dashboard header. */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+        welcomeLabel.setText("Welcome, " + firstName + "!");
+        displayWelcomeDialog();
     }
 
     /**
@@ -94,8 +92,7 @@ public class DashboardPanel extends GPanel {
         settingsButton = new JButton("Settings");
         settingsButton.setFocusPainted(false);
 
-        welcomeLabel =
-                new JLabel("Welcome, " + model.getStudent().getAccount().getFirstName() + "!");
+        welcomeLabel = new JLabel("Welcome, " + firstName + "!");
         welcomeLabel.setForeground(REGIS_GOLD); // Gold color
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -183,6 +180,16 @@ public class DashboardPanel extends GPanel {
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
         add(copyright, BorderLayout.SOUTH);
     }
+    
+    private void displayWelcomeDialog() {
+        String welcomeMessage =
+                "Welcome, "
+                        + firstName
+                        + "! "
+                        + "Your session has successfully started.";
+        JOptionPane.showMessageDialog(
+                null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     private JPanel createColumn(CustomProgressBar progressBar, JButton button, String labelText) {
         JPanel column = new JPanel(new BorderLayout(0, 5));
@@ -221,16 +228,18 @@ public class DashboardPanel extends GPanel {
      * @author hsherwin@regis.edu
      */
     private void applyScaffoldLevelRules() {
+        Student student = SplashFrame.instance().getStudent();
+        StudentModel studentModel;
 
         // Gracefully handle if the model objects don't exist.
-        if (model == null || model.getStudent() == null) {
+        if (student == null) {
             DashboardPanel.log.warn(
-                    "DashboardPanel: model or student is null, " + "skipping scaffold level rules");
+                    "DashboardPanel: student is null, " + "skipping scaffold level rules");
             return;
         }
 
         // Get the current scaffold level.
-        var studentModel = model.getStudent().getStudentModel();
+        studentModel = student.getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
         DashboardPanel.log.info("DashboardPanel: applying scaffold level rules for {0}", lvl);
 
