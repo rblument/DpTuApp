@@ -22,8 +22,8 @@ public class MatrixChainProblem extends Problem {
     private static final Logger log = LoggerFactory.getLogger(MatrixChainProblem.class);
 
     /**
-     * Unified execution states, including both forward execution and backtracking.
-     * This matches the design of LCSProblem.
+     * Unified execution states, including both forward execution and backtracking. This matches the
+     * design of LCSProblem.
      */
     public enum EXECUTION_STATE {
         PRE,
@@ -111,8 +111,8 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public boolean backtrackReady() {
-        return executionState == EXECUTION_STATE.POST ||
-               executionState != EXECUTION_STATE.BACKTRACK_DONE;
+        return executionState == EXECUTION_STATE.POST
+                || executionState != EXECUTION_STATE.BACKTRACK_DONE;
     }
 
     @Override
@@ -141,8 +141,8 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public boolean hasFinished() {
-        return executionState == EXECUTION_STATE.POST ||
-               executionState == EXECUTION_STATE.BACKTRACK_DONE;
+        return executionState == EXECUTION_STATE.POST
+                || executionState == EXECUTION_STATE.BACKTRACK_DONE;
     }
 
     @Override
@@ -185,7 +185,8 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add("<html><pre>        j = i + c</pre></html>");
         codeStatements.add("<html><pre>        m[i][j] = ∞</pre></html>");
         codeStatements.add("<html><pre>        for k = i to j-1</pre></html>");
-        codeStatements.add("<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>");
+        codeStatements.add(
+                "<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>");
         codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>");
         codeStatements.add("<html><pre>return m</pre></html>");
     }
@@ -220,7 +221,7 @@ public class MatrixChainProblem extends Problem {
         int n = (int) variables.get("n");
         int[][] m = (int[][]) variables.get("m");
 
-        mHistory.push(new int[]{i, i, m[i][i]});
+        mHistory.push(new int[] {i, i, m[i][i]});
         m[i][i] = 0;
 
         if (i + 1 == n) {
@@ -272,7 +273,7 @@ public class MatrixChainProblem extends Problem {
         int j = (int) variables.get("j");
         int[][] m = (int[][]) variables.get("m");
 
-        mHistory.push(new int[]{i, j, m[i][j]});
+        mHistory.push(new int[] {i, j, m[i][j]});
         m[i][j] = Integer.MAX_VALUE;
         variables.put("k", i);
 
@@ -310,13 +311,13 @@ public class MatrixChainProblem extends Problem {
         int[][] m = (int[][]) variables.get("m");
 
         if (cost < m[i][j]) {
-            mHistory.push(new int[]{i, j, m[i][j]});
+            mHistory.push(new int[] {i, j, m[i][j]});
             m[i][j] = cost;
 
             int[][] s = (int[][]) variables.get("s");
             int kVal = (int) variables.get("k");
 
-            sHistory.push(new int[]{i, j, s[i][j]});
+            sHistory.push(new int[] {i, j, s[i][j]});
             s[i][j] = kVal;
         }
 
@@ -338,7 +339,7 @@ public class MatrixChainProblem extends Problem {
         btStack.clear();
 
         int n = (int) variables.get("n");
-        btStack.push(new int[]{0, n - 1});
+        btStack.push(new int[] {0, n - 1});
 
         executionState = EXECUTION_STATE.BACKTRACK_PRE;
         nextLineNumber = 101;
@@ -401,8 +402,8 @@ public class MatrixChainProblem extends Problem {
         bTable[i][j] = HIT;
 
         btStack.push(CLOSE_PAREN);
-        btStack.push(new int[]{k + 1, j});
-        btStack.push(new int[]{i, k});
+        btStack.push(new int[] {k + 1, j});
+        btStack.push(new int[] {i, k});
 
         executionState = EXECUTION_STATE.BACKTRACK_SPLIT;
         nextLineNumber = 101;
@@ -503,8 +504,7 @@ public class MatrixChainProblem extends Problem {
         bTable[i][j] = UNVISITED;
 
         if (currentParens.endsWith("A" + i)) {
-            currentParens = currentParens.substring(
-                0, currentParens.length() - ("A" + i).length());
+            currentParens = currentParens.substring(0, currentParens.length() - ("A" + i).length());
         }
     }
 
@@ -514,8 +514,7 @@ public class MatrixChainProblem extends Problem {
         bTable[i][j] = UNVISITED;
 
         if (currentParens.endsWith("(")) {
-            currentParens = currentParens.substring(
-                0, currentParens.length() - 1);
+            currentParens = currentParens.substring(0, currentParens.length() - 1);
         }
     }
 
