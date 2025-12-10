@@ -52,7 +52,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
     private static final int CHAR_WIDTH_PX = 16;
     private static final int MIN_CANVAS_WIDTH = 100;
     private static final int MAX_CANVAS_WIDTH = 4000;
-    private static final int CANv_HORIZONTAL_PADDING = 40;
+    private static final int CANV_HORIZONTAL_PADDING = 40;
     private static final int DEFAULT_CANV_HEIGHT = 300;
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2, wordLabel1, wordLabel2;
@@ -195,14 +195,11 @@ class SubSequenceView extends JPanel implements ProblemListener {
         canvas.setWord1(word1);
         canvas.setWord2(word2);
 
-        // Get text font metrics no matter what we change font to
-        FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
+        int maxLen = Math.max(word1.length(), word2.length());
+        
+        int estWidth = maxLen * CHAR_WIDTH_PX;
 
-        int width1 = fm.stringWidth(word1);
-        int width2 = fm.stringWidth(word2);
-        int maxTextWidth = Math.max(width1, width2);
-
-        int desiredWidth = maxTextWidth + CANv_HORIZONTAL_PADDING;
+        int desiredWidth = estWidth + CANV_HORIZONTAL_PADDING;
         desiredWidth = Math.max(MIN_CANVAS_WIDTH, desiredWidth);
         desiredWidth = Math.min(MAX_CANVAS_WIDTH, desiredWidth);
 
