@@ -73,7 +73,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt = conn.prepareStatement(sql, keyCol);
 
             stmt.setString(1, session.getSecurityToken());
-            stmt.setString(2, session.getStudent().getStudentModel().getUserId());
+            stmt.setString(2, session.getUserId());
             stmt.setInt(3, session.getCourse().getId());
             stmt.setInt(4, session.getUnit().getId());
             stmt.setBoolean(5, session.isIsActive());

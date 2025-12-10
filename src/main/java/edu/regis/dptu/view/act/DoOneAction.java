@@ -18,9 +18,11 @@ import java.awt.event.KeyEvent;
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
@@ -52,7 +54,10 @@ public class DoOneAction extends DpTuGuiAction {
             ProblemKind kind = dashboard.getSelectedProblemKind();
             Problem problem = problemDAO.retrieveByKind(kind);
 
-            SplashFrame.instance().selectLessonScreen(problem, Mode.DO_ONE);
+            Account account = SplashFrame.instance().getAccount();
+            TutoringSession ts = new TutoringSession(account, problem);
+            ts.setMode(Mode.DO_ONE);
+            SplashFrame.instance().selectLessonScreen(ts);
         } catch (ObjNotFoundException | NonRecoverableException e) {
             DoOneAction.log.error(e.getMessage());
             SplashFrame.instance().showError("Error", "Failed to load problem");
