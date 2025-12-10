@@ -152,9 +152,9 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener {
 
         // Highlight the current line if model and labels are valid
         if (model != null && backtrackingStatementJLabels != null) {
-            int currentLineNumber = model.getCurrentLineNumber() - model.getBacktrackingStartNum();
-            if (currentLineNumber >= 0 && currentLineNumber < backtrackingStatementJLabels.size()) {
-                JLabel currentLabel = backtrackingStatementJLabels.get(currentLineNumber);
+            int nextLineNumber = model.getNextLineNumber() - model.getBacktrackingStartNum();
+            if (nextLineNumber >= 0 && nextLineNumber < backtrackingStatementJLabels.size()) {
+                JLabel currentLabel = backtrackingStatementJLabels.get(nextLineNumber);
                 if (currentLabel != null) {
                     currentLabel.setBackground(Color.YELLOW);
                     currentLabel.setOpaque(true);

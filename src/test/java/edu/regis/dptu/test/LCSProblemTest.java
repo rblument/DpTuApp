@@ -61,7 +61,7 @@ public class LCSProblemTest {
         assertEquals(y.length(), m);
         assertEquals(LCSProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
 
-        assertEquals(0, problem.getCurrentLineNumber());
+        assertEquals(0, problem.getNextLineNumber());
         problem.step(); // executeLine0 LCS(x,y);
         assertEquals(LCSProblem.EXECUTION_STATE.R_LOOP, problem.getExecutionState());
 
@@ -69,13 +69,13 @@ public class LCSProblemTest {
 
         // Execute the r loop
         while (r <= n) { // we start with r==0 which corresponds to -1 on the table
-            assertEquals(1, problem.getCurrentLineNumber());
+            assertEquals(1, problem.getNextLineNumber());
             problem.step(); // Line 1 r++
             r++;
             problem.step(); // Line 2 L[r,-1] = 0;
         }
 
-        assertEquals(1, problem.getCurrentLineNumber());
+        assertEquals(1, problem.getNextLineNumber());
         problem.step(); // Line 1 one last time to increment r past the boundary and break the loop
 
         assertEquals(LCSProblem.EXECUTION_STATE.C_LOOP, problem.getExecutionState());
@@ -83,47 +83,47 @@ public class LCSProblemTest {
 
         // c loop
         for (int c = 0; c < m; c++) {
-            assertEquals(3, problem.getCurrentLineNumber());
+            assertEquals(3, problem.getNextLineNumber());
             problem.step(); // Line 3 c++
             problem.step(); // Line 4 L[-1,c] = 0;
         }
 
-        assertEquals(3, problem.getCurrentLineNumber());
+        assertEquals(3, problem.getNextLineNumber());
         problem.step(); // Line 3 one last time; sets execution state to I_LOOP and goto Line 5
         assertEquals(-1, problem.getVariableValue("c"));
 
-        for (int i = 0; i < n; i++) {
+        for (int row = 0; row < n; row++) {
             assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-            assertEquals(5, problem.getCurrentLineNumber());
+            assertEquals(5, problem.getNextLineNumber());
             problem.step(); // Line 5 i loop
             assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
-            for (int j = 0; j < m; j++) {
-                assertEquals(i + 1, problem.getVariableValue("i"));
-                assertEquals(6, problem.getCurrentLineNumber());
+            for (int col = 0; col < m; col++) {
+                assertEquals(row + 1, problem.getVariableValue("r"));
+                assertEquals(6, problem.getNextLineNumber());
                 problem.step(); // Line 6: j loop
-                assertEquals(j + 1, problem.getVariableValue("j"));
-                assertEquals(7, problem.getCurrentLineNumber());
+                assertEquals(col + 1, problem.getVariableValue("c"));
+                assertEquals(7, problem.getNextLineNumber());
                 problem.step(); // Line 7: if statement always executes
-                if (x.charAt(i) == y.charAt(j)) {
-                    assertEquals(8, problem.getCurrentLineNumber());
+                if (x.charAt(row) == y.charAt(col)) {
+                    assertEquals(8, problem.getNextLineNumber());
                     problem.step(); // Line 8
                 } else {
-                    assertEquals(9, problem.getCurrentLineNumber());
+                    assertEquals(9, problem.getNextLineNumber());
                     problem.step(); // Line 9
                     problem.step(); // Line 10
                 }
             }
-            assertEquals(6, problem.getCurrentLineNumber());
+            assertEquals(6, problem.getNextLineNumber());
             problem.step(); // Line 6 one last time to break the j loop
             // assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
         }
 
-        assertEquals(5, problem.getCurrentLineNumber());
+        assertEquals(5, problem.getNextLineNumber());
         problem.step(); // Line 5 one last time to break the i loop and go to line 11
 
         assertEquals(LCSProblem.EXECUTION_STATE.RETRN, problem.getExecutionState());
-        assertEquals(-1, problem.getVariableValue("i"));
-        assertEquals(-1, problem.getVariableValue("j"));
+        assertEquals(-1, problem.getVariableValue("r"));
+        assertEquals(-1, problem.getVariableValue("c"));
 
         problem.step(); // Line 11
 
@@ -251,13 +251,13 @@ public class LCSProblemTest {
 
         problem.undo(); // Line 5 last time checking i loop
         assertEquals(LCSProblem.EXECUTION_STATE.I_LOOP, problem.getExecutionState());
-        for (int i = n - 1; i >= 0; i--) {
+        for (row = n - 1; row >= 0; row--) {
             problem.undo(); // Line 6 last time checking j loop
             assertEquals(LCSProblem.EXECUTION_STATE.J_LOOP, problem.getExecutionState());
-            for (int j = m - 1; j >= 0; j--) {
+            for (col = m - 1; col >= 0; col--) {
                 String word1 = problem.getX();
                 String word2 = problem.getY();
-                if (word1.charAt(i) == word2.charAt(j)) {
+                if (word1.charAt(row) == word2.charAt(col)) {
                     problem.undo(); // Line 8 L[i,j] = L[i-1,j-1] + 1
                     problem.undo(); // Line 7 if xi == yj
                     problem.undo(); // Line 6 for j=0 to m-1

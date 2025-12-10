@@ -99,10 +99,6 @@ public abstract class Problem extends TitledModel {
      */
     public abstract ProblemKind getType();
 
-    public int getNextLineNumber() {
-        return nextLineNumber;
-    }
-
     /**
      * Method that determines if the subclass has completed with either the dp algorithm or the
      * backtracking algorithm. Used to disable functionality in the UI
@@ -196,7 +192,7 @@ public abstract class Problem extends TitledModel {
         this.backtrackingCodeStatements = backtrackingStatements;
     }
 
-    public int getCurrentLineNumber() {
+    public int getNextLineNumber() {
         return nextLineNumber;
     }
 
@@ -204,8 +200,8 @@ public abstract class Problem extends TitledModel {
         return BACKTRACKING_START_NUM;
     }
 
-    public void setCurrentLineNumber(int currentLineNumber) {
-        this.nextLineNumber = currentLineNumber;
+    public void setNextLineNumber(int nextLineNumber) {
+        this.nextLineNumber = nextLineNumber;
     }
 
     public String getTableVariable() {
@@ -250,7 +246,14 @@ public abstract class Problem extends TitledModel {
     }
 
     public void addProblemListener(ProblemListener listener) {
-        problemListeners.add(listener);
+        if (listener == null) {
+            throw new NullPointerException("ProblemListener cannot be null");
+        }
+
+        // Prevent the same listener from being added multiple times
+        if (!problemListeners.contains(listener)) {
+            problemListeners.add(listener);
+        }
     }
 
     /** Execute the current line of code and then update to the "next" line of code to execute. */
