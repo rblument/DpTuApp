@@ -17,7 +17,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.FontMetrics;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -196,7 +195,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
         canvas.setWord2(word2);
 
         int maxLen = Math.max(word1.length(), word2.length());
-        
+
         int estWidth = maxLen * CHAR_WIDTH_PX;
 
         int desiredWidth = estWidth + CANV_HORIZONTAL_PADDING;
