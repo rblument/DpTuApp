@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// DPTU-104: MatrixInputView input field already implemented in 103
+
 /*
  * MatrixInputView lets the user type matrix sizes and add them to a list.
  * Example input: 10x20, 10 x 20, 10,20, or "10 20".
