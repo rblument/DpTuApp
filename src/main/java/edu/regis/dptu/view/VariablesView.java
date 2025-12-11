@@ -12,8 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-import java.awt.GridBagConstraints;
-
 import javax.swing.JLabel;
 
 import org.slf4j.Logger;
@@ -47,21 +45,26 @@ public class VariablesView extends GPanel implements ProblemListener {
             lcsValue;
 
     public VariablesView() {
+        log.info("Initializing VariablesView components...");
         initializeComponents();
         layoutComponents();
+        log.info("VariablesView initialized successfully.");
     }
 
     public void setModel(Problem model) {
+        log.info("Setting model for VariablesView: {}", model);
         this.problem = model;
 
         if (this.problem != null) {
             this.problem.addProblemListener(this);
+            log.debug("Added VariablesView as listener to problem updates.");
         }
 
         updateView();
     }
 
     private void initializeComponents() {
+        log.debug("Initializing JLabel components...");
         rName = new JLabel("row = ");
         rValue = new JLabel();
         cName = new JLabel("col = ");
@@ -76,6 +79,7 @@ public class VariablesView extends GPanel implements ProblemListener {
         ycValue = new JLabel();
         lcsName = new JLabel("lcs = ");
         lcsValue = new JLabel();
+        log.debug("JLabel components initialized.");
     }
 
     private void layoutComponents() {
@@ -288,10 +292,13 @@ public class VariablesView extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
+        log.debug("Laying out components with GridBagConstraints...");
+        log.debug("Component layout complete.");
     }
 
     private void updateView() {
         if (problem == null) {
+            log.warn("updateView called but problem is null.");
             return;
         }
 
@@ -356,14 +363,26 @@ public class VariablesView extends GPanel implements ProblemListener {
                 ycValue.setText(ycText);
                 lcsValue.setText(((LCSProblem) problem).getCurrentLcs());
 
+                log.debug(
+                        "Variables updated: r={}, c={}, n={}, m={}, x[row]={}, y[col]={}, lcs={}",
+                        rText,
+                        cText,
+                        x.length(),
+                        y.length(),
+                        xrText,
+                        ycText,
+                        ((LCSProblem) problem).getCurrentLcs());
+
                 break;
             default:
                 // Other problem types coming... soon?
+                log.warn("updateView called for unsupported problem type: {}", problem.getType());
         }
     }
 
     @Override
     public void problemUpdated(Problem model) {
+        log.debug("Received problemUpdated event from model: {}", model);
         updateView();
     }
 }
