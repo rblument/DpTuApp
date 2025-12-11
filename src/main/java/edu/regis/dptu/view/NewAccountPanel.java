@@ -50,11 +50,8 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class NewAccountPanel extends GPanel {
-    private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
-
     /** Events of interest occurring in this class are logged to this logger. */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(NewAccountPanel.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(NewAccountPanel.class);
 
     /** Events of interest occurring in this class are logged to this logger. */
 
@@ -961,7 +958,7 @@ public class NewAccountPanel extends GPanel {
             return String.format("%1$032X", i).toLowerCase();
 
         } catch (NoSuchAlgorithmException e) {
-            julLogger.severe(e.toString());
+            log.error(e.toString());
         }
 
         return "";

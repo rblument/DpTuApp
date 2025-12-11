@@ -19,6 +19,9 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.err.MissingPropertyException;
 
 /**
@@ -30,8 +33,7 @@ import edu.regis.dptu.err.MissingPropertyException;
  */
 public class ResourceMgr {
     /** Logger for any errors occurring in this Singleton. */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger("ResourceMgr.class");
+    private static final Logger log = LoggerFactory.getLogger(ResourceMgr.class);
 
     /** The singleton instance of this ResourceMgr. */
     private static final ResourceMgr SINGLETON;
@@ -97,7 +99,7 @@ public class ResourceMgr {
             msgs = ResourceBundle.getBundle(UI_RESOURCE_PATH, locale);
 
         } catch (MissingPropertyException e) {
-            julLogger.log(java.util.logging.Level.SEVERE, "Missing Property", e);
+            log.error("Missing Property", e);
         }
     }
 
@@ -151,9 +153,9 @@ public class ResourceMgr {
             properties.load(strm);
 
         } catch (FileNotFoundException e) {
-            julLogger.log(java.util.logging.Level.ALL, "PropertyMgr-ERR_100: {0}", e.toString());
+            log.trace("PropertyMgr-ERR_100: {0}", e.toString());
         } catch (IOException e) {
-            julLogger.log(java.util.logging.Level.ALL, "PropertyMgr-ERR_101: {0}", e.toString());
+            log.trace("PropertyMgr-ERR_101: {0}", e.toString());
         }
     }
 }

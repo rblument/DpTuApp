@@ -50,8 +50,6 @@ import edu.regis.dptu.util.SHA_256;
  * @author rickb
  */
 public class DpTuTutor implements TutorSvc {
-    private static final Logger log = LoggerFactory.getLogger(DpTuTutor.class);
-
     /** The id of the default course taught by the this tutor (Dynamic Programming). */
     private static final int DEFAULT_COURSE_ID = 1;
 
@@ -59,8 +57,7 @@ public class DpTuTutor implements TutorSvc {
      * Handler for logging non-exception messages from this class versus thrown exception, which are
      * logged by the exception.
      */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(DpTuTutor.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(DpTuTutor.class);
 
     /** Convenience reference to the student currently being tutored. */
     private Student student;
@@ -81,8 +78,7 @@ public class DpTuTutor implements TutorSvc {
     public TutorReply request(ClientRequest request) {
         // Uses reflection to invoke a method derived from the request name in
         // the client request (e.g., ":SignIn" invokes "signIn(...)").
-        DpTuTutor.julLogger.log(
-                java.util.logging.Level.INFO, request.getRequestType().getRequestName());
+        DpTuTutor.log.info(request.getRequestType().getRequestName());
 
         // Efficiently produce "signIn" from ":SignIn", for example.
         char c[] = request.getRequestType().getRequestName().toCharArray();
@@ -132,12 +128,11 @@ public class DpTuTutor implements TutorSvc {
                 }
 
                 String msg = "Session verified for " + request.getUserId();
-                DpTuTutor.julLogger.log(java.util.logging.Level.INFO, msg);
+                DpTuTutor.log.info(msg);
                 break;
 
             default: // e.g., signIn itself, newAccount
-                DpTuTutor.julLogger.log(
-                        java.util.logging.Level.INFO, "No token verification required");
+                DpTuTutor.log.info("No token verification required");
         }
 
         // Security token has been verified or not required (e.g., signIn, createAccount).
@@ -244,7 +239,7 @@ public class DpTuTutor implements TutorSvc {
         } catch (ObjNotFoundException e) {
             return new TutorReply("UnknownUser");
         } catch (NonRecoverableException ex) {
-            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, null, ex);
+            DpTuTutor.log.error(null, ex);
             return new TutorReply();
         }
     }
@@ -476,9 +471,9 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutorReply createError(String errMsg, Exception ex) {
         if (ex == null) {
-            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, errMsg);
+            DpTuTutor.log.error(errMsg);
         } else {
-            DpTuTutor.julLogger.log(java.util.logging.Level.SEVERE, errMsg, ex);
+            DpTuTutor.log.error(errMsg, ex);
         }
 
         return new TutorReply(":ERR", errMsg);

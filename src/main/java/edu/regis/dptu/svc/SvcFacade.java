@@ -12,6 +12,14 @@
  */
 package edu.regis.dptu.svc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.regis.dptu.util.XmlMgr;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -64,8 +72,7 @@ public class SvcFacade {
     }
 
     /** Handler for logging messages. */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(SvcFacade.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(SvcFacade.class);
 
     /**
      * The computer host to which DpTu tutor requests are delegated.
@@ -125,9 +132,9 @@ public class SvcFacade {
             return in.readLine();
 
         } catch (UnknownHostException e) {
-            julLogger.log(java.util.logging.Level.SEVERE, "Unknown Host", e);
+            log.error("Unknown Host", e);
         } catch (IOException e) {
-            julLogger.log(java.util.logging.Level.SEVERE, "IOException client", e);
+            log.error("IOException client", e);
         } finally {
             // Kludgy, but tries to close an open socket and its associated
             // input and output streams in every possible error scenario
@@ -138,15 +145,12 @@ public class SvcFacade {
                 try {
                     if (in != null) in.close();
                 } catch (IOException e) {
-                    julLogger.log(
-                            java.util.logging.Level.SEVERE, "Unable to close client socket in", e);
+                    log.error("Unable to close client socket in", e);
                 } finally {
                     try {
                         if (client != null) client.close();
                     } catch (IOException e) {
-                        julLogger.log(
-                                java.util.logging.Level.SEVERE,
-                                "Unable to close client socket in",
+                        log.error("Unable to close client socket in",
                                 e);
                     }
                 }
