@@ -313,7 +313,7 @@ public class LCSProblemTest {
     @Test
     public void testRLoop() {
         /*
-                System.out.println("\nPerforming testRLoop() method:\n\n");
+                log.trace("\nPerforming testRLoop() method:\n\n");
 
                 String x = "skullandbones";
                 String y = "lullabybabies";
@@ -325,7 +325,7 @@ public class LCSProblemTest {
 
                 int stepCount = rand.nextInt(14);
 
-                System.out.println("stepCount = " + stepCount);
+                log.trace("stepCount = " + stepCount);
 
                 problem.stepRLoop(stepCount);
 
@@ -341,7 +341,7 @@ public class LCSProblemTest {
     @Test
     public void testCLoop() {
         /*
-        System.out.println("\nPerforming testCLoop() method:\n\n");
+        log.trace("\nPerforming testCLoop() method:\n\n");
 
         String x = "skullandbones";
         String y = "lullabybabies";
@@ -353,7 +353,7 @@ public class LCSProblemTest {
 
         int stepCount = rand.nextInt(14);
 
-        System.out.println("stepCount = " + stepCount);
+        log.trace("stepCount = " + stepCount);
 
         problem.stepCLoop(stepCount);
 
@@ -370,7 +370,7 @@ public class LCSProblemTest {
     @Test
     public void testIJLoop() {
         /*
-                System.out.println("\nPerforming testIJLoop() method:\n\n");
+                log.trace("\nPerforming testIJLoop() method:\n\n");
 
                 String x = "skullandbones";
                 String y = "lullabybabies";
@@ -383,8 +383,8 @@ public class LCSProblemTest {
                 int stepCountI = rand.nextInt(y.length());
                 int stepCountJ = rand.nextInt(x.length());
 
-                System.out.println("stepCountI = " + stepCountI);
-                System.out.println("stepCountJ = " + stepCountJ);
+                log.trace("stepCountI = " + stepCountI);
+                log.trace("stepCountJ = " + stepCountJ);
 
                 problem.stepIJLoop(stepCountI, stepCountJ);
 

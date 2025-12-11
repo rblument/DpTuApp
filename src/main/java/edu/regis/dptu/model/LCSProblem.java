@@ -338,7 +338,7 @@ public class LCSProblem extends Problem {
     }
 
     /**
-     * Outputs to System.out the current state (of the algorithm variables). (Kept for potential
+     * Outputs the current state (of the algorithm variables). (Kept for potential
      * manual debugging)
      */
     public void prettyPrint() {
