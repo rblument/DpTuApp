@@ -3,6 +3,7 @@
  *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
  */
+
 package edu.regis.dptu.util;
 
 import java.awt.Color;
@@ -30,12 +31,14 @@ public class CustomProgressBar extends JProgressBar {
         setOpaque(false);
         setPreferredSize(new Dimension(100, 200));
         setBorderPainted(false);
+        log.debug("CustomProgressBar initialized with preferred size {}x{}", getWidth(), getHeight());
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        log.debug("Painting component: value={}, maximum={}, orientation={}", getValue(), getMaximum(), orientation);
 
+        Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         int width = getWidth();
@@ -46,11 +49,13 @@ public class CustomProgressBar extends JProgressBar {
         RoundRectangle2D background =
                 new RoundRectangle2D.Double(0, 0, width, height, ARC_WIDTH, ARC_HEIGHT);
         g2d.fill(background);
+        log.debug("Background painted: width={}, height={}", width, height);
 
         // Calculate progress dimensions
         int progressHeight;
         if (orientation == VERTICAL) {
             progressHeight = (int) ((height - 4) * ((double) getValue() / getMaximum()));
+            log.debug("Vertical progress height calculated: {}", progressHeight);
 
             // Only create gradient if there is actual progress to show
             if (progressHeight > 1) {
@@ -60,6 +65,7 @@ public class CustomProgressBar extends JProgressBar {
 
                 // Ensure start and end points are different
                 if (Math.abs(start.getY() - end.getY()) > 1) {
+                    log.debug("Creating vertical gradient from {} to {}", start, end);
                     float[] dist = {0.0f, 1.0f};
                     Color[] colors = {progressColor, progressColor.darker()};
                     LinearGradientPaint gradient =
@@ -78,6 +84,7 @@ public class CustomProgressBar extends JProgressBar {
                     g2d.fill(progress);
                 } else {
                     // If gradient points would be too close, just use solid color
+                    log.debug("Gradient too small, using solid color");
                     g2d.setColor(progressColor);
                     RoundRectangle2D progress =
                             new RoundRectangle2D.Double(
@@ -92,6 +99,7 @@ public class CustomProgressBar extends JProgressBar {
             }
         } else {
             progressHeight = (int) ((width - 4) * ((double) getValue() / getMaximum()));
+            log.debug("Horizontal progress width calculated: {}", progressSize);
 
             // Only create gradient if there is actual progress to show
             if (progressHeight > 1) {
@@ -101,6 +109,7 @@ public class CustomProgressBar extends JProgressBar {
 
                 // Ensure start and end points are different
                 if (Math.abs(start.getX() - end.getX()) > 1) {
+                    log.debug("Creating horizontal gradient from {} to {}", start, end);
                     float[] dist = {0.0f, 1.0f};
                     Color[] colors = {progressColor, progressColor.darker()};
                     LinearGradientPaint gradient =
@@ -114,6 +123,7 @@ public class CustomProgressBar extends JProgressBar {
                     g2d.fill(progress);
                 } else {
                     // If gradient points would be too close, just use solid color
+                    log.debug("Gradient too small, using solid color");
                     g2d.setColor(progressColor);
                     RoundRectangle2D progress =
                             new RoundRectangle2D.Double(
@@ -127,6 +137,7 @@ public class CustomProgressBar extends JProgressBar {
 
         // Paint the string if necessary
         if (isStringPainted()) {
+            log.debug("Painting progress string: {}", getString());
             g2d = (Graphics2D) g.create();
             g2d.setRenderingHint(
                     RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -143,6 +154,7 @@ public class CustomProgressBar extends JProgressBar {
     }
 
     public void setProgressColor(Color color) {
+        log.debug("Setting progress color: {}", color);
         this.progressColor = color;
         repaint();
     }
