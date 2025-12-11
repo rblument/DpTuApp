@@ -12,6 +12,8 @@
  */
 package edu.regis.dptu.view;
 
+import java.awt.GridBagConstraints;
+
 import javax.swing.JLabel;
 
 import org.slf4j.Logger;
