@@ -38,10 +38,12 @@ public class ExercisingLocation extends Model {
 
     public ExercisingLocation() {
         this(Model.DEFAULT_ID);
+        log.debug("ExercisingLocation created with default id={}", Model.DEFAULT_ID);
     }
 
     public ExercisingLocation(int id) {
         this.id = id;
+        log.debug("ExercisingLocation created with id={}", id);
     }
 
     public int getCourseId() {
@@ -49,6 +51,7 @@ public class ExercisingLocation extends Model {
     }
 
     public void setCourseId(int courseId) {
+        log.debug("Setting courseId={} for ExercisingLocation id={}", courseId, id);
         this.courseId = courseId;
     }
 
@@ -57,6 +60,7 @@ public class ExercisingLocation extends Model {
     }
 
     public void setUnitId(int unitId) {
+        log.debug("Setting unitId={} for ExercisingLocation id={}", unitId, id);
         this.unitId = unitId;
     }
 
@@ -65,6 +69,7 @@ public class ExercisingLocation extends Model {
     }
 
     public void setTaskId(int taskId) {
+        log.debug("Setting taskId={} for ExercisingLocation id={}", taskId, id);
         this.taskId = taskId;
     }
 
@@ -73,6 +78,7 @@ public class ExercisingLocation extends Model {
     }
 
     public void setStepId(int stepId) {
+        log.debug("Setting stepId={} for ExercisingLocation id={}", stepId, id);
         this.stepId = stepId;
     }
 }
