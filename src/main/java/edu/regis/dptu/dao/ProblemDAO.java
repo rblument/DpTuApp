@@ -40,7 +40,8 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
     @Override
     public Problem retrieve(int problemId) throws ObjNotFoundException, NonRecoverableException {
         log.debug("Retrieving problem id={}", problemId);
-        final String sql = "SELECT ProblemType, SubTypeId, Title, Description FROM Problem WHERE Id = ?";
+        final String sql =
+                "SELECT ProblemType, SubTypeId, Title, Description FROM Problem WHERE Id = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -83,7 +84,8 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
     public Problem retrieveByKind(ProblemKind kind)
             throws ObjNotFoundException, NonRecoverableException {
         log.debug("Retrieving problem by kind={}", kind);
-        final String sql = "SELECT Id, SubTypeId, Title, Description FROM Problem WHERE ProblemType = ?";
+        final String sql =
+                "SELECT Id, SubTypeId, Title, Description FROM Problem WHERE ProblemType = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;

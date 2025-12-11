@@ -88,14 +88,11 @@ public abstract class MySqlDAO {
             } catch (MissingPropertyException e) {
                 log.info("Missing DB property: {0}", e.toString());
             } catch (ClassNotFoundException e) {
-                log.error("MySqlDao-ERR-1: Illegal driver class name {0}",
-                        e.toString());
+                log.error("MySqlDao-ERR-1: Illegal driver class name {0}", e.toString());
             } catch (InstantiationException e) {
-                log.error("MySqlDao-ERR-2: Illegal instance {0}",
-                        e.toString());
+                log.error("MySqlDao-ERR-2: Illegal instance {0}", e.toString());
             } catch (IllegalAccessException e) {
-                log.error("MySqlDao-ERR-3: No create driver permission {0}",
-                        e.toString());
+                log.error("MySqlDao-ERR-3: No create driver permission {0}", e.toString());
             }
         }
     }
@@ -112,8 +109,7 @@ public abstract class MySqlDAO {
             try {
                 stmt.close();
             } catch (Exception e) {
-                log.info("MySqlDao-ERR-4: stmt.close() {0}",
-                        e.toString());
+                log.info("MySqlDao-ERR-4: stmt.close() {0}", e.toString());
             }
         }
 

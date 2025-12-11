@@ -127,7 +127,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 ProblemSvc problemSvc = ServiceFactory.findProblemSvc();
                 session.setProblem(problemSvc.retrieve(rs.getInt(6)));
 
-                log.debug("Session retrieved successfully for userId={}, sessionId={}", userId, session.getId());
+                log.debug(
+                        "Session retrieved successfully for userId={}, sessionId={}",
+                        userId,
+                        session.getId());
                 return session;
             } else {
                 log.warn("Session not found for userId={}", userId);
@@ -200,7 +203,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
 
             if (rows != 1) {
                 conn.rollback();
-                log.warn("Session update affected {} rows, rolling back sessionId={}", rows, session.getId());
+                log.warn(
+                        "Session update affected {} rows, rolling back sessionId={}",
+                        rows,
+                        session.getId());
                 throw new NonRecoverableException("Session update updated too many rows: " + rows);
             }
 
@@ -233,7 +239,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
 
             if (rows != 1) {
                 conn.rollback();
-                log.warn("Session delete affected {} rows for userId={}, rolling back", rows, userId);
+                log.warn(
+                        "Session delete affected {} rows for userId={}, rolling back",
+                        rows,
+                        userId);
                 throw new NonRecoverableException("Session delete deleted too many rows: " + rows);
             }
 

@@ -15,5 +15,4 @@ package edu.regis.dptu.view;
 /**
  * @author hopea
  */
-class LessonSessionView {
-}
+class LessonSessionView {}

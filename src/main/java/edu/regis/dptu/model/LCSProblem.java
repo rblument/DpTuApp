@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class LCSProblem extends Problem {
     /** The logger for the class */
     private static final Logger log = LoggerFactory.getLogger(LCSProblem.class);
-    
+
     /**
      * Current state of execution capturing which of the loops are current. Note if the
      * corresponding iteration index for a loop is -1, the loop hasn't entered its first iteration.

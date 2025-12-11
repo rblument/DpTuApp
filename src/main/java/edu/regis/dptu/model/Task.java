@@ -64,7 +64,11 @@ public class Task extends TitledModel {
         this.steps = new ArrayList<>();
         exercisedComponentIds = new ArrayList<>();
 
-        log.debug("Task created with id: {}, steps initialized: {}, exercisedComponentIds initialized: {}", id, steps.size(), exercisedComponentIds.size());
+        log.debug(
+                "Task created with id: {}, steps initialized: {}, exercisedComponentIds initialized: {}",
+                id,
+                steps.size(),
+                exercisedComponentIds.size());
     }
 
     public TaskKind getKind() {
@@ -79,7 +83,10 @@ public class Task extends TitledModel {
 
     public void addStep(Step step) {
         steps.add(step);
-        log.debug("addStep() called, added step id: {}, steps size now: {}", step.getId(), steps.size());
+        log.debug(
+                "addStep() called, added step id: {}, steps size now: {}",
+                step.getId(),
+                steps.size());
     }
 
     public ArrayList<Step> getSteps() {
@@ -168,11 +175,16 @@ public class Task extends TitledModel {
 
     public void addExercisedComponentId(int componentId) {
         exercisedComponentIds.add(componentId);
-        log.debug("addExercisedComponentId() called, added componentId: {}, size now: {}", componentId, exercisedComponentIds.size());
+        log.debug(
+                "addExercisedComponentId() called, added componentId: {}, size now: {}",
+                componentId,
+                exercisedComponentIds.size());
     }
 
     public ArrayList<Integer> getExercisedComponentIds() {
-        log.debug("getExercisedComponentIds() called, returning size: {}", exercisedComponentIds.size());
+        log.debug(
+                "getExercisedComponentIds() called, returning size: {}",
+                exercisedComponentIds.size());
         return exercisedComponentIds;
     }
 

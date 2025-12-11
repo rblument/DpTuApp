@@ -11,6 +11,7 @@
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.err;
+
 /**
  * Root of all checked DpTu application exceptions.
  *

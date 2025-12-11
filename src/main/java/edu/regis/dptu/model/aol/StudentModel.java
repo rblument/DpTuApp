@@ -85,7 +85,9 @@ public class StudentModel {
      * @param assessment the assessment to add
      */
     public void addAssessment(int knowledgeComponentId, Assessment assessment) {
-        log.debug("Adding assessment for knowledgeComponentId={} outcome={}", knowledgeComponentId,
+        log.debug(
+                "Adding assessment for knowledgeComponentId={} outcome={}",
+                knowledgeComponentId,
                 assessment.getOutcome());
         assessments.put(knowledgeComponentId, assessment);
     }
@@ -166,8 +168,11 @@ public class StudentModel {
      * @param scaffoldLevel the scaffolding level to set for this student
      */
     public void setScaffoldLevel(ScaffoldLevel scaffoldLevel) {
-        log.debug("ScaffoldLevel changed from {} to {} for userId={}", this.scaffoldLevel,
-                scaffoldLevel, userId);
+        log.debug(
+                "ScaffoldLevel changed from {} to {} for userId={}",
+                this.scaffoldLevel,
+                scaffoldLevel,
+                userId);
         this.scaffoldLevel = scaffoldLevel;
     }
 }

@@ -96,6 +96,8 @@ public class TestStepExecution implements ProblemListener {
         System.out.println(
                 "LISTENER: Problem updated notification received. Current line: "
                         + problem.getNextLineNumber());
-        log.debug("Problem updated notification received. Current line number: {}", problem.getNextLineNumber());
+        log.debug(
+                "Problem updated notification received. Current line number: {}",
+                problem.getNextLineNumber());
     }
 }

@@ -110,7 +110,11 @@ public class PendingStep {
         }
 
         Hint hint = hints.get(currentHintIndex);
-        log.debug("PendingStep {} returning hint at index {}: {}", id, currentHintIndex, hint.getText());
+        log.debug(
+                "PendingStep {} returning hint at index {}: {}",
+                id,
+                currentHintIndex,
+                hint.getText());
         return hint;
     }
 

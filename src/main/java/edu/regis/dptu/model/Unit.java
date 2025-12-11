@@ -81,7 +81,10 @@ public class Unit extends TitledModel {
             tasks = new ArrayList<>();
         }
         tasks.add(task);
-        log.debug("addTask: added task with id={}, sequenceIndex={}", task.getId(), task.getSequenceIndex());
+        log.debug(
+                "addTask: added task with id={}, sequenceIndex={}",
+                task.getId(),
+                task.getSequenceIndex());
     }
 
     public ArrayList<Task> getTasks() {

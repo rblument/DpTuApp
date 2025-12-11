@@ -56,7 +56,9 @@ public class User extends Model {
     public User(String userId, String password) {
         this.userId = userId;
         this.password = password;
-        log.debug("User(String userId, String password) constructor called with userId={}, password=[PROTECTED]", userId);
+        log.debug(
+                "User(String userId, String password) constructor called with userId={}, password=[PROTECTED]",
+                userId);
     }
 
     /**

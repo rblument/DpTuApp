@@ -43,7 +43,8 @@ public abstract class Transactionable extends MySqlDAO {
             log.debug("Transaction committed successfully on connection {}", conn);
         } catch (SQLException e) {
             log.error("Failed to commit transaction on connection {}", conn, e);
-            throw new NonRecoverableException("Transaction Error: Not able to commit transaction", e);
+            throw new NonRecoverableException(
+                    "Transaction Error: Not able to commit transaction", e);
         }
     }
 

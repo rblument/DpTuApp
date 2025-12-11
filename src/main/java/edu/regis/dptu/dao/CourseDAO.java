@@ -64,7 +64,8 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
     @Override
     public Course retrieve(int courseId) throws ObjNotFoundException, NonRecoverableException {
         log.debug("Retrieving course id={}", courseId);
-        final String sql = "SELECT Title,PrimaryPedagogy,Description FROM Course WHERE CourseId = ?";
+        final String sql =
+                "SELECT Title,PrimaryPedagogy,Description FROM Course WHERE CourseId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -160,7 +161,11 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 throw new ObjNotFoundException("Unit Id:" + unitId);
             }
         } catch (SQLException e) {
-            log.error("SQLException retrieving UnitDigest courseId={}, unitId={}", courseId, unitId, e);
+            log.error(
+                    "SQLException retrieving UnitDigest courseId={}, unitId={}",
+                    courseId,
+                    unitId,
+                    e);
             throw new NonRecoverableException("CourseDAO-ERR-3" + e.toString(), e);
         } finally {
             close(stmt);
@@ -251,7 +256,10 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 outcomes.add(comp);
             }
 
-            log.debug("Retrieved {} KnowledgeComponents for courseId={}", outcomes.size(), course.getId());
+            log.debug(
+                    "Retrieved {} KnowledgeComponents for courseId={}",
+                    outcomes.size(),
+                    course.getId());
             return outcomes;
         } catch (SQLException e) {
             log.error("SQLException retrieving KnowledgeComponents courseId={}", course.getId(), e);
@@ -350,15 +358,28 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 // ToDo: retrieve exercising locations
             }
 
-            log.debug("Retrieved {} Tasks for courseId={}, unitId={}", tasks.size(), courseId, unit.getId());
+            log.debug(
+                    "Retrieved {} Tasks for courseId={}, unitId={}",
+                    tasks.size(),
+                    courseId,
+                    unit.getId());
             return tasks;
         } catch (ObjNotFoundException e) {
             InconsistentDBException ex =
-                    new InconsistentDBException("Problem not found in Problem Task Type: " + problemId);
-            log.error("ObjNotFoundException retrieving tasks courseId={}, unitId={}", courseId, unit.getId(), e);
+                    new InconsistentDBException(
+                            "Problem not found in Problem Task Type: " + problemId);
+            log.error(
+                    "ObjNotFoundException retrieving tasks courseId={}, unitId={}",
+                    courseId,
+                    unit.getId(),
+                    e);
             throw new NonRecoverableException("Cannot find problem in DB", ex);
         } catch (SQLException e) {
-            log.error("SQLException retrieving tasks courseId={}, unitId={}", courseId, unit.getId(), e);
+            log.error(
+                    "SQLException retrieving tasks courseId={}, unitId={}",
+                    courseId,
+                    unit.getId(),
+                    e);
             throw new NonRecoverableException("CourseDAO-ERR-7" + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
@@ -405,7 +426,11 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 step.setHints(retrieveHints(step.getId(), conn));
             }
 
-            log.debug("Retrieved {} Steps for courseId={}, taskId={}", steps.size(), courseId, taskId);
+            log.debug(
+                    "Retrieved {} Steps for courseId={}, taskId={}",
+                    steps.size(),
+                    courseId,
+                    taskId);
             return steps;
         } catch (SQLException e) {
             log.error("SQLException retrieving steps courseId={}, taskId={}", courseId, taskId, e);
@@ -494,7 +519,8 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
     private ArrayList<ExercisingLocation> retrieveExercisingLocations(int courseId, Connection conn)
             throws NonRecoverableException {
         log.debug("Retrieving ExercisingLocations for courseId={}", courseId);
-        final String sql = "SELECT Id, UnitId, TaskId, StepId FROM ExercisingLocation WHERE CourseId = ?";
+        final String sql =
+                "SELECT Id, UnitId, TaskId, StepId FROM ExercisingLocation WHERE CourseId = ?";
         ArrayList<ExercisingLocation> locations = new ArrayList<>();
         PreparedStatement stmt = null;
 
@@ -514,7 +540,8 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 locations.add(location);
             }
 
-            log.debug("Retrieved {} ExercisingLocations for courseId={}", locations.size(), courseId);
+            log.debug(
+                    "Retrieved {} ExercisingLocations for courseId={}", locations.size(), courseId);
             return locations;
         } catch (SQLException e) {
             log.error("SQLException retrieving ExercisingLocations courseId={}", courseId, e);

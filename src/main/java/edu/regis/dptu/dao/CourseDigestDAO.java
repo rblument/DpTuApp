@@ -72,7 +72,10 @@ public class CourseDigestDAO extends MySqlDAO {
             stmt.setString(3, course.getDescription());
 
             stmt.execute();
-            log.info("Course digest created successfully id={}, title={}", course.getId(), course.getTitle());
+            log.info(
+                    "Course digest created successfully id={}, title={}",
+                    course.getId(),
+                    course.getTitle());
 
         } catch (SQLException e) {
             log.error("SQLException creating course digest id={}", course.getId(), e);

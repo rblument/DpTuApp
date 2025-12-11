@@ -169,7 +169,10 @@ public class Course extends TitledModel {
     }
 
     public void setExercisingLocations(ArrayList<ExercisingLocation> exercisingLocations) {
-        log.debug("Setting exercisingLocations for course id={}, count={}", id, exercisingLocations.size());
+        log.debug(
+                "Setting exercisingLocations for course id={}, count={}",
+                id,
+                exercisingLocations.size());
         this.exercisingLocations = exercisingLocations;
     }
 

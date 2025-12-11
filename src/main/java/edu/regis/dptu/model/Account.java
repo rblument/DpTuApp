@@ -149,7 +149,8 @@ public class Account {
      * @param securityQuestion
      */
     public void setSecurityQuestion(int securityQuestion) {
-        log.debug("SecurityQuestion changed from {} to {}", this.securityQuestion, securityQuestion);
+        log.debug(
+                "SecurityQuestion changed from {} to {}", this.securityQuestion, securityQuestion);
         this.securityQuestion = securityQuestion;
     }
 

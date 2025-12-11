@@ -72,7 +72,10 @@ public class UnitDigest extends TitledModel {
     }
 
     public void setSequenceIndex(int sequenceIndex) {
-        log.debug("setSequenceIndex: changing sequenceIndex from {} to {}", this.sequenceIndex, sequenceIndex);
+        log.debug(
+                "setSequenceIndex: changing sequenceIndex from {} to {}",
+                this.sequenceIndex,
+                sequenceIndex);
         this.sequenceIndex = sequenceIndex;
     }
 }

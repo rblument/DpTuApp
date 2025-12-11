@@ -61,7 +61,10 @@ public class CourseDigest extends TitledModel {
     }
 
     public void setPrimaryPedagogy(TaskSelectionKind primaryPedagogy) {
-        log.debug("setPrimaryPedagogy(): changing from {} to {}", this.primaryPedagogy, primaryPedagogy);
+        log.debug(
+                "setPrimaryPedagogy(): changing from {} to {}",
+                this.primaryPedagogy,
+                primaryPedagogy);
         this.primaryPedagogy = primaryPedagogy;
     }
 }

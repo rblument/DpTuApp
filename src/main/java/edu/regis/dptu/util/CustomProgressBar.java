@@ -31,12 +31,17 @@ public class CustomProgressBar extends JProgressBar {
         setOpaque(false);
         setPreferredSize(new Dimension(100, 200));
         setBorderPainted(false);
-        log.debug("CustomProgressBar initialized with preferred size {}x{}", getWidth(), getHeight());
+        log.debug(
+                "CustomProgressBar initialized with preferred size {}x{}", getWidth(), getHeight());
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        log.debug("Painting component: value={}, maximum={}, orientation={}", getValue(), getMaximum(), orientation);
+        log.debug(
+                "Painting component: value={}, maximum={}, orientation={}",
+                getValue(),
+                getMaximum(),
+                orientation);
 
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

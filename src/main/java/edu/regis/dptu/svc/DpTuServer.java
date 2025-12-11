@@ -19,12 +19,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.google.gson.Gson;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.regis.dptu.DpTuApp;
+import com.google.gson.Gson;
 
 /**
  * A socket-based server providing client access to the DpTu tutor.
@@ -130,16 +128,14 @@ public class DpTuServer implements Runnable {
                             in.close();
                         }
                     } catch (IOException e) {
-                        log.error("Unable to close client socket in",
-                                e);
+                        log.error("Unable to close client socket in", e);
                     } finally {
                         try {
                             if (client != null) {
                                 client.close();
                             }
                         } catch (IOException e) {
-                            log.error("Unable to close client socket in",
-                                    e);
+                            log.error("Unable to close client socket in", e);
                         }
                     }
                 }

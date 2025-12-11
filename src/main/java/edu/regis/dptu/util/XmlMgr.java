@@ -31,7 +31,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -308,8 +307,7 @@ public class XmlMgr {
     public static String getAttribute(Element element, String attributeName) {
         String val = element.getAttribute(attributeName);
 
-        if (val.equals(""))
-            log.trace("Missing or empty attribute {0}", attributeName);
+        if (val.equals("")) log.trace("Missing or empty attribute {0}", attributeName);
 
         return val;
     }
@@ -337,15 +335,13 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            log.trace("Missing or empty int attribute {0}",
-                    attributeName);
+            log.trace("Missing or empty int attribute {0}", attributeName);
             return -1;
         } else {
             try {
                 return Integer.parseInt(val);
             } catch (NumberFormatException e) {
-                log.trace("Expected an int attribute value: {1}",
-                        attributeName);
+                log.trace("Expected an int attribute value: {1}", attributeName);
                 return -1;
             }
         }
@@ -362,17 +358,14 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            log.trace(
-                    "Missing or empty float attribute {0}",
-                    attributeName);
+            log.trace("Missing or empty float attribute {0}", attributeName);
             return 0.0f;
         } else {
             try {
                 return Float.parseFloat(val);
 
             } catch (NumberFormatException e) {
-                log.trace("Expected a float attribute value: {1}",
-                        attributeName);
+                log.trace("Expected a float attribute value: {1}", attributeName);
                 return 0.0f;
             }
         }
@@ -391,8 +384,7 @@ public class XmlMgr {
 
         switch (val) {
             case "":
-                log.trace("Missing or empty boolean attribute {0}",
-                        attributeName);
+                log.trace("Missing or empty boolean attribute {0}", attributeName);
                 return false;
             case "true":
             case "yes":
@@ -401,8 +393,7 @@ public class XmlMgr {
             case "no":
                 return false;
             default:
-                log.trace("Expected a boolean attribute value: {1}",
-                        attributeName);
+                log.trace("Expected a boolean attribute value: {1}", attributeName);
                 return false;
         }
     }

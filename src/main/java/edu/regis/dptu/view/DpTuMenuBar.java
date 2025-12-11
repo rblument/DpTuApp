@@ -23,9 +23,8 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.view.act.SaveSessionAction;
 
 /**
- * Menu bar used in the MainFrame.
- * Added logging to track menu initialization.
- * 
+ * Menu bar used in the MainFrame. Added logging to track menu initialization.
+ *
  * @author rickb
  */
 public class DpTuMenuBar extends JMenuBar {

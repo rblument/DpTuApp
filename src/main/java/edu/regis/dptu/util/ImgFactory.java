@@ -37,7 +37,7 @@ public class ImgFactory {
      * Create an Image Icon by loading its corresponding png image.
      *
      * @param fileName The file name of the image to load.
-     * @param altText  Alternative text for the ImageIcon.
+     * @param altText Alternative text for the ImageIcon.
      * @return ImageIcon with the corresponding image, or null if not found.
      */
     public static ImageIcon createIcon(String fileName, String altText) {
