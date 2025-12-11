@@ -16,5 +16,4 @@ package edu.regis.dptu.view;
  * @author hopea
  */
 class LessonSessionView {
-    private static final Logger log = LoggerFactory.getLogger(LessonSessionView.class);
 }
