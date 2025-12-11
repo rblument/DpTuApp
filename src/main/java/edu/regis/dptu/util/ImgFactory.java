@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.util;
 
 import java.awt.image.BufferedImage;
@@ -35,21 +36,43 @@ public class ImgFactory {
     /**
      * Create an Image Icon by loading its corresponding png image.
      *
-     * @param n The id of the image to load (e.g. 0 - 127).
-     * @return ImageIcon with the corresponding seven segment display.
+     * @param fileName The file name of the image to load.
+     * @param altText  Alternative text for the ImageIcon.
+     * @return ImageIcon with the corresponding image, or null if not found.
      */
     public static ImageIcon createIcon(String fileName, String altText) {
-        return new ImageIcon(createImage(fileName), altText);
+        BufferedImage img = createImage(fileName);
+        if (img != null) {
+            log.debug("Successfully created ImageIcon for file '{}'", fileName);
+        } else {
+            log.warn("Failed to create ImageIcon for file '{}'", fileName);
+        }
+        return new ImageIcon(img, altText);
     }
 
+    /**
+     * Create a BufferedImage by loading a file from the classpath.
+     *
+     * @param fileName The file name of the image to load.
+     * @return BufferedImage loaded from the classpath, or null if not found.
+     */
     public static BufferedImage createImage(String fileName) {
         String path = DIRECTORY + fileName;
+        log.debug("Attempting to load image from path: {}", path);
 
         try {
-            return ImageIO.read(ImgFactory.class.getResourceAsStream(path));
-
+            BufferedImage img = ImageIO.read(ImgFactory.class.getResourceAsStream(path));
+            if (img != null) {
+                log.debug("Successfully loaded image '{}'", path);
+            } else {
+                log.warn("ImageIO.read returned null for '{}'", path);
+            }
+            return img;
         } catch (IOException e) {
-            System.err.println("Couldn't find image file: " + path);
+            log.error("IOException while loading image '{}': {}", path, e.getMessage(), e);
+            return null;
+        } catch (Exception e) {
+            log.error("Unexpected error while loading image '{}': {}", path, e.getMessage(), e);
             return null;
         }
     }
