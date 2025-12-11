@@ -36,6 +36,7 @@ public class UnitDigest extends TitledModel {
     /** Instantiate this digest with default id, title, and description */
     public UnitDigest() {
         this(DEFAULT_ID);
+        log.debug("UnitDigest() default constructor called, id={}", DEFAULT_ID);
     }
 
     /**
@@ -45,6 +46,7 @@ public class UnitDigest extends TitledModel {
      */
     public UnitDigest(int id) {
         super(id);
+        log.debug("UnitDigest(int id) constructor called, id={}", id);
     }
 
     public int getCourseId() {
@@ -60,14 +62,17 @@ public class UnitDigest extends TitledModel {
     }
 
     public void setCourseId(int courseId) {
+        log.debug("setCourseId: changing courseId from {} to {}", this.courseId, courseId);
         this.courseId = courseId;
     }
 
     public void setPedagogy(TaskSelectionKind pedagogy) {
+        log.debug("setPedagogy: changing pedagogy from {} to {}", this.pedagogy, pedagogy);
         this.pedagogy = pedagogy;
     }
 
     public void setSequenceIndex(int sequenceIndex) {
+        log.debug("setSequenceIndex: changing sequenceIndex from {} to {}", this.sequenceIndex, sequenceIndex);
         this.sequenceIndex = sequenceIndex;
     }
 }
