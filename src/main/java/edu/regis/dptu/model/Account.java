@@ -50,6 +50,7 @@ public class Account {
     /** Initialize this user account with default information. */
     public Account() {
         this("", "", 0, "");
+        log.debug("Account created with default values");
     }
 
     /**
@@ -59,6 +60,7 @@ public class Account {
      */
     public Account(String userId) {
         this(userId, "", 0, "");
+        log.debug("Account created with userId={}", userId);
     }
 
     /**
@@ -69,6 +71,7 @@ public class Account {
      */
     public Account(String userId, String password) {
         this(userId, password, 0, "");
+        log.debug("Account created with userId={} and password set", userId);
     }
 
     /**
@@ -85,6 +88,11 @@ public class Account {
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
         isStudent = true;
+        log.debug(
+                "Account created: userId={}, securityQuestion={}, isStudent={}",
+                userId,
+                securityQuestion,
+                isStudent);
     }
 
     public String getUserId() {
@@ -92,6 +100,7 @@ public class Account {
     }
 
     public void setUserId(String userId) {
+        log.debug("UserId changed from {} to {}", this.userId, userId);
         this.userId = userId;
     }
 
@@ -103,6 +112,7 @@ public class Account {
     }
 
     public void setPassword(String password) {
+        log.debug("Password updated for userId={}", userId);
         this.password = password;
     }
 
@@ -111,6 +121,7 @@ public class Account {
     }
 
     public void setFirstName(String firstName) {
+        log.debug("FirstName changed from {} to {}", this.firstName, firstName);
         this.firstName = firstName;
     }
 
@@ -119,6 +130,7 @@ public class Account {
     }
 
     public void setLastName(String lastName) {
+        log.debug("LastName changed from {} to {}", this.lastName, lastName);
         this.lastName = lastName;
     }
 
@@ -137,6 +149,7 @@ public class Account {
      * @param securityQuestion
      */
     public void setSecurityQuestion(int securityQuestion) {
+        log.debug("SecurityQuestion changed from {} to {}", this.securityQuestion, securityQuestion);
         this.securityQuestion = securityQuestion;
     }
 
@@ -155,6 +168,7 @@ public class Account {
      * @param securityAnswer
      */
     public void setSecurityAnswer(String securityAnswer) {
+        log.debug("SecurityAnswer updated for userId={}", userId);
         this.securityAnswer = securityAnswer;
     }
 
@@ -182,10 +196,12 @@ public class Account {
      * @param isStudent true, the user is a student.
      */
     public void setIsStudent(boolean isStudent) {
+        log.debug("isStudent changed from {} to {}", this.isStudent, isStudent);
         this.isStudent = isStudent;
     }
 
     public void clear() {
+        log.debug("Clearing account data for userId={}", userId);
         this.userId = null;
         this.password = null;
         this.firstName = null;
@@ -201,6 +217,7 @@ public class Account {
      */
     @Override
     public String toString() {
+        log.debug("toString called for userId={}", userId);
         return "User Account: " + userId;
     }
 }
