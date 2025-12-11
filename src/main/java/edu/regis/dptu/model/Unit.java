@@ -37,6 +37,7 @@ public class Unit extends TitledModel {
     /** Instantiate this unit with default information */
     public Unit() {
         this(DEFAULT_ID);
+        log.debug("Unit() default constructor called, id={}", DEFAULT_ID);
     }
 
     /**
@@ -46,8 +47,8 @@ public class Unit extends TitledModel {
      */
     public Unit(int id) {
         super(id);
-
         pedagogy = TaskSelectionKind.FIXED_SEQUENCE;
+        log.debug("Unit(int id) constructor called, id={}, pedagogy={}", id, pedagogy);
     }
 
     public int getSequenceId() {
@@ -55,15 +56,14 @@ public class Unit extends TitledModel {
     }
 
     public void setSequenceId(int sequenceId) {
+        log.debug("setSequenceId: changing sequenceId from {} to {}", this.sequenceId, sequenceId);
         this.sequenceId = sequenceId;
     }
 
     public UnitDigest getDigest() {
         UnitDigest digest = new UnitDigest(id);
-
         digest.setTitle(title);
         digest.setDescription(description);
-
         return digest;
     }
 
@@ -72,11 +72,16 @@ public class Unit extends TitledModel {
     }
 
     public void setPedagogy(TaskSelectionKind pedagogy) {
+        log.debug("setPedagogy: changing pedagogy from {} to {}", this.pedagogy, pedagogy);
         this.pedagogy = pedagogy;
     }
 
     public void addTask(Task task) {
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
         tasks.add(task);
+        log.debug("addTask: added task with id={}, sequenceIndex={}", task.getId(), task.getSequenceIndex());
     }
 
     public ArrayList<Task> getTasks() {
@@ -84,6 +89,7 @@ public class Unit extends TitledModel {
     }
 
     public void setTasks(ArrayList<Task> tasks) {
+        log.debug("setTasks: replacing tasks list with {} tasks", tasks != null ? tasks.size() : 0);
         this.tasks = tasks;
     }
 
@@ -94,8 +100,14 @@ public class Unit extends TitledModel {
      * @return a Task, or null if not found.
      */
     public Task findTaskBySequence(int sequence) {
-        for (Task task : tasks) if (task.getSequenceIndex() == sequence) return task;
+        for (Task task : tasks) {
+            if (task.getSequenceIndex() == sequence) {
+                log.debug("findTaskBySequence: found task with sequenceIndex={}", sequence);
+                return task;
+            }
+        }
 
+        log.debug("findTaskBySequence: no task found with sequenceIndex={}", sequence);
         return null;
     }
 }
