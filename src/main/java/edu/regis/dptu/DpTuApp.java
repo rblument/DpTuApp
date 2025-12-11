@@ -47,7 +47,8 @@ public class DpTuApp {
      * @param args ignored
      */
     public static void main(String[] args) {
-        julLogger.info("DpTuApp initializing…");
+        julLogger.info("DpTuApp initializing… (old logger)");
+        log.info("DpTuApp initializing… (new logger)");
 
         // Load JUL configuration from classpath (optional while migrating to SLF4J/Log4j2)
         try (InputStream strm = DpTuApp.class.getResourceAsStream(julLogger_PROPERTIES)) {
