@@ -34,6 +34,7 @@ public class User extends Model {
     // ToDo: Check if this is Needed for gson.fromJson???
     public User() {
         this("", "");
+        log.debug("User() default constructor called");
     }
 
     /**
@@ -43,6 +44,7 @@ public class User extends Model {
      */
     public User(String userId) {
         this(userId, "");
+        log.debug("User(String userId) constructor called with userId={}", userId);
     }
 
     /**
@@ -54,6 +56,7 @@ public class User extends Model {
     public User(String userId, String password) {
         this.userId = userId;
         this.password = password;
+        log.debug("User(String userId, String password) constructor called with userId={}, password=[PROTECTED]", userId);
     }
 
     /**
@@ -71,6 +74,7 @@ public class User extends Model {
      * @param userId String "name@university.edu"
      */
     public void setUserId(String userId) {
+        log.debug("setUserId: changing userId from {} to {}", this.userId, userId);
         this.userId = userId;
     }
 
@@ -89,6 +93,7 @@ public class User extends Model {
      * @param password a SHA-256 encrypted String
      */
     public void setPassword(String password) {
+        log.debug("setPassword: password updated for userId={}", this.userId);
         this.password = password;
     }
 
