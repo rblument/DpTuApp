@@ -55,6 +55,7 @@ public class Course extends TitledModel {
     /** Initialize this course with a default id, empty units, and outcomes */
     public Course() {
         this(DEFAULT_ID);
+        log.debug("Course created with default id");
     }
 
     /**
@@ -67,17 +68,21 @@ public class Course extends TitledModel {
 
         units = new ArrayList<>();
         outcomes = new ArrayList<>();
+        log.debug("Course created with id={}", id);
     }
 
     public TaskSelectionKind getPrimaryPedagogy() {
+        log.debug("getPrimaryPedagogy called, returning {}", primaryPedagogy);
         return primaryPedagogy;
     }
 
     public void setPrimaryPedagogy(TaskSelectionKind primaryPedagogy) {
+        log.debug("Primary pedagogy set from {} to {}", this.primaryPedagogy, primaryPedagogy);
         this.primaryPedagogy = primaryPedagogy;
     }
 
     public CourseDigest getDigest() {
+        log.debug("Creating CourseDigest for course id={}", id);
         CourseDigest digest = new CourseDigest(id, title);
 
         digest.setPrimaryPedagogy(primaryPedagogy);
@@ -95,16 +100,27 @@ public class Course extends TitledModel {
      * @return the current unit, or null.
      */
     public Unit currentUnit() {
-        return units.get(0); // first unit is the current unit.
+        if (units.isEmpty()) {
+            log.warn("currentUnit called but no units exist in course id={}", id);
+            return null;
+        }
+        log.debug("Returning current unit id={} for course id={}", units.get(0).getId(), id);
+        return units.get(0);
     }
 
     public void addUnit(Unit module) {
         units.add(module);
+        log.debug("Added unit id={} to course id={}", module.getId(), id);
     }
 
     public Unit findUnit(int id) throws ObjNotFoundException {
-        for (Unit unit : units) if (unit.getId() == id) return unit;
-
+        for (Unit unit : units) {
+            if (unit.getId() == id) {
+                log.debug("Unit id={} found in course id={}", id, this.id);
+                return unit;
+            }
+        }
+        log.error("Unit id={} not found in course id={}", id, this.id);
         throw new ObjNotFoundException(String.valueOf(id));
     }
 
@@ -115,8 +131,13 @@ public class Course extends TitledModel {
      * @return a Unit, or null if no Unit was found.
      */
     public Unit findUnitBySequenceId(int sequenceId) {
-        for (Unit unit : units) if (unit.getSequenceId() == sequenceId) return unit;
-
+        for (Unit unit : units) {
+            if (unit.getSequenceId() == sequenceId) {
+                log.debug("Unit with sequenceId={} found in course id={}", sequenceId, id);
+                return unit;
+            }
+        }
+        log.warn("Unit with sequenceId={} not found in course id={}", sequenceId, id);
         return null;
     }
 
@@ -125,11 +146,13 @@ public class Course extends TitledModel {
     }
 
     public void setUnits(ArrayList<Unit> units) {
+        log.debug("Setting units for course id={}, count={}", id, units.size());
         this.units = units;
     }
 
     public void addOutcome(KnowledgeComponent outcome) {
         outcomes.add(outcome);
+        log.debug("Added KnowledgeComponent id={} to course id={}", outcome.getId(), id);
     }
 
     public ArrayList<KnowledgeComponent> getOutcomes() {
@@ -137,6 +160,7 @@ public class Course extends TitledModel {
     }
 
     public void setOutcomes(ArrayList<KnowledgeComponent> outcomes) {
+        log.debug("Setting outcomes for course id={}, count={}", id, outcomes.size());
         this.outcomes = outcomes;
     }
 
@@ -145,6 +169,7 @@ public class Course extends TitledModel {
     }
 
     public void setExercisingLocations(ArrayList<ExercisingLocation> exercisingLocations) {
+        log.debug("Setting exercisingLocations for course id={}, count={}", id, exercisingLocations.size());
         this.exercisingLocations = exercisingLocations;
     }
 
@@ -156,9 +181,13 @@ public class Course extends TitledModel {
      * @return KnowledgeComponent
      */
     public KnowledgeComponent findKnowledgeComponent(int componentId) throws ObjNotFoundException {
-        for (KnowledgeComponent outcome : outcomes)
-            if (outcome.getId() == componentId) return outcome;
-
+        for (KnowledgeComponent outcome : outcomes) {
+            if (outcome.getId() == componentId) {
+                log.debug("KnowledgeComponent id={} found in course id={}", componentId, id);
+                return outcome;
+            }
+        }
+        log.error("KnowledgeComponent id={} not found in course id={}", componentId, id);
         throw new ObjNotFoundException("KnowledgeComponent: " + componentId);
     }
 
@@ -169,9 +198,13 @@ public class Course extends TitledModel {
      * @return an ExercisingLocation or null
      */
     public ExercisingLocation findLocation(int id) {
-        for (ExercisingLocation location : exercisingLocations)
-            if (location.getId() == id) return location;
-
+        for (ExercisingLocation location : exercisingLocations) {
+            if (location.getId() == id) {
+                log.debug("ExercisingLocation id={} found in course id={}", id, this.id);
+                return location;
+            }
+        }
+        log.warn("ExercisingLocation id={} not found in course id={}", id, this.id);
         return null;
     }
 }
