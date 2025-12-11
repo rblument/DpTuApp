@@ -99,7 +99,7 @@ public class CustomProgressBar extends JProgressBar {
             }
         } else {
             progressHeight = (int) ((width - 4) * ((double) getValue() / getMaximum()));
-            log.debug("Horizontal progress width calculated: {}", progressSize);
+            log.debug("Horizontal progress width calculated: {}", progressHeight);
 
             // Only create gradient if there is actual progress to show
             if (progressHeight > 1) {
