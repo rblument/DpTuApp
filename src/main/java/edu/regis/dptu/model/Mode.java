@@ -1,28 +1,39 @@
 package edu.regis.dptu.model;
 
-public enum Mode {
-    SEE_ONE("See One"),
-    DO_ONE("Do One"),
-    TEACH_ONE("Teach One");
+import edu.regis.dptu.util.ResourceMgr;
 
-    /** A GUI displayable pretty print string identifying this mode type */
-    private final String title;
+public enum Mode {
+    SEE_ONE("mode.seeOne"),
+    DO_ONE("mode.doOne"),
+    TEACH_ONE("mode.teachOne");
+
+    /** Message key for this mode's display title. */
+    private final String msgKey;
 
     /**
-     * Initialize this mode with its title.
+     * Initialize this mode with its message key.
      *
-     * @param title a GUI displayable pretty print name for this mode type
+     * @param msgKey the Msgs.properties key for this mode's title
      */
-    Mode(String title) {
-        this.title = title;
+    Mode(String msgKey) {
+        this.msgKey = msgKey;
     }
 
     /**
-     * Return the title for this mode type
+     * Return the title for this mode type, localized via ResourceMgr.
      *
      * @return a GUI displayable pretty print string for this mode type
      */
     public String title() {
-        return title;
+        return ResourceMgr.instance().string(msgKey);
+    }
+
+    /**
+     * Return the message key associated with this mode.
+     *
+     * @return the Msgs.properties key used for this mode
+     */
+    public String getMsgKey() {
+        return msgKey;
     }
 }

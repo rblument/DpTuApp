@@ -33,6 +33,7 @@ import javax.swing.JScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.aol.AssessmentLevel;
@@ -218,9 +219,9 @@ public class StepSelectorView extends GPanel {
         String status = stepAssessmentLevels.get(selection.getStepType().toString());
         if (status != null) {
             if (status.equals(AssessmentLevel.NOT_STARTED.title())) {
-                label.setText(label.getText() + " (See One)");
+                label.setText(label.getText() + " (" + Mode.SEE_ONE.title() + ")");
             } else if (status.equals(AssessmentLevel.IN_PROGRESS.title())) {
-                label.setText(label.getText() + " (Do One)");
+                label.setText(label.getText() + " (" + Mode.DO_ONE.title() + ")");
             } else if (status.equals(AssessmentLevel.COMPLETED.title())) {
                 label.setText(label.getText() + " ✅");
             }

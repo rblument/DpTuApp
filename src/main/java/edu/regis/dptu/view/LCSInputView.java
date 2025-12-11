@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -119,13 +120,13 @@ public class LCSInputView extends JPanel {
         string1 = string1.replaceAll("\\s", "");
         string2 = string2.replaceAll("\\s", "");
 
-        LCSInputView.log.info("Submitted String 1: " + string1);
-        LCSInputView.log.info("Submitted String 2: " + string2);
-
-        LCSProblem newProblem = new LCSProblem(string1, string2);
-        submitListener.problemUpdated(newProblem);
-
-        // TODO: Add input validation (e.g., prevent empty submissions).
+        if (string1.length() > 0 && string2.length() > 0) {
+            LCSProblem newProblem = new LCSProblem(string1, string2);
+            submitListener.problemUpdated(newProblem);
+        } else {
+            String msg = "Strings must contain at least one letter, number, or symbol.";
+            JOptionPane.showMessageDialog(this, msg, "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

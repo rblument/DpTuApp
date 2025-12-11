@@ -212,7 +212,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
 
         // Status label (assuming this was added and is desired)
         statusLabel = new JLabel("Ready");
-        statusLabel.setFont(new Font("Dialog", Font.BOLD, 12)); // Default style
+        statusLabel.setFont(new Font("Monospaced", Font.BOLD, 12)); // Default style
     }
 
     /** Layout the child components in this panel. */
@@ -353,9 +353,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
             if (model.hasFinished()) {
                 statusLabel.setText("Finished!");
             } else {
-                int displayNum =
-                        (model.getCurrentLineNumber() % model.getBacktrackingStartNum()) + 1;
-                statusLabel.setText("Line: " + displayNum);
+                int displayNum = (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
+                statusLabel.setText(" Line: " + String.format("%2d", displayNum));
             }
         } else {
             statusLabel.setText("No model loaded");

@@ -18,22 +18,12 @@ import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * MatrixChainProblem implements the dynamic programming algorithm for the Matrix Chain
- * Multiplication problem. It extends the generic Problem class and provides step-by-step execution
- * and undo functionality.
- *
- * <p>State transitions are tracked via the EXECUTION_STATE enum, and intermediate DP table changes
- * are recorded in a history stack to support undo operations.
- *
- * @author Corey Brantley
- */
 public class MatrixChainProblem extends Problem {
     private static final Logger log = LoggerFactory.getLogger(MatrixChainProblem.class);
 
     /**
-     * Enumeration of execution states corresponding to each loop or phase in the matrix chain
-     * algorithm.
+     * Unified execution states, including both forward execution and backtracking. This matches the
+     * design of LCSProblem.
      */
     public enum EXECUTION_STATE {
         PRE,
@@ -41,46 +31,51 @@ public class MatrixChainProblem extends Problem {
         C_LOOP,
         I_LOOP,
         J_LOOP,
-        POST
+        POST,
+
+        // Backtracking phases
+        BACKTRACK_PRE,
+        BACKTRACK_LOOP,
+        BACKTRACK_POP,
+        BACKTRACK_LEAF,
+        BACKTRACK_SPLIT,
+        BACKTRACK_CLOSE,
+        BACKTRACK_DONE
     }
 
-    // Current state of execution within the algorithm
+    // Current execution state
     private EXECUTION_STATE executionState;
 
-    // Stack to record changes to m[i][j] for undo functionality
+    // Stack to record changes to m[i][j]
     private Stack<int[]> mHistory = new Stack<>();
 
-    /**
-     * Constructor initializes the DP variables, dimension list "d", and the empty cost table "m"
-     * with -1 placeholders. Sets initial execution state and loads code statements.
-     *
-     * @param sizes 2D array of matrix dimensions (p x q pairs)
-     */
+    // For storing split table changes
+    private Stack<int[]> sHistory = new Stack<>();
+
+    // Parenthesization result
+    private String currentParens = "";
+
+    // Backtracking highlight table
+    private int[][] bTable;
+
+    // Stack for backtracking
+    private Stack<Object> btStack = new Stack<>();
+
+    private static final String CLOSE_PAREN = ")";
+
     public MatrixChainProblem(int[][] sizes) {
         this(Model.DEFAULT_ID, sizes);
     }
 
-    /**
-     * Constructor initializes the DP variables, dimension list "d", and the empty cost table "m"
-     * with -1 placeholders. Sets initial execution state and loads code statements.
-     *
-     * @param id the unique id of this problem, as assigned by the DB.
-     * @param sizes 2D array of matrix dimensions (p x q pairs)
-     */
     public MatrixChainProblem(int id, int[][] sizes) {
         super(id);
 
-        int n = sizes.length; // number of matrices
+        int n = sizes.length;
         ArrayList<Integer> d = new ArrayList<>();
 
-        // Build dimension list: first matrix's row count
         d.add(sizes[0][0]);
-        // Add each matrix's column count
-        for (int[] size : sizes) {
-            d.add(size[1]);
-        }
+        for (int[] size : sizes) d.add(size[1]);
 
-        // Initialize DP variables in Problem.variables map
         variables.put("n", n);
         variables.put("c", 1);
         variables.put("i", 0);
@@ -88,163 +83,161 @@ public class MatrixChainProblem extends Problem {
         variables.put("k", 0);
         variables.put("d", d);
         variables.put("m", new int[n][n]);
+        variables.put("s", new int[n][n]);
+        variables.put("b", new int[n][n]);
+        bTable = (int[][]) variables.get("b");
 
-        // Specify which variable represents the DP table
-        tableVariable = "m";
-
-        // Fill cost table with -1 as placeholder
         int[][] m = (int[][]) variables.get("m");
-        for (int x = 0; x < n; x++) {
-            for (int y = 0; y < n; y++) {
-                m[x][y] = -1;
-            }
-        }
+        int[][] s = (int[][]) variables.get("s");
+        int[][] b = (int[][]) variables.get("b");
 
-        // Set initial execution state and task kind
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                m[i][j] = -1;
+                s[i][j] = -1;
+                b[i][j] = UNVISITED;
+            }
+
+        tableVariable = "m";
         executionState = EXECUTION_STATE.PRE;
 
-        // Load pseudocode statements for display
         loadCodeStatements();
     }
 
-    /**
-     * {@iniheritDoc}
-     *
-     * @return ProblemKind.MATRIX_CHAIN
-     */
     @Override
     public ProblemKind getType() {
         return ProblemKind.MATRIX_CHAIN;
     }
 
-    /**
-     * Returns the current execution state of the algorithm.
-     *
-     * @return The current EXECUTION_STATE
-     */
-    public EXECUTION_STATE getExecutionState() {
-        return executionState;
-    }
-
     @Override
     public boolean backtrackReady() {
-        // TODO
-        return false;
+        return executionState == EXECUTION_STATE.POST
+                || executionState != EXECUTION_STATE.BACKTRACK_DONE;
     }
 
     @Override
     public void backtrackingOn() {
-        // TODO
+        nextLineNumber = BACKTRACKING_START_NUM;
+        executionState = EXECUTION_STATE.BACKTRACK_PRE;
+
+        // reset backtracking tables
+        for (int[] row : bTable) java.util.Arrays.fill(row, UNVISITED);
+
+        currentParens = "";
+        btStack.clear();
+
+        notifyProblemListeners();
     }
 
     @Override
     public boolean undoingBacktrackButton() {
-        // TODO
         return false;
     }
 
     @Override
     public boolean canStepBack() {
-        // TODO
-        return false;
+        return !executionHistory.isEmpty();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
-        // TODO
-        return false;
+        return executionState == EXECUTION_STATE.POST
+                || executionState == EXECUTION_STATE.BACKTRACK_DONE;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void reset() {
-        // TODO implement reset of this problem
-        return;
+        executionState = EXECUTION_STATE.PRE;
+        nextLineNumber = 0;
+
+        executionHistory.clear();
+        mHistory.clear();
+        sHistory.clear();
+        btStack.clear();
+        currentParens = "";
+
+        int[][] m = (int[][]) variables.get("m");
+        int[][] s = (int[][]) variables.get("s");
+        int[][] b = (int[][]) variables.get("b");
+        int n = (int) variables.get("n");
+
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                m[i][j] = -1;
+                s[i][j] = -1;
+                b[i][j] = UNVISITED;
+            }
+
+        variables.put("i", 0);
+        variables.put("j", 0);
+        variables.put("k", 0);
+        variables.put("c", 1);
+
+        notifyProblemListeners();
     }
 
-    /**
-     * Loads HTML-formatted code statements representing each step of the matrix chain
-     * multiplication algorithm. These statements are shown in the view during execution.
-     */
     @Override
     protected void loadCodeStatements() {
-        codeStatements.add("<html><pre>for i = 0 to n-1</pre></html>"); // initialize diagonals
+        codeStatements.add("<html><pre>for i = 0 to n-1</pre></html>");
         codeStatements.add("<html><pre>    m[i][i] = 0</pre></html>");
-        codeStatements.add("<html><pre>for c = 1 to n-1</pre></html>"); // chain length loop
+        codeStatements.add("<html><pre>for c = 1 to n-1</pre></html>");
         codeStatements.add("<html><pre>    for i = 0 to n - c</pre></html>");
         codeStatements.add("<html><pre>        j = i + c</pre></html>");
         codeStatements.add("<html><pre>        m[i][j] = ∞</pre></html>");
         codeStatements.add("<html><pre>        for k = i to j-1</pre></html>");
         codeStatements.add(
-                "<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]*d[k+1]*d[j+1]</pre></html>");
+                "<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>");
         codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>");
-        codeStatements.add("<html><pre>return m</pre></html>"); // final result
+        codeStatements.add("<html><pre>return m</pre></html>");
     }
 
     @Override
     protected void loadBacktrackingCodeStatements() {
-        // TODO
+        backtrackingCodeStatements.clear();
+        backtrackingCodeStatements.add("<html><pre>BACKTRACK(0, n-1)</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>push(0, n-1)</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>while stack not empty</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>  (i,j) = pop()</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>  if i == j: output Ai</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>  else: k = s[i][j]</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>    output '('</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>    BACKTRACK(i, k)</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>    BACKTRACK(k+1, j)</pre></html>");
+        backtrackingCodeStatements.add("<html><pre>    output ')'</pre></html>");
     }
 
-    /**
-     * Prints a console representation of the DP table and state, useful for debugging and testing.
-     *
-     * <p>Intentionally leaving System.out.println() calls and not replacing with log.info() calls.
-     */
-    public void prettyPrint() {
-        int[][] m = (int[][]) variables.get("m");
-        int n = (int) variables.get("n");
+    // =========================================================================
+    // FORWARD EXECUTION LINES 0–9
+    // =========================================================================
 
-        System.out.println("ExecutionState: " + executionState);
-        System.out.println("Current line: " + nextLineNumber);
-        System.out.println("DP Table (m):");
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                // Display '-' for uninitialized cells
-                System.out.printf("%6s", (m[i][j] == -1 ? "-" : m[i][j]));
-            }
-            System.out.println();
-        }
-    }
-
-    /** Executes line 0: initializes i to 0 and transitions to R_LOOP. */
     public void executeLine0() {
         variables.put("i", 0);
         executionState = EXECUTION_STATE.R_LOOP;
         nextLineNumber = 1;
     }
 
-    /**
-     * Executes line 1: sets m[i][i] to 0 and records the change. Advances i or moves to chain
-     * length loop when done.
-     */
     public void executeLine1() {
         int i = (int) variables.get("i");
         int n = (int) variables.get("n");
         int[][] m = (int[][]) variables.get("m");
-        // Record previous value for undo
+
         mHistory.push(new int[] {i, i, m[i][i]});
         m[i][i] = 0;
+
         if (i + 1 == n) {
-            // Move to chain length iteration
             variables.put("c", 1);
             executionState = EXECUTION_STATE.C_LOOP;
             nextLineNumber = 2;
         } else {
-            // Continue along the diagonal
             variables.put("i", i + 1);
             nextLineNumber = 1;
         }
     }
 
-    /**
-     * Executes line 2: checks chain length c; if complete, transitions to POST, otherwise starts
-     * inner loops.
-     */
     public void executeLine2() {
         int c = (int) variables.get("c");
         int n = (int) variables.get("n");
+
         if (c == n) {
             executionState = EXECUTION_STATE.POST;
             nextLineNumber = 9;
@@ -254,16 +247,12 @@ public class MatrixChainProblem extends Problem {
         }
     }
 
-    /**
-     * Executes line 3: determines whether to increment c or proceed to set j based on current i and
-     * c.
-     */
     public void executeLine3() {
         int i = (int) variables.get("i");
         int c = (int) variables.get("c");
         int n = (int) variables.get("n");
+
         if (i > n - c - 1) {
-            // End of i-loop for this chain length
             variables.put("c", c + 1);
             nextLineNumber = 2;
         } else {
@@ -271,122 +260,195 @@ public class MatrixChainProblem extends Problem {
         }
     }
 
-    /** Executes line 4: computes j = i + c and stores it. */
     public void executeLine4() {
         int i = (int) variables.get("i");
         int c = (int) variables.get("c");
-        int j = i + c;
-        variables.put("j", j);
+
+        variables.put("j", i + c);
         nextLineNumber = 5;
     }
 
-    /**
-     * Executes line 5: sets m[i][j] to infinity (max int), records change, and initializes k for
-     * k-loop.
-     */
     public void executeLine5() {
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
         int[][] m = (int[][]) variables.get("m");
+
         mHistory.push(new int[] {i, j, m[i][j]});
         m[i][j] = Integer.MAX_VALUE;
         variables.put("k", i);
+
         nextLineNumber = 6;
     }
 
-    /**
-     * Executes line 6: checks if k-loop is done; if so, increments i to next row; otherwise moves
-     * to cost calc.
-     */
     public void executeLine6() {
         int k = (int) variables.get("k");
         int j = (int) variables.get("j");
+
         if (k >= j) {
             int i = (int) variables.get("i");
             variables.put("i", i + 1);
             nextLineNumber = 3;
-        } else {
-            nextLineNumber = 7;
-        }
+        } else nextLineNumber = 7;
     }
 
-    /**
-     * Executes line 7: computes cost for splitting at k and stores it in variables for comparison.
-     */
-    @SuppressWarnings("unchecked")
     public void executeLine7() {
         int[][] m = (int[][]) variables.get("m");
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
         int k = (int) variables.get("k");
         ArrayList<Integer> d = (ArrayList<Integer>) variables.get("d");
-        // cost = cost_left + cost_right + multiplication cost
+
         int cost = m[i][k] + m[k + 1][j] + d.get(i) * d.get(k + 1) * d.get(j + 1);
+
         variables.put("cost", cost);
         nextLineNumber = 8;
     }
 
-    /**
-     * Executes line 8: if new cost is lower, updates m[i][j], records change, and increments k for
-     * next iteration.
-     */
     public void executeLine8() {
         int cost = (int) variables.get("cost");
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
         int[][] m = (int[][]) variables.get("m");
+
         if (cost < m[i][j]) {
             mHistory.push(new int[] {i, j, m[i][j]});
             m[i][j] = cost;
+
+            int[][] s = (int[][]) variables.get("s");
+            int kVal = (int) variables.get("k");
+
+            sHistory.push(new int[] {i, j, s[i][j]});
+            s[i][j] = kVal;
         }
+
         int k = (int) variables.get("k");
         variables.put("k", k + 1);
         nextLineNumber = 6;
     }
 
-    /** Executes line 9: marks algorithm as complete. */
     public void executeLine9() {
         executionState = EXECUTION_STATE.POST;
     }
 
-    /**
-     * Undoes the effects of executeLine1 (m[i][i] assignment). Restores previous value from
-     * history.
-     */
+    // =========================================================================
+    // BACKTRACKING LINES 100–118
+    // =========================================================================
+
+    public void executeLine100() {
+        currentParens = "";
+        btStack.clear();
+
+        int n = (int) variables.get("n");
+        btStack.push(new int[] {0, n - 1});
+
+        executionState = EXECUTION_STATE.BACKTRACK_PRE;
+        nextLineNumber = 101;
+    }
+
+    public void executeLine101() {
+        if (btStack.isEmpty()) {
+            executionState = EXECUTION_STATE.BACKTRACK_DONE;
+            nextLineNumber = 118;
+        } else {
+            executionState = EXECUTION_STATE.BACKTRACK_LOOP;
+            nextLineNumber = 102;
+        }
+    }
+
+    public void executeLine102() {
+        Object obj = btStack.pop();
+
+        if (obj instanceof String) {
+            currentParens += ")";
+            executionState = EXECUTION_STATE.BACKTRACK_CLOSE;
+            nextLineNumber = 101;
+            return;
+        }
+
+        int[] pair = (int[]) obj;
+        variables.put("i", pair[0]);
+        variables.put("j", pair[1]);
+
+        executionState = EXECUTION_STATE.BACKTRACK_POP;
+        nextLineNumber = 103;
+    }
+
+    public void executeLine103() {
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+
+        if (i == j) {
+            currentParens += "A" + i;
+            bTable[i][j] = ADD_TO_SOLUTION;
+
+            executionState = EXECUTION_STATE.BACKTRACK_LEAF;
+            nextLineNumber = 101;
+            return;
+        }
+
+        nextLineNumber = 104;
+    }
+
+    public void executeLine104() {
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+
+        int[][] s = (int[][]) variables.get("s");
+        int k = s[i][j];
+
+        variables.put("k", k);
+
+        currentParens += "(";
+        bTable[i][j] = HIT;
+
+        btStack.push(CLOSE_PAREN);
+        btStack.push(new int[] {k + 1, j});
+        btStack.push(new int[] {i, k});
+
+        executionState = EXECUTION_STATE.BACKTRACK_SPLIT;
+        nextLineNumber = 101;
+    }
+
+    public void executeLine118() {
+        executionState = EXECUTION_STATE.BACKTRACK_DONE;
+    }
+
+    // =========================================================================
+    // — UNDO METHODS (unchanged except removal of bState references) —
+    // =========================================================================
+
+    public void undoLine0() {
+        variables.put("i", 0);
+        executionState = EXECUTION_STATE.PRE;
+        nextLineNumber = 0;
+    }
+
     public void undoLine1() {
         if (!mHistory.isEmpty()) {
             int[] change = mHistory.pop();
             int[][] m = (int[][]) variables.get("m");
             m[change[0]][change[1]] = change[2];
         }
+
         int i = (int) variables.get("i") - 1;
-        if (i >= 0) {
-            variables.put("i", i);
-        }
-        if (i <= 0) executionState = EXECUTION_STATE.PRE;
+        if (i >= 0) variables.put("i", i);
     }
 
-    /** Undoes executeLine2: decrements c and resets i. */
     public void undoLine2() {
         int c = (int) variables.get("c") - 1;
         variables.put("c", c);
         variables.put("i", 0);
-        if (c <= 0) executionState = EXECUTION_STATE.R_LOOP;
     }
 
-    /** Undoes executeLine3: decrements i and adjusts state if needed. */
     public void undoLine3() {
         int i = (int) variables.get("i") - 1;
         variables.put("i", i);
-        if (i < 0) executionState = EXECUTION_STATE.C_LOOP;
     }
 
-    /** Undoes executeLine4: resets j to 0. */
     public void undoLine4() {
         variables.put("j", 0);
     }
 
-    /** Undoes executeLine5: restores previous m[i][j] from history. */
     public void undoLine5() {
         if (!mHistory.isEmpty()) {
             int[] change = mHistory.pop();
@@ -395,31 +457,68 @@ public class MatrixChainProblem extends Problem {
         }
     }
 
-    /** Undoes executeLine6: decrements k for previous iteration. */
     public void undoLine6() {
         int k = (int) variables.get("k") - 1;
         variables.put("k", k);
     }
 
-    /** Undoes executeLine7: removes cost variable. */
     public void undoLine7() {
         variables.remove("cost");
     }
 
-    /** Undoes executeLine8: restores m[i][j] and decrements k. */
     public void undoLine8() {
         if (!mHistory.isEmpty()) {
             int[] change = mHistory.pop();
             int[][] m = (int[][]) variables.get("m");
             m[change[0]][change[1]] = change[2];
         }
+
+        if (!sHistory.isEmpty()) {
+            int[] prev = sHistory.pop();
+            int[][] s = (int[][]) variables.get("s");
+            s[prev[0]][prev[1]] = prev[2];
+        }
+
         int k = (int) variables.get("k") - 1;
         variables.put("k", k);
     }
 
-    /** Undoes executeLine9: resets c and state to before POST. */
     public void undoLine9() {
-        executionState = EXECUTION_STATE.C_LOOP;
         variables.put("c", (int) variables.get("n"));
+        executionState = EXECUTION_STATE.C_LOOP;
+    }
+
+    public void undoLine100() {
+        btStack.clear();
+        currentParens = "";
+    }
+
+    public void undoLine101() {}
+
+    public void undoLine102() {}
+
+    public void undoLine103() {
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+
+        bTable[i][j] = UNVISITED;
+
+        if (currentParens.endsWith("A" + i)) {
+            currentParens = currentParens.substring(0, currentParens.length() - ("A" + i).length());
+        }
+    }
+
+    public void undoLine104() {
+        int i = (int) variables.get("i");
+        int j = (int) variables.get("j");
+        bTable[i][j] = UNVISITED;
+
+        if (currentParens.endsWith("(")) {
+            currentParens = currentParens.substring(0, currentParens.length() - 1);
+        }
+    }
+
+    public void undoLine118() {
+        executionState = EXECUTION_STATE.BACKTRACK_LOOP;
     }
 }
