@@ -51,6 +51,7 @@ public class PendingStep {
 
     public PendingStep(Step step) {
         this(Model.DEFAULT_ID, step);
+        log.debug("PendingStep created with default ID {} for step {}", Model.DEFAULT_ID, step);
     }
 
     public PendingStep(int id, Step step) {
@@ -58,6 +59,7 @@ public class PendingStep {
         this.step = step;
 
         isCompleted = false;
+        log.debug("PendingStep created with ID {} for step {}", id, step);
     }
 
     public int getId() {
@@ -65,6 +67,7 @@ public class PendingStep {
     }
 
     public void setId(int id) {
+        log.debug("PendingStep ID changed from {} to {}", this.id, id);
         this.id = id;
     }
 
@@ -73,6 +76,7 @@ public class PendingStep {
     }
 
     public void setStep(Step step) {
+        log.debug("PendingStep step changed from {} to {}", this.step, step);
         this.step = step;
     }
 
@@ -81,6 +85,7 @@ public class PendingStep {
     }
 
     public void setCurrentHintIndex(int currentHintIndex) {
+        log.debug("PendingStep currentHintIndex set to {}", currentHintIndex);
         this.currentHintIndex = currentHintIndex;
     }
 
@@ -90,15 +95,23 @@ public class PendingStep {
         if (hints.isEmpty()) {
             Hint noHint = new Hint();
             noHint.setText("Sorry, no hints available");
+            log.debug("PendingStep {} has no hints available", id);
             return noHint;
         }
 
         // Reset the index to 0 if it exceeds the list size
         if (currentHintIndex >= hints.size()) {
+            log.debug(
+                    "PendingStep {} currentHintIndex {} exceeds hint list size {}. Resetting to 0",
+                    id,
+                    currentHintIndex,
+                    hints.size());
             currentHintIndex = 0;
         }
 
-        return hints.get(currentHintIndex);
+        Hint hint = hints.get(currentHintIndex);
+        log.debug("PendingStep {} returning hint at index {}: {}", id, currentHintIndex, hint.getText());
+        return hint;
     }
 
     public boolean isNotifyTutor() {
@@ -106,6 +119,7 @@ public class PendingStep {
     }
 
     public void setNotifyTutor(boolean notifyTutor) {
+        log.debug("PendingStep {} notifyTutor set to {}", id, notifyTutor);
         this.notifyTutor = notifyTutor;
     }
 
@@ -114,6 +128,7 @@ public class PendingStep {
     }
 
     public void setIsCompleted(boolean isCompleted) {
+        log.debug("PendingStep {} isCompleted set to {}", id, isCompleted);
         this.isCompleted = isCompleted;
     }
 }
