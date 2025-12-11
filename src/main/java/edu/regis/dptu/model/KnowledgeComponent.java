@@ -64,6 +64,7 @@ public class KnowledgeComponent extends TitledModel {
         super(id);
 
         exercisingLocations = new ArrayList<>();
+        log.debug("KnowledgeComponent created with id={}", id);
     }
 
     /**
@@ -148,12 +149,20 @@ public class KnowledgeComponent extends TitledModel {
     }
 
     /**
-     * Add the location to the exersisingLocations arrayList.
+     * Add the location to the exercisingLocations arrayList.
      *
      * @param location a ExercisingLocation data type.
      */
     public void addExercisingLocation(ExercisingLocation location) {
         exercisingLocations.add(location);
+        log.debug(
+                "Added ExercisingLocation id={} (courseId={}, unitId={}, taskId={}, stepId={}) to KnowledgeComponent id={}",
+                location.getId(),
+                location.getCourseId(),
+                location.getUnitId(),
+                location.getTaskId(),
+                location.getStepId(),
+                this.id);
     }
 
     /**
@@ -172,5 +181,9 @@ public class KnowledgeComponent extends TitledModel {
      */
     public void setExercisingLocations(ArrayList<ExercisingLocation> exercisingLocations) {
         this.exercisingLocations = exercisingLocations;
+        log.debug(
+                "Set {} ExercisingLocations for KnowledgeComponent id={}",
+                (exercisingLocations == null ? 0 : exercisingLocations.size()),
+                this.id);
     }
 }
