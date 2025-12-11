@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.view;
 
 import javax.swing.JMenu;
@@ -23,7 +24,8 @@ import edu.regis.dptu.view.act.SaveSessionAction;
 
 /**
  * Menu bar used in the MainFrame.
- *
+ * Added logging to track menu initialization.
+ * 
  * @author rickb
  */
 public class DpTuMenuBar extends JMenuBar {
@@ -33,19 +35,28 @@ public class DpTuMenuBar extends JMenuBar {
      * Constructor for the DpTuMenuBar class. Initializes the menu bar by creating the File menu.
      */
     public DpTuMenuBar() {
+        log.info("Initializing DpTuMenuBar...");
         createFileMenu();
+        log.info("DpTuMenuBar initialized successfully.");
     }
 
     /** Create the File menu appearing in the menubar */
     private void createFileMenu() {
+        log.debug("Creating 'File' menu...");
+
         JMenu menu = new JMenu("File");
+        log.debug("'File' menu created.");
 
         JMenuItem item = new JMenuItem(SaveSessionAction.instance());
+        log.debug("'Save Session' menu item created and action attached.");
 
         menu.add(item);
+        log.debug("'Save Session' menu item added to 'File' menu.");
 
         menu.addSeparator();
+        log.debug("Separator added to 'File' menu.");
 
         add(menu);
+        log.debug("'File' menu added to menu bar.");
     }
 }
