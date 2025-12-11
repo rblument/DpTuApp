@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.dao;
 
 import java.sql.Connection;
@@ -43,6 +44,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
     /** Initialize this DAO via the parent constructor. */
     public SessionDAO() {
         super();
+        log.debug("SessionDAO initialized");
     }
 
     /**
@@ -54,24 +56,25 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
     @Override
     public void create(TutoringSession session)
             throws IllegalArgException, NonRecoverableException {
+        log.debug("Creating session id={}", session.getId());
         final String sql =
                 "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemType, ProblemId) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?)";
 
         Connection conn = null;
         PreparedStatement stmt = null;
-
         int sessionId = session.getId();
 
         try {
             conn = DriverManager.getConnection(URL);
+            log.debug("Database connection established for creating session id={}", sessionId);
 
             if (exists(sessionId, conn)) {
+                log.warn("Session already exists with id={}", sessionId);
                 throw new IllegalArgException("Session already exists with id " + sessionId);
             }
 
             String[] keyCol = {"SessionId"};
             stmt = conn.prepareStatement(sql, keyCol);
-
             stmt.setString(1, session.getSecurityToken());
             stmt.setString(2, session.getUserId());
             stmt.setInt(3, session.getCourse().getId());
@@ -82,8 +85,10 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt.setString(6, prob.getType().toString());
             stmt.setInt(7, prob.getId());
 
-            stmt.execute();
+            int rows = stmt.executeUpdate();
+            log.debug("Session created successfully id={}, rows affected={}", sessionId, rows);
         } catch (SQLException e) {
+            log.error("SQLException creating session id={}", sessionId, e);
             throw new NonRecoverableException("Create Session Error", e);
         } finally {
             close(conn, stmt);
@@ -94,6 +99,8 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
     @Override
     public TutoringSession retrieve(Student student)
             throws ObjNotFoundException, NonRecoverableException {
+        String userId = student.getAccount().getUserId();
+        log.debug("Retrieving session for userId={}", userId);
         final String sql =
                 "SELECT SessionId, SecurityToken, StartDate, IsActive, ProblemType, ProblemId FROM TutoringSession WHERE UserId = ?";
 
@@ -103,8 +110,6 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         try {
             conn = DriverManager.getConnection(URL);
             stmt = conn.prepareStatement(sql);
-
-            String userId = student.getAccount().getUserId();
             stmt.setString(1, userId);
 
             ResultSet rs = stmt.executeQuery();
@@ -120,14 +125,16 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 session.setIsActive(rs.getBoolean(4));
 
                 ProblemSvc problemSvc = ServiceFactory.findProblemSvc();
-
                 session.setProblem(problemSvc.retrieve(rs.getInt(6)));
 
+                log.debug("Session retrieved successfully for userId={}, sessionId={}", userId, session.getId());
                 return session;
             } else {
+                log.warn("Session not found for userId={}", userId);
                 throw new ObjNotFoundException("User id:" + userId);
             }
         } catch (SQLException e) {
+            log.error("SQLException retrieving session for userId={}", userId, e);
             throw new NonRecoverableException("Retrieve Session Error", e);
         } finally {
             close(conn, stmt);
@@ -138,6 +145,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
     @Override
     public String retrieveSecurityToken(String userId)
             throws ObjNotFoundException, NonRecoverableException {
+        log.debug("Retrieving security token for userId={}", userId);
         final String sql = "SELECT SecurityToken FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
@@ -146,18 +154,20 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         try {
             conn = DriverManager.getConnection(URL);
             stmt = conn.prepareStatement(sql);
-
             stmt.setString(1, userId);
 
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return rs.getString(1);
-
+                String token = rs.getString(1);
+                log.debug("Security token retrieved for userId={}", userId);
+                return token;
             } else {
+                log.warn("Security token not found for userId={}", userId);
                 throw new ObjNotFoundException("User Id:" + userId);
             }
         } catch (SQLException e) {
+            log.error("SQLException retrieving security token for userId={}", userId, e);
             throw new NonRecoverableException("SessionDAO-ERR-5" + e.toString(), e);
         } finally {
             close(conn, stmt);
@@ -168,6 +178,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
     @Override
     public void update(TutoringSession session)
             throws ObjNotFoundException, NonRecoverableException {
+        log.debug("Updating session id={}", session.getId());
         final String sql =
                 "UPDATE TutoringSession SET SecurityToken = ?, CourseId = ?, UnitId = ?, IsActive = ? WHERE SessionId = ?";
 
@@ -189,11 +200,14 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
 
             if (rows != 1) {
                 conn.rollback();
+                log.warn("Session update affected {} rows, rolling back sessionId={}", rows, session.getId());
                 throw new NonRecoverableException("Session update updated too many rows: " + rows);
             }
 
             conn.commit();
+            log.debug("Session updated successfully sessionId={}", session.getId());
         } catch (SQLException e) {
+            log.error("SQLException updating session id={}", session.getId(), e);
             throw new NonRecoverableException("Update Session Error", e);
         } finally {
             close(conn, stmt);
@@ -203,6 +217,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
     /** {@inheritDoc} */
     @Override
     public void delete(String userId) throws NonRecoverableException {
+        log.debug("Deleting session for userId={}", userId);
         final String sql = "DELETE FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
@@ -218,11 +233,14 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
 
             if (rows != 1) {
                 conn.rollback();
+                log.warn("Session delete affected {} rows for userId={}, rolling back", rows, userId);
                 throw new NonRecoverableException("Session delete deleted too many rows: " + rows);
             }
 
             conn.commit();
+            log.debug("Session deleted successfully for userId={}", userId);
         } catch (SQLException e) {
+            log.error("SQLException deleting session for userId={}", userId, e);
             throw new NonRecoverableException("Delete Session Error", e);
         } finally {
             close(conn, stmt);
@@ -236,8 +254,8 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
      * @throws NonRecoverableException (see ex.getCause().getErrorCode())
      */
     private boolean exists(int sessionId, Connection conn) throws NonRecoverableException {
+        log.debug("Checking existence of session id={}", sessionId);
         final String sql = "SELECT SessionId FROM TutoringSession WHERE SessionId = ?;";
-
         PreparedStatement stmt = null;
 
         try {
@@ -245,9 +263,11 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt.setInt(1, sessionId);
 
             ResultSet rs = stmt.executeQuery();
-
-            return rs.next();
+            boolean exists = rs.next();
+            log.debug("Session existence check id={} result={}", sessionId, exists);
+            return exists;
         } catch (SQLException e) {
+            log.error("SQLException checking existence for session id={}", sessionId, e);
             throw new NonRecoverableException("Exists Session Error", e);
         } finally {
             close(stmt);
