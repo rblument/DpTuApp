@@ -189,8 +189,8 @@ public class MatrixChainProblem extends Problem {
 
     /**
      * Prints a console representation of the DP table and state, useful for debugging and testing.
-     * 
-     * Intentionally leaving System.out.println() calls and not replacing with log.info() calls.
+     *
+     * <p>Intentionally leaving System.out.println() calls and not replacing with log.info() calls.
      */
     public void prettyPrint() {
         int[][] m = (int[][]) variables.get("m");

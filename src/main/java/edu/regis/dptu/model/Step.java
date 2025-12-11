@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Step extends TitledModel {
     private static final Logger log = LoggerFactory.getLogger(Step.class);
-    
+
     /** The scaffold level associated with this step. */
     private ScaffoldLevel scaffolding;
 

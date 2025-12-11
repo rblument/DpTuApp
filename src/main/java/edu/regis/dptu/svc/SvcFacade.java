@@ -19,10 +19,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.google.gson.Gson;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 /**
  * A Facade that standardizes requests from the GUI Client to the DpTu tutor server via a socket
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SvcFacade {
     private static final Logger log = LoggerFactory.getLogger(SvcFacade.class);
-    
+
     /** The single instance of the tutor facade. */
     private static final SvcFacade SINGLETON;
 

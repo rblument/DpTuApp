@@ -31,10 +31,10 @@ public class ImgFactory {
 
     /** Directory in the Resource path where the images are located. */
     private static final String DIRECTORY = "/";
-   
+
     /**
      * Create an Image Icon by loading its corresponding PNG image.
-     * 
+     *
      * @param fileName The filename of the image to load
      * @param altText The alternate text of the image to use
      * @return ImageIcon with the corresponding seven segment display.
