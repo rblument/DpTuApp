@@ -33,16 +33,22 @@ public class MissingPropertyException extends DpTuException {
      */
     public MissingPropertyException(String property) {
         super("Missing property " + property);
+        log.error("MissingPropertyException thrown: missing property '{}'", property);
     }
 
     /**
-     * Initialize this new instance with the given message and and java exception that initially
-     * caused this exception.
+     * Initialize this new instance with the given message and java exception that initially caused
+     * this exception.
      *
      * @param property the property key (e.g. "edu.regis.dptu.DebugLevel")
      * @param cause the Java exception that caused this exception.
      */
     public MissingPropertyException(String property, Throwable cause) {
-        super(("Missing property " + property), cause);
+        super("Missing property " + property, cause);
+        log.error(
+                "MissingPropertyException thrown: missing property '{}'. Cause: {}",
+                property,
+                cause.toString(),
+                cause);
     }
 }

@@ -44,9 +44,6 @@ import edu.regis.dptu.model.ProblemListener;
 class SubSequenceView extends JPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubSequenceView.class);
 
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(SubSequenceView.class.getName());
-
     private static final int MAX_LABEL_CHARS = 20;
     private static final int CHAR_WIDTH_PX = 16;
     private static final int MIN_CANVAS_WIDTH = 100;
@@ -229,14 +226,13 @@ class SubSequenceView extends JPanel implements ProblemListener {
 
             this.model.addProblemListener(this);
 
-            julLogger.log(
-                    java.util.logging.Level.INFO,
+            log.info(
                     "SubSequenceView: model set ({0}), updating view",
                     this.model.getClass().getSimpleName());
 
             updateView();
         } else {
-            julLogger.warning("SubSequenceView: setModel called with a null model");
+            log.warn("SubSequenceView: setModel called with a null model");
         }
     }
 
@@ -249,7 +245,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
     @Override
     public void problemUpdated(Problem problem) {
 
-        julLogger.log(java.util.logging.Level.FINE, "SubSequenceView: problemUpdated called");
+        log.debug("SubSequenceView: problemUpdated called");
 
         // Update the UI on the Swing thread to avoid race conditions.
         SwingUtilities.invokeLater(this::updateView);
@@ -271,9 +267,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
             // Update the view with the current words.
             updateWords(x, y);
         } else if (model != null) {
-            julLogger.log(
-                    java.util.logging.Level.FINE,
-                    "SubSequenceView: model is not LCSProblem; " + "no word update performed");
+            log.debug("SubSequenceView: model is not LCSProblem; " + "no word update performed");
         }
 
         // setModel() handles if(model = null).

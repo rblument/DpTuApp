@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.err;
 
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class XmlException extends DpTuException {
      */
     public XmlException(String msg) {
         super(msg);
+        log.error("XmlException thrown: {}", msg);
     }
 
     /**
@@ -41,5 +43,6 @@ public class XmlException extends DpTuException {
      */
     public XmlException(String msg, Throwable cause) {
         super(msg, cause);
+        log.error("XmlException thrown: {}. Cause: {}", msg, cause.toString(), cause);
     }
 }

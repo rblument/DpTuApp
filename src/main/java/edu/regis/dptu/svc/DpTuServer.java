@@ -19,6 +19,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 /**
@@ -36,8 +39,7 @@ public class DpTuServer implements Runnable {
     public static final int PORT = 53637;
 
     /** Handler for logging messages. */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(DpTuServer.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(DpTuServer.class);
 
     /** The socket listening for connections from the client */
     private ServerSocket server;
@@ -60,7 +62,7 @@ public class DpTuServer implements Runnable {
             }
 
         } catch (IOException e) {
-            julLogger.log(java.util.logging.Level.SEVERE, "EncryptionServer.run()", e);
+            log.error("EncryptionServer.run()", e);
         }
     }
 
@@ -110,7 +112,7 @@ public class DpTuServer implements Runnable {
                 out.flush();
 
             } catch (IOException e) {
-                julLogger.log(java.util.logging.Level.SEVERE, "EncryptionConnection.run()", e);
+                log.error("EncryptionConnection.run()", e);
             } finally {
                 // About as ugly as it gets, but the following code ensures that
                 // we've at least tried to close an open socket and its associated
@@ -126,20 +128,14 @@ public class DpTuServer implements Runnable {
                             in.close();
                         }
                     } catch (IOException e) {
-                        julLogger.log(
-                                java.util.logging.Level.SEVERE,
-                                "Unable to close client socket in",
-                                e);
+                        log.error("Unable to close client socket in", e);
                     } finally {
                         try {
                             if (client != null) {
                                 client.close();
                             }
                         } catch (IOException e) {
-                            julLogger.log(
-                                    java.util.logging.Level.SEVERE,
-                                    "Unable to close client socket in",
-                                    e);
+                            log.error("Unable to close client socket in", e);
                         }
                     }
                 }

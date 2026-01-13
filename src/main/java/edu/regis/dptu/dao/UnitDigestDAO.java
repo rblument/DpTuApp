@@ -55,9 +55,11 @@ public class UnitDigestDAO extends MySqlDAO {
         PreparedStatement stmt = null;
 
         try {
+            log.debug("Creating UnitDigest: {}", unit);
             conn = DriverManager.getConnection(URL);
 
             if (exists(unit.getId(), conn)) {
+                log.warn("Attempted to create UnitDigest that already exists: {}", unit.getId());
                 throw new IllegalArgException("Unit Digest already exists with id " + unit.getId());
             }
 
@@ -70,7 +72,9 @@ public class UnitDigestDAO extends MySqlDAO {
             stmt.setString(5, unit.getPedagogy().toString());
 
             stmt.execute();
+            log.debug("Successfully created UnitDigest with id {}", unit.getId());
         } catch (SQLException e) {
+            log.error("Failed to create UnitDigest: {}", unit, e);
             throw new NonRecoverableException("Create Unit Digest Error", e);
         } finally {
             close(conn, stmt);
@@ -83,7 +87,7 @@ public class UnitDigestDAO extends MySqlDAO {
      *
      * @param unitId integer key of the unit to load.
      * @return The unit digest of the given id.
-     * @exception ObjNotFoundException No unit digest with the given id exists.
+     * @throws ObjNotFoundException No unit digest with the given id exists.
      * @throws NonRecoverableException see the documentation for this exception.
      */
     public UnitDigest retrieve(int unitId) throws ObjNotFoundException, NonRecoverableException {
@@ -94,6 +98,7 @@ public class UnitDigestDAO extends MySqlDAO {
         PreparedStatement stmt = null;
 
         try {
+            log.debug("Retrieving UnitDigest with id {}", unitId);
             conn = DriverManager.getConnection(URL);
 
             stmt = conn.prepareStatement(sql);
@@ -110,11 +115,14 @@ public class UnitDigestDAO extends MySqlDAO {
                 unit.setSequenceIndex(rs.getInt(4));
                 unit.setPedagogy(TaskSelectionKind.valueOf(rs.getString(5)));
 
+                log.debug("Successfully retrieved UnitDigest: {}", unit);
                 return unit;
             } else {
+                log.warn("UnitDigest not found with id {}", unitId);
                 throw new ObjNotFoundException("Unit id: " + unitId);
             }
         } catch (SQLException e) {
+            log.error("Failed to retrieve UnitDigest with id {}", unitId, e);
             throw new NonRecoverableException("Retrieve Unit Error", e);
         } finally {
             close(stmt);
@@ -122,6 +130,8 @@ public class UnitDigestDAO extends MySqlDAO {
     }
 
     /**
+     * Check whether a UnitDigest exists by unitId.
+     *
      * @param unitId the unit id
      * @param conn an existing connection to the database
      * @return true, if the unit exists, otherwise false
@@ -137,9 +147,12 @@ public class UnitDigestDAO extends MySqlDAO {
             stmt.setInt(1, unitId);
 
             ResultSet rs = stmt.executeQuery();
+            boolean exists = rs.next();
 
-            return rs.next();
+            log.debug("UnitDigest exists check for id {}: {}", unitId, exists);
+            return exists;
         } catch (SQLException e) {
+            log.error("Failed to check existence of UnitDigest with id {}", unitId, e);
             throw new NonRecoverableException("Exists Unit Error", e);
         } finally {
             close(stmt);

@@ -521,4 +521,14 @@ public class MatrixChainProblem extends Problem {
     public void undoLine118() {
         executionState = EXECUTION_STATE.BACKTRACK_LOOP;
     }
+
+    public EXECUTION_STATE getExecutionState() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getExecutionState'");
+    }
+
+    public void prettyPrint() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'prettyPrint'");
+    }
 }

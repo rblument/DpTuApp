@@ -32,11 +32,14 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
     private static final Logger log = LoggerFactory.getLogger(ProblemDAO.class);
 
     /** Instantiate this Course DAO with default values. */
-    public ProblemDAO() {}
+    public ProblemDAO() {
+        log.debug("ProblemDAO initialized");
+    }
 
     /** {@inheritDoc} */
     @Override
     public Problem retrieve(int problemId) throws ObjNotFoundException, NonRecoverableException {
+        log.debug("Retrieving problem id={}", problemId);
         final String sql =
                 "SELECT ProblemType, SubTypeId, Title, Description FROM Problem WHERE Id = ?";
 
@@ -45,8 +48,9 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
 
         try {
             conn = DriverManager.getConnection(URL);
-            stmt = conn.prepareStatement(sql);
+            log.debug("Database connection established for retrieve({})", problemId);
 
+            stmt = conn.prepareStatement(sql);
             stmt.setInt(1, problemId);
 
             ResultSet rs = stmt.executeQuery();
@@ -62,12 +66,14 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 problem.setTitle(rs.getString(3));
                 problem.setDescription(rs.getString(4));
 
+                log.debug("Problem retrieved successfully id={}", problemId);
                 return problem;
-
             } else {
+                log.warn("Problem not found id={}", problemId);
                 throw new ObjNotFoundException("Problem Id:" + problemId);
             }
         } catch (SQLException e) {
+            log.error("SQLException retrieving problem id={}", problemId, e);
             throw new NonRecoverableException("ProblemDAO-ERR-1 " + e.toString(), e);
         } finally {
             close(conn, stmt);
@@ -77,6 +83,7 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
     @Override
     public Problem retrieveByKind(ProblemKind kind)
             throws ObjNotFoundException, NonRecoverableException {
+        log.debug("Retrieving problem by kind={}", kind);
         final String sql =
                 "SELECT Id, SubTypeId, Title, Description FROM Problem WHERE ProblemType = ?";
 
@@ -85,24 +92,26 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
 
         try {
             conn = DriverManager.getConnection(URL);
-            stmt = conn.prepareStatement(sql);
+            log.debug("Database connection established for retrieveByKind({})", kind);
 
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1, kind.toString());
 
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 Problem problem = retrieveProblemSubType(rs.getInt(1), kind, rs.getInt(2), conn);
-
                 problem.setTitle(rs.getString(3));
                 problem.setDescription(rs.getString(4));
 
+                log.debug("Problem retrieved successfully for kind={}", kind);
                 return problem;
-
             } else {
+                log.warn("No problem found for kind={}", kind);
                 throw new ObjNotFoundException("Problem Kind:" + kind.toString());
             }
         } catch (SQLException e) {
+            log.error("SQLException retrieving problem by kind={}", kind, e);
             throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(conn, stmt);
@@ -111,17 +120,22 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
 
     private Problem retrieveProblemSubType(int id, ProblemKind type, int subTypeId, Connection conn)
             throws NonRecoverableException {
+        log.debug("Retrieving problem subtype id={}, type={}, subTypeId={}", id, type, subTypeId);
+
         switch (type) {
             case LCS_PROBLEM:
                 return retrieveLCSProblem(id, subTypeId, conn);
 
             case MATRIX_CHAIN:
+                log.warn("MATRIX_CHAIN retrieval not implemented for id={}", id);
                 return null;
 
             case KNAPSACK_0_1:
+                log.warn("KNAPSACK_0_1 retrieval not implemented for id={}", id);
                 return null;
 
             default:
+                log.warn("Unknown problem type={} for id={}", type, id);
                 return null;
         }
     }
@@ -137,13 +151,13 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
      */
     private LCSProblem retrieveLCSProblem(int id, int subTypeId, Connection conn)
             throws NonRecoverableException {
-        final String sql = "SELECT Sequence1,Sequence2 FROM LCSProblem WHERE Id = ?";
+        log.debug("Retrieving LCSProblem id={}, subTypeId={}", id, subTypeId);
+        final String sql = "SELECT Sequence1, Sequence2 FROM LCSProblem WHERE Id = ?";
 
         PreparedStatement stmt = null;
 
         try {
             stmt = conn.prepareStatement(sql);
-
             stmt.setInt(1, subTypeId);
 
             ResultSet rs = stmt.executeQuery();
@@ -154,13 +168,14 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 prob.setTitle(rs.getString(1));
                 prob.setDescription(rs.getString(2));
 
+                log.debug("LCSProblem retrieved successfully id={}, subTypeId={}", id, subTypeId);
                 return prob;
-
             } else {
-                throw new NonRecoverableException("Inconsisted DB LCSProb: " + id);
+                log.warn("LCSProblem not found id={}, subTypeId={}", id, subTypeId);
+                throw new NonRecoverableException("Inconsistent DB LCSProblem: " + id);
             }
-
         } catch (SQLException e) {
+            log.error("SQLException retrieving LCSProblem id={}, subTypeId={}", id, subTypeId, e);
             throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will

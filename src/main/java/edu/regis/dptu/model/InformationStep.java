@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.model;
 
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class InformationStep {
     /** Public constructor for the InformationStep. Sets message to blank string */
     public InformationStep() {
         msg = "";
+        log.debug("InformationStep created with empty message");
     }
 
     /**
@@ -37,6 +39,7 @@ public class InformationStep {
      * @return String
      */
     public String getMsg() {
+        log.debug("InformationStep getMsg called, returning: {}", msg);
         return msg;
     }
 
@@ -46,6 +49,7 @@ public class InformationStep {
      * @param msg (String)
      */
     public void setMsg(String msg) {
+        log.debug("InformationStep message changed from '{}' to '{}'", this.msg, msg);
         this.msg = msg;
     }
 }

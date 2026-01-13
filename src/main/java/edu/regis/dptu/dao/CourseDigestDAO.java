@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.dao;
 
 import java.sql.Connection;
@@ -38,6 +39,7 @@ public class CourseDigestDAO extends MySqlDAO {
     /** Initialize this DAO via the parent constructor. */
     public CourseDigestDAO() {
         super();
+        log.debug("CourseDigestDAO initialized");
     }
 
     /**
@@ -48,6 +50,7 @@ public class CourseDigestDAO extends MySqlDAO {
      * @throws NonRecoverableException perhaps see getCause().getErrorCode().
      */
     public void create(CourseDigest course) throws IllegalArgException, NonRecoverableException {
+        log.debug("Creating course digest id={}, title={}", course.getId(), course.getTitle());
         final String sql = "INSERT INTO Course(Title, PrimaryPedagogy, Description) VALUES (?,?,?)";
 
         Connection conn = null;
@@ -55,20 +58,27 @@ public class CourseDigestDAO extends MySqlDAO {
 
         try {
             conn = DriverManager.getConnection(URL);
+            log.debug("Database connection established for create()");
 
             if (exists(course.getId(), conn)) {
+                log.warn("Attempted to create course that already exists: id={}", course.getId());
                 throw new IllegalArgException(
                         "Course Digest already exists with id " + course.getId());
             }
 
             stmt = conn.prepareStatement(sql);
-
             stmt.setString(1, course.getTitle());
             stmt.setString(2, course.getPrimaryPedagogy().toString());
             stmt.setString(3, course.getDescription());
 
             stmt.execute();
+            log.info(
+                    "Course digest created successfully id={}, title={}",
+                    course.getId(),
+                    course.getTitle());
+
         } catch (SQLException e) {
+            log.error("SQLException creating course digest id={}", course.getId(), e);
             throw new NonRecoverableException("Create Course Digest Error", e);
         } finally {
             close(conn, stmt);
@@ -86,6 +96,7 @@ public class CourseDigestDAO extends MySqlDAO {
      */
     public CourseDigest retrieve(int courseId)
             throws ObjNotFoundException, NonRecoverableException {
+        log.debug("Retrieving course digest id={}", courseId);
         final String sql =
                 "SELECT Title, PrimaryPedagogy, Description FROM Course WHERE CourseId = ?";
 
@@ -94,7 +105,6 @@ public class CourseDigestDAO extends MySqlDAO {
 
         try {
             conn = DriverManager.getConnection(URL);
-
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, courseId);
 
@@ -102,17 +112,19 @@ public class CourseDigestDAO extends MySqlDAO {
 
             if (rs.next()) {
                 CourseDigest course = new CourseDigest();
-
                 course.setId(courseId);
                 course.setTitle(rs.getString(1));
                 course.setPrimaryPedagogy(TaskSelectionKind.valueOf(rs.getString(2)));
                 course.setDescription(rs.getString(3));
 
+                log.debug("Course digest retrieved successfully id={}", courseId);
                 return course;
             } else {
+                log.warn("Course digest not found id={}", courseId);
                 throw new ObjNotFoundException("Course id: " + courseId);
             }
         } catch (SQLException e) {
+            log.error("SQLException retrieving course digest id={}", courseId, e);
             throw new NonRecoverableException("Retrieve Course Error", e);
         } finally {
             close(stmt);
@@ -126,6 +138,7 @@ public class CourseDigestDAO extends MySqlDAO {
      * @throws NonRecoverableException (see ex.getCause().getErrorCode())
      */
     private boolean exists(int courseId, Connection conn) throws NonRecoverableException {
+        log.debug("Checking existence of course digest id={}", courseId);
         final String sql = "SELECT CourseId FROM Course WHERE CourseId = ?;";
 
         PreparedStatement stmt = null;
@@ -134,10 +147,11 @@ public class CourseDigestDAO extends MySqlDAO {
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, courseId);
 
-            ResultSet rs = stmt.executeQuery();
-
-            return rs.next();
+            boolean exists = stmt.executeQuery().next();
+            log.debug("Exists check for course id={} returned {}", courseId, exists);
+            return exists;
         } catch (SQLException e) {
+            log.error("SQLException checking existence for course id={}", courseId, e);
             throw new NonRecoverableException("Exists Course Error", e);
         } finally {
             close(stmt);
