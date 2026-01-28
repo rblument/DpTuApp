@@ -45,7 +45,6 @@ import com.google.gson.Gson;
  * @author rickb
  */
 public class SvcFacade {
-    private static final Logger log = LoggerFactory.getLogger(SvcFacade.class);
 
     /** The single instance of the tutor facade. */
     private static final SvcFacade SINGLETON;
