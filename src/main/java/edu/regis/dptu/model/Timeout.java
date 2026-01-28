@@ -55,21 +55,31 @@ public class Timeout {
         this.seconds = seconds;
         this.event = event;
         this.text = text;
+        log.debug(
+                "Timeout created: type='{}', seconds={}, event='{}', text='{}'",
+                type,
+                seconds,
+                event,
+                text);
     }
 
     public String getType() {
+        log.debug("getType() called, returning '{}'", type);
         return type;
     }
 
     public int getSeconds() {
+        log.debug("getSeconds() called, returning {}", seconds);
         return seconds;
     }
 
     public String getEvent() {
+        log.debug("getEvent() called, returning '{}'", event);
         return event;
     }
 
     public String getText() {
+        log.debug("getText() called, returning '{}'", text);
         return text;
     }
 }

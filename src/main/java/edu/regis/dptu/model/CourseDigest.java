@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.model;
 
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class CourseDigest extends TitledModel {
     /** Instantiate this digest with default id, title, and description */
     public CourseDigest() {
         this(DEFAULT_ID);
+        log.debug("CourseDigest(): created with default ID {}", DEFAULT_ID);
     }
 
     /**
@@ -39,6 +41,7 @@ public class CourseDigest extends TitledModel {
      */
     public CourseDigest(int id) {
         super(id);
+        log.debug("CourseDigest(id={}): created", id);
     }
 
     /**
@@ -49,13 +52,19 @@ public class CourseDigest extends TitledModel {
      */
     public CourseDigest(int id, String title) {
         super(id, title);
+        log.debug("CourseDigest(id={}, title='{}'): created", id, title);
     }
 
     public TaskSelectionKind getPrimaryPedagogy() {
+        log.debug("getPrimaryPedagogy(): {}", primaryPedagogy);
         return primaryPedagogy;
     }
 
     public void setPrimaryPedagogy(TaskSelectionKind primaryPedagogy) {
+        log.debug(
+                "setPrimaryPedagogy(): changing from {} to {}",
+                this.primaryPedagogy,
+                primaryPedagogy);
         this.primaryPedagogy = primaryPedagogy;
     }
 }

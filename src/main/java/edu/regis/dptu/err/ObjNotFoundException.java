@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.err;
 
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class ObjNotFoundException extends DpTuException {
      */
     public ObjNotFoundException(String msg) {
         super(msg);
+        log.error("ObjNotFoundException thrown: {}", msg);
     }
 
     /**
@@ -40,5 +42,6 @@ public class ObjNotFoundException extends DpTuException {
      */
     public ObjNotFoundException(String msg, Throwable cause) {
         super(msg, cause);
+        log.error("ObjNotFoundException thrown: {}. Cause: {}", msg, cause.toString(), cause);
     }
 }

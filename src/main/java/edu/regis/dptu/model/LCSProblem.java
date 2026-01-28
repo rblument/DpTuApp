@@ -35,11 +35,8 @@ import org.slf4j.LoggerFactory;
  * @author rickb
  */
 public class LCSProblem extends Problem {
-    private static final Logger log = LoggerFactory.getLogger(LCSProblem.class);
-
     /** The logger for the class */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(LCSProblem.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(LCSProblem.class);
 
     /**
      * Current state of execution capturing which of the loops are current. Note if the
@@ -336,38 +333,38 @@ public class LCSProblem extends Problem {
     }
 
     /**
-     * Outputs the current state (of the algorithm variables). (Kept for potential manual debugging)
+     * Outputs to System.out the current state (of the algorithm variables). (Kept for potential
+     * manual debugging)
      */
     public void prettyPrint() {
         // Original prettyPrint code retained
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "--- LCSProblem State ---");
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "ExecutionState: " + executionState);
-        LCSProblem.julLogger.log(java.util.logging.Level.INFO, "Current Line #: " + nextLineNumber);
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "r (array idx): " + variables.get("r"));
-        LCSProblem.julLogger.log(
-                java.util.logging.Level.INFO, "c (array idx): " + variables.get("c"));
+        LCSProblem.log.info("--- LCSProblem State ---");
+        LCSProblem.log.info("ExecutionState: " + executionState);
+        LCSProblem.log.info("Current Line #: " + nextLineNumber);
+        LCSProblem.log.info("r (array idx): " + variables.get("r"));
+        LCSProblem.log.info("c (array idx): " + variables.get("c"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
         int[][] subproblemL = (int[][]) variables.get("l");
 
-        log.info("DP Table (l):");
-        log.info("       "); // Align header
+        LCSProblem.log.info("DP Table (l):");
+        System.out.print("       "); // Align header
         for (int q = 0; q <= m; q++) {
-            log.info("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
+            System.out.printf("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
         }
-        log.info("");
+        LCSProblem.log.info("");
 
         for (int p = 0; p <= n; p++) {
-            log.info("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
+            System.out.printf("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
             for (int q = 0; q <= m; q++) {
                 int val = subproblemL[p][q];
-                log.info("%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
+                System.out.printf(
+                        "%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
             }
-            log.info("|");
+            LCSProblem.log.info("|");
         }
-        log.info("------------------------");
+        LCSProblem.log.info("------------------------");
     }
 
     // -----------------------LCS Algorithm-------------------------------------
@@ -416,7 +413,7 @@ public class LCSProblem extends Problem {
         if (subproblem != null && r >= 0 && r < subproblem.length) {
             subproblem[r][0] = 0; // Assign new value
         } else {
-            log.error("ERROR: LCSProblem executeLine2 accessing out of bounds: r=" + r);
+            System.err.println("ERROR: LCSProblem executeLine2 accessing out of bounds: r=" + r);
         }
         nextLineNumber = 1; // Go back to check r loop condition
     }
@@ -458,7 +455,7 @@ public class LCSProblem extends Problem {
         if (subproblem != null && subproblem.length > 0 && c >= 0 && c < subproblem[0].length) {
             subproblem[0][c] = 0; // Assign new value
         } else {
-            log.error("ERROR: LCSProblem executeLine4 accessing out of bounds: c=" + c);
+            System.err.println("ERROR: LCSProblem executeLine4 accessing out of bounds: c=" + c);
         }
         nextLineNumber = 3; // Go back to check c loop condition
     }
@@ -607,7 +604,7 @@ public class LCSProblem extends Problem {
             when the algorithm finishes */
             nextLineNumber = 12;
         } else {
-            log.error("ERROR: Reached line 11 unexpectedly. State: " + executionState);
+            System.err.println("ERROR: Reached line 11 unexpectedly. State: " + executionState);
         }
     }
 

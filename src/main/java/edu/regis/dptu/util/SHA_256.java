@@ -40,6 +40,7 @@ public class SHA_256 {
     // Invoked when this class is loaded
     static {
         SINGLETON = new SHA_256();
+        log.debug("SHA_256 singleton instance created");
     }
 
     /**
@@ -100,6 +101,7 @@ public class SHA_256 {
      * @param msg
      */
     public String sha256(String msg) {
+        log.debug("Generating SHA-256 hash for message: '{}'", msg);
         Charset charset = Charset.forName("ASCII");
 
         byte[] asciiEncodeMsg = msg.getBytes(charset);
@@ -107,6 +109,7 @@ public class SHA_256 {
         byte[] digest = hash(asciiEncodeMsg);
 
         String digestStr = bytesToHex(digest);
+        log.debug("SHA-256 digest: {}", digestStr);
 
         return digestStr;
     }
@@ -132,10 +135,12 @@ public class SHA_256 {
      */
     public byte[] hash(byte[] message) {
         // let H = H0
+        log.debug("Starting SHA-256 hash computation for {} bytes", message.length);
         System.arraycopy(H0, 0, h, 0, H0.length);
 
         // initialize all words
         int[] words = pad(message);
+        log.debug("Message padded to {} words", words.length);
 
         // enumerate all blocks (each containing 16 words)
         for (int i = 0, n = words.length / 16; i < n; ++i) {
@@ -177,7 +182,9 @@ public class SHA_256 {
             }
         }
 
-        return toByteArray(h);
+        byte[] result = toByteArray(h);
+        log.debug("SHA-256 hash computation complete, {} bytes produced", result.length);
+        return result;
     }
 
     /**
@@ -192,6 +199,8 @@ public class SHA_256 {
     public int[] pad(byte[] message) {
         // new message length: original + 1-bit and padding + 8-byte length
         // --> block count: whole blocks + (padding + length rounded up)
+        log.debug("Padding message of length {} bytes", message.length);
+
         int finalBlockLength = message.length % BLOCK_BYTES;
         int blockCount =
                 message.length / BLOCK_BYTES + (finalBlockLength + 1 + 8 > BLOCK_BYTES ? 2 : 1);
@@ -215,6 +224,7 @@ public class SHA_256 {
         result.put((int) (msgLength >>> 32));
         result.put((int) msgLength);
 
+        log.debug("Message padding complete: {} total words", result.capacity());
         return result.array();
     }
 
@@ -268,6 +278,7 @@ public class SHA_256 {
         }
         sb.append(inputString);
 
+        log.debug("Padded string to length {}: '{}'", length, sb.toString());
         return sb.toString();
     }
 }

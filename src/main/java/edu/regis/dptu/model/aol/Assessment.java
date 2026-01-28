@@ -52,6 +52,7 @@ public class Assessment extends Model {
     public Assessment(KnowledgeComponent outcome, AssessmentLevel assessment) {
         this.outcome = outcome;
         this.assessment = assessment;
+        log.debug("Assessment created for outcome={} with assessment={}", outcome, assessment);
     }
 
     public KnowledgeComponent getOutcome() {
@@ -59,6 +60,7 @@ public class Assessment extends Model {
     }
 
     public void setOutcome(KnowledgeComponent outcome) {
+        log.debug("Outcome changed from {} to {}", this.outcome, outcome);
         this.outcome = outcome;
     }
 
@@ -72,6 +74,7 @@ public class Assessment extends Model {
     }
 
     public void setAssessment(AssessmentLevel assessment) {
+        log.debug("Assessment changed from {} to {}", this.assessment, assessment);
         this.assessment = assessment;
     }
 
@@ -80,12 +83,14 @@ public class Assessment extends Model {
     }
 
     public void setExposures(int exposures) {
+        log.debug("Exposures set to {} for outcome={}", exposures, outcome);
         this.exposures = exposures;
     }
 
     /** Increment the number of exposures. */
     public void incrementExposures() {
         exposures++;
+        log.debug("Exposures incremented to {} for outcome={}", exposures, outcome);
     }
 
     public int getSuccessess() {
@@ -93,12 +98,13 @@ public class Assessment extends Model {
     }
 
     public void setSuccessess(int successess) {
+        log.debug("Successess set to {} for outcome={}", successess, outcome);
         this.successess = successess;
     }
 
-    /** */
     public void incrementSuccessess() {
         successess++;
+        log.debug("Successess incremented to {} for outcome={}", successess, outcome);
     }
 
     public int getHints() {
@@ -106,12 +112,13 @@ public class Assessment extends Model {
     }
 
     public void setHints(int hints) {
+        log.debug("Hints set to {} for outcome={}", hints, outcome);
         this.hints = hints;
     }
 
     /** Increment the number of hints. */
     public void incrementHints() {
         hints++;
-        log.info("Hints incremented to " + hints);
+        log.debug("Hints incremented to {} for outcome={}", hints, outcome);
     }
 }

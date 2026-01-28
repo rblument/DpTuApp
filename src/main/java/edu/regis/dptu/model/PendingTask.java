@@ -34,6 +34,7 @@ public class PendingTask {
 
     public PendingTask(Task task) {
         this.task = task;
+        log.debug("PendingTask created for task: {}", task);
     }
 
     public Task getTask() {
@@ -41,6 +42,7 @@ public class PendingTask {
     }
 
     public void setTask(Task task) {
+        log.debug("PendingTask task changed from {} to {}", this.task, task);
         this.task = task;
     }
 
@@ -51,11 +53,14 @@ public class PendingTask {
     }
 
     public void setCurrentStep(PendingStep step) {
+        log.debug("PendingTask currentStep set to PendingStep: {}", step);
         this.currentStep = step;
     }
 
     public void setCurrentStep(Step step) {
-        currentStep = new PendingStep(step);
+        PendingStep pendingStep = new PendingStep(step);
+        log.debug("PendingTask currentStep set by Step: {} -> PendingStep: {}", step, pendingStep);
+        this.currentStep = pendingStep;
     }
 
     public PendingStep currentStep() {
@@ -69,6 +74,8 @@ public class PendingTask {
      */
     public boolean isTaskCompleted() {
         // ToDo: all steps handled?
-        return currentStep.isCompleted();
+        boolean completed = currentStep != null && currentStep.isCompleted();
+        log.debug("PendingTask for task {} isTaskCompleted: {}", task, completed);
+        return completed;
     }
 }

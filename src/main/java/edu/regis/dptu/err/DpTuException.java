@@ -12,9 +12,6 @@
  */
 package edu.regis.dptu.err;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Root of all checked DpTu application exceptions.
  *
@@ -24,7 +21,6 @@ import org.slf4j.LoggerFactory;
  * @author Rickb
  */
 public abstract class DpTuException extends Exception {
-    private static final Logger log = LoggerFactory.getLogger(DpTuException.class);
 
     /**
      * Initialize this new instance with the given message.

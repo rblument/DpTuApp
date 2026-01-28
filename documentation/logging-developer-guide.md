@@ -10,7 +10,6 @@ DpTu now uses:
 |------|---------|---------|
 | **API used in code** | **SLF4J** (`org.slf4j.Logger`) | Unified logging interface used everywhere in application code |
 | **Logging backend** | **Log4j2** | Controls formatting, output, file logging, rotation, and log levels |
-| **Legacy compatibility** | `java.util.logging` (JUL) | Still used in a few older components; being phased out |
 
 ### Key Takeaway
 
@@ -20,7 +19,7 @@ DpTu now uses:
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-private static final Logger log = LoggerFactory.getLogger(MyClass.class);
+private static final Logger log = LoggerFactory.getLogger(MyClassName.class);
 ```
 
 ## Logger Initialization (Required Pattern)
@@ -40,8 +39,9 @@ public class ExampleClass {
 }
 ```
 
-### Why `log` (not `LOG` or `LOGGER`)?
-- It follows standard Java / SLF4J convention.
+### Why `log` (not `LOG` or `LOGGER`)
+
+- It follows standard Java & SLF4J convention.
 - Avoids confusion with compile-time constants (which use ALL_CAPS).
 
 ## Logging Levels
@@ -64,11 +64,7 @@ log.error("Failed to save record", exception);
 
 ## Log Configuration (Log4j2)
 
-Configuration file is located at:
-
-```
-src/main/resources/log4j2.properties
-```
+Configuration file is located at: `src/main/resources/log4j2.xml`
 
 This file controls:
 
@@ -81,11 +77,7 @@ This file controls:
 
 During development, logs appear in the **console**.
 
-Logs files are also written to:
-
-```
-~/.dptu/logs
-```
+Logs files are also written to: `~/.dptu/logs`
 
 ## Legacy JUL Logging (Temporary Compatibility)
 
@@ -100,17 +92,14 @@ julLogger.log(java.util.logging.Level.WARNING, "Old logging path still active");
 ```
 
 ### Rules for JUL Code During Migration
+
 - **Do not** import `java.util.logging.Logger`
 - **Do not** use `Logger.getLogger(...)`
 - Always use fully-qualified names (`java.util.logging.Logger`, `java.util.logging.Level`)
 
 Eventually, JUL will be removed.
 
-A legacy configuration file for JUL is at:
-
-```
-src/main/resources/Logging.properties
-```
+A legacy configuration file for JUL is at: `src/main/resources/Logging.properties`
 
 ## Common Mistakes to Avoid
 
@@ -139,17 +128,3 @@ src/main/resources/Logging.properties
 - [ ] Use `log.info()`, `log.debug()`, etc. appropriately
 - [ ] Replace `System.out.println` and `printStackTrace()`
 - [ ] If you *must* use JUL temporarily, use the `julLogger` pattern (fully-qualified names)
-
-## Migration Plan Epic (DPTU-89, In Progress)
-
-| Task | Status | JIRA |
-|------|--------|------|
-| Create initial configurations and dependencies for Log4J2 and SLF4J | ✅ Done | DPTU-76 |
-| Standardize SLF4J logger declarations | ✅ Done | DPTU-77 |
-| Create This Guide | ✅ Done | DPTU-84 |
-| Add SLF4J usage across codebase | Backlog | DPTU-80 |
-| Remove `System.out.println`, `System.err` calls | 🟡 In review | DPTU-78 |
-| Centralize Exception and Error Logging (e.g., `printStackTrace()`calls) | Backlog | DPTU-79 |
-| Migrate remaining JUL loggers → SLF4J | Backlog | DPTU-85 |
-| Remove JUL configuration & bridge all logging to Log4j2 | Backlog | DPTU-86 |
-| Create a GitHub workflow that identifies undesirable logging code and makes sure logging is actually used | Backlog | DPTU-87 |

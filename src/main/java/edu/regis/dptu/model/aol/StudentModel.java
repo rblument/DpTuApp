@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.model.aol;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class StudentModel {
     public StudentModel(String userId) {
         this.userId = userId;
         assessments = new HashMap<>();
+        log.debug("StudentModel created for userId={}", userId);
     }
 
     /**
@@ -72,6 +74,7 @@ public class StudentModel {
      * @param userId the user id to set for this student
      */
     public void setUserId(String userId) {
+        log.debug("UserId changed from {} to {}", this.userId, userId);
         this.userId = userId;
     }
 
@@ -82,7 +85,10 @@ public class StudentModel {
      * @param assessment the assessment to add
      */
     public void addAssessment(int knowledgeComponentId, Assessment assessment) {
-        log.info("***** StuMod.addAssess: id: " + knowledgeComponentId);
+        log.debug(
+                "Adding assessment for knowledgeComponentId={} outcome={}",
+                knowledgeComponentId,
+                assessment.getOutcome());
         assessments.put(knowledgeComponentId, assessment);
     }
 
@@ -102,7 +108,9 @@ public class StudentModel {
      * @return true if the student has an assessment for the given outcome
      */
     public boolean containsAssessment(int knowledgeComponentId) {
-        return assessments.containsKey(knowledgeComponentId);
+        boolean result = assessments.containsKey(knowledgeComponentId);
+        log.debug("containsAssessment({}) = {}", knowledgeComponentId, result);
+        return result;
     }
 
     /**
@@ -112,7 +120,9 @@ public class StudentModel {
      * @return the Assessment for the given outcome, or null if none
      */
     public Assessment findAssessment(int knowledgeComponentId) {
-        return assessments.get(knowledgeComponentId);
+        Assessment assessment = assessments.get(knowledgeComponentId);
+        log.debug("findAssessment({}) = {}", knowledgeComponentId, assessment);
+        return assessment;
     }
 
     /**
@@ -133,6 +143,7 @@ public class StudentModel {
      * @param sessions the tutoring sessions to set for this student
      */
     public void setSessions(List<TutoringSession> sessions) {
+        log.debug("Setting {} tutoring sessions for userId={}", sessions.size(), userId);
         this.sessions = sessions;
     }
 
@@ -142,6 +153,7 @@ public class StudentModel {
      * @param session the session to add
      */
     public void addSession(TutoringSession session) {
+        log.debug("Adding tutoring session {} for userId={}", session, userId);
         this.sessions.add(session);
     }
 
@@ -156,6 +168,11 @@ public class StudentModel {
      * @param scaffoldLevel the scaffolding level to set for this student
      */
     public void setScaffoldLevel(ScaffoldLevel scaffoldLevel) {
+        log.debug(
+                "ScaffoldLevel changed from {} to {} for userId={}",
+                this.scaffoldLevel,
+                scaffoldLevel,
+                userId);
         this.scaffoldLevel = scaffoldLevel;
     }
 }

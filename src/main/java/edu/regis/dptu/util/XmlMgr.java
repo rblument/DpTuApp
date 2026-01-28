@@ -46,11 +46,8 @@ import edu.regis.dptu.err.XmlException;
  * @author rickb
  */
 public class XmlMgr {
-    private static final Logger log = LoggerFactory.getLogger(XmlMgr.class);
-
     /** Log unexpected events to this logger. */
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(XmlMgr.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(XmlMgr.class);
 
     /** Data directory containing data files within the current NetBeans project. */
     private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";
@@ -273,7 +270,7 @@ public class XmlMgr {
         NodeList nodes = root.getElementsByTagName(tag);
 
         if (nodes.getLength() == 0) {
-            julLogger.log(java.util.logging.Level.ALL, "XmlMgr: Unknown tag: {0}", tag);
+            log.trace("XmlMgr: Unknown tag: {0}", tag);
             return "";
         } else {
             Node node = nodes.item(0);
@@ -282,7 +279,7 @@ public class XmlMgr {
                 Element element = (Element) node;
                 return element.getTextContent();
             } else {
-                julLogger.log(java.util.logging.Level.ALL, "XmlMgr: Unknown tag type: {1}", tag);
+                log.trace("XmlMgr: Unknown tag type: {1}", tag);
                 return "";
             }
         }
@@ -310,9 +307,7 @@ public class XmlMgr {
     public static String getAttribute(Element element, String attributeName) {
         String val = element.getAttribute(attributeName);
 
-        if (val.equals(""))
-            julLogger.log(
-                    java.util.logging.Level.ALL, "Missing or empty attribute {0}", attributeName);
+        if (val.equals("")) log.trace("Missing or empty attribute {0}", attributeName);
 
         return val;
     }
@@ -340,19 +335,13 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            julLogger.log(
-                    java.util.logging.Level.ALL,
-                    "Missing or empty int attribute {0}",
-                    attributeName);
+            log.trace("Missing or empty int attribute {0}", attributeName);
             return -1;
         } else {
             try {
                 return Integer.parseInt(val);
             } catch (NumberFormatException e) {
-                julLogger.log(
-                        java.util.logging.Level.ALL,
-                        "Expected an int attribute value: {1}",
-                        attributeName);
+                log.trace("Expected an int attribute value: {1}", attributeName);
                 return -1;
             }
         }
@@ -369,20 +358,14 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            julLogger.log(
-                    java.util.logging.Level.ALL,
-                    "Missing or empty float attribute {0}",
-                    attributeName);
+            log.trace("Missing or empty float attribute {0}", attributeName);
             return 0.0f;
         } else {
             try {
                 return Float.parseFloat(val);
 
             } catch (NumberFormatException e) {
-                julLogger.log(
-                        java.util.logging.Level.ALL,
-                        "Expected a float attribute value: {1}",
-                        attributeName);
+                log.trace("Expected a float attribute value: {1}", attributeName);
                 return 0.0f;
             }
         }
@@ -401,10 +384,7 @@ public class XmlMgr {
 
         switch (val) {
             case "":
-                julLogger.log(
-                        java.util.logging.Level.ALL,
-                        "Missing or empty boolean attribute {0}",
-                        attributeName);
+                log.trace("Missing or empty boolean attribute {0}", attributeName);
                 return false;
             case "true":
             case "yes":
@@ -413,10 +393,7 @@ public class XmlMgr {
             case "no":
                 return false;
             default:
-                julLogger.log(
-                        java.util.logging.Level.ALL,
-                        "Expected a boolean attribute value: {1}",
-                        attributeName);
+                log.trace("Expected a boolean attribute value: {1}", attributeName);
                 return false;
         }
     }

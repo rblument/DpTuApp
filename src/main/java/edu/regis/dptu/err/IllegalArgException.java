@@ -24,11 +24,12 @@ public class IllegalArgException extends DpTuException {
     private static final Logger log = LoggerFactory.getLogger(IllegalArgException.class);
 
     /**
-     * Initialize this exception with the given message.
+     * Initialize this exception with the given message and log it.
      *
-     * @param msg
+     * @param msg descriptive message about the illegal argument
      */
     public IllegalArgException(String msg) {
         super(msg);
+        log.error("IllegalArgException thrown: {}", msg);
     }
 }

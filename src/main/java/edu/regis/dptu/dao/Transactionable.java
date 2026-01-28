@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.err.NonRecoverableException;
 
 /**
- * An Transaction Data Access Object to extend for when multiple database operations should complete
- * or fail as a logical unit
+ * A Transaction Data Access Object to extend for when multiple database operations should complete
+ * or fail as a logical unit.
  *
  * @author benm
  */
@@ -24,8 +24,10 @@ public abstract class Transactionable extends MySqlDAO {
      */
     protected void startTransaction(Connection conn) {
         try {
+            log.debug("Starting transaction on connection {}", conn);
             conn.setAutoCommit(false);
         } catch (SQLException e) {
+            log.error("Failed to start transaction on connection {}", conn, e);
         }
     }
 
@@ -36,9 +38,13 @@ public abstract class Transactionable extends MySqlDAO {
      */
     protected void commit(Connection conn) throws NonRecoverableException {
         try {
+            log.debug("Committing transaction on connection {}", conn);
             conn.commit();
+            log.debug("Transaction committed successfully on connection {}", conn);
         } catch (SQLException e) {
-            throw new NonRecoverableException("Transaction Error: Not able to commit transaction");
+            log.error("Failed to commit transaction on connection {}", conn, e);
+            throw new NonRecoverableException(
+                    "Transaction Error: Not able to commit transaction", e);
         }
     }
 
@@ -49,10 +55,13 @@ public abstract class Transactionable extends MySqlDAO {
      */
     protected void rollback(Connection conn) throws NonRecoverableException {
         try {
+            log.debug("Rolling back transaction on connection {}", conn);
             conn.rollback();
+            log.debug("Transaction rolled back successfully on connection {}", conn);
         } catch (SQLException e) {
+            log.error("Failed to rollback transaction on connection {}", conn, e);
             throw new NonRecoverableException(
-                    "Transaction Error: Not able to rollback transaction");
+                    "Transaction Error: Not able to rollback transaction", e);
         }
     }
 }

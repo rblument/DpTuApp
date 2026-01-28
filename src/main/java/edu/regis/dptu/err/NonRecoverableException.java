@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  */
 public class NonRecoverableException extends DpTuException {
     private static final Logger log = LoggerFactory.getLogger(NonRecoverableException.class);
-    private static final java.util.logging.Logger julLogger =
-            java.util.logging.Logger.getLogger(NonRecoverableException.class.getName());
 
     /**
      * Initialize this new instance with the given message and log the exception.
@@ -37,7 +35,7 @@ public class NonRecoverableException extends DpTuException {
     public NonRecoverableException(String msg) {
         super(msg);
 
-        julLogger.log(java.util.logging.Level.SEVERE, "DpTuException: {0}", msg);
+        log.error("DpTuException: {0}", msg);
     }
 
     /**
@@ -50,6 +48,6 @@ public class NonRecoverableException extends DpTuException {
     public NonRecoverableException(String msg, Throwable cause) {
         super(msg, cause);
 
-        julLogger.log(java.util.logging.Level.SEVERE, msg, cause);
+        log.error(msg, cause);
     }
 }

@@ -62,44 +62,63 @@ public class Task extends TitledModel {
         super(id);
 
         this.steps = new ArrayList<>();
-
         exercisedComponentIds = new ArrayList<>();
+
+        log.debug(
+                "Task created with id: {}, steps initialized: {}, exercisedComponentIds initialized: {}",
+                id,
+                steps.size(),
+                exercisedComponentIds.size());
     }
 
     public TaskKind getKind() {
+        log.debug("getKind() called, returning {}", kind);
         return kind;
     }
 
     public void setKind(TaskKind kind) {
         this.kind = kind;
+        log.debug("setKind() called, set to {}", kind);
     }
 
     public void addStep(Step step) {
         steps.add(step);
+        log.debug(
+                "addStep() called, added step id: {}, steps size now: {}",
+                step.getId(),
+                steps.size());
     }
 
     public ArrayList<Step> getSteps() {
-        log.info("Task.getSteps: " + steps.size());
+        log.debug("getSteps() called, returning steps size: {}", steps.size());
         return steps;
     }
 
     public void setSteps(ArrayList<Step> steps) {
-        log.info("Task.setSteps: " + steps);
         this.steps = steps;
+        log.debug("setSteps() called, new steps size: {}", steps.size());
     }
 
     public Step getStep(int index) {
-        return steps.get(index);
+        Step step = steps.get(index);
+        log.debug("getStep() called for index {}, returning step id: {}", index, step.getId());
+        return step;
     }
 
     public Step lastStep() {
-        return steps.get(steps.size() - 1);
+        Step step = steps.get(steps.size() - 1);
+        log.debug("lastStep() called, returning step id: {}", step.getId());
+        return step;
     }
 
     public Step currentStep() {
-        log.info("*** Task.currentStep: " + steps.size());
-        for (Step step : steps) if (step.getSequenceIndex() == currentStepIndex) return step;
-
+        for (Step step : steps) {
+            if (step.getSequenceIndex() == currentStepIndex) {
+                log.debug("currentStep() called, returning step id: {}", step.getId());
+                return step;
+            }
+        }
+        log.debug("currentStep() called, no step found for currentStepIndex: {}", currentStepIndex);
         return null;
     }
 
@@ -108,48 +127,69 @@ public class Task extends TitledModel {
      * @return
      */
     public Step findStepById(int stepId) {
-        for (Step step : steps) if (step.getId() == stepId) return step;
-
+        for (Step step : steps) {
+            if (step.getId() == stepId) {
+                log.debug("findStepById() found step with id: {}", stepId);
+                return step;
+            }
+        }
+        log.debug("findStepById() did not find step with id: {}", stepId);
         return null;
     }
 
     public Problem getProblem() {
+        log.debug("getProblem() called, returning {}", problem);
         return problem;
     }
 
     public void setProblem(Problem problem) {
         this.problem = problem;
+        log.debug("setProblem() called, set problem to {}", problem);
     }
 
     public int getSequenceIndex() {
+        log.debug("getSequenceIndex() called, returning {}", sequenceIndex);
         return sequenceIndex;
     }
 
     public void setSequenceIndex(int sequenceIndex) {
         this.sequenceIndex = sequenceIndex;
+        log.debug("setSequenceIndex() called, set to {}", sequenceIndex);
     }
 
     public Step getCurrentStep() {
-        return steps.get(currentStepIndex);
+        Step step = steps.get(currentStepIndex);
+        log.debug("getCurrentStep() called, returning step id: {}", step.getId());
+        return step;
     }
 
     public int getCurrentStepIndex() {
+        log.debug("getCurrentStepIndex() called, returning {}", currentStepIndex);
         return currentStepIndex;
     }
 
     public void setCurrentStepIndex(int currentStepIndex) {
         this.currentStepIndex = currentStepIndex;
+        log.debug("setCurrentStepIndex() called, set to {}", currentStepIndex);
     }
 
     public void addExercisedComponentId(int componentId) {
         exercisedComponentIds.add(componentId);
+        log.debug(
+                "addExercisedComponentId() called, added componentId: {}, size now: {}",
+                componentId,
+                exercisedComponentIds.size());
     }
 
     public ArrayList<Integer> getExercisedComponentIds() {
+        log.debug(
+                "getExercisedComponentIds() called, returning size: {}",
+                exercisedComponentIds.size());
         return exercisedComponentIds;
     }
 
     public void setExercisedComponentIds(ArrayList<Integer> componentIds) {
         this.exercisedComponentIds = componentIds;
+        log.debug("setExercisedComponentIds() called, new size: {}", componentIds.size());
     }
 }

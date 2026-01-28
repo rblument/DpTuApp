@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.err;
 
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class InconsistentDBException extends NonRecoverableException {
      */
     public InconsistentDBException(String msg) {
         super(msg);
+        log.error("InconsistentDBException thrown: {}", msg);
     }
 
     /**
@@ -42,5 +44,6 @@ public class InconsistentDBException extends NonRecoverableException {
      */
     public InconsistentDBException(String msg, Throwable cause) {
         super(msg, cause);
+        log.error("InconsistentDBException thrown: {}. Cause: {}", msg, cause.toString(), cause);
     }
 }

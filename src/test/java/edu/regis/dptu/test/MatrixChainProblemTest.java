@@ -34,20 +34,17 @@ public class MatrixChainProblemTest {
         MatrixChainProblem problem = new MatrixChainProblem(sizes);
 
         // Step through all lines until execution is complete
-        while (problem.getExecutionState() != MatrixChainProblem.EXECUTION_STATE.POST) {
+        while (!problem.hasFinished()) {
             problem.step();
         }
 
-        // Confirm we reached POST state
-        assertEquals(MatrixChainProblem.EXECUTION_STATE.POST, problem.getExecutionState());
+        // Confirm we reached finished state
+        assertTrue(problem.hasFinished());
 
         // Optimal cost should be 2356 for this matrix sequence
         int expectedCost = 2356;
         int result = problem.getValueAt(0, problem.getVariableValue("n") - 1);
         assertEquals(expectedCost, result);
-
-        // Optional visual confirmation
-        problem.prettyPrint();
 
         // Now test undo all the way back to PRE
         while (problem.getNextLineNumber() != 0) {
@@ -56,7 +53,5 @@ public class MatrixChainProblemTest {
 
         // Final state after undoing everything
         assertTrue(problem.getNextLineNumber() == 0);
-
-        problem.prettyPrint();
     }
 }

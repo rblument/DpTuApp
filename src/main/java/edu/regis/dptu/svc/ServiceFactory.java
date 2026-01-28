@@ -10,6 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
+
 package edu.regis.dptu.svc;
 
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ public class ServiceFactory {
      * @return AccountSvc
      */
     public static AccountSvc findAccountSvc() {
+        log.debug("ServiceFactory: Retrieving AccountSvc instance");
         return new AccountDAO();
     }
 
@@ -48,6 +50,7 @@ public class ServiceFactory {
      * @return CourseSvc
      */
     public static CourseSvc findCourseSvc() {
+        log.debug("ServiceFactory: Retrieving CourseSvc instance");
         return new CourseDAO();
     }
 
@@ -57,6 +60,7 @@ public class ServiceFactory {
      * @return ProblemSvc
      */
     public static ProblemSvc findProblemSvc() {
+        log.debug("ServiceFactory: Retrieving ProblemSvc instance");
         return new ProblemDAO();
     }
 
@@ -66,6 +70,7 @@ public class ServiceFactory {
      * @return SessionSvc
      */
     public static SessionSvc findSessionSvc() {
+        log.debug("ServiceFactory: Retrieving SessionSvc instance");
         return new SessionDAO();
     }
 
@@ -76,6 +81,7 @@ public class ServiceFactory {
      */
     // ToDo: add this support ala ShaTu
     public static StudentModelSvc findStudentModelSvc() {
+        log.debug("ServiceFactory: Retrieving StudentModelSvc instance");
         return new StudentModelDAO();
     }
 }
