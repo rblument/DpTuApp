@@ -413,7 +413,7 @@ public class LCSProblem extends Problem {
         if (subproblem != null && r >= 0 && r < subproblem.length) {
             subproblem[r][0] = 0; // Assign new value
         } else {
-            System.err.println("ERROR: LCSProblem executeLine2 accessing out of bounds: r=" + r);
+            log.error("ERROR: LCSProblem executeLine2 accessing out of bounds: r=" + r);
         }
         nextLineNumber = 1; // Go back to check r loop condition
     }
@@ -455,7 +455,7 @@ public class LCSProblem extends Problem {
         if (subproblem != null && subproblem.length > 0 && c >= 0 && c < subproblem[0].length) {
             subproblem[0][c] = 0; // Assign new value
         } else {
-            System.err.println("ERROR: LCSProblem executeLine4 accessing out of bounds: c=" + c);
+            log.error("ERROR: LCSProblem executeLine4 accessing out of bounds: c=" + c);
         }
         nextLineNumber = 3; // Go back to check c loop condition
     }
@@ -529,7 +529,7 @@ public class LCSProblem extends Problem {
                 nextLineNumber = 9; // No match case (line 9 is 'else')
             }
         } else {
-            System.err.println(
+            log.error(
                     "ERROR: LCSProblem executeLine7 accessing String out of bounds: r="
                             + r
                             + ", c="
@@ -555,7 +555,7 @@ public class LCSProblem extends Problem {
             int newValue = subproblemL[r - 1][c - 1] + 1;
             subproblemL[r][c] = newValue;
         } else {
-            System.err.println(
+            log.error(
                     "ERROR: LCSProblem executeLine8 accessing out of bounds: r=" + r + ", c=" + c);
         }
         nextLineNumber = 6; // Go back to check c loop condition
@@ -589,7 +589,7 @@ public class LCSProblem extends Problem {
             int newValue = Integer.max(valAbove, valLeft);
             subproblemL[r][c] = newValue;
         } else {
-            System.err.println(
+            log.error(
                     "ERROR: LCSProblem executeLine10 accessing out of bounds: r=" + r + ", c=" + c);
         }
         nextLineNumber = 6; // Go back to check c loop condition
@@ -604,7 +604,7 @@ public class LCSProblem extends Problem {
             when the algorithm finishes */
             nextLineNumber = 12;
         } else {
-            System.err.println("ERROR: Reached line 11 unexpectedly. State: " + executionState);
+            log.error("ERROR: Reached line 11 unexpectedly. State: " + executionState);
         }
     }
 
