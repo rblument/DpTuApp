@@ -130,3 +130,4 @@ A legacy configuration file for JUL is at: `src/main/resources/Logging.propertie
 - [ ] Use `log.info()`, `log.debug()`, etc. appropriately
 - [ ] Replace `System.out.println` and `printStackTrace()`
 - [ ] If you *must* use JUL temporarily, use the `julLogger` pattern (fully-qualified names)
+  
