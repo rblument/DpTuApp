@@ -90,9 +90,9 @@ public class SignInAction extends DpTuGuiAction {
                     String name = studentAccount.getFirstName();
                     SplashFrame.instance().initializeDashboard(name);
                 } catch (ObjNotFoundException e) {
-                    System.out.println("No account found");
+                    log.error("No account found");
                 } catch (NonRecoverableException e) {
-                    System.out.println(e.getMessage());
+                    log.error(e.getMessage());
                 }
 
                 break;

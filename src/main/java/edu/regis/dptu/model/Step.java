@@ -14,6 +14,9 @@ package edu.regis.dptu.model;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A user interface gesture/event performed by a student, as part of a Task.
  *
@@ -25,6 +28,8 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Step extends TitledModel {
+    private static final Logger log = LoggerFactory.getLogger(Step.class);
+
     /** The scaffold level associated with this step. */
     private ScaffoldLevel scaffolding;
 
@@ -155,7 +160,7 @@ public class Step extends TitledModel {
     }
 
     public void addHint(Hint hint) {
-        System.out.println("Adding hint");
+        log.info("Adding hint");
         hints.add(hint);
     }
 

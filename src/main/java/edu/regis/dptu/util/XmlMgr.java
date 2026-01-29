@@ -68,7 +68,7 @@ public class XmlMgr {
     private XmlMgr() {
         // String netBeansDir = System.getProperty("user.dir");
         // dataDirectory =  netBeansDir + "/Data/";
-        // System.out.println("Data Directory: " + dataDirectory);
+        // log.info("Data Directory: " + dataDirectory);
     }
 
     /**

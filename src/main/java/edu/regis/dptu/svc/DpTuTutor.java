@@ -202,7 +202,7 @@ public class DpTuTutor implements TutorSvc {
      *     encoded TutoringSession object.
      */
     public TutorReply signIn(String jsonUser) {
-        System.out.println("Received sign in: " + jsonUser);
+        log.info("Received sign in: " + jsonUser);
         Account requestAcct = gson.fromJson(jsonUser, Account.class);
 
         try {

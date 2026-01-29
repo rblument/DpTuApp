@@ -49,7 +49,7 @@ public abstract class DpTuGuiAction extends AbstractAction {
 
         // ToDo: Better error reporting
         // if (imageURL == null)
-        //   System.out.println("Unknown resource: " + imgLocation);
+        //   log.warn("Unknown resource: " + imgLocation);
 
         Image img = ImgFactory.createImage(imageFileName);
 

@@ -67,7 +67,7 @@ public class SaveSessionAction extends DpTuGuiAction {
      */
     public void actionPerformed(ActionEvent evt) {
         // ToDo: what happens on a save
-        System.out.println("Save not implemented");
+        log.warn("Save not implemented");
         // GuiController.instance().getStepView().selectPanel("RotateView");
     }
 }
