@@ -2,7 +2,7 @@
  * DPTu: Dynamic Programming Tutor
  *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
+ *
  * Custom Swing progress bar component with rounded corners
  * and optional gradient fill.
  *

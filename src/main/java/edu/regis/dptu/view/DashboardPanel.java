@@ -3,19 +3,19 @@
  * Main user dashboard view for the DpTu app
  * Displays navigation controls, problem selection, and
  * progress indicators for Se One, Do One, and Teach One modes
- * 
+ *
  * Responsible for:
  *  Initializing and laying out dashboard UI components
  *  Applying scaffold level rules to enable/disable actions
  *  Displaying student progress indicators
- * 
+ *
  * Note:
  *   Progress values are provided externally
  *   This class is only responsible for presentation. The progress bars are
  *   made in the CustomProgressBar.java class in util
- * 
+ *
  *  To Do: the progress bar values are currently hardcoded, so that will need to be fixed!
- * 
+ *
  * Last Edited: 1/29/2026 Lindsey C
  */
 package edu.regis.dptu.view;
@@ -65,9 +65,9 @@ public class DashboardPanel extends GPanel {
     private JLabel welcomeLabel;
     private JComboBox<String> problemSelector; // @author EverettCV
 
-    private static final Color BACKGROUND = new Color(32, 88, 96); //dark seafoam green
-    private static final Color TEXT = new Color(31, 41, 55); //deep charcoal
-    private static final Color FILL = new Color(245,255,250); ////soft, pastel green
+    private static final Color BACKGROUND = new Color(32, 88, 96); // dark seafoam green
+    private static final Color TEXT = new Color(31, 41, 55); // deep charcoal
+    private static final Color FILL = new Color(245, 255, 250); // //soft, pastel green
 
     public DashboardPanel(String firstName) {
         this.firstName = firstName;
