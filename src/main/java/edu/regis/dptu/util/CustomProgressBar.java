@@ -2,6 +2,18 @@
  * DPTu: Dynamic Programming Tutor
  *
  *  (C) Johanna & Richard Blumenthal, All rights reserved
+ * 
+ * Custom Swing progress bar component with rounded corners
+ * and optional gradient fill.
+ *
+ * Responsible for:
+ *  - Rendering vertical or horizontal progress bars
+ *  - Drawing background, progress fill, and progress text
+ *  - Supporting custom fill and text colors
+ *
+ * NOTE:
+ *  - This class performs rendering only.
+ *  - Progress values and percentages are set by callers.
  */
 
 package edu.regis.dptu.util;
@@ -25,7 +37,7 @@ public class CustomProgressBar extends JProgressBar {
 
     private static final int ARC_WIDTH = 10;
     private static final int ARC_HEIGHT = 10;
-    private Color progressColor = new Color(241, 196, 0);
+    private Color progressColor = new Color(170, 229, 253);
 
     public CustomProgressBar() {
         setOpaque(false);
@@ -146,7 +158,7 @@ public class CustomProgressBar extends JProgressBar {
             g2d = (Graphics2D) g.create();
             g2d.setRenderingHint(
                     RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2d.setColor(getForeground());
+            g2d.setColor(new Color(31, 41, 55));
             String progressString = getString();
             java.awt.FontMetrics fm = g2d.getFontMetrics();
             int stringWidth = fm.stringWidth(progressString);

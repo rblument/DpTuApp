@@ -1,5 +1,22 @@
 /*
  * DPTu: Dynamic Programming Tutor
+ * Main user dashboard view for the DpTu app
+ * Displays navigation controls, problem selection, and
+ * progress indicators for Se One, Do One, and Teach One modes
+ * 
+ * Responsible for:
+ *  Initializing and laying out dashboard UI components
+ *  Applying scaffold level rules to enable/disable actions
+ *  Displaying student progress indicators
+ * 
+ * Note:
+ *   Progress values are provided externally
+ *   This class is only responsible for presentation. The progress bars are
+ *   made in the CustomProgressBar.java class in util
+ * 
+ *  To Do: the progress bar values are currently hardcoded, so that will need to be fixed!
+ * 
+ * Last Edited: 1/29/2026 Lindsey C
  */
 package edu.regis.dptu.view;
 
@@ -48,8 +65,9 @@ public class DashboardPanel extends GPanel {
     private JLabel welcomeLabel;
     private JComboBox<String> problemSelector; // @author EverettCV
 
-    private static final Color REGIS_BLUE = new Color(0, 43, 73);
-    private static final Color REGIS_GOLD = new Color(241, 196, 0);
+    private static final Color BACKGROUND = new Color(32, 88, 96); //dark seafoam green
+    private static final Color TEXT = new Color(31, 41, 55); //deep charcoal
+    private static final Color FILL = new Color(245,255,250); ////soft, pastel green
 
     public DashboardPanel(String firstName) {
         this.firstName = firstName;
@@ -86,14 +104,14 @@ public class DashboardPanel extends GPanel {
     }
 
     private void initializeComponents() {
-        setBackground(REGIS_BLUE); // Dark blue background
+        setBackground(BACKGROUND); // Dark blue background
 
         // Top bar components
         settingsButton = new JButton("Settings");
         settingsButton.setFocusPainted(false);
 
         welcomeLabel = new JLabel("Welcome, " + firstName + "!");
-        welcomeLabel.setForeground(REGIS_GOLD); // Gold color
+        welcomeLabel.setForeground(FILL);
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
@@ -146,7 +164,7 @@ public class DashboardPanel extends GPanel {
 
         // Top panel with settings, welcome message, and logout
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(REGIS_BLUE);
+        topPanel.setBackground(BACKGROUND);
         topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
 
         topPanel.add(settingsButton, BorderLayout.WEST);
@@ -160,7 +178,7 @@ public class DashboardPanel extends GPanel {
 
         // Main content panel with three columns
         JPanel mainPanel = new JPanel(new GridLayout(1, 3, 10, 0));
-        mainPanel.setBackground(REGIS_BLUE);
+        mainPanel.setBackground(BACKGROUND);
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Create three columns
@@ -175,7 +193,7 @@ public class DashboardPanel extends GPanel {
                 new JLabel(
                         "(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved",
                         SwingConstants.CENTER);
-        copyright.setForeground(Color.GRAY);
+        copyright.setForeground(FILL);
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
         add(copyright, BorderLayout.SOUTH);
@@ -190,12 +208,12 @@ public class DashboardPanel extends GPanel {
 
     private JPanel createColumn(CustomProgressBar progressBar, JButton button, String labelText) {
         JPanel column = new JPanel(new BorderLayout(0, 5));
-        column.setBackground(REGIS_BLUE);
+        column.setBackground(BACKGROUND);
         column.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
         // Progress bar panel takes most of the space
         JPanel progressPanel = new JPanel(new BorderLayout());
-        progressPanel.setBackground(REGIS_BLUE);
+        progressPanel.setBackground(BACKGROUND);
         progressPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Make progress bar fill the space while maintaining aspect ratio
@@ -206,7 +224,7 @@ public class DashboardPanel extends GPanel {
 
         // Button panel at the bottom
         JPanel buttonPanel = new JPanel(new BorderLayout());
-        buttonPanel.setBackground(REGIS_BLUE);
+        buttonPanel.setBackground(BACKGROUND);
         buttonPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         buttonPanel.add(button, BorderLayout.CENTER);
 
