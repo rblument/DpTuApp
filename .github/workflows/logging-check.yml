@@ -97,100 +97,87 @@ jobs:
           echo "⚠️ Running advisory logging checks (warnings only)..."
 
           # --------------------------------------------------------------
-          # WARN 1: Java files that do not appear to use SLF4J *or*
-          #         import a Logger but never use it
+          # WARN 1: Missing or unused SLF4J logging
           #
           # Escape hatch:
           #   @SuppressWarnings("Logging")
           #
-          # This suppression is allowed ONLY for:
-          # - DTOs
-          # - Marker classes
-          # - Pure UI layout containers
+          # Suppresses WARN-only findings, never ERRORs
           # --------------------------------------------------------------
-          - name: Advisory logging checks (WARN)
-            shell: bash
-            run: |
-              set -euo pipefail
 
-              echo "⚠️ Running advisory logging checks (warnings only)..."
+          # Files that explicitly suppress logging warnings
+          LOGGING_SUPPRESSED_FILES=$(
+            grep -RIl --include='*.java' '@SuppressWarnings("Logging")' src/ || true
+          )
 
-              # Files that explicitly suppress logging warnings
-              LOGGING_SUPPRESSED_FILES=$(
-                grep -RIl --include='*.java' '@SuppressWarnings("Logging")' src/ || true
-              )
+          # Files with no SLF4J Logger import at all
+          NO_LOG_IMPORT_FILES=$(
+            grep -RL --include='*.java' "org.slf4j.Logger" src/ || true
+          )
 
-              # ----------------------------------------------------------
-              # Files with no SLF4J Logger import at all
-              # ----------------------------------------------------------
-              NO_LOG_IMPORT_FILES=$(
-                grep -RL --include='*.java' "org.slf4j.Logger" src/ || true
-              )
+          # Files that import SLF4J Logger but never use it
+          UNUSED_LOGGER_FILES=$(
+            grep -RIl --include='*.java' "org.slf4j.Logger" src/ | \
+            xargs -r grep -EL "log\.(trace|debug|info|warn|error)\s*\("
+          )
 
-              # Remove suppressed files from this set
-              if [ -n "$LOGGING_SUPPRESSED_FILES" ]; then
-                NO_LOG_IMPORT_FILES=$(comm -23 \
-                  <(printf "%s\n" $NO_LOG_IMPORT_FILES | sort) \
-                  <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort))
-              fi
+          # Helper: remove suppressed files from a list
+          filter_suppressed() {
+            local files="$1"
+            if [ -n "$files" ] && [ -n "$LOGGING_SUPPRESSED_FILES" ]; then
+              comm -23 \
+                <(printf "%s\n" $files | sort) \
+                <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort)
+            else
+              printf "%s\n" $files
+            fi
+          }
 
-              # ----------------------------------------------------------
-              # Files that import SLF4J Logger but never use it
-              # ----------------------------------------------------------
-              UNUSED_LOGGER_FILES=$(
-                grep -RIl --include='*.java' "org.slf4j.Logger" src/ | \
-                xargs -r grep -EL "log\.(trace|debug|info|warn|error)\s*\("
-              )
+          NO_LOG_IMPORT_FILES=$(filter_suppressed "$NO_LOG_IMPORT_FILES")
+          UNUSED_LOGGER_FILES=$(filter_suppressed "$UNUSED_LOGGER_FILES")
 
-              # Remove suppressed files from this set
-              if [ -n "$LOGGING_SUPPRESSED_FILES" ]; then
-                UNUSED_LOGGER_FILES=$(comm -23 \
-                  <(printf "%s\n" $UNUSED_LOGGER_FILES | sort) \
-                  <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort))
-              fi
+          if [ -n "$NO_LOG_IMPORT_FILES" ] || [ -n "$UNUSED_LOGGER_FILES" ]; then
+            echo
+            echo "⚠️ Files with missing or unused logging:"
 
-              if [ -n "$NO_LOG_IMPORT_FILES" ] || [ -n "$UNUSED_LOGGER_FILES" ]; then
-                echo
-                echo "⚠️ Files with missing or unused logging:"
-
-                if [ -n "$NO_LOG_IMPORT_FILES" ]; then
-                  echo
-                  echo "--- No SLF4J Logger import detected ---"
-                  echo "$NO_LOG_IMPORT_FILES"
-                fi
-
-                if [ -n "$UNUSED_LOGGER_FILES" ]; then
-                  echo
-                  echo "--- SLF4J Logger imported but never used ---"
-                  echo "$UNUSED_LOGGER_FILES"
-                fi
-
-                echo
-                echo "Guidance: Add logging or explicitly suppress with @SuppressWarnings(\"Logging\")."
-              else
-                echo "✅ All Java files appear to use SLF4J logging correctly."
-              fi
-
-              # ----------------------------------------------------------
-              # WARN 2: Empty catch blocks
-              # ----------------------------------------------------------
-              if grep -RIn --include='*.java' -E "catch\s*\([^)]*\)\s*\{\s*\}" src/; then
-                echo
-                echo "⚠️ Empty catch blocks detected. Consider logging the exception."
-              else
-                echo "✅ No empty catch blocks detected."
-              fi
-
-              # ----------------------------------------------------------
-              # WARN 3: log.error calls without exception parameter
-              # ----------------------------------------------------------
-              if grep -RIn --include='*.java' -E "log\.error\s*\([^,)]*\)" src/; then
-                echo
-                echo "⚠️ log.error calls without exception context detected."
-                echo "Guidance: Prefer log.error(\"message\", exception)."
-              else
-                echo "✅ All log.error calls appear to include exception context."
-              fi
-
+            if [ -n "$NO_LOG_IMPORT_FILES" ]; then
               echo
-              echo "ℹ️ Advisory checks complete. Warnings do not fail the build."
+              echo "--- No SLF4J Logger import detected ---"
+              echo "$NO_LOG_IMPORT_FILES"
+            fi
+
+            if [ -n "$UNUSED_LOGGER_FILES" ]; then
+              echo
+              echo "--- SLF4J Logger imported but never used ---"
+              echo "$UNUSED_LOGGER_FILES"
+            fi
+
+            echo
+            echo "Guidance: Add logging or suppress with @SuppressWarnings(\"Logging\")."
+          else
+            echo "✅ All Java files appear to use SLF4J logging correctly."
+          fi
+
+          # --------------------------------------------------------------
+          # WARN 2: Empty catch blocks
+          # --------------------------------------------------------------
+          if grep -RIn --include='*.java' -E "catch\s*\([^)]*\)\s*\{\s*\}" src/; then
+            echo
+            echo "⚠️ Empty catch blocks detected. Consider logging the exception."
+          else
+            echo "✅ No empty catch blocks detected."
+          fi
+
+          # --------------------------------------------------------------
+          # WARN 3: log.error calls without exception parameter
+          # --------------------------------------------------------------
+          if grep -RIn --include='*.java' -E "log\.error\s*\([^,)]*\)" src/; then
+            echo
+            echo "⚠️ log.error calls without exception context detected."
+            echo "Guidance: Prefer log.error(\"message\", exception)."
+          else
+            echo "✅ All log.error calls appear to include exception context."
+          fi
+
+          echo
+          echo "ℹ️ Advisory checks complete. Warnings do not fail the build."
