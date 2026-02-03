@@ -171,30 +171,18 @@ public class SplashFrame extends JFrame {
         if (signInAttempts < MAX_SIGNIN_ATTEMPTS) {
             signInAttempts++;
 
-            log.warn(
-                "Invalid password attempt {} of {}",
-                signInAttempts,
-                MAX_SIGNIN_ATTEMPTS
-            );
+            log.warn("Invalid password attempt {} of {}", signInAttempts, MAX_SIGNIN_ATTEMPTS);
 
             showError(
-                "SignIn Error",
-                "Invalid Password attempt "
-                    + signInAttempts
-                    + " of "
-                    + MAX_SIGNIN_ATTEMPTS
-            );
+                    "SignIn Error",
+                    "Invalid Password attempt " + signInAttempts + " of " + MAX_SIGNIN_ATTEMPTS);
         } else {
-            log.error(
-                "User locked out after {} invalid sign-in attempts",
-                MAX_SIGNIN_ATTEMPTS
-            );
+            log.error("User locked out after {} invalid sign-in attempts", MAX_SIGNIN_ATTEMPTS);
 
             showError(
-                "SignIn Error",
-                "You exceeded the max number of sign in attempts\n"
-                    + "Please contact the DpTu administrator"
-            );
+                    "SignIn Error",
+                    "You exceeded the max number of sign in attempts\n"
+                            + "Please contact the DpTu administrator");
 
             // Graceful shutdown — NO System.exit
             this.dispose();
@@ -250,13 +238,11 @@ public class SplashFrame extends JFrame {
         log.warn("Unknown user sign-in attempt: {}", user.getUserId());
 
         showError(
-            "Warning",
-            user.getUserId()
-                + " is not a known user.\n\n"
-                + "Perhaps, try creating a 'New User' first."
-        );
+                "Warning",
+                user.getUserId()
+                        + " is not a known user.\n\n"
+                        + "Perhaps, try creating a 'New User' first.");
     }
-
 
     /** Select the practice screen panel */
     public void selectPracticeScreen() {
@@ -287,7 +273,6 @@ public class SplashFrame extends JFrame {
             newAccountPanel.updateFocus();
         }
     }
-
 
     /** Create the child GUI components appearing in this frame. */
     private void initializeComponents() {
