@@ -333,8 +333,7 @@ public class LCSProblem extends Problem {
     }
 
     /**
-     * Logs the current state (of the algorithm variables).
-     * Intended for debugging and diagnostics.
+     * Logs the current state (of the algorithm variables). Intended for debugging and diagnostics.
      */
     public void prettyPrint() {
         log.info("--- LCSProblem State ---");
@@ -372,7 +371,6 @@ public class LCSProblem extends Problem {
 
         log.info("------------------------");
     }
-
 
     // -----------------------LCS Algorithm-------------------------------------
     // -------------------------------------------------------------------------
