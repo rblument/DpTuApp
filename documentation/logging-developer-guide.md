@@ -100,6 +100,25 @@ This repository includes automated CI checks that enforce these logging standard
 
 These checks exist to keep logs consistent, searchable, and production-safe.
 
+### Suppressing Logging Warnings
+
+In rare cases, a Java class may not require logging. Examples include:
+
+- DTOs / value objects
+- Marker or configuration-only classes
+- Pure UI layout containers with no behavior
+- Generated code
+
+To explicitly suppress CI logging warnings, annotate the class with:
+
+```java
+@SuppressWarnings("Logging")
+public class ExampleDto {
+    private final int id;
+    private final String name;
+}
+```
+
 ## Legacy JUL Logging (Temporary Compatibility)
 
 Some older classes still use `java.util.logging` (JUL).  
