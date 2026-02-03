@@ -2,7 +2,7 @@
 
 This document explains how logging works in the DpTu application and how to use it correctly when developing new features.
 
-It was last reviewed on 22 Jan 2026 by Harrison Sherwin.
+It was last reviewed on 3 Feb 2026 by Harrison Sherwin.
 
 ## Overview
 
@@ -81,28 +81,6 @@ During development, logs appear in the **console**.
 
 Logs files are also written to: `~/.dptu/logs`
 
-## Legacy JUL Logging (Temporary Compatibility)
-
-Some older classes still use `java.util.logging` (JUL).  
-Until they are fully migrated, JUL loggers are named `julLogger` and use **fully-qualified types**:
-
-```java
-private static final java.util.logging.Logger julLogger =
-    java.util.logging.Logger.getLogger(MyClass.class.getName());
-
-julLogger.log(java.util.logging.Level.WARNING, "Old logging path still active");
-```
-
-### Rules for JUL Code During Migration
-
-- **Do not** import `java.util.logging.Logger`
-- **Do not** use `Logger.getLogger(...)`
-- Always use fully-qualified names (`java.util.logging.Logger`, `java.util.logging.Level`)
-
-Eventually, JUL will be removed.
-
-A legacy configuration file for JUL is at: `src/main/resources/Logging.properties`
-
 ## Common Mistakes to Avoid
 
 | Mistake | Correct Usage |
@@ -128,6 +106,5 @@ A legacy configuration file for JUL is at: `src/main/resources/Logging.propertie
 
 - [ ] Add `private static final Logger log = LoggerFactory.getLogger(ThisClass.class);`
 - [ ] Use `log.info()`, `log.debug()`, etc. appropriately
-- [ ] Replace `System.out.println` and `printStackTrace()`
-- [ ] If you *must* use JUL temporarily, use the `julLogger` pattern (fully-qualified names)
+- [ ] Replace `System.out.println` and `printStackTrace()` calls with appropriate `log.x()` calls.
   
