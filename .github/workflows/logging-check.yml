@@ -110,8 +110,10 @@ jobs:
 
 
           # Files that import SLF4J Logger but never use it
-          UNUSED_LOGGER_FILES=$(grep -RIl --include='*.java' "org.slf4j.Logger" src/ | \
-          xargs grep -L "log\\.(trace|debug|info|warn|error)\\s*\\(")
+          UNUSED_LOGGER_FILES=$(
+            grep -RIl --include='*.java' "org.slf4j.Logger" src/ | \
+            xargs -r grep -EL "log\.(trace|debug|info|warn|error)\s*\("
+          )
 
 
           if [ -n "$NO_LOG_IMPORT_FILES" ] || [ -n "$UNUSED_LOGGER_FILES" ]; then
