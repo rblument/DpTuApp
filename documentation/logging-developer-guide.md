@@ -2,7 +2,7 @@
 
 This document explains how logging works in the DpTu application and how to use it correctly when developing new features.
 
-It was last reviewed on 22 Jan 2026 by Harrison Sherwin.
+It was last reviewed on 3 Feb 2026 by Harrison Sherwin.
 
 ## Overview
 
