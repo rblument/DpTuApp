@@ -81,13 +81,75 @@ During development, logs appear in the **console**.
 
 Logs files are also written to: `~/.dptu/logs`
 
+## CI Enforcement
+
+This repository includes automated CI checks that enforce these logging standards (`.github/workflows/logging-check.yml`).
+
+### Enforced as Errors
+
+- Console output (`System.out.*`, `System.err.*`)
+- `printStackTrace()` usage
+- `java.util.logging` imports or logger creation
+- Direct Log4j / Log4j2 API usage
+- `System.exit(...)`
+
+### Enforced as Warnings
+
+- Classes with no logging at all
+- Classes that import or declare an SLF4J `Logger` but never use it
+
+These checks exist to keep logs consistent, searchable, and production-safe.
+
+### Suppressing Logging Warnings
+
+In rare cases, a Java class may not require logging. Examples include:
+
+- DTOs / value objects
+- Marker or configuration-only classes
+- Pure UI layout containers with no behavior
+- Generated code
+
+To explicitly suppress CI logging warnings, annotate the class with:
+
+```java
+@SuppressWarnings("Logging")
+public class ExampleDto {
+    private final int id;
+    private final String name;
+}
+```
+
+## Legacy JUL Logging (Temporary Compatibility)
+
+Some older classes still use `java.util.logging` (JUL).  
+Until they are fully migrated, JUL loggers are named `julLogger` and use **fully-qualified types**:
+
+```java
+private static final java.util.logging.Logger julLogger =
+    java.util.logging.Logger.getLogger(MyClass.class.getName());
+
+julLogger.log(java.util.logging.Level.WARNING, "Old logging path still active");
+```
+
+### Rules for JUL Code During Migration
+
+- **Do not** import `java.util.logging.Logger`
+- **Do not** use `Logger.getLogger(...)`
+- Always use fully-qualified names (`java.util.logging.Logger`, `java.util.logging.Level`)
+
+Eventually, JUL will be removed.
+
+A legacy configuration file for JUL is at: `src/main/resources/Logging.properties`
+
 ## Common Mistakes to Avoid
 
 | Mistake | Correct Usage |
 |--------|---------------|
-| `System.out.println(...)` | `log.info(...)` |
-| `e.printStackTrace()` | `log.error("message", e)` |
-| Mixing JUL & SLF4J imports | Use only SLF4J, or fully-qualified JUL types |
+| `System.out.print*`, `System.err.print*` | `log.info(...)`, `log.warn(...)`, etc. |
+| `e.printStackTrace()` / `t.printStackTrace()` | `log.error("message", e)` |
+| Importing or using `java.util.logging` | Use SLF4J, or fully-qualified JUL types *only in legacy code* |
+| Using Log4j / Log4j2 APIs directly | Use SLF4J (`org.slf4j.Logger`) only |
+| `System.exit(...)` | Log the error and allow normal shutdown |
 | Hard-coded string concatenation | Use `{}` parameter placeholders |
 
 > Hard-coded string concatenation example to avoid:
@@ -105,6 +167,9 @@ Logs files are also written to: `~/.dptu/logs`
 ## Quick Checklist for New Code
 
 - [ ] Add `private static final Logger log = LoggerFactory.getLogger(ThisClass.class);`
+- [ ] **Actually use the logger** (at least some meaningful `log.*(...)` calls)
 - [ ] Use `log.info()`, `log.debug()`, etc. appropriately
-- [ ] Replace `System.out.println` and `printStackTrace()` calls with appropriate `log.x()` calls.
-  
+- [ ] Include exception objects in `log.error("message", e)` calls where applicable
+- [ ] Replace all `System.out.*`, `System.err.*`, and `printStackTrace()` usage
+- [ ] Do **not** import or use Log4j / Log4j2 APIs directly
+- [ ] If you *must* use JUL temporarily, use the `julLogger` pattern (fully-qualified names only)

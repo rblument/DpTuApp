@@ -122,14 +122,14 @@ public class DashboardPanel extends GPanel {
         // Initialize progress bars
         seeOneProgressBar = new CustomProgressBar();
         seeOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        seeOneProgressBar.setValue(100);
-        seeOneProgressBar.setString("100%");
+        seeOneProgressBar.setValue(0);
+        seeOneProgressBar.setString("0%");
         seeOneProgressBar.setStringPainted(true);
 
         doOneProgressBar = new CustomProgressBar();
         doOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        doOneProgressBar.setValue(50);
-        doOneProgressBar.setString("50%");
+        doOneProgressBar.setValue(0);
+        doOneProgressBar.setString("0%");
         doOneProgressBar.setStringPainted(true);
 
         teachOneProgressBar = new CustomProgressBar();

@@ -3,6 +3,7 @@ name: PR Build Validation
 on:
   pull_request:
     branches: [ main, development ]
+  workflow_dispatch: #allow manual runs
 
 jobs:
   build:
