@@ -1,0 +1,183 @@
+name: Logging Standards Check
+
+# This workflow enforces the DpTu Logging Developer Guide.
+#
+# Goals:
+# 1) FAIL the build on forbidden logging patterns that bypass SLF4J
+# 2) WARN (non-blocking) on files that appear to have no logging at all
+#
+# Rationale:
+# - Application code must use SLF4J (org.slf4j.Logger) exclusively
+# - Direct console output, stack trace printing, JUL imports, or direct
+# backend usage (Log4j2) are not allowed in new code
+# - Some checks are warnings to avoid breaking legacy code while still
+# nudging developers toward the standard
+
+on:
+  pull_request:
+    branches: [ main, development ]
+  push:
+    branches: [ main, development ]
+  workflow_dispatch: # allow manual runs
+
+jobs:
+  logging-standards:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------------
+      # STEP 1: Fail-fast checks for forbidden patterns
+      # ------------------------------------------------------------------
+      - name: Enforce forbidden logging patterns (ERROR)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "🔍 Enforcing logging standards (errors)..."
+
+          # These patterns indicate logging bypasses or API drift and
+          # MUST fail the build if detected anywhere in src/.
+          #
+          # Notes:
+          # - System.out / System.err bypass the logging framework entirely
+          # - printStackTrace() loses structure and routing
+          # - Direct JUL or Log4j2 usage violates the SLF4J-only rule
+          ERROR_PATTERNS=(
+            # Console output (stdout)
+            "System\\.out\\.(print|println|printf|append)"
+
+            # Console output (stderr)
+            "System\\.err\\.(print|println|printf)"
+
+            # Any Throwable/Exception stack trace printing
+            "\\.printStackTrace\\s*\\("
+
+            # Direct JUL imports or logger creation
+            "import java\\.util\\.logging\\."
+            "java\\.util\\.logging\\.Logger\\.getLogger"
+
+            # Direct Log4j / Log4j2 usage in application code
+            "import org\\.apache\\.logging\\.log4j"
+            "LogManager\\.getLogger"
+
+            # Abrupt JVM termination (bypasses shutdown logging)
+            "System\\.exit\\s*\\("
+          )
+
+          FAILED=0
+
+          for pattern in "${ERROR_PATTERNS[@]}"; do
+            echo "Checking ERROR pattern: $pattern"
+            if grep -RIn --include='*.java' -E "$pattern" src/; then
+              echo "❌ Forbidden pattern detected: $pattern"
+              FAILED=1
+            fi
+          done
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo
+            echo "🚨 Logging standards violation found."
+            echo "Refer to the DpTu Logging Developer Guide for correct usage."
+            exit 1
+          fi
+
+          echo "✅ No forbidden logging patterns found."
+
+      # ------------------------------------------------------------------
+      # STEP 2: Advisory checks (warnings only)
+      # ------------------------------------------------------------------
+      - name: Advisory logging checks (WARN)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "⚠️ Running advisory logging checks (warnings only)..."
+
+          # --------------------------------------------------------------
+          # WARN 1: Missing or unused SLF4J logging
+          #
+          # Escape hatch:
+          #   @SuppressWarnings("Logging")
+          #
+          # Suppresses WARN-only findings, never ERRORs
+          # --------------------------------------------------------------
+
+          # Files that explicitly suppress logging warnings
+          LOGGING_SUPPRESSED_FILES=$(
+            grep -RIl --include='*.java' '@SuppressWarnings("Logging")' src/ || true
+          )
+
+          # Files with no SLF4J Logger import at all
+          NO_LOG_IMPORT_FILES=$(
+            grep -RL --include='*.java' "org.slf4j.Logger" src/ || true
+          )
+
+          # Files that import SLF4J Logger but never use it
+          UNUSED_LOGGER_FILES=$(
+            grep -RIl --include='*.java' "org.slf4j.Logger" src/ | \
+            xargs -r grep -EL "log\.(trace|debug|info|warn|error)\s*\("
+          )
+
+          # Helper: remove suppressed files from a list
+          filter_suppressed() {
+            local files="$1"
+            if [ -n "$files" ] && [ -n "$LOGGING_SUPPRESSED_FILES" ]; then
+              comm -23 \
+                <(printf "%s\n" $files | sort) \
+                <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort)
+            else
+              printf "%s\n" $files
+            fi
+          }
+
+          NO_LOG_IMPORT_FILES=$(filter_suppressed "$NO_LOG_IMPORT_FILES")
+          UNUSED_LOGGER_FILES=$(filter_suppressed "$UNUSED_LOGGER_FILES")
+
+          if [ -n "$NO_LOG_IMPORT_FILES" ] || [ -n "$UNUSED_LOGGER_FILES" ]; then
+            echo
+            echo "⚠️ Files with missing or unused logging:"
+
+            if [ -n "$NO_LOG_IMPORT_FILES" ]; then
+              echo
+              echo "--- No SLF4J Logger import detected ---"
+              echo "$NO_LOG_IMPORT_FILES"
+            fi
+
+            if [ -n "$UNUSED_LOGGER_FILES" ]; then
+              echo
+              echo "--- SLF4J Logger imported but never used ---"
+              echo "$UNUSED_LOGGER_FILES"
+            fi
+
+            echo
+            echo "Guidance: Add logging or suppress with @SuppressWarnings(\"Logging\")."
+          else
+            echo "✅ All Java files appear to use SLF4J logging correctly."
+          fi
+
+          # --------------------------------------------------------------
+          # WARN 2: Empty catch blocks
+          # --------------------------------------------------------------
+          if grep -RIn --include='*.java' -E "catch\s*\([^)]*\)\s*\{\s*\}" src/; then
+            echo
+            echo "⚠️ Empty catch blocks detected. Consider logging the exception."
+          else
+            echo "✅ No empty catch blocks detected."
+          fi
+
+          # --------------------------------------------------------------
+          # WARN 3: log.error calls without exception parameter
+          # --------------------------------------------------------------
+          if grep -RIn --include='*.java' -E "log\.error\s*\([^,)]*\)" src/; then
+            echo
+            echo "⚠️ log.error calls without exception context detected."
+            echo "Guidance: Prefer log.error(\"message\", exception)."
+          else
+            echo "✅ All log.error calls appear to include exception context."
+          fi
+
+          echo
+          echo "ℹ️ Advisory checks complete. Warnings do not fail the build."
