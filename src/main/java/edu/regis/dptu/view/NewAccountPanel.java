@@ -958,7 +958,7 @@ public class NewAccountPanel extends GPanel {
             return String.format("%1$032X", i).toLowerCase();
 
         } catch (NoSuchAlgorithmException e) {
-            log.error(e.toString());
+            log.error("MD5 algorithm not available", e);
         }
 
         return "";

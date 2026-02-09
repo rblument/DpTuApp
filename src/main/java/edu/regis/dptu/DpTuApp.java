@@ -72,7 +72,7 @@ public class DpTuApp {
             log.error("Interrupted during startup", ex);
             Thread.currentThread().interrupt();
         } catch (SecurityException e) {
-            log.error("Couldn't create Data directory in NetBeans Project.");
+            log.error("Couldn't create Data directory in NetBeans Project.", (Throwable) null);
             log.error("Perhaps, try changing permissions.");
         }
     }

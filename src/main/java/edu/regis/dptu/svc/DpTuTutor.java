@@ -471,7 +471,7 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutorReply createError(String errMsg, Exception ex) {
         if (ex == null) {
-            DpTuTutor.log.error(errMsg);
+            DpTuTutor.log.error(errMsg, (Throwable) null);
         } else {
             DpTuTutor.log.error(errMsg, ex);
         }

@@ -65,7 +65,7 @@ public class SeeOneAction extends DpTuGuiAction {
             SplashFrame.instance().selectLessonScreen(ts);
 
         } catch (ObjNotFoundException | NonRecoverableException e) {
-            SeeOneAction.log.error(e.getMessage());
+            log.error("Failed to load problem for SEE_ONE mode", e);
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }
