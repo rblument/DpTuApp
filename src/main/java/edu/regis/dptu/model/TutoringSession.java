@@ -29,10 +29,7 @@ public class TutoringSession {
     /** The id of this session in the database. */
     private int id;
 
-    /**
-     * An SHA-256 encrypted security token that must be communicated to the tutor/server in all
-     * subsequent requests after signing in.
-     */
+    /** Encrypted security token for authenticated requests. */
     private String securityToken = "";
 
     /** The email address of the student being tutored in this session. */
@@ -44,9 +41,7 @@ public class TutoringSession {
     /** A summary of the unit currently being taught in this session. */
     private UnitDigest unit;
 
-    /**
-     * True, if the session is currently active (though the student may not be currently signed-in).
-     */
+    /** True if the session is currently active. */
     private boolean isActive = true;
 
     /** The date and time when this session was initially created. */
@@ -55,25 +50,23 @@ public class TutoringSession {
     /** The overall problem being solved in this session. */
     private Problem problem;
 
-    /** The Mode the user is in--See One, Do One, or Teach One */
+    /** The Mode the user is in—See One, Do One, or Teach One. */
     private Mode mode;
 
-    /**
-     * The current task list.
-     *
-     * <p>If there are multiple tasks, the first one is the current task and the remaining tasks are
-     * pending. Multiple tasks occur when a student overrides the task proposed by the tutor.
-     */
-    private ArrayList<PendingTask> tasks; // ToDo: Change to PendingTask
+    /** Current and pending tasks for this session. */
+    private ArrayList<PendingTask> tasks;
 
     /**
      * Initialize this session with default information.
      *
-     * @param userId - The email address of the student associated with this session.
+     * @param userId The email address of the student associated with this session.
      */
     public TutoringSession(String userId) {
         this.userId = userId;
-        tasks = new ArrayList<>();
+        this.tasks = new ArrayList<>();
+        this.startDate = new GregorianCalendar();
+
+        log.debug("TutoringSession created for userId={}", userId);
     }
 
     /**
@@ -81,12 +74,18 @@ public class TutoringSession {
      *
      * @param account the Account used to create the Student.
      * @param problem the Problem to be solved in this session.
-     * @author EverettCV
      */
     public TutoringSession(Account account, Problem problem) {
         this.userId = account.getUserId();
         this.problem = problem;
-        this.tasks = new ArrayList<>(); // Initialize tasks list
+        this.tasks = new ArrayList<>();
+        this.startDate = new GregorianCalendar();
+
+        log.debug(
+                "TutoringSession created: userId={}, problemType={}",
+                userId,
+                problem != null ? problem.getType() : "null"
+        );
     }
 
     public int getId() {
@@ -105,11 +104,6 @@ public class TutoringSession {
         this.securityToken = securityToken;
     }
 
-    /**
-     * Return the email of the student being tutored in this tutoring session.
-     *
-     * @return user's email address
-     */
     public String getUserId() {
         return userId;
     }
@@ -124,6 +118,7 @@ public class TutoringSession {
 
     public void setCourse(CourseDigest course) {
         this.course = course;
+        log.debug("Session {} course set to {}", userId, course);
     }
 
     public UnitDigest getUnit() {
@@ -132,6 +127,7 @@ public class TutoringSession {
 
     public void setUnit(UnitDigest unit) {
         this.unit = unit;
+        log.debug("Session {} unit set to {}", userId, unit);
     }
 
     public boolean isIsActive() {
@@ -140,6 +136,7 @@ public class TutoringSession {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+        log.debug("Session {} active state changed to {}", userId, isActive);
     }
 
     public GregorianCalendar getStartDate() {
@@ -156,6 +153,11 @@ public class TutoringSession {
 
     public void setProblem(Problem problem) {
         this.problem = problem;
+        log.debug(
+                "Session {} problem set to {}",
+                userId,
+                problem != null ? problem.getType() : "null"
+        );
     }
 
     public PendingTask getCurrentTask() {
@@ -164,6 +166,7 @@ public class TutoringSession {
 
     public void addTask(PendingTask task) {
         tasks.add(task);
+        log.debug("Session {} added task {}", userId, task);
     }
 
     public ArrayList<PendingTask> getTasks() {
@@ -172,14 +175,17 @@ public class TutoringSession {
 
     public void setTasks(ArrayList<PendingTask> tasks) {
         this.tasks = tasks;
+        log.debug("Session {} task list replaced (count={})", userId, tasks.size());
     }
 
     public void removeTask(PendingTask task) {
         tasks.remove(task);
+        log.debug("Session {} removed task {}", userId, task);
     }
 
     public void removeTask(int taskId) {
-        for (PendingTask task : tasks) if (task.getTask().getId() == taskId) removeTask(task);
+        tasks.removeIf(task -> task.getTask().getId() == taskId);
+        log.debug("Session {} removed task with id={}", userId, taskId);
     }
 
     public Mode getMode() {
@@ -188,5 +194,6 @@ public class TutoringSession {
 
     public void setMode(Mode mode) {
         this.mode = mode;
+        log.debug("Session {} mode set to {}", userId, mode);
     }
 }
