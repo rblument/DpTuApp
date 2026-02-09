@@ -15,4 +15,5 @@ package edu.regis.dptu.view;
 /**
  * @author hopea
  */
+@SuppressWarnings("Logging")
 class LessonSessionView {}
