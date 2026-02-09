@@ -58,6 +58,8 @@ public class NewExampleAction extends DpTuGuiAction {
 
         putValue(SHORT_DESCRIPTION, "Get a new example for this step");
         putValue(MNEMONIC_KEY, KeyEvent.VK_N);
+
+        log.debug("NewExampleAction initialized (stub)");
     }
 
     /**
