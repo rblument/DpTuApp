@@ -11,13 +11,13 @@
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
-    <!-- <repositories>
+    <repositories>
         <repository>
           <id>CronApp</id>
           <name>CronApp Repository</name>
           <url>	https://artifactory.cronapp.io/public-release/</url>
         </repository>
-    </repositories> -->
+    </repositories>
     <build>
         <resources>
             <resource>
