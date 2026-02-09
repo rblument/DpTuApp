@@ -34,7 +34,8 @@ import javax.swing.text.DocumentFilter;
  *
  * @author rickb
  */
-@SuppressWarnings("Logging") // UI widget: high-frequency events; logging would be noisy and impact responsiveness.
+@SuppressWarnings("Logging") // UI widget: high-frequency events; logging would be noisy and impact
+// responsiveness.
 public class HintTextField extends JTextField {
     /** The initial default 'hint' displayed as gray text in the field. */
     protected String hint = "";

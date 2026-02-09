@@ -101,7 +101,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
         } catch (SQLException e) {
             if (conn != null) rollback(conn);
             log.error("SQLException creating StudentModel for userId={}", userId, e);
-            throw new NonRecoverableException("StudentModelDAO-ERR-1 SQLException creating StudentModel", e);
+            throw new NonRecoverableException(
+                    "StudentModelDAO-ERR-1 SQLException creating StudentModel", e);
         } finally {
             close(stmt2);
             close(conn, stmt1);
@@ -157,7 +158,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
             }
         } catch (SQLException e) {
             log.error("SQLException retrieving StudentModel for userId={}", userId, e);
-            throw new NonRecoverableException("StudentModelDAO-ERR-2 SQLException retrieving StudentModel", e);
+            throw new NonRecoverableException(
+                    "StudentModelDAO-ERR-2 SQLException retrieving StudentModel", e);
         } finally {
             close(conn, stmt);
         }
@@ -232,7 +234,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     e.getSQLState(),
                     e.getErrorCode(),
                     e);
-            throw new NonRecoverableException("StudentModelDAO-ERR-4 SQLException updating assessment", e);
+            throw new NonRecoverableException(
+                    "StudentModelDAO-ERR-4 SQLException updating assessment", e);
         } finally {
             close(conn, stmt);
         }
@@ -240,7 +243,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
 
     @Override
     public void delete(String userId) throws NonRecoverableException {
-        throw new UnsupportedOperationException("StudentModelDAO.delete(String) is not implemented.");
+        throw new UnsupportedOperationException(
+                "StudentModelDAO.delete(String) is not implemented.");
     }
 
     @Override
@@ -253,7 +257,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
 
         } catch (SQLException e) {
             log.error("SQLException checking StudentModel existence for userId={}", userId, e);
-            throw new NonRecoverableException("StudentModelDAO-ERR-5 SQLException checking existence", e);
+            throw new NonRecoverableException(
+                    "StudentModelDAO-ERR-5 SQLException checking existence", e);
         } finally {
             close(conn);
         }

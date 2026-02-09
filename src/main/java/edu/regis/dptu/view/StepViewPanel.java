@@ -111,7 +111,10 @@ public class StepViewPanel extends GPanel implements ProblemListener {
 
             if (log.isDebugEnabled()) {
                 // Guard is intentional: avoid touching domain object getters when DEBUG is off.
-                log.debug("StepViewPanel.setModel: modelId={}, type={}", model.getId(), model.getType());
+                log.debug(
+                        "StepViewPanel.setModel: modelId={}, type={}",
+                        model.getId(),
+                        model.getType());
             }
         } else {
             setVisible(false);
@@ -237,13 +240,104 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         spinnerPanel.add(new JLabel("Steps:"));
         spinnerPanel.add(stepsSpinner);
 
-        addc(stepBackButton, 0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(stepForwardButton, 1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(spinnerPanel, 2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(runStepsButton, 3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(resetButton, 4, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(backtrackButton, 5, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(statusLabel, 6, 0, 1, 1, 1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, 5, 15, 5, 5);
+        addc(
+                stepBackButton,
+                0,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                stepForwardButton,
+                1,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                spinnerPanel,
+                2,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                runStepsButton,
+                3,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                resetButton,
+                4,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                backtrackButton,
+                5,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.WEST,
+                GridBagConstraints.NONE,
+                5,
+                5,
+                5,
+                5);
+        addc(
+                statusLabel,
+                6,
+                0,
+                1,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.EAST,
+                GridBagConstraints.NONE,
+                5,
+                15,
+                5,
+                5);
     }
 
     /** Update the panel based on the current state of the problem model. */

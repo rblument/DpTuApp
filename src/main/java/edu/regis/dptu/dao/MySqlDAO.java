@@ -95,7 +95,10 @@ public abstract class MySqlDAO {
             } catch (InstantiationException e) {
                 log.error("MySqlDAO-ERR-2: Unable to instantiate JDBC driver: {}", DRIVER, e);
             } catch (IllegalAccessException e) {
-                log.error("MySqlDAO-ERR-3: Illegal access while instantiating JDBC driver: {}", DRIVER, e);
+                log.error(
+                        "MySqlDAO-ERR-3: Illegal access while instantiating JDBC driver: {}",
+                        DRIVER,
+                        e);
             }
         }
     }

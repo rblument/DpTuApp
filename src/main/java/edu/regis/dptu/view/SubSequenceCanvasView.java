@@ -53,8 +53,7 @@ public class SubSequenceCanvasView extends JPanel {
                 "SubSequenceCanvasView initialized: word1Len={}, word2Len={}, lcsLen={}",
                 this.word1 != null ? this.word1.length() : -1,
                 this.word2 != null ? this.word2.length() : -1,
-                this.lcs != null ? this.lcs.length() : -1
-        );
+                this.lcs != null ? this.lcs.length() : -1);
     }
 
     /**
@@ -83,7 +82,10 @@ public class SubSequenceCanvasView extends JPanel {
      */
     private String findLCS(String main, String sub) {
         if (main == null || sub == null) {
-            log.warn("findLCS called with null input: mainNull={}, subNull={}", main == null, sub == null);
+            log.warn(
+                    "findLCS called with null input: mainNull={}, subNull={}",
+                    main == null,
+                    sub == null);
             return "";
         }
 
@@ -129,7 +131,10 @@ public class SubSequenceCanvasView extends JPanel {
             log.debug("Highlight advanced: highlightIndex={}/{}", highlightIndex, lcs.length());
             repaint();
         } else {
-            log.debug("Highlight already complete: highlightIndex={}/{}", highlightIndex, lcs.length());
+            log.debug(
+                    "Highlight already complete: highlightIndex={}/{}",
+                    highlightIndex,
+                    lcs.length());
         }
     }
 
@@ -208,8 +213,7 @@ public class SubSequenceCanvasView extends JPanel {
                 "word1 updated: word1Len={}, word2Len={}, lcsLen={}, highlightIndex reset",
                 this.word1 != null ? this.word1.length() : -1,
                 this.word2 != null ? this.word2.length() : -1,
-                this.lcs != null ? this.lcs.length() : -1
-        );
+                this.lcs != null ? this.lcs.length() : -1);
 
         repaint();
     }
@@ -232,8 +236,7 @@ public class SubSequenceCanvasView extends JPanel {
                 "word2 updated: word1Len={}, word2Len={}, lcsLen={}, highlightIndex reset",
                 this.word1 != null ? this.word1.length() : -1,
                 this.word2 != null ? this.word2.length() : -1,
-                this.lcs != null ? this.lcs.length() : -1
-        );
+                this.lcs != null ? this.lcs.length() : -1);
 
         repaint();
     }

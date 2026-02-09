@@ -31,9 +31,7 @@ public class BackAction extends DpTuGuiAction {
     /** The single instance of this back action. */
     private static final BackAction SINGLETON = new BackAction();
 
-    /**
-     * Return the singleton instance of this back action.
-     */
+    /** Return the singleton instance of this back action. */
     public static BackAction instance() {
         return SINGLETON;
     }

@@ -78,8 +78,8 @@ public class XmlMgr {
      * directory are returned. Otherwise, the "*.xml" files in the given subdirectory of the current
      * data directory are returned, e.g., "/Course" or "/Course/Unit".
      *
-     * @param fileName currently unused (legacy parameter). All files are searched under the
-     *     default {@link #DATA_DIRECTORY}.
+     * @param fileName currently unused (legacy parameter). All files are searched under the default
+     *     {@link #DATA_DIRECTORY}.
      * @return all XML files found under the data directory.
      */
     public List<File> findAllFiles(String fileName) {

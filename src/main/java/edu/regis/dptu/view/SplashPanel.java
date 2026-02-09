@@ -105,7 +105,9 @@ public class SplashPanel extends GPanel {
         String encryptedPass = SHA_256.instance().sha256(new String(password.getPassword()));
         model.setPassword(encryptedPass);
 
-        log.debug("SplashPanel model updated from UI: userIdPresent={}", enteredUserId != null && !enteredUserId.isBlank());
+        log.debug(
+                "SplashPanel model updated from UI: userIdPresent={}",
+                enteredUserId != null && !enteredUserId.isBlank());
 
         return model;
     }
@@ -124,7 +126,9 @@ public class SplashPanel extends GPanel {
         this.model = model;
         userId.setText(model.getUserId());
 
-        log.debug("SplashPanel model set: userIdPresent={}", model.getUserId() != null && !model.getUserId().isBlank());
+        log.debug(
+                "SplashPanel model set: userIdPresent={}",
+                model.getUserId() != null && !model.getUserId().isBlank());
     }
 
     /** Set the input focus to the user id field. */
@@ -554,12 +558,15 @@ public class SplashPanel extends GPanel {
         /** If the userId or password fields are empty, disable the OK 'Login' button. */
         private void enableButtons(DocumentEvent e) {
             boolean shouldEnable =
-                    (userId.getDocument().getLength() != 0) && (password.getDocument().getLength() != 0);
+                    (userId.getDocument().getLength() != 0)
+                            && (password.getDocument().getLength() != 0);
 
             signInBut.setEnabled(shouldEnable);
 
             if (shouldEnable != lastEnabledState) {
-                log.debug("SplashPanel sign-in button enabled state changed: enabled={}", shouldEnable);
+                log.debug(
+                        "SplashPanel sign-in button enabled state changed: enabled={}",
+                        shouldEnable);
                 lastEnabledState = shouldEnable;
             }
         }

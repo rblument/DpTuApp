@@ -11,6 +11,7 @@
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.model;
+
 /**
  * A model with a title and description.
  *

@@ -254,7 +254,9 @@ public class DpTuTutor implements TutorSvc {
      *     text string.
      */
     public TutorReply requestHint(String sessionInfo) {
-        log.debug("requestHint received sessionInfo length={}", sessionInfo == null ? 0 : sessionInfo.length());
+        log.debug(
+                "requestHint received sessionInfo length={}",
+                sessionInfo == null ? 0 : sessionInfo.length());
         // TODO: Replace hard-coded hint with real hint generation.
         TutorReply reply = new TutorReply("Hint");
         reply.setData("This is a hint from the tutor.");

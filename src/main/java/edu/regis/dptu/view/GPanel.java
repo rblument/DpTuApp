@@ -19,6 +19,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JPanel;
+
 /**
  * A utility JPanel with a GridBagLayout and a convenience addc method.
  *

@@ -71,7 +71,9 @@ public class NewExampleAction extends DpTuGuiAction {
     public void actionPerformed(ActionEvent e) {
         // This is a stub implementation
         // The full implementation will be added when StepCompletionView is integrated
-        log.debug("New example requested (stub): actionCommand={}", e != null ? e.getActionCommand() : "null");
+        log.debug(
+                "New example requested (stub): actionCommand={}",
+                e != null ? e.getActionCommand() : "null");
 
         JOptionPane.showMessageDialog(
                 MainFrame.instance(),

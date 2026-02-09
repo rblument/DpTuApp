@@ -13,6 +13,7 @@
 package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.regis.dptu.model.MatrixChainProblem;

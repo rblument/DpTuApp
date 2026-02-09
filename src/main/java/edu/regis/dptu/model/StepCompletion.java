@@ -15,9 +15,8 @@ package edu.regis.dptu.model;
 /**
  * Represents a step that the student completed.
  *
- * <p>This is a simple record/value object used to capture completion data.
- * Logging is intentionally suppressed; log at the service/controller level where
- * completions are recorded/processed.
+ * <p>This is a simple record/value object used to capture completion data. Logging is intentionally
+ * suppressed; log at the service/controller level where completions are recorded/processed.
  *
  * @author rickb
  */
