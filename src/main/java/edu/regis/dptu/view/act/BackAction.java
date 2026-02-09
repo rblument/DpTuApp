@@ -21,30 +21,18 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.view.SplashFrame;
 
 /**
- * An MVC controller handling a user GUI gesture requesting to go to the previous panel, which
- * switches to the previous panel in the GUI (see BackAction).
+ * An MVC controller handling a user GUI gesture requesting to go to the previous panel.
  *
  * @author rickb
  */
 public class BackAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(BackAction.class);
 
-    /** The single instance of this new user action. */
-    private static final BackAction SINGLETON;
-
-    /**
-     * Create the singleton for this action, which occurs when this class is loaded by the Java
-     * class loaded, as a result of the class being referenced by executing BackAction.instance() in
-     * the initializeComponents() method of the SplashPanel class.
-     */
-    static {
-        SINGLETON = new BackAction();
-    }
+    /** The single instance of this back action. */
+    private static final BackAction SINGLETON = new BackAction();
 
     /**
      * Return the singleton instance of this back action.
-     *
-     * @return
      */
     public static BackAction instance() {
         return SINGLETON;
@@ -65,7 +53,11 @@ public class BackAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        log.debug("BackAction triggered: returning to splash panel");
+
         SplashFrame.instance().selectSplash();
-        // This only goes to sign in page, more work needed
+
+        log.debug("BackAction complete: splash panel selected");
+        // Note: currently always returns to sign-in panel
     }
 }
