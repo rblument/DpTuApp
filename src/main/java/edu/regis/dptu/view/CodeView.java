@@ -46,6 +46,9 @@ public class CodeView extends GPanel implements ProblemListener {
     /** Used as a background color */
     private static final Color MEDIUM_GRAY = new Color(215, 215, 215);
 
+    /** Track last highlighted line to avoid repetitive debug spam. */
+    private int lastHighlightedLine = -1;
+
     /** Initialize this view including creating and laying out its child components. */
     public CodeView() {
         // Initialize label list
@@ -79,20 +82,35 @@ public class CodeView extends GPanel implements ProblemListener {
         // Clear previous UI components
         removeAll();
 
+        if (model == null) {
+            lastHighlightedLine = -1;
+            setVisible(false);
+            if (log.isDebugEnabled()) {
+                log.debug("CodeView.setModel(null): view hidden and cleared");
+            }
+            revalidate();
+            repaint();
+            return;
+        }
+
+        if (log.isDebugEnabled()) {
+            // Guard is intentional: these getters may be non-trivial depending on model implementation.
+            log.debug("CodeView.setModel: modelId={}, type={}", model.getId(), model.getType());
+        }
+
         // Re-initialize components based on the new model
         initializeComponents();
         layoutComponents();
 
         // Add listener to the new model if it's not null
-        if (this.model != null) {
-            // Assuming addProblemListener handles duplicates or it's acceptable
-            // if the same listener is added multiple times if setModel is called repeatedly
-            // with the same model instance (which shouldn't typically happen).
-            this.model.addProblemListener(this);
+        // (Assumes duplicates are handled or acceptable.)
+        this.model.addProblemListener(this);
 
-            setVisible(true);
-        } else {
-            setVisible(false);
+        setVisible(true);
+
+        if (log.isDebugEnabled()) {
+            int count = (statementStrings != null) ? statementStrings.size() : 0;
+            log.debug("CodeView initialized: statementCount={}", count);
         }
 
         // Update the view to reflect the initial state of the new model
@@ -105,9 +123,7 @@ public class CodeView extends GPanel implements ProblemListener {
 
     /** Create the child GUI components appearing in this frame. */
     private void initializeComponents() {
-        /**
-         * grabs the statement strings from the model and creates JLabels for each in an ArrayList
-         */
+        // grabs the statement strings from the model and creates JLabels for each in an ArrayList
         if (model != null) {
             statementStrings = model.getCodeStatements();
             statementJLabels = new ArrayList<>(); // Ensure it's a new list
@@ -177,6 +193,15 @@ public class CodeView extends GPanel implements ProblemListener {
         // Highlight the current line if model and labels are valid
         if (model != null && statementJLabels != null) {
             int nextLineNumber = model.getNextLineNumber();
+
+            // Debug only when the highlighted line changes (avoids spam on repeated repaints).
+            if (nextLineNumber != lastHighlightedLine) {
+                if (log.isDebugEnabled()) {
+                    log.debug("CodeView highlight: {} -> {}", lastHighlightedLine, nextLineNumber);
+                }
+                lastHighlightedLine = nextLineNumber;
+            }
+
             if (nextLineNumber >= 0 && nextLineNumber < statementJLabels.size()) {
                 JLabel currentLabel = statementJLabels.get(nextLineNumber);
                 if (currentLabel != null) {
@@ -185,6 +210,7 @@ public class CodeView extends GPanel implements ProblemListener {
                 }
             }
         }
+
         // Refresh the panel
         revalidate();
         repaint();
