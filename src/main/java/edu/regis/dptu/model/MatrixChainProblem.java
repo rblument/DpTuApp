@@ -120,8 +120,7 @@ public class MatrixChainProblem extends Problem {
     @Override
     public boolean backtrackReady() {
         // (As written, this is effectively always true unless POST? Keeping behavior unchanged.)
-        return executionState == EXECUTION_STATE.POST
-                || executionState != EXECUTION_STATE.BACKTRACK_DONE;
+        return executionState == EXECUTION_STATE.POST || executionState != EXECUTION_STATE.BACKTRACK_DONE;
     }
 
     @Override
@@ -156,8 +155,7 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public boolean hasFinished() {
-        return executionState == EXECUTION_STATE.POST
-                || executionState == EXECUTION_STATE.BACKTRACK_DONE;
+        return executionState == EXECUTION_STATE.POST || executionState == EXECUTION_STATE.BACKTRACK_DONE;
     }
 
     @Override
@@ -238,10 +236,7 @@ public class MatrixChainProblem extends Problem {
         executionState = EXECUTION_STATE.R_LOOP;
         nextLineNumber = 1;
 
-        log.debug(
-                "executeLine0: i=0, state -> {}, nextLineNumber={}",
-                executionState,
-                nextLineNumber);
+        log.debug("executeLine0: i=0, state -> {}, nextLineNumber={}", executionState, nextLineNumber);
     }
 
     public void executeLine1() {
@@ -259,10 +254,8 @@ public class MatrixChainProblem extends Problem {
             executionState = EXECUTION_STATE.C_LOOP;
             nextLineNumber = 2;
 
-            log.debug(
-                    "executeLine1: finished diagonal init; c=1, state -> {}, nextLineNumber={}",
-                    executionState,
-                    nextLineNumber);
+            log.debug("executeLine1: finished diagonal init; c=1, state -> {}, nextLineNumber={}",
+                    executionState, nextLineNumber);
         } else {
             variables.put("i", i + 1);
             nextLineNumber = 1;
@@ -277,18 +270,12 @@ public class MatrixChainProblem extends Problem {
             executionState = EXECUTION_STATE.POST;
             nextLineNumber = 9;
 
-            log.debug(
-                    "executeLine2: done (c==n); state -> {}, nextLineNumber={}",
-                    executionState,
-                    nextLineNumber);
+            log.debug("executeLine2: done (c==n); state -> {}, nextLineNumber={}", executionState, nextLineNumber);
         } else {
             variables.put("i", 0);
             nextLineNumber = 3;
 
-            log.debug(
-                    "executeLine2: start chain length c={}; i=0, nextLineNumber={}",
-                    c,
-                    nextLineNumber);
+            log.debug("executeLine2: start chain length c={}; i=0, nextLineNumber={}", c, nextLineNumber);
         }
     }
 
@@ -328,12 +315,7 @@ public class MatrixChainProblem extends Problem {
 
         nextLineNumber = 6;
 
-        log.debug(
-                "executeLine5: init m[{}][{}]=INF; k=i -> {}; nextLineNumber={}",
-                i,
-                j,
-                i,
-                nextLineNumber);
+        log.debug("executeLine5: init m[{}][{}]=INF; k=i -> {}; nextLineNumber={}", i, j, i, nextLineNumber);
     }
 
     public void executeLine6() {
@@ -345,12 +327,7 @@ public class MatrixChainProblem extends Problem {
             variables.put("i", i + 1);
             nextLineNumber = 3;
 
-            log.debug(
-                    "executeLine6: k>=j (k={}, j={}); i -> {}; nextLineNumber={}",
-                    k,
-                    j,
-                    i + 1,
-                    nextLineNumber);
+            log.debug("executeLine6: k>=j (k={}, j={}); i -> {}; nextLineNumber={}", k, j, i + 1, nextLineNumber);
         } else {
             nextLineNumber = 7;
         }
@@ -392,13 +369,7 @@ public class MatrixChainProblem extends Problem {
 
             log.debug(
                     "executeLine8: improved m[{}][{}]: {} -> {}; set s[{}][{}]={}",
-                    i,
-                    j,
-                    prev,
-                    cost,
-                    i,
-                    j,
-                    kVal);
+                    i, j, prev, cost, i, j, kVal);
         }
 
         int k = (int) variables.get("k");
@@ -425,10 +396,7 @@ public class MatrixChainProblem extends Problem {
         executionState = EXECUTION_STATE.BACKTRACK_PRE;
         nextLineNumber = 101;
 
-        log.debug(
-                "executeLine100: init backtrack stack with (0, {}); nextLineNumber={}",
-                n - 1,
-                nextLineNumber);
+        log.debug("executeLine100: init backtrack stack with (0, {}); nextLineNumber={}", n - 1, nextLineNumber);
     }
 
     public void executeLine101() {
@@ -436,10 +404,7 @@ public class MatrixChainProblem extends Problem {
             executionState = EXECUTION_STATE.BACKTRACK_DONE;
             nextLineNumber = 118;
 
-            log.debug(
-                    "executeLine101: btStack empty; state -> {}, nextLineNumber={}",
-                    executionState,
-                    nextLineNumber);
+            log.debug("executeLine101: btStack empty; state -> {}, nextLineNumber={}", executionState, nextLineNumber);
         } else {
             executionState = EXECUTION_STATE.BACKTRACK_LOOP;
             nextLineNumber = 102;
@@ -465,11 +430,7 @@ public class MatrixChainProblem extends Problem {
         executionState = EXECUTION_STATE.BACKTRACK_POP;
         nextLineNumber = 103;
 
-        log.debug(
-                "executeLine102: pop pair (i={}, j={}); nextLineNumber={}",
-                pair[0],
-                pair[1],
-                nextLineNumber);
+        log.debug("executeLine102: pop pair (i={}, j={}); nextLineNumber={}", pair[0], pair[1], nextLineNumber);
     }
 
     public void executeLine103() {
@@ -511,14 +472,7 @@ public class MatrixChainProblem extends Problem {
 
         log.debug(
                 "executeLine104: split (i={}, j={}) at k={}; push (i,k)=({},{}), (k+1,j)=({},{}); currentParens='{}'",
-                i,
-                j,
-                k,
-                i,
-                k,
-                k + 1,
-                j,
-                currentParens);
+                i, j, k, i, k, k + 1, j, currentParens);
     }
 
     public void executeLine118() {

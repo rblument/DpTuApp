@@ -196,11 +196,11 @@ public class AccountDAO extends MySqlDAO implements AccountSvc {
      * Utility to retrieve the account with the given user id that uses an established connection to
      * the DB, which it does not close.
      *
-     * @param userId
-     * @param conn
-     * @return
-     * @throws ObjNotFoundException
-     * @throws NonRecoverableException
+     * @param userId the account user id to retrieve.
+     * @param conn an existing JDBC connection (not closed by this method).
+     * @return the fully populated {@link Account}.
+     * @throws ObjNotFoundException if no account exists for the given user id.
+     * @throws NonRecoverableException if a SQL error occurs.
      */
     private Account retrieve(String userId, Connection conn)
             throws ObjNotFoundException, NonRecoverableException {

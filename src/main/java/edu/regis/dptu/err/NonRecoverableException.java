@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An unexpected exception that the user cannot recovered from, which is logged.
+ * An unexpected exception that the user cannot recover from, which is logged.
  *
  * <p>Typically, this exception is caused by a low-level Java exception, which case the getCause()
  * method of the exception can be used to see the likely cause. In the case of actual MySQL database
@@ -34,16 +34,16 @@ public class NonRecoverableException extends DpTuException {
      */
     public NonRecoverableException(String msg) {
         super(msg);
-
-        log.error("DpTuException: {0}", msg);
+        // Avoid losing the exception signal in logs when callers only use the message-only ctor.
+        log.error("DpTuException: {}", msg);
     }
 
     /**
      * Initialize this new instance with the given message and the underlying Java exception that
-     * caused this ShaTu exception and log the exception.
+     * caused this DpTu exception and log the exception.
      *
      * @param msg a string describing the cause of this exception.
-     * @param cause the Java exception that caused this ShaTu exception.
+     * @param cause the Java exception that caused this DpTu exception.
      */
     public NonRecoverableException(String msg, Throwable cause) {
         super(msg, cause);

@@ -60,8 +60,8 @@ public enum BloomLevel {
     /**
      * Return the enum value for the given title.
      *
-     * @param aTitle
-     * @return
+     * @param aTitle the user-facing Bloom taxonomy title.
+     * @return the matching {@link BloomLevel} or {@link #ERROR} if no match exists.
      */
     public static BloomLevel findValue(String aTitle) {
         for (BloomLevel kind : values()) {

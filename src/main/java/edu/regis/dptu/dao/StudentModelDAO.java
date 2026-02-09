@@ -31,16 +31,13 @@ import edu.regis.dptu.svc.SessionSvc;
 import edu.regis.dptu.svc.StudentModelSvc;
 
 /**
- * A Data Access Object implementing {@link StudentModelSvc } behaviors.
+ * Data Access Object (DAO) implementing {@link StudentModelSvc} behaviors.
  *
- * @todo temporary Shows how to use the {@link Transactionable} class
+ * <p>This DAO is responsible for persisting and retrieving a student's model (scaffold level,
+ * assessments, and session metadata) from the backing MySQL database.
+ *
  * @author rickb
  * @author benm
- */
-/**
- * A Data Access Object implementing {@link StudentModelSvc } behaviors.
- *
- * @author rickb
  */
 public class StudentModelDAO extends Transactionable implements StudentModelSvc {
     private static final Logger log = LoggerFactory.getLogger(StudentModelDAO.class);
@@ -48,10 +45,14 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     /** Initialize this DAO via the parent constructor. */
     public StudentModelDAO() {
         super();
+        log.debug("StudentModelDAO initialized");
     }
 
     @Override
     public void create(Student student) throws NonRecoverableException {
+        if (student == null || student.getAccount() == null) {
+            throw new NonRecoverableException("StudentModelDAO-ERR-0 Student or account was null");
+        }
         final String sql1 = "INSERT INTO StudentModel (UserId, ScaffoldLevel) VALUES (?,?)";
 
         final String sql2 =
@@ -63,6 +64,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
         Connection conn = null;
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
+
+        log.debug("Creating StudentModel for userId={}", userId);
 
         try {
             conn = DriverManager.getConnection(URL);
@@ -97,7 +100,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
             commit(conn);
         } catch (SQLException e) {
             if (conn != null) rollback(conn);
-            throw new NonRecoverableException("StudentModelDAO-ERR-1" + e.toString(), e);
+            log.error("SQLException creating StudentModel for userId={}", userId, e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-1 SQLException creating StudentModel", e);
         } finally {
             close(stmt2);
             close(conn, stmt1);
@@ -107,6 +111,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     @Override
     public StudentModel retrieve(String userId)
             throws ObjNotFoundException, NonRecoverableException {
+        log.debug("Retrieving StudentModel for userId={}", userId);
         final String sql = "SELECT ScaffoldLevel FROM StudentModel WHERE UserId = ?";
 
         Connection conn = null;
@@ -142,7 +147,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                         studentModel.addSession(session);
                     }
                 } catch (ObjNotFoundException ignore) {
-                    // No session found for this user, leave sessions list empty
+                    // No session found for this user, leave sessions list empty.
+                    log.debug("No tutoring session found for userId={}", userId);
                 }
                 return studentModel;
 
@@ -150,7 +156,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                 throw new ObjNotFoundException("Student Id:" + userId);
             }
         } catch (SQLException e) {
-            throw new NonRecoverableException("StudentModelDAO-ERR-2" + e.toString(), e);
+            log.error("SQLException retrieving StudentModel for userId={}", userId, e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-2 SQLException retrieving StudentModel", e);
         } finally {
             close(conn, stmt);
         }
@@ -158,8 +165,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
 
     @Override
     public void update(StudentModel model) throws ObjNotFoundException, NonRecoverableException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException(
+                "StudentModelDAO.update(StudentModel) is not implemented. Use updateAssessment() for persisted fields.");
     }
 
     @Override
@@ -208,15 +215,24 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
                     break;
             }
 
-            StudentModelDAO.log.trace("Executing statement: {0}", stmt.toString());
+            if (stmt == null) {
+                throw new NonRecoverableException(
+                        "StudentModelDAO-ERR-4 No SQL statement was generated for field " + field);
+            }
+
+            log.trace("Executing statement: {}", stmt);
 
             stmt.execute();
 
         } catch (SQLException e) {
-            StudentModelDAO.log.error(
-                    "SQL Error - State: {0}, Code: {1}",
-                    new Object[] {e.getSQLState(), e.getErrorCode()});
-            throw new NonRecoverableException("StudentModelDAO-ERR-4" + e.toString(), e);
+            log.error(
+                    "SQLException updating assessmentId={} for field={} (SQLState={}, errorCode={})",
+                    assessmentId,
+                    field,
+                    e.getSQLState(),
+                    e.getErrorCode(),
+                    e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-4 SQLException updating assessment", e);
         } finally {
             close(conn, stmt);
         }
@@ -224,8 +240,7 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
 
     @Override
     public void delete(String userId) throws NonRecoverableException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("StudentModelDAO.delete(String) is not implemented.");
     }
 
     @Override
@@ -237,7 +252,8 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
             return exists(userId, conn);
 
         } catch (SQLException e) {
-            throw new NonRecoverableException("StudentModelDAO-ERR-5" + e.toString(), e);
+            log.error("SQLException checking StudentModel existence for userId={}", userId, e);
+            throw new NonRecoverableException("StudentModelDAO-ERR-5 SQLException checking existence", e);
         } finally {
             close(conn);
         }
@@ -368,14 +384,16 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
     }
 
     /**
-     * Retrive
+     * Retrieve all persisted assessments for a given user.
      *
-     * @param userId
-     * @param conn
-     * @return
-     * @throws ObjNotFoundException
-     * @throws SQLException
-     * @throws NonRecoverableException
+     * <p>This helper method uses the provided JDBC connection and does not close it.
+     *
+     * @param userId the user id whose assessments are being retrieved.
+     * @param conn an existing database connection (not closed by this method).
+     * @return a list of {@link Assessment} records for the user.
+     * @throws ObjNotFoundException if the backing course cannot be retrieved.
+     * @throws SQLException if the assessment query fails.
+     * @throws NonRecoverableException if course retrieval fails.
      */
     private ArrayList<Assessment> retrieveAssessments(String userId, Connection conn)
             throws ObjNotFoundException, SQLException, NonRecoverableException {
