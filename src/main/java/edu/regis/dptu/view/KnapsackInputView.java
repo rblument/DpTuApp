@@ -25,6 +25,8 @@ public class KnapsackInputView extends JPanel {
     private static final Logger log = LoggerFactory.getLogger(KnapsackInputView.class);
 
     public KnapsackInputView() {
+        log.debug("Initializing KnapsackInputView (template / not yet implemented)");
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
