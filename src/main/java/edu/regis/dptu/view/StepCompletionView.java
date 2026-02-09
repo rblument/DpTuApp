@@ -71,6 +71,15 @@ public class StepCompletionView extends GPanel {
      */
     public void setStep(Step step) {
         this.currentStep = step;
+
+        if (step == null) {
+            log.debug("StepCompletionView.setStep(null): view not updated");
+            return;
+        }
+
+        StepSubType subType = step.getSubType();
+        log.debug("StepCompletionView setStep: subType={}", subType);
+
         updateView();
     }
 
@@ -81,6 +90,7 @@ public class StepCompletionView extends GPanel {
      */
     public StepCompletion createStepCompletion() {
         if (currentStep == null) {
+            log.warn("createStepCompletion called with no currentStep set");
             return null;
         }
 
@@ -91,6 +101,15 @@ public class StepCompletionView extends GPanel {
         if (currentStep.getHints() != null && !currentStep.getHints().isEmpty()) {
             completion.setHintsGiven(currentStep.getCurrentHintIndex());
         }
+
+        // Do not log the answer content (could be sensitive / noisy). Log length + subtype only.
+        int answerLen = (answer == null) ? 0 : answer.length();
+        log.debug(
+                "StepCompletion created: subType={}, answerLength={}, hintsGiven={}",
+                currentStep.getSubType(),
+                answerLen,
+                completion.getHintsGiven()
+        );
 
         return completion;
     }
@@ -103,6 +122,9 @@ public class StepCompletionView extends GPanel {
     public void showHint(String hintText) {
         hintLabel.setText(hintText);
         hintLabel.setVisible(true);
+
+        int hintLen = (hintText == null) ? 0 : hintText.length();
+        log.debug("Hint shown: length={}", hintLen);
     }
 
     /**
@@ -115,6 +137,8 @@ public class StepCompletionView extends GPanel {
         statusLabel.setText(message);
         statusLabel.setForeground(isCorrect ? new java.awt.Color(0, 128, 0) : java.awt.Color.RED);
         statusLabel.setVisible(true);
+
+        log.debug("Status shown: isCorrect={}, messageLength={}", isCorrect, message != null ? message.length() : 0);
     }
 
     /** Create the child GUI components appearing in this view. */
@@ -140,6 +164,8 @@ public class StepCompletionView extends GPanel {
         cardPanel = new JPanel();
         cardLayout = new CardLayout();
         cardPanel.setLayout(cardLayout);
+
+        log.debug("StepCompletionView initialized");
     }
 
     /** Layout the components in this view. */
@@ -171,7 +197,6 @@ public class StepCompletionView extends GPanel {
             return;
         }
 
-        // Update UI based on step type
         StepSubType subType = currentStep.getSubType();
 
         // Select the appropriate card based on step type
@@ -181,6 +206,8 @@ public class StepCompletionView extends GPanel {
         answerField.setText("");
         statusLabel.setVisible(false);
         hintLabel.setVisible(false);
+
+        log.debug("StepCompletionView updated for subType={}", subType);
     }
 
     /**
@@ -190,5 +217,6 @@ public class StepCompletionView extends GPanel {
      */
     public void selectStepView(StepSubType subType) {
         cardLayout.show(cardPanel, subType.toString());
+        log.debug("StepCompletionView card selected: subType={}", subType);
     }
 }
