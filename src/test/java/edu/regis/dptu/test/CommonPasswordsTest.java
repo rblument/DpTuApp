@@ -12,12 +12,12 @@
  */
 package edu.regis.dptu.test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.lang.reflect.Field;
 import java.util.BitSet;
 
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import edu.regis.dptu.security.CommonPasswords;
 
@@ -25,12 +25,13 @@ import edu.regis.dptu.security.CommonPasswords;
  * Unit tests for {@link CommonPasswords}.
  *
  * <p>These tests verify:
+ *
  * <ul>
- *   <li>Resource-backed deny list loads successfully</li>
- *   <li>Known common passwords are rejected</li>
- *   <li>Unicode NFKC normalization prevents bypass</li>
- *   <li>Case normalization is consistent</li>
- *   <li>Null/empty inputs are handled safely</li>
+ *   <li>Resource-backed deny list loads successfully
+ *   <li>Known common passwords are rejected
+ *   <li>Unicode NFKC normalization prevents bypass
+ *   <li>Case normalization is consistent
+ *   <li>Null/empty inputs are handled safely
  * </ul>
  */
 @SuppressWarnings("Logging")
@@ -61,8 +62,8 @@ public class CommonPasswordsTest {
     /**
      * Verify case-insensitive behavior.
      *
-     * <p>The implementation lowercases both deny-list entries at load time and
-     * candidates at check time, so case variants should match.
+     * <p>The implementation lowercases both deny-list entries at load time and candidates at check
+     * time, so case variants should match.
      */
     @Test
     public void testCaseNormalization() {
@@ -75,11 +76,11 @@ public class CommonPasswordsTest {
     /**
      * Verify Unicode NFKC normalization prevents bypass.
      *
-     * <p>These inputs use compatibility characters that normalize under NFKC to
-     * ASCII equivalents:
+     * <p>These inputs use compatibility characters that normalize under NFKC to ASCII equivalents:
+     *
      * <ul>
-     *   <li>Fullwidth digits: １２３４５６ -> 123456</li>
-     *   <li>Fullwidth letters: ｐａｓｓｗｏｒｄ -> password</li>
+     *   <li>Fullwidth digits: １２３４５６ -> 123456
+     *   <li>Fullwidth letters: ｐａｓｓｗｏｒｄ -> password
      * </ul>
      *
      * <p>If your deny list contains "123456" and "password", these should be rejected.
@@ -93,7 +94,9 @@ public class CommonPasswordsTest {
         assertTrue(CommonPasswords.isCommon("ｐａｓｓｗｏｒｄ".toCharArray()));
     }
 
-    /** Verify a password not in the deny list is not rejected (probabilistic due to Bloom filter). */
+    /**
+     * Verify a password not in the deny list is not rejected (probabilistic due to Bloom filter).
+     */
     @Test
     public void testUncommonPasswordNotRejected() {
         // Choose a long, high-entropy string to minimize chance of Bloom false positive.
@@ -104,9 +107,9 @@ public class CommonPasswordsTest {
     /**
      * Sanity-check that the Bloom filter was actually loaded and populated.
      *
-     * <p>This uses reflection to avoid adding test-only APIs to production code.
-     * It validates that the internal BitSet exists and has at least one bit set,
-     * which implies the resource file loaded at least one entry.
+     * <p>This uses reflection to avoid adding test-only APIs to production code. It validates that
+     * the internal BitSet exists and has at least one bit set, which implies the resource file
+     * loaded at least one entry.
      */
     @Test
     public void testBloomFilterIsPopulated() throws Exception {
@@ -122,6 +125,7 @@ public class CommonPasswordsTest {
         BitSet bits = (BitSet) bitsField.get(bloom);
 
         assertNotNull(bits, "Bloom filter BitSet should not be null");
-        assertTrue(bits.length() > 0, "Bloom filter should have at least one bit set (list loaded)");
+        assertTrue(
+                bits.length() > 0, "Bloom filter should have at least one bit set (list loaded)");
     }
 }

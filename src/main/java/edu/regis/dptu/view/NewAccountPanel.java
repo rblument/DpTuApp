@@ -40,10 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.security.CommonPasswords;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;
-import edu.regis.dptu.security.CommonPasswords;
 
 /**
  * New user screen that also allows the student to create an IRBt account
@@ -762,7 +762,7 @@ public class NewAccountPanel extends GPanel {
      */
     private void checkStrength() {
 
-        log.trace("Checking password strength");        
+        log.trace("Checking password strength");
 
         char[] pwd = pass1.getPassword();
         int len = pwd.length;
@@ -771,7 +771,7 @@ public class NewAccountPanel extends GPanel {
             strength.setText("(Strength: Very poor)");
             strength.setForeground(Color.RED);
 
-            log.trace("Password had very poor strength: empty password");  
+            log.trace("Password had very poor strength: empty password");
             return;
         }
 

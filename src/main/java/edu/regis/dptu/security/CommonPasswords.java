@@ -16,20 +16,22 @@ import org.slf4j.LoggerFactory;
  * Common password deny-list check aligned with NIST SP 800-63B.
  *
  * <p><b>NIST alignment</b> (verifier-side guidance):
+ *
  * <ul>
- *   <li>Reject "commonly used, expected, or compromised" passwords by checking
- *       candidates against a deny-list (e.g., breached/common lists).</li>
- *   <li>Apply appropriate string normalization (e.g., Unicode normalization) to
- *       avoid bypass via visually similar or canonically equivalent forms.</li>
- *   <li>Do not log secrets (passwords are never logged).</li>
+ *   <li>Reject "commonly used, expected, or compromised" passwords by checking candidates against a
+ *       deny-list (e.g., breached/common lists).
+ *   <li>Apply appropriate string normalization (e.g., Unicode normalization) to avoid bypass via
+ *       visually similar or canonically equivalent forms.
+ *   <li>Do not log secrets (passwords are never logged).
  * </ul>
  *
  * <p><b>Implementation notes</b>:
+ *
  * <ul>
- *   <li>Uses a Bloom filter rather than a {@code Set<String>} to reduce memory.</li>
- *   <li>Bloom filters can produce false positives (rare, configurable). This may
- *       reject some non-common passwords; choose a low false-positive rate.</li>
- *   <li>Resource file is loaded from the classpath: {@code common-passwords.txt}</li>
+ *   <li>Uses a Bloom filter rather than a {@code Set<String>} to reduce memory.
+ *   <li>Bloom filters can produce false positives (rare, configurable). This may reject some
+ *       non-common passwords; choose a low false-positive rate.
+ *   <li>Resource file is loaded from the classpath: {@code common-passwords.txt}
  * </ul>
  */
 public final class CommonPasswords {
@@ -37,30 +39,28 @@ public final class CommonPasswords {
     private static final Logger log = LoggerFactory.getLogger(CommonPasswords.class);
 
     /**
-     * Classpath resource containing the deny-list.
-     * Location: src/main/resources/common-passwords.txt
+     * Classpath resource containing the deny-list. Location:
+     * src/main/resources/common-passwords.txt
      */
     private static final String RESOURCE = "common-passwords.txt";
 
     /**
      * Bloom filter sizing parameters.
      *
-     * <p>These should be adjusted based on how large the deny list is.
-     * If the file grows a lot, increase EXPECTED_INSERTIONS
-     * accordingly.
+     * <p>These should be adjusted based on how large the deny list is. If the file grows a lot,
+     * increase EXPECTED_INSERTIONS accordingly.
      */
     private static final int EXPECTED_INSERTIONS = 50_000;
 
     /**
      * Target false positive probability.
-     * <p>1e-6 means about 1 false positive per 1,000,000 distinct lookups (statistically).
-     * Lower values increase memory usage.
+     *
+     * <p>1e-6 means about 1 false positive per 1,000,000 distinct lookups (statistically). Lower
+     * values increase memory usage.
      */
     private static final double FALSE_POSITIVE_PROBABILITY = 1e-6;
 
-    /**
-     * The loaded Bloom filter containing normalized deny-list entries.
-     */
+    /** The loaded Bloom filter containing normalized deny-list entries. */
     private static final BloomFilter COMMON = loadBloomFilter();
 
     private CommonPasswords() {
@@ -71,11 +71,11 @@ public final class CommonPasswords {
      * Checks whether the given password appears in a known-bad password list.
      *
      * <p>Security properties:
+     *
      * <ul>
-     *   <li>Password value is never logged.</li>
-     *   <li>Candidate is NFKC-normalized (Normalization Form Compatibility Composition)
-     *       and lowercased to prevent bypass using
-     *       canonically equivalent Unicode or case variants.</li>
+     *   <li>Password value is never logged.
+     *   <li>Candidate is NFKC-normalized (Normalization Form Compatibility Composition) and
+     *       lowercased to prevent bypass using canonically equivalent Unicode or case variants.
      * </ul>
      *
      * @param password password as char[] (caller controls lifetime / clearing)
@@ -104,10 +104,11 @@ public final class CommonPasswords {
 
     /**
      * Normalize input according to typical verifier-side expectations:
+     *
      * <ul>
-     *   <li>Trim leading/trailing whitespace (resource lines may have accidental spaces)</li>
-     *   <li>Unicode NFKC normalization (to collapse compatibility equivalents)</li>
-     *   <li>Lowercase using Locale.ROOT (stable, locale-independent)</li>
+     *   <li>Trim leading/trailing whitespace (resource lines may have accidental spaces)
+     *   <li>Unicode NFKC normalization (to collapse compatibility equivalents)
+     *   <li>Lowercase using Locale.ROOT (stable, locale-independent)
      * </ul>
      */
     private static String normalizeCandidate(String s) {
@@ -122,14 +123,16 @@ public final class CommonPasswords {
      * Loads the deny-list from a classpath resource and inserts entries into a Bloom filter.
      *
      * <p>File format:
+     *
      * <ul>
-     *   <li>UTF-8 text</li>
-     *   <li>One password per line</li>
-     *   <li>Blank lines ignored</li>
-     *   <li>Lines starting with '#' ignored (comments)</li>
+     *   <li>UTF-8 text
+     *   <li>One password per line
+     *   <li>Blank lines ignored
+     *   <li>Lines starting with '#' ignored (comments)
      * </ul>
      *
-     * <p>All entries are NFKC-normalized + lowercased at load time to match candidate normalization.
+     * <p>All entries are NFKC-normalized + lowercased at load time to match candidate
+     * normalization.
      */
     private static BloomFilter loadBloomFilter() {
         long started = System.currentTimeMillis();
@@ -146,11 +149,12 @@ public final class CommonPasswords {
         try (InputStream in = cl.getResourceAsStream(RESOURCE)) {
             if (in == null) {
                 // Fail fast: missing deny-list should be treated as a deployment/config error.
-                throw new IllegalStateException("Password deny list not found on classpath: " + RESOURCE);
+                throw new IllegalStateException(
+                        "Password deny list not found on classpath: " + RESOURCE);
             }
 
             try (BufferedReader reader =
-                         new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                    new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -193,13 +197,15 @@ public final class CommonPasswords {
                 filter.bitSize(),
                 filter.numHashFunctions(),
                 FALSE_POSITIVE_PROBABILITY,
-                elapsedMs
-        );
+                elapsedMs);
 
         if (loaded == 0) {
             log.warn("Password deny list resource '{}' contained no usable entries", RESOURCE);
         } else if (loaded < 1000) {
-            log.warn("Password deny list resource '{}' is small ({} entries). Consider expanding it for better NIST coverage.", RESOURCE, loaded);
+            log.warn(
+                    "Password deny list resource '{}' is small ({} entries). Consider expanding it for better NIST coverage.",
+                    RESOURCE,
+                    loaded);
         }
 
         return filter;
@@ -209,18 +215,19 @@ public final class CommonPasswords {
      * Minimal Bloom filter implementation for Strings with no external dependencies.
      *
      * <p>Hashing strategy:
+     *
      * <ul>
-     *   <li>Uses SHA-256 over UTF-8 bytes as a base digest.</li>
-     *   <li>Derives k indices from the digest using 32-bit chunks.</li>
+     *   <li>Uses SHA-256 over UTF-8 bytes as a base digest.
+     *   <li>Derives k indices from the digest using 32-bit chunks.
      * </ul>
      *
-     * <p>This is not intended to be cryptographic protection (no secrets are stored);
-     * it's a space-efficient membership approximation.
+     * <p>This is not intended to be cryptographic protection (no secrets are stored); it's a
+     * space-efficient membership approximation.
      */
     static final class BloomFilter {
         private final BitSet bits;
-        private final int m;   // number of bits
-        private final int k;   // number of hash functions
+        private final int m; // number of bits
+        private final int k; // number of hash functions
 
         private BloomFilter(int mBits, int kHashes) {
             this.m = mBits;
@@ -290,10 +297,10 @@ public final class CommonPasswords {
             while (produced < k) {
                 for (int off = 0; off + 4 <= current.length && produced < k; off += 4) {
                     int h =
-                            ((current[off] & 0xFF) << 24) |
-                            ((current[off + 1] & 0xFF) << 16) |
-                            ((current[off + 2] & 0xFF) << 8) |
-                            (current[off + 3] & 0xFF);
+                            ((current[off] & 0xFF) << 24)
+                                    | ((current[off + 1] & 0xFF) << 16)
+                                    | ((current[off + 2] & 0xFF) << 8)
+                                    | (current[off + 3] & 0xFF);
 
                     // Convert to a non-negative index in [0, m).
                     int idx = (h & 0x7FFFFFFF) % m;
