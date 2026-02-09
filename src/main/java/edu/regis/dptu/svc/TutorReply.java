@@ -19,6 +19,7 @@ package edu.regis.dptu.svc;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public class TutorReply {
     /** The status of this reply (of particular note is ERR) */
     private String status;
