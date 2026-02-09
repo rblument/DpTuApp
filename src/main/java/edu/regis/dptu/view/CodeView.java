@@ -30,6 +30,8 @@ import edu.regis.dptu.model.ProblemListener;
  * statements from the CodeModel.
  *
  * @author cadencea
+ * 
+ * @author Lindsey C made edits on 2/7/2026
  */
 public class CodeView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(CodeView.class);
@@ -45,6 +47,17 @@ public class CodeView extends GPanel implements ProblemListener {
 
     /** Used as a background color */
     private static final Color MEDIUM_GRAY = new Color(215, 215, 215);
+
+    //Temp completion reporting place
+    //This is a guard to ensure we only notify completion once per model/task
+    //Note: this completion reporting should eventually move out of the view classes, 
+    //into some controller/service layer
+    //but no other classes watch problems and update as they do steps/complete currently
+    private boolean completionNotified = false;
+    private Runnable onTaskCompleted;
+
+
+
 
     /** Initialize this view including creating and laying out its child components. */
     public CodeView() {
@@ -68,6 +81,19 @@ public class CodeView extends GPanel implements ProblemListener {
     }
 
     /**
+     * inject a callback to run when the current problem finishes
+     * 
+     * <p> NOTE: this is a temporary design choice. Task completion reporting
+     * should eventually be moved out of view classes into a controller/service layer,
+     * but currently (2/7/2026) these are the only classes that watch problems 
+     * 
+     * @param onTaskCompleted callback executed once when the problem reaches a finished state
+     */
+    public void setOnTaskCompleted(Runnable onTaskCompleted) {
+        this.onTaskCompleted = onTaskCompleted;
+    }
+
+    /**
      * Display the given model in this view.
      *
      * @param model a CodeModel.
@@ -75,6 +101,9 @@ public class CodeView extends GPanel implements ProblemListener {
     public void setModel(Problem model) {
         // NOTE: Cannot remove listener from the old model
         this.model = model;
+
+        //reset completion guard for the newly-loaded model/task
+        completionNotified = false;
 
         // Clear previous UI components
         removeAll();
@@ -201,5 +230,17 @@ public class CodeView extends GPanel implements ProblemListener {
     public void problemUpdated(Problem problem) {
         // We trust the problem passed IS our model because setModel handles listeners
         updateView(); // Call updateView which uses this.model to get the state
+
+        // If the problem has finished, fire the completion callback exactly once.
+        // NOTE: Temporary location (view layer) — should move to controller later.
+        if (!completionNotified && problem != null && problem.hasFinished()) {
+            completionNotified = true;
+
+            if (onTaskCompleted != null) {
+                onTaskCompleted.run();
+            } else {
+                log.warn("Problem finished, but onTaskCompleted callback is not set.");
+            }
+    }
     }
 }
