@@ -227,7 +227,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
             this.model.addProblemListener(this);
 
             log.info(
-                    "SubSequenceView: model set ({0}), updating view",
+                    "SubSequenceView: model set ({}), updating view",
                     this.model.getClass().getSimpleName());
 
             updateView();

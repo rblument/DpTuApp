@@ -96,7 +96,7 @@ public class NewAccountPanel extends GPanel {
     /**
      * Update and return the model with view's information.
      *
-     * @return
+     * @return the updated {@link Account} model.
      */
     public Account getModel() {
         updateModel();
@@ -967,8 +967,8 @@ public class NewAccountPanel extends GPanel {
     /**
      * Encrypt the given password using SHA-256
      *
-     * @param base
-     * @return
+     * @param base the clear-text password.
+     * @return the lower-case hex representation of the SHA-256 digest.
      */
     public static String encryptSHA256(String base) {
         try {

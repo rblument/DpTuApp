@@ -101,7 +101,7 @@ public class StepCompletionReplyView extends GPanel implements ActionListener {
     /**
      * Create, layout, and return the first button panel.
      *
-     * @return
+     * @return the configured panel containing the primary navigation buttons.
      */
     private GPanel initButtonPanel1() {
         GPanel panel = new GPanel();
@@ -157,7 +157,7 @@ public class StepCompletionReplyView extends GPanel implements ActionListener {
     /**
      * Create, layout, and return the second button panel.
      *
-     * @return
+     * @return the configured panel containing "Try Again" and help options.
      */
     private GPanel initButtonPanel2() {
         GPanel panel = new GPanel();
@@ -198,7 +198,7 @@ public class StepCompletionReplyView extends GPanel implements ActionListener {
     /**
      * Create, layout, and return the third button panel.
      *
-     * @return
+     * @return the configured panel containing the "Show Correct Answer" action.
      */
     private GPanel initButtonPanel3() {
         GPanel panel = new GPanel();

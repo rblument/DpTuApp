@@ -108,7 +108,8 @@ public class StepCompletionView extends GPanel {
                 "StepCompletion created: subType={}, answerLength={}, hintsGiven={}",
                 currentStep.getSubType(),
                 answerLen,
-                completion.getHintsGiven());
+                completion.getHintsGiven()
+        );
 
         return completion;
     }
@@ -137,10 +138,7 @@ public class StepCompletionView extends GPanel {
         statusLabel.setForeground(isCorrect ? new java.awt.Color(0, 128, 0) : java.awt.Color.RED);
         statusLabel.setVisible(true);
 
-        log.debug(
-                "Status shown: isCorrect={}, messageLength={}",
-                isCorrect,
-                message != null ? message.length() : 0);
+        log.debug("Status shown: isCorrect={}, messageLength={}", isCorrect, message != null ? message.length() : 0);
     }
 
     /** Create the child GUI components appearing in this view. */

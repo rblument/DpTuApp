@@ -128,7 +128,12 @@ public class StepSelectorView extends GPanel {
      */
     public void setStepAssessmentLevel(StepSubType stepType, AssessmentLevel level) {
         String prev = stepAssessmentLevels.put(stepType.toString(), level.title());
-        log.debug("Step assessment updated: stepType={}, {} -> {}", stepType, prev, level);
+        log.debug(
+                "Step assessment updated: stepType={}, {} -> {}",
+                stepType,
+                prev,
+                level
+        );
 
         updateView();
     }
