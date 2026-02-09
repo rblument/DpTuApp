@@ -120,16 +120,22 @@ public class CreateAcctAction extends DpTuGuiAction {
 
             } else if ("IllegalUserId".equals(status)) {
                 msg = "User id already exists: " + account.getUserId();
-                JOptionPane.showMessageDialog(null, msg, "Information", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        null, msg, "Information", JOptionPane.INFORMATION_MESSAGE);
 
-                log.warn("Create account rejected (IllegalUserId) for userId={}", account.getUserId());
+                log.warn(
+                        "Create account rejected (IllegalUserId) for userId={}",
+                        account.getUserId());
 
             } else {
                 // Unknown or ERR: service should log, but we still log locally for correlation.
                 msg = "An unexpected error occurred. Please contact DpTu support";
                 JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
 
-                log.error("Create account failed: userId={}, unexpected status={}", account.getUserId(), status);
+                log.error(
+                        "Create account failed: userId={}, unexpected status={}",
+                        account.getUserId(),
+                        status);
             }
         } catch (RuntimeException e) {
             // Covers unexpected runtime issues (including service call failures).

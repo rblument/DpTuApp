@@ -68,7 +68,8 @@ public class SeeOneAction extends DpTuGuiAction {
             Problem problem = problemDAO.retrieveByKind(kind);
 
             if (log.isDebugEnabled()) {
-                // Guard is intentional: avoid calling getters / touching domain object work if DEBUG is off.
+                // Guard is intentional: avoid calling getters / touching domain object work if
+                // DEBUG is off.
                 log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
             }
 
@@ -76,7 +77,8 @@ public class SeeOneAction extends DpTuGuiAction {
 
             if (log.isDebugEnabled()) {
                 // Guard is intentional: avoid potential non-trivial getters when DEBUG is off.
-                log.debug("Creating SEE_ONE TutoringSession for account id={}", account.getUserId());
+                log.debug(
+                        "Creating SEE_ONE TutoringSession for account id={}", account.getUserId());
             }
 
             TutoringSession ts = new TutoringSession(account, problem);
@@ -91,8 +93,7 @@ public class SeeOneAction extends DpTuGuiAction {
                     "Failed to start SEE_ONE session (kind={}, accountId={})",
                     kind,
                     account != null ? account.getUserId() : null,
-                    e
-            );
+                    e);
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }

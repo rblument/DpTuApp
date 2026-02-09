@@ -61,7 +61,8 @@ public class ProblemInputView extends JPanel {
                 // implemented:
                 // KnapsackInputView knapsackInputView = new KnapsackInputView();
                 // add(knapsackInputView, BorderLayout.CENTER);
-                ProblemInputView.log.error("Knapsack input view not yet implemented.", (Throwable) null);
+                ProblemInputView.log.error(
+                        "Knapsack input view not yet implemented.", (Throwable) null);
                 break;
             default:
                 throw new IllegalArgumentException(

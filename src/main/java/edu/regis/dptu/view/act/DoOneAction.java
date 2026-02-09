@@ -64,20 +64,13 @@ public class DoOneAction extends DpTuGuiAction {
             Problem problem = problemDAO.retrieveByKind(kind);
 
             if (log.isDebugEnabled()) {
-                log.debug(
-                        "Retrieved problem: id={}, type={}",
-                        problem.getId(),
-                        problem.getType()
-                );
+                log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
             }
 
             account = SplashFrame.instance().getAccount();
 
             if (log.isDebugEnabled()) {
-                log.debug(
-                        "Creating DO_ONE TutoringSession for account id={}",
-                        account.getUserId()
-                );
+                log.debug("Creating DO_ONE TutoringSession for account id={}", account.getUserId());
             }
 
             TutoringSession ts = new TutoringSession(account, problem);
@@ -92,8 +85,7 @@ public class DoOneAction extends DpTuGuiAction {
                     "Failed to start DO_ONE session (kind={}, accountId={})",
                     kind,
                     account != null ? account.getUserId() : null,
-                    e
-            );
+                    e);
 
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }

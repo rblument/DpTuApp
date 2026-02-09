@@ -109,7 +109,9 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener {
             backtrackingStatementJLabels.add(new JLabel(backtrackingStatementStrings.get(i)));
         }
 
-        log.debug("BacktrackingCodeView loaded {} backtracking pseudocode lines", backtrackingStatementJLabels.size());
+        log.debug(
+                "BacktrackingCodeView loaded {} backtracking pseudocode lines",
+                backtrackingStatementJLabels.size());
     }
 
     /**

@@ -62,7 +62,8 @@ public class CheckAnswerAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        log.debug("CheckAnswerAction triggered (stub implementation; StepCompletionView not integrated)");
+        log.debug(
+                "CheckAnswerAction triggered (stub implementation; StepCompletionView not integrated)");
 
         JOptionPane.showMessageDialog(
                 MainFrame.instance(),

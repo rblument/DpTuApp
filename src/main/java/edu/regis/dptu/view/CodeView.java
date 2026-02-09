@@ -94,7 +94,8 @@ public class CodeView extends GPanel implements ProblemListener {
         }
 
         if (log.isDebugEnabled()) {
-            // Guard is intentional: these getters may be non-trivial depending on model implementation.
+            // Guard is intentional: these getters may be non-trivial depending on model
+            // implementation.
             log.debug("CodeView.setModel: modelId={}, type={}", model.getId(), model.getType());
         }
 
