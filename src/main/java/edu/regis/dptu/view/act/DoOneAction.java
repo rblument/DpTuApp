@@ -76,7 +76,7 @@ public class DoOneAction extends DpTuGuiAction {
             if (log.isDebugEnabled()) {
                 log.debug(
                         "Creating DO_ONE TutoringSession for account id={}",
-                        account.getId()
+                        account.getUserId()
                 );
             }
 
@@ -91,7 +91,7 @@ public class DoOneAction extends DpTuGuiAction {
             log.error(
                     "Failed to start DO_ONE session (kind={}, accountId={})",
                     kind,
-                    account != null ? account.getId() : null,
+                    account != null ? account.getUserId() : null,
                     e
             );
 
