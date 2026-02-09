@@ -9,11 +9,10 @@ on:
 
 jobs:
   analyze:
-    name: Analyze Java Code
+    name: Analyze Java Code with CodeQL
     runs-on: ubuntu-latest
 
     permissions:
-      actions: read
       contents: read
       security-events: write
 
@@ -26,10 +25,8 @@ jobs:
         with:
           languages: java
 
-      # If your project uses Maven or Gradle, CodeQL can auto-build.
-      # If auto-build fails, replace this with a manual build step.
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      - name: Build with Maven
+        run: mvn -B clean compile
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
