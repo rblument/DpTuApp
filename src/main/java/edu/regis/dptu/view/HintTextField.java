@@ -23,9 +23,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A JTextField with default text appearing in grey that disappears when a user enters anything, but
  * reappears if the all user enter text is removed.
@@ -37,9 +34,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging") // UI widget: high-frequency events; logging would be noisy and impact responsiveness.
 public class HintTextField extends JTextField {
-    private static final Logger log = LoggerFactory.getLogger(HintTextField.class);
-
     /** The initial default 'hint' displayed as gray text in the field. */
     protected String hint = "";
 
