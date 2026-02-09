@@ -97,18 +97,57 @@ jobs:
           echo "⚠️ Running advisory logging checks (warnings only)..."
 
           # --------------------------------------------------------------
-          # WARN 1: Missing or unused SLF4J logging
+          # SANITY: identify file kinds that generally should not need logging
+          # (enums, interfaces, annotations, records). These are exempt from
+          # "missing logger" / "unused logger" warnings by default.
+          # --------------------------------------------------------------
+
+          # Top-level enum/interface/@interface/record declarations (heuristic: starts at line beginning)
+          ENUM_FILES=$(
+            grep -RIl --include='*.java' -E '^\s*(public\s+)?enum\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+          )
+          INTERFACE_FILES=$(
+            grep -RIl --include='*.java' -E '^\s*(public\s+)?interface\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+          )
+          ANNOTATION_FILES=$(
+            grep -RIl --include='*.java' -E '^\s*(public\s+)?@interface\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+          )
+          RECORD_FILES=$(
+            grep -RIl --include='*.java' -E '^\s*(public\s+)?record\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+          )
+
+          # Union of exempt files (sorted unique)
+          EXEMPT_FILES=$(
+            { printf "%s\n" $ENUM_FILES $INTERFACE_FILES $ANNOTATION_FILES $RECORD_FILES 2>/dev/null || true; } | \
+              sed '/^\s*$/d' | sort -u
+          )
+
+          # Files that explicitly suppress logging warnings
+          LOGGING_SUPPRESSED_FILES=$(
+            grep -RIl --include='*.java' '@SuppressWarnings("Logging")' src/ || true
+          )
+
+          # --------------------------------------------------------------
+          # SANITY: suppressions should only be used on exempt kinds.
+          # If a file suppresses Logging but is NOT exempt, warn on it.
+          # --------------------------------------------------------------
+          BAD_SUPPRESS_FILES=""
+          if [ -n "${LOGGING_SUPPRESSED_FILES:-}" ]; then
+            BAD_SUPPRESS_FILES=$(
+              comm -23 \
+                <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort -u) \
+                <(printf "%s\n" $EXEMPT_FILES | sort -u) || true
+            )
+          fi
+
+          # --------------------------------------------------------------
+          # WARN 1: Missing or unused SLF4J logging (excluding exempt kinds)
           #
           # Escape hatch:
           #   @SuppressWarnings("Logging")
           #
           # Suppresses WARN-only findings, never ERRORs
           # --------------------------------------------------------------
-
-          # Files that explicitly suppress logging warnings
-          LOGGING_SUPPRESSED_FILES=$(
-            grep -RIl --include='*.java' '@SuppressWarnings("Logging")' src/ || true
-          )
 
           # Files with no SLF4J Logger import at all
           NO_LOG_IMPORT_FILES=$(
@@ -124,38 +163,60 @@ jobs:
           # Helper: remove suppressed files from a list
           filter_suppressed() {
             local files="$1"
-            if [ -n "$files" ] && [ -n "$LOGGING_SUPPRESSED_FILES" ]; then
+            if [ -n "$files" ] && [ -n "${LOGGING_SUPPRESSED_FILES:-}" ]; then
               comm -23 \
-                <(printf "%s\n" $files | sort) \
-                <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort)
+                <(printf "%s\n" $files | sort -u) \
+                <(printf "%s\n" $LOGGING_SUPPRESSED_FILES | sort -u)
             else
-              printf "%s\n" $files
+              printf "%s\n" $files | sed '/^\s*$/d' || true
             fi
           }
 
-          NO_LOG_IMPORT_FILES=$(filter_suppressed "$NO_LOG_IMPORT_FILES")
-          UNUSED_LOGGER_FILES=$(filter_suppressed "$UNUSED_LOGGER_FILES")
+          # Helper: remove exempt files from a list
+          filter_exempt() {
+            local files="$1"
+            if [ -n "$files" ] && [ -n "${EXEMPT_FILES:-}" ]; then
+              comm -23 \
+                <(printf "%s\n" $files | sort -u) \
+                <(printf "%s\n" $EXEMPT_FILES | sort -u)
+            else
+              printf "%s\n" $files | sed '/^\s*$/d' || true
+            fi
+          }
 
-          if [ -n "$NO_LOG_IMPORT_FILES" ] || [ -n "$UNUSED_LOGGER_FILES" ]; then
+          # Apply filters: first remove suppressed, then remove exempt (or vice versa)
+          NO_LOG_IMPORT_FILES=$(filter_exempt "$(filter_suppressed "$NO_LOG_IMPORT_FILES")")
+          UNUSED_LOGGER_FILES=$(filter_exempt "$(filter_suppressed "$UNUSED_LOGGER_FILES")")
+
+          if [ -n "$NO_LOG_IMPORT_FILES" ] || [ -n "$UNUSED_LOGGER_FILES" ] || [ -n "$BAD_SUPPRESS_FILES" ]; then
             echo
-            echo "⚠️ Files with missing or unused logging:"
+            echo "⚠️ Advisory logging findings:"
 
             if [ -n "$NO_LOG_IMPORT_FILES" ]; then
               echo
-              echo "--- No SLF4J Logger import detected ---"
+              echo "--- No SLF4J Logger import detected (non-exempt, non-suppressed) ---"
               echo "$NO_LOG_IMPORT_FILES"
             fi
 
             if [ -n "$UNUSED_LOGGER_FILES" ]; then
               echo
-              echo "--- SLF4J Logger imported but never used ---"
+              echo "--- SLF4J Logger imported but never used (non-exempt, non-suppressed) ---"
               echo "$UNUSED_LOGGER_FILES"
             fi
 
+            if [ -n "$BAD_SUPPRESS_FILES" ]; then
+              echo
+              echo "--- Suppressed files that do NOT pass sanity checks ---"
+              echo "$BAD_SUPPRESS_FILES"
+              echo
+              echo "Guidance: Only suppress @SuppressWarnings(\"Logging\") on enums/interfaces/annotations/records."
+              echo "If a class truly should not log, refactor to an exempt kind or add a short note explaining why and log minimally where behavior exists."
+            fi
+
             echo
-            echo "Guidance: Add logging or suppress with @SuppressWarnings(\"Logging\")."
+            echo "Guidance: Add logging, or suppress only when the file is an exempt kind."
           else
-            echo "✅ All Java files appear to use SLF4J logging correctly."
+            echo "✅ All Java files appear to use SLF4J logging correctly (with sanity exemptions applied)."
           fi
 
           # --------------------------------------------------------------
