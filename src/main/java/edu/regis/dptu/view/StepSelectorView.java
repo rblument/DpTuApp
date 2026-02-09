@@ -98,6 +98,8 @@ public class StepSelectorView extends GPanel {
         stepAssessmentLevels = new HashMap<>();
         initializeComponents();
         layoutComponents();
+
+        log.debug("StepSelectorView initialized");
     }
 
     /**
@@ -107,6 +109,14 @@ public class StepSelectorView extends GPanel {
      */
     public void setTask(Task task) {
         this.currentTask = task;
+
+        if (task == null) {
+            log.debug("StepSelectorView setTask(null)");
+        } else {
+            // Avoid calling potentially expensive/verbose toString(); log title only.
+            log.debug("StepSelectorView setTask: title={}", task.getTitle());
+        }
+
         updateView();
     }
 
@@ -117,7 +127,14 @@ public class StepSelectorView extends GPanel {
      * @param level The assessment level
      */
     public void setStepAssessmentLevel(StepSubType stepType, AssessmentLevel level) {
-        stepAssessmentLevels.put(stepType.toString(), level.title());
+        String prev = stepAssessmentLevels.put(stepType.toString(), level.title());
+        log.debug(
+                "Step assessment updated: stepType={}, {} -> {}",
+                stepType,
+                prev,
+                level
+        );
+
         updateView();
     }
 
@@ -127,6 +144,8 @@ public class StepSelectorView extends GPanel {
      * @param selection The step selection to highlight
      */
     public void selectStep(StepSelection selection) {
+        StepSelection prev = currentSelection;
+
         // Deselect the current selection
         if (currentSelection != null && currentSelection.getLabel() != null) {
             currentSelection.getLabel().setBackground(new Color(230, 230, 230));
@@ -139,6 +158,8 @@ public class StepSelectorView extends GPanel {
             currentSelection.getLabel().setBackground(new Color(100, 149, 237)); // Cornflower blue
             currentSelection.getLabel().setForeground(Color.WHITE);
         }
+
+        log.debug("Step selected: {} -> {}", prev, currentSelection);
     }
 
     /** Create the child GUI components appearing in this view. */
@@ -174,7 +195,6 @@ public class StepSelectorView extends GPanel {
         stepsPanel.removeAll();
 
         if (currentTask == null) {
-            // Add placeholder text when no task is available
             JLabel placeholder = new JLabel("No steps available");
             placeholder.setAlignmentX(Component.LEFT_ALIGNMENT);
             stepsPanel.add(placeholder);
@@ -183,15 +203,13 @@ public class StepSelectorView extends GPanel {
             return;
         }
 
-        // Set the title based on the task
         titleLabel.setText(currentTask.getTitle() + " Steps");
 
-        // Create labels for step selections
         for (StepSelection selection : StepSelection.values()) {
             JLabel stepLabel = createStepLabel(selection);
             selection.setLabel(stepLabel);
             stepsPanel.add(stepLabel);
-            stepsPanel.add(Box.createVerticalStrut(5)); // Add some spacing
+            stepsPanel.add(Box.createVerticalStrut(5));
         }
 
         stepsPanel.revalidate();
@@ -215,7 +233,6 @@ public class StepSelectorView extends GPanel {
                         BorderFactory.createEmptyBorder(5, 10, 5, 10)));
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Add status suffix based on assessment level
         String status = stepAssessmentLevels.get(selection.getStepType().toString());
         if (status != null) {
             if (status.equals(AssessmentLevel.NOT_STARTED.title())) {
@@ -227,7 +244,6 @@ public class StepSelectorView extends GPanel {
             }
         }
 
-        // Add click listener
         label.addMouseListener(
                 new MouseAdapter() {
                     @Override
@@ -242,6 +258,14 @@ public class StepSelectorView extends GPanel {
                         if (currentSelection != selection) {
                             label.setBackground(new Color(230, 230, 230));
                         }
+                    }
+
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // This class doesn't currently wire selection to the rest of the app,
+                        // but logging the click is still useful during integration.
+                        log.debug("Step label clicked: stepType={}", selection.getStepType());
+                        selectStep(selection);
                     }
                 });
 
