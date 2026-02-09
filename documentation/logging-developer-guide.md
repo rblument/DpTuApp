@@ -209,6 +209,17 @@ This repository includes automated CI checks that enforce these logging standard
 
 These checks exist to keep logs consistent, searchable, and production-safe.
 
+### Sanity Exemptions
+
+Some Java file types are assumed not to require logging by default and are exempt from “missing logger” warnings:
+
+* enum
+* interface
+* @interface (annotations)
+* record
+
+These are considered declarative constructs, not behavioral classes. You do not need to add a logger or suppression for these.
+
 ### Suppressing Logging Warnings
 
 In rare cases, a Java class may not require logging. Examples include:
@@ -258,4 +269,6 @@ public class ExampleDto {
 * [ ] Use `log.info()`, `log.debug()`, etc. appropriately
 * [ ] Include exception objects in `log.error("message", e)` calls where applicable
 * [ ] Replace all `System.out.*`, `System.err.*`, and `printStackTrace()` usage
+* [ ] Use `isXEnabled()` only when it saves work
 * [ ] Do **not** import or use Log4j / Log4j2 APIs directly
+* [ ] Do not suppress logging on behavioral classes
