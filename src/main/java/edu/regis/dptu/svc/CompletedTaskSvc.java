@@ -1,7 +1,7 @@
 /**
  * Service interface for persisting and querying per-student task completion state
  * 
- * <p> This service provides a durable source of truth for student progress ac ross sessions
+ * <p> This service provides a durable source of truth for student progress across sessions
  * It is used to record when a student completes a task and to retrieve completion data
  * for computing progress bars and dashboard summaries
  * 
@@ -13,6 +13,7 @@
 package edu.regis.dptu.svc;
 import edu.regis.dptu.err.NonRecoverableException;
 
+@SuppressWarnings("Logging")
 public interface CompletedTaskSvc {
     /**
      * Persist completion of a task for the given user
