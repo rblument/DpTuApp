@@ -12,11 +12,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 17
+    - name: Set up JDK 17 (with Maven cache)
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: maven
         
     - name: Cache Maven dependencies
       uses: actions/cache@v4
@@ -26,4 +27,4 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
         
     - name: Compile project
-      run: mvn compile
+      run: mvn -B compile
