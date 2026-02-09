@@ -82,6 +82,11 @@ public class SubSequenceCanvasView extends JPanel {
      * @param sub
      */
     private String findLCS(String main, String sub) {
+        if (main == null || sub == null) {
+            log.warn("findLCS called with null input: mainNull={}, subNull={}", main == null, sub == null);
+            return "";
+        }
+
         int[][] dp = new int[main.length() + 1][sub.length() + 1];
 
         for (int i = 1; i <= main.length(); i++) {
@@ -142,6 +147,7 @@ public class SubSequenceCanvasView extends JPanel {
         if (word1 == null || word2 == null) {
             g.setColor(Color.RED);
             g.drawString("Invalid input!", 20, 30);
+            return; // prevent NPEs below
         }
 
         // draw the words in black
@@ -197,6 +203,14 @@ public class SubSequenceCanvasView extends JPanel {
         this.word1 = word1;
         lcs = findLCS(this.word1, word2);
         highlightIndex = 0;
+
+        log.debug(
+                "word1 updated: word1Len={}, word2Len={}, lcsLen={}, highlightIndex reset",
+                this.word1 != null ? this.word1.length() : -1,
+                this.word2 != null ? this.word2.length() : -1,
+                this.lcs != null ? this.lcs.length() : -1
+        );
+
         repaint();
     }
 
@@ -213,6 +227,11 @@ public class SubSequenceCanvasView extends JPanel {
         this.word2 = word2;
         lcs = findLCS(word1, this.word2);
         highlightIndex = 0;
+
+        log.debug(
+                "word2 updated: word1Len={}, word2Len={}, lcsLen={}, highlightIndex reset",
+                this.word1 != null ? this.word1.length() : -1,
+                this.word2 != null ? this.word2.length() : -1,
                 this.lcs != null ? this.lcs.length() : -1
         );
 
