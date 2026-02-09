@@ -36,6 +36,19 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Exempt test sources from logging enforcement for this workflow.
+          # This avoids flagging test scaffolding/mocks that intentionally use
+          # simpler output patterns.
+          GREP_EXCLUDES=(
+            --exclude-dir=test
+            --exclude-dir=tests
+            --exclude-dir=integrationTest
+            --exclude-dir=integrationTests
+            --exclude='*Test.java'
+            --exclude='*Tests.java'
+            --exclude='*IT.java'
+          )
+
           echo "🔍 Enforcing logging standards (errors)..."
 
           # These patterns indicate logging bypasses or API drift and
@@ -71,7 +84,7 @@ jobs:
 
           for pattern in "${ERROR_PATTERNS[@]}"; do
             echo "Checking ERROR pattern: $pattern"
-            if grep -RIn --include='*.java' -E "$pattern" src/; then
+            if grep -RIn "${GREP_EXCLUDES[@]}" --include='*.java' -E "$pattern" src/; then
               echo "❌ Forbidden pattern detected: $pattern"
               FAILED=1
             fi
@@ -94,6 +107,19 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Exempt test sources from logging enforcement for this workflow.
+          # This avoids flagging test scaffolding/mocks that intentionally use
+          # simpler output patterns.
+          GREP_EXCLUDES=(
+            --exclude-dir=test
+            --exclude-dir=tests
+            --exclude-dir=integrationTest
+            --exclude-dir=integrationTests
+            --exclude='*Test.java'
+            --exclude='*Tests.java'
+            --exclude='*IT.java'
+          )
+
           echo "⚠️ Running advisory logging checks (warnings only)..."
 
           # --------------------------------------------------------------
@@ -104,16 +130,16 @@ jobs:
 
           # Top-level enum/interface/@interface/record declarations (heuristic: starts at line beginning)
           ENUM_FILES=$(
-            grep -RIl --include='*.java' -E '^\s*(public\s+)?enum\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+            grep -RIl "${GREP_EXCLUDES[@]}" --include='*.java' -E '^\s*(public\s+)?enum\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
           )
           INTERFACE_FILES=$(
-            grep -RIl --include='*.java' -E '^\s*(public\s+)?interface\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+            grep -RIl "${GREP_EXCLUDES[@]}" --include='*.java' -E '^\s*(public\s+)?interface\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
           )
           ANNOTATION_FILES=$(
-            grep -RIl --include='*.java' -E '^\s*(public\s+)?@interface\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+            grep -RIl "${GREP_EXCLUDES[@]}" --include='*.java' -E '^\s*(public\s+)?@interface\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
           )
           RECORD_FILES=$(
-            grep -RIl --include='*.java' -E '^\s*(public\s+)?record\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
+            grep -RIl "${GREP_EXCLUDES[@]}" --include='*.java' -E '^\s*(public\s+)?record\s+[A-Za-z_][A-Za-z0-9_]*\b' src/ || true
           )
 
           # Union of exempt files (sorted unique)
@@ -124,7 +150,7 @@ jobs:
 
           # Files that explicitly suppress logging warnings
           LOGGING_SUPPRESSED_FILES=$(
-            grep -RIl --include='*.java' '@SuppressWarnings("Logging")' src/ || true
+            grep -RIl "${GREP_EXCLUDES[@]}" --include='*.java' '@SuppressWarnings("Logging")' src/ || true
           )
 
           # --------------------------------------------------------------
@@ -151,12 +177,12 @@ jobs:
 
           # Files with no SLF4J Logger import at all
           NO_LOG_IMPORT_FILES=$(
-            grep -RL --include='*.java' "org.slf4j.Logger" src/ || true
+            grep -RL "${GREP_EXCLUDES[@]}" --include='*.java' "org.slf4j.Logger" src/ || true
           )
 
           # Files that import SLF4J Logger but never use it
           UNUSED_LOGGER_FILES=$(
-            grep -RIl --include='*.java' "org.slf4j.Logger" src/ | \
+            grep -RIl "${GREP_EXCLUDES[@]}" --include='*.java' "org.slf4j.Logger" src/ | \
             xargs -r grep -EL "log\.(trace|debug|info|warn|error)\s*\("
           )
 
@@ -222,7 +248,7 @@ jobs:
           # --------------------------------------------------------------
           # WARN 2: Empty catch blocks
           # --------------------------------------------------------------
-          if grep -RIn --include='*.java' -E "catch\s*\([^)]*\)\s*\{\s*\}" src/; then
+          if grep -RIn "${GREP_EXCLUDES[@]}" --include='*.java' -E "catch\s*\([^)]*\)\s*\{\s*\}" src/; then
             echo
             echo "⚠️ Empty catch blocks detected. Consider logging the exception."
           else
@@ -232,7 +258,7 @@ jobs:
           # --------------------------------------------------------------
           # WARN 3: log.error calls without exception parameter
           # --------------------------------------------------------------
-          if grep -RIn --include='*.java' -E "log\.error\s*\([^,)]*\)" src/; then
+          if grep -RIn "${GREP_EXCLUDES[@]}" --include='*.java' -E "log\.error\s*\([^,)]*\)" src/; then
             echo
             echo "⚠️ log.error calls without exception context detected."
             echo "Guidance: Prefer log.error(\"message\", exception)."
