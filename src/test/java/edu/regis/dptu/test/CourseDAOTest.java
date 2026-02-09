@@ -41,6 +41,7 @@ import edu.regis.dptu.model.UnitDigest;
  *
  * @author benm
  */
+@SuppressWarnings("Logging")
 public class CourseDAOTest {
     private CourseDAO dao;
     private Connection mockConnection;
