@@ -17,6 +17,7 @@ package edu.regis.dptu.model.aol;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum AssessmentLevel {
     /** Indicates a student hasn't been exposed to an Outcome. */
     VERY_LOW("Very Low"),

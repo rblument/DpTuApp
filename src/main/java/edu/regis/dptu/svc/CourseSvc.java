@@ -26,6 +26,7 @@ import edu.regis.dptu.model.UnitDigest;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface CourseSvc {
     /**
      * Locate and return the course with the given id.

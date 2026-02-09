@@ -25,6 +25,7 @@ import edu.regis.dptu.model.User;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface UserSvc {
     /**
      * Insert the given User into the DB (cannot insert an admin).

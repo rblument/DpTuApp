@@ -23,6 +23,7 @@ import edu.regis.dptu.model.aol.StudentModel;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface StudentSvc {
     /**
      * Insert the given {@link Student} and {@link StudentModel} into the database.

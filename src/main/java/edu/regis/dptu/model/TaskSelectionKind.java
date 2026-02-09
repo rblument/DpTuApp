@@ -18,6 +18,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum TaskSelectionKind {
     /**
      * Via a gesture in the user interface, the student selects the next task. This is used in the

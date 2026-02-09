@@ -17,6 +17,7 @@ package edu.regis.dptu.svc;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum ServerRequestType {
     /** The student has completed the current step. */
     COMPLETED_STEP(":CompletedStep"),

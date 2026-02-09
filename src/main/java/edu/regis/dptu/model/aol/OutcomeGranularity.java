@@ -19,6 +19,7 @@ package edu.regis.dptu.model.aol;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum OutcomeGranularity {
     COURSE("Course"),
 

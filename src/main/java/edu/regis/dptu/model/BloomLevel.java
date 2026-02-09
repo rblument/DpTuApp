@@ -19,6 +19,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum BloomLevel {
     /** The student is expected to know, */
     KNOWLEDGE("Knowledge"),

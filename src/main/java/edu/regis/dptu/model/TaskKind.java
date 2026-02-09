@@ -17,6 +17,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum TaskKind {
     /**
      * A task representing a top-level dynamic programming problem. (The type of the problem in the

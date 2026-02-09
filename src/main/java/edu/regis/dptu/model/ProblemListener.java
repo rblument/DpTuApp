@@ -17,6 +17,7 @@ package edu.regis.dptu.model;
  *
  * @author cadencea
  */
+@SuppressWarnings("Logging")
 public interface ProblemListener {
 
     public void problemUpdated(Problem problem);

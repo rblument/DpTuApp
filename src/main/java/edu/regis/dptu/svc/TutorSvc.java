@@ -20,6 +20,7 @@ package edu.regis.dptu.svc;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface TutorSvc {
     /**
      * Handles a request from the client (user interface).

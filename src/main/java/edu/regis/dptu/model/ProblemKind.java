@@ -17,6 +17,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum ProblemKind {
     /** A Longest Common Subsequent (LCS) Dynamic Programming problem.. */
     LCS_PROBLEM("Longest Commom Subsequence"),

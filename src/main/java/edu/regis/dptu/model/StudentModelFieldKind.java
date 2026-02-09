@@ -17,6 +17,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum StudentModelFieldKind {
     /** The assessment field */
     ASSESSMENT_LEVEL("Assessment Level"),

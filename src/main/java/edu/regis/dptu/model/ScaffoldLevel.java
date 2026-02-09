@@ -18,6 +18,7 @@ package edu.regis.dptu.model;
  *
  * @author Rickb
  */
+@SuppressWarnings("Logging")
 public enum ScaffoldLevel {
     /**
      * NONE The student is in complete control and the tutor is passively listening and responding
