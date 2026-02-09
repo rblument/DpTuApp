@@ -12,15 +12,16 @@
  */
 package edu.regis.dptu.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
+ * Represents a variable used in a problem model.
+ *
+ * <p>This class is a simple data holder (mutable value object) with no
+ * operational behavior; logging is intentionally suppressed.
+ *
  * @author rickb
  */
+@SuppressWarnings("Logging") // Value object / model field container
 public class Variable {
-    private static final Logger log = LoggerFactory.getLogger(Variable.class);
-
     private String name;
 
     private DataType dataType;
