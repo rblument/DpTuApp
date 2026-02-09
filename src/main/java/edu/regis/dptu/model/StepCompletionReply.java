@@ -11,7 +11,6 @@
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.dptu.model;
-
 /**
  * Captures the tutor's reply to a previous step completed requests.
  *

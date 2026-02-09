@@ -18,8 +18,8 @@ package edu.regis.dptu.svc;
  *
  * <p>The request type specifies how to interpret the JSon encoded data.
  *
- * <p>This is a simple data-transfer object (DTO) with no operational behavior; logging is
- * intentionally suppressed.
+ * <p>This is a simple data-transfer object (DTO) with no operational behavior;
+ * logging is intentionally suppressed.
  *
  * @author rickb
  */

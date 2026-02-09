@@ -102,7 +102,7 @@ public class User extends Model {
     /**
      * Return the id and user id of this student.
      *
-     * @return
+     * @return a human-readable string representation of this user.
      */
     @Override
     public String toString() {

@@ -84,7 +84,8 @@ public class TutoringSession {
         log.debug(
                 "TutoringSession created: userId={}, problemType={}",
                 userId,
-                problem != null ? problem.getType() : "null");
+                problem != null ? problem.getType() : "null"
+        );
     }
 
     public int getId() {
@@ -155,7 +156,8 @@ public class TutoringSession {
         log.debug(
                 "Session {} problem set to {}",
                 userId,
-                problem != null ? problem.getType() : "null");
+                problem != null ? problem.getType() : "null"
+        );
     }
 
     public PendingTask getCurrentTask() {

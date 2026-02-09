@@ -155,10 +155,7 @@ public class TaskState {
     /** Record task completion and set completion timestamp. */
     public void recordTaskCompletion() {
         completionTime = System.currentTimeMillis();
-        log.debug(
-                "TaskState completed: completionTime={}, totalTimeMs={}",
-                completionTime,
-                getTotalTime());
+        log.debug("TaskState completed: completionTime={}, totalTimeMs={}", completionTime, getTotalTime());
     }
 
     /**

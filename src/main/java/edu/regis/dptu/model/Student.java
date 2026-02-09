@@ -70,7 +70,8 @@ public class Student {
                 "StudentModel replaced for userId={}: {} -> {}",
                 account.getUserId(),
                 prev,
-                studentModel);
+                studentModel
+        );
     }
 
     @Override

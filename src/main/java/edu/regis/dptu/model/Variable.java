@@ -15,8 +15,8 @@ package edu.regis.dptu.model;
 /**
  * Represents a variable used in a problem model.
  *
- * <p>This class is a simple data holder (mutable value object) with no operational behavior;
- * logging is intentionally suppressed.
+ * <p>This class is a simple data holder (mutable value object) with no
+ * operational behavior; logging is intentionally suppressed.
  *
  * @author rickb
  */

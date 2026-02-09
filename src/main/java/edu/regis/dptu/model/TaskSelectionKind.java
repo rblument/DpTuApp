@@ -67,8 +67,8 @@ public enum TaskSelectionKind {
     /**
      * Return the enum value for the given title.
      *
-     * @param aTitle
-     * @return
+     * @param aTitle the user-facing task-selection title.
+     * @return the matching {@link TaskSelectionKind} or {@link #ERROR} if no match exists.
      */
     public static TaskSelectionKind findValue(String aTitle) {
         for (TaskSelectionKind kind : values()) {
