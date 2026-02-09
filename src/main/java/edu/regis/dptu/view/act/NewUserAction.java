@@ -34,7 +34,7 @@ public class NewUserAction extends DpTuGuiAction {
 
     /**
      * Create the singleton for this action, which occurs when this class is loaded by the Java
-     * class loaded, as a result of the class being referenced by executing SignInAction.instance()
+     * class loader, as a result of the class being referenced by executing SignInAction.instance()
      * in the initializeComponents() method of the SplashPanel class.
      */
     static {
@@ -44,7 +44,7 @@ public class NewUserAction extends DpTuGuiAction {
     /**
      * Return the singleton instance of this new user action.
      *
-     * @return
+     * @return singleton instance
      */
     public static NewUserAction instance() {
         return SINGLETON;
@@ -56,7 +56,6 @@ public class NewUserAction extends DpTuGuiAction {
 
         putValue(SHORT_DESCRIPTION, "Request to create a new user");
         putValue(MNEMONIC_KEY, KeyEvent.VK_U);
-        // putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
@@ -66,6 +65,7 @@ public class NewUserAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        log.debug("NewUserAction triggered; switching to New User panel");
         SplashFrame.instance().selectNewUser();
     }
 }
