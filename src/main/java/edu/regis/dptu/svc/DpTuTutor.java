@@ -405,7 +405,7 @@ public class DpTuTutor implements TutorSvc {
         // ToDo: This is really a kludge since the first task may not be the
         // problem task. Will/should every task represent the problem??
         tSession.setProblem(task.getProblem());
-        //taskIdf was not getting added so awkward fix
+        //taskId was not getting added so awkward fix
         tSession.getProblem().setTaskId(task.getId());
 
         // Generate the security token for this tutoring session.

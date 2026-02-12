@@ -40,6 +40,8 @@ public class CompletedTaskDAO extends MySqlDAO implements CompletedTaskSvc {
         final String sql =
             "INSERT INTO CompletedTask (UserId, TaskId) VALUES (?, ?) " +
             "ON DUPLICATE KEY UPDATE CompletedAt = CURRENT_TIMESTAMP";
+
+         log.debug("Attempting to persist completed task userId={}, taskId={}, userId, taskId");
         
             try (Connection conn = DriverManager.getConnection(URL);
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -47,7 +49,11 @@ public class CompletedTaskDAO extends MySqlDAO implements CompletedTaskSvc {
                     stmt.setString(1, userId);
                     stmt.setInt(2, taskId);
 
-                    stmt.executeUpdate();
+                    int rows = stmt.executeUpdate();
+
+                    log.debug("CompletedTask persisted successfully (rowsAffected={}) for userId={}, taskId={}",
+                        rows, userId, taskId);
+
                  } catch (SQLException e) {
                     //log contextual info to help diagnose failures
                     log.error("SQLException marking completed task userId={}, taskId={}", userId, taskId);
@@ -67,6 +73,8 @@ public class CompletedTaskDAO extends MySqlDAO implements CompletedTaskSvc {
     public int countCompleted(String userId) throws NonRecoverableException {
         final String sql = "SELECT COUNT(*) FROM CompletedTask WHERE UserId = ?";
 
+        log.debug("Counting completed tasks for userId={}", userId);
+
         try (Connection conn = DriverManager.getConnection(URL);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
                 //bind the user identifier to the query
@@ -74,7 +82,7 @@ public class CompletedTaskDAO extends MySqlDAO implements CompletedTaskSvc {
 
                 ResultSet rs = stmt.executeQuery();
 
-                /** explanation of this line
+                 /** explanation of this line
                  * rs.next() moves cursor to first row of the result set, returning true 
                  * if row exists, and false if No rows
                  * rs.getInt() reads the first col of curr row, (COUNT(*) val)
@@ -82,7 +90,11 @@ public class CompletedTaskDAO extends MySqlDAO implements CompletedTaskSvc {
                  * otherwise get 0
                  * basically if this query ever stops guaranteeing a row, 
                  * this method still behaves safely*/ 
-                return rs.next () ? rs.getInt(1) : 0;
+                int count = rs.next() ? rs.getInt(1) : 0;
+                log.debug("CompletedTask count for userId={} is {}", userId, count);
+
+
+                return count;
 
              } catch (SQLException e) {
                 //log user id for easier debugging

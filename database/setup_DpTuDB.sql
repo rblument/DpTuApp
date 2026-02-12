@@ -252,6 +252,8 @@ CREATE TABLE CompletedTask (
   TaskId INT NOT NULL,
   CompletedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (UserId, TaskId)
+   FOREIGN KEY (UserId)
+      REFERENCES account(UserId)
 );
 
 /*********************************************************************************
