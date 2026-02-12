@@ -43,9 +43,8 @@ import edu.regis.dptu.view.act.SignInAction;
  * @author rickb
  */
 public class SplashPanel extends GPanel {
-    private static final Logger log = LoggerFactory.getLogger(SplashPanel.class);
-
     /** Events of interest occurring in this class are logged to this logger. */
+    private static final Logger log = LoggerFactory.getLogger(SplashPanel.class);
 
     /** The user model displayed in this view. */
     private User model;
@@ -74,13 +73,17 @@ public class SplashPanel extends GPanel {
         initializeComponents();
         layoutComponents();
 
+        log.debug("SplashPanel initialized");
+
         // ToDo: Temp for easy login while in development
         userId.setText("test@regis.edu");
         password.setText("TestP@ss");
+        log.debug("SplashPanel dev credentials prefilled (remove before production)");
     }
 
     /** Set the default focus to the user id field. */
     public void setInitialFocus() {
+        log.debug("SplashPanel initial focus requested");
         userId.requestFocusInWindow();
     }
 
@@ -90,11 +93,21 @@ public class SplashPanel extends GPanel {
      * @return a User model with the user id and password fields set (the password is encrypted)
      */
     public User getModel() {
-        model.setUserId(userId.getText());
+        if (model == null) {
+            log.warn("SplashPanel.getModel called but model was null; creating new User()");
+            model = new User();
+        }
 
+        String enteredUserId = userId.getText();
+        model.setUserId(enteredUserId);
+
+        // Never log plaintext or hashed passwords.
         String encryptedPass = SHA_256.instance().sha256(new String(password.getPassword()));
-
         model.setPassword(encryptedPass);
+
+        log.debug(
+                "SplashPanel model updated from UI: userIdPresent={}",
+                enteredUserId != null && !enteredUserId.isBlank());
 
         return model;
     }
@@ -105,21 +118,28 @@ public class SplashPanel extends GPanel {
      * @param model the user (id) to display
      */
     public void setModel(User model) {
-        this.model = model;
+        if (model == null) {
+            log.warn("SplashPanel.setModel called with null model");
+            return;
+        }
 
+        this.model = model;
         userId.setText(model.getUserId());
+
+        log.debug(
+                "SplashPanel model set: userIdPresent={}",
+                model.getUserId() != null && !model.getUserId().isBlank());
     }
 
     /** Set the input focus to the user id field. */
     public void updateFocus() {
+        log.debug("SplashPanel focus update requested");
         userId.requestFocusInWindow();
     }
 
     /**
      * Return a reference to the sign-in button (used by the WelcomeFrame to make it the default
      * button, when this panel is displayed).
-     *
-     * @return
      */
     public JButton getSigninButton() {
         return signInBut;
@@ -139,6 +159,8 @@ public class SplashPanel extends GPanel {
         signInBut.setEnabled(false);
 
         createAcctBut = new JButton(NewUserAction.instance());
+
+        log.debug("SplashPanel components initialized");
     }
 
     /** Layout the child components used in this view. */
@@ -224,6 +246,8 @@ public class SplashPanel extends GPanel {
                 5);
 
         setSize(490, 400);
+
+        log.debug("SplashPanel layout complete");
     }
 
     private GPanel createHeader() {
@@ -505,6 +529,9 @@ public class SplashPanel extends GPanel {
          * As text was insert into the userId or password field, check whether we need to enable or
          * disable the LoginDialog's buttons.
          */
+        // Track last enabled state to avoid spam logging for every event.
+        private boolean lastEnabledState = false;
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             enableButtons(e);
@@ -530,12 +557,17 @@ public class SplashPanel extends GPanel {
 
         /** If the userId or password fields are empty, disable the OK 'Login' button. */
         private void enableButtons(DocumentEvent e) {
-            if ((userId.getDocument().getLength() == 0)
-                    || (password.getDocument().getLength() == 0)) {
-                signInBut.setEnabled(false);
+            boolean shouldEnable =
+                    (userId.getDocument().getLength() != 0)
+                            && (password.getDocument().getLength() != 0);
 
-            } else {
-                signInBut.setEnabled(true);
+            signInBut.setEnabled(shouldEnable);
+
+            if (shouldEnable != lastEnabledState) {
+                log.debug(
+                        "SplashPanel sign-in button enabled state changed: enabled={}",
+                        shouldEnable);
+                lastEnabledState = shouldEnable;
             }
         }
     }

@@ -124,7 +124,7 @@ public class Task extends TitledModel {
 
     /**
      * @param stepId the database id of the step to find.
-     * @return
+     * @return the matching {@link Step}, or null if not found.
      */
     public Step findStepById(int stepId) {
         for (Step step : steps) {

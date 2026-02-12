@@ -254,16 +254,21 @@ public class DpTuTutor implements TutorSvc {
      *     text string.
      */
     public TutorReply requestHint(String sessionInfo) {
-        // ToDo: this is simply a hard coded test case
+        log.debug(
+                "requestHint received sessionInfo length={}",
+                sessionInfo == null ? 0 : sessionInfo.length());
+        // TODO: Replace hard-coded hint with real hint generation.
         TutorReply reply = new TutorReply("Hint");
         reply.setData("This is a hint from the tutor.");
 
-        return new TutorReply();
+        return reply;
     }
 
     /**
-     * @param jsonObj a JSon encoded StepCompletion object
-     * @return
+     * Evaluate a completed step sent from the GUI client.
+     *
+     * @param jsonObj a JSON-encoded {@link StepCompletion} object
+     * @return a {@link TutorReply} representing the result of evaluating the completed step.
      */
     public TutorReply completedStep(String jsonObj) {
         StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
@@ -382,9 +387,9 @@ public class DpTuTutor implements TutorSvc {
     /**
      * Create and save the student and their initial student model.
      *
-     * @param acct
-     * @param course
-     * @return
+     * @param account the new student's account information.
+     * @param course the course whose outcomes seed the student's assessments.
+     * @return the persisted {@link Student}.
      */
     private Student createStudent(Account account, Course course) throws NonRecoverableException {
 
@@ -471,7 +476,7 @@ public class DpTuTutor implements TutorSvc {
      */
     private TutorReply createError(String errMsg, Exception ex) {
         if (ex == null) {
-            DpTuTutor.log.error(errMsg);
+            DpTuTutor.log.error(errMsg, (Throwable) null);
         } else {
             DpTuTutor.log.error(errMsg, ex);
         }

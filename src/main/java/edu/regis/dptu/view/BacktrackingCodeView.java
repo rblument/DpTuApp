@@ -51,6 +51,7 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener {
         setBorder(BorderFactory.createTitledBorder("Backtracking Code"));
         setBackground(LT_BLUE);
 
+        log.debug("BacktrackingCodeView initialized");
         // Components will be initialized and laid out when setModel is called
     }
 
@@ -60,8 +61,20 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener {
      * @param model a Problem object
      */
     public void setModel(Problem model) {
+        if (model == null) {
+            log.warn("BacktrackingCodeView.setModel called with null model");
+            this.model = null;
+            setVisible(false);
+            removeAll();
+            revalidate();
+            repaint();
+            return;
+        }
+
         // NOTE: Cannot remove listener from the old model
         this.model = model;
+
+        log.debug("BacktrackingCodeView model set: problemType={}", model.getType());
 
         // Clear previous UI components
         removeAll();
@@ -95,6 +108,10 @@ public class BacktrackingCodeView extends GPanel implements ProblemListener {
         for (int i = 0; i < backtrackingStatementStrings.size(); i++) {
             backtrackingStatementJLabels.add(new JLabel(backtrackingStatementStrings.get(i)));
         }
+
+        log.debug(
+                "BacktrackingCodeView loaded {} backtracking pseudocode lines",
+                backtrackingStatementJLabels.size());
     }
 
     /**

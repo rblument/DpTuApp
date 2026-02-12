@@ -2,6 +2,7 @@ package edu.regis.dptu.model;
 
 import edu.regis.dptu.util.ResourceMgr;
 
+@SuppressWarnings("Logging")
 public enum Mode {
     SEE_ONE("mode.seeOne"),
     DO_ONE("mode.doOne"),

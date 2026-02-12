@@ -12,14 +12,21 @@
  */
 package edu.regis.dptu.view.act;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Factory for creating the GUI actions used in the ShaTu user interface.
  *
  * @author rickb
  */
 public class ActionFactory {
+    private static final Logger log = LoggerFactory.getLogger(ActionFactory.class);
+
     /** Create each of the Java GUI actions by referencing their singleton. */
     public static void createActions() {
+        log.debug("Initializing GUI action singletons");
+
         CreateAcctAction.instance();
         NewUserAction.instance();
         SaveSessionAction.instance();

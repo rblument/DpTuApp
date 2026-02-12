@@ -32,12 +32,7 @@ public class CheckAnswerAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(CheckAnswerAction.class);
 
     /** The singleton instance of this action. */
-    private static final CheckAnswerAction SINGLETON;
-
-    /** Create the singleton instance on class load. */
-    static {
-        SINGLETON = new CheckAnswerAction("Check Answer");
-    }
+    private static final CheckAnswerAction SINGLETON = new CheckAnswerAction("Check Answer");
 
     /**
      * Return the singleton instance of this action.
@@ -67,8 +62,9 @@ public class CheckAnswerAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        // This is a stub implementation
-        // The full implementation will be added when StepCompletionView is integrated
+        log.debug(
+                "CheckAnswerAction triggered (stub implementation; StepCompletionView not integrated)");
+
         JOptionPane.showMessageDialog(
                 MainFrame.instance(),
                 "Answer checking functionality will be available in a future update.",

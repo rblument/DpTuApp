@@ -17,6 +17,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum GuiGesture {
     /** A gesture in which the student requests a hint in the GUI. */
     REQUEST_HINT("Request Hint"),

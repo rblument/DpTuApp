@@ -58,7 +58,7 @@ public class XmlMgr {
     /**
      * Return the singleton object for this class.
      *
-     * @return
+     * @return the global {@link XmlMgr} instance.
      */
     public static XmlMgr instance() {
         return SINGLETON;
@@ -78,8 +78,9 @@ public class XmlMgr {
      * directory are returned. Otherwise, the "*.xml" files in the given subdirectory of the current
      * data directory are returned, e.g., "/Course" or "/Course/Unit".
      *
-     * @param subDirectory an empty string or path beginning with a '/'
-     * @return
+     * @param fileName currently unused (legacy parameter). All files are searched under the default
+     *     {@link #DATA_DIRECTORY}.
+     * @return all XML files found under the data directory.
      */
     public List<File> findAllFiles(String fileName) {
         ArrayList<File> xmlFiles = new ArrayList<>();
@@ -270,7 +271,7 @@ public class XmlMgr {
         NodeList nodes = root.getElementsByTagName(tag);
 
         if (nodes.getLength() == 0) {
-            log.trace("XmlMgr: Unknown tag: {0}", tag);
+            log.trace("XmlMgr: Unknown tag: {}", tag);
             return "";
         } else {
             Node node = nodes.item(0);
@@ -307,7 +308,7 @@ public class XmlMgr {
     public static String getAttribute(Element element, String attributeName) {
         String val = element.getAttribute(attributeName);
 
-        if (val.equals("")) log.trace("Missing or empty attribute {0}", attributeName);
+        if (val.equals("")) log.trace("Missing or empty attribute {}", attributeName);
 
         return val;
     }
@@ -335,7 +336,7 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            log.trace("Missing or empty int attribute {0}", attributeName);
+            log.trace("Missing or empty int attribute {}", attributeName);
             return -1;
         } else {
             try {
@@ -358,7 +359,7 @@ public class XmlMgr {
         String val = element.getAttribute(attributeName);
 
         if (val.equals("")) {
-            log.trace("Missing or empty float attribute {0}", attributeName);
+            log.trace("Missing or empty float attribute {}", attributeName);
             return 0.0f;
         } else {
             try {
@@ -384,7 +385,7 @@ public class XmlMgr {
 
         switch (val) {
             case "":
-                log.trace("Missing or empty boolean attribute {0}", attributeName);
+                log.trace("Missing or empty boolean attribute {}", attributeName);
                 return false;
             case "true":
             case "yes":

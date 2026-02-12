@@ -22,6 +22,7 @@ import edu.regis.dptu.model.ProblemKind;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface ProblemSvc {
     /**
      * Locate and return the Problem with the given kind.

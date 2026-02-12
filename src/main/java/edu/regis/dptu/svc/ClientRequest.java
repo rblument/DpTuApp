@@ -18,8 +18,12 @@ package edu.regis.dptu.svc;
  *
  * <p>The request type specifies how to interpret the JSon encoded data.
  *
+ * <p>This is a simple data-transfer object (DTO) with no operational behavior; logging is
+ * intentionally suppressed.
+ *
  * @author rickb
  */
+@SuppressWarnings("Logging") // DTO: no behavior or operational logging value
 public class ClientRequest {
     /** The specific type of request being made by the client. */
     private ServerRequestType requestType;

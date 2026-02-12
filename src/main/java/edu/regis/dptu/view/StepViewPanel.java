@@ -63,11 +63,13 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     private JSpinner stepsSpinner;
 
     /** Label showing current execution state */
-    private JLabel statusLabel; // Added in new code, assume it's desired
+    private JLabel statusLabel;
 
     /** Constant for background color */
-    private static final Color PANEL_BACKGROUND =
-            new Color(240, 240, 240); // Default or from new code
+    private static final Color PANEL_BACKGROUND = new Color(240, 240, 240);
+
+    /** Track status label line to avoid unnecessary debug chatter (optional). */
+    private int lastDisplayedLine = Integer.MIN_VALUE;
 
     /** Initialize this view including creating and laying out its child components. */
     public StepViewPanel() {
@@ -82,8 +84,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
      * @param problem The LCS problem to control
      */
     public StepViewPanel(Problem problem) {
-        this(); // Call default constructor to initialize/layout components
-        setModel(problem); // Set the initial model
+        this();
+        setModel(problem);
     }
 
     /**
@@ -103,93 +105,108 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     public void setModel(Problem model) {
         this.model = model;
 
-        // Add this view as a listener to the new model
         if (this.model != null) {
-            // Assuming addProblemListener handles duplicates or it's acceptable
-            // if the same listener is added multiple times if setModel is called repeatedly
-            // with the same model instance.
             this.model.addProblemListener(this);
-
             setVisible(true);
+
+            if (log.isDebugEnabled()) {
+                // Guard is intentional: avoid touching domain object getters when DEBUG is off.
+                log.debug(
+                        "StepViewPanel.setModel: modelId={}, type={}",
+                        model.getId(),
+                        model.getType());
+            }
         } else {
             setVisible(false);
+            log.debug("StepViewPanel.setModel(null): view hidden");
         }
 
-        updateView(); // Update button states based on the new model
+        lastDisplayedLine = Integer.MIN_VALUE;
+        updateView();
     }
 
     /** Create the child GUI components appearing in this panel. */
     private void initializeComponents() {
-        // Set the panel appearance
         setBorder(BorderFactory.createTitledBorder("Algorithm Control"));
         setBackground(PANEL_BACKGROUND);
 
-        // Step back button
         stepBackButton = new JButton("Step Back");
         stepBackButton.setToolTipText("Go back one step in the algorithm");
         stepBackButton.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        if (model == null) {
+                            log.warn("Step Back clicked with no model loaded");
+                            return;
+                        }
+
+                        log.debug("Step Back clicked");
+
                         // When we step back from backtracking alg into LCS alg
                         if (model.undoingBacktrackButton()) {
                             MainFrame.instance().getView().showBacktrackingPanel(false);
                             updateView();
-                        }
-                        // Normal "step back" behavior
-                        else {
+                            log.debug("Exited backtracking panel via Step Back");
+                        } else {
                             model.undo();
                         }
                     }
                 });
-        stepBackButton.setEnabled(false); // Initially disabled
+        stepBackButton.setEnabled(false);
 
-        // Step forward button
         stepForwardButton = new JButton("Step Forward");
         stepForwardButton.setToolTipText("Advance one step in the algorithm");
         stepForwardButton.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null) {
-                            model.step();
-                            // updateView() will be called via problemUpdated listener
+                        if (model == null) {
+                            log.warn("Step Forward clicked with no model loaded");
+                            return;
                         }
+                        log.debug("Step Forward clicked");
+                        model.step();
+                        // updateView() will be called via problemUpdated listener
                     }
                 });
-        stepForwardButton.setEnabled(false); // Initially disabled until model is set
+        stepForwardButton.setEnabled(false);
 
-        // Run steps button
         runStepsButton = new JButton("Run Steps");
         runStepsButton.setToolTipText("Run multiple steps at once");
         runStepsButton.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null) {
-                            int steps = (Integer) stepsSpinner.getValue();
-                            model.step(steps);
-                            // updateView() will be called via problemUpdated listener
+                        if (model == null) {
+                            log.warn("Run Steps clicked with no model loaded");
+                            return;
                         }
+                        int steps = (Integer) stepsSpinner.getValue();
+                        log.debug("Run Steps clicked: steps={}", steps);
+                        model.step(steps);
+                        // updateView() will be called via problemUpdated listener
                     }
                 });
-        runStepsButton.setEnabled(false); // Initially disabled
+        runStepsButton.setEnabled(false);
 
-        // Reset button
         resetButton = new JButton("Reset");
         resetButton.setToolTipText("Reset algorithm to initial state");
         resetButton.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null) {
-                            model.reset();
-                            MainFrame.instance().getView().showBacktrackingPanel(false);
-                            // updateView() will be called via problemUpdated listener
+                        if (model == null) {
+                            log.warn("Reset clicked with no model loaded");
+                            return;
                         }
+                        log.debug("Reset clicked");
+                        model.reset();
+                        MainFrame.instance().getView().showBacktrackingPanel(false);
+                        // updateView() will be called via problemUpdated listener
                     }
                 });
-        resetButton.setEnabled(false); // Initially disabled
+        resetButton.setEnabled(false);
 
         backtrackButton = new JButton("Backtrack");
         backtrackButton.setToolTipText("Find the problem solution");
@@ -197,33 +214,32 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (model != null) {
-                            MainFrame.instance().getView().showBacktrackingPanel(true);
-                            model.backtrackingOn();
+                        if (model == null) {
+                            log.warn("Backtrack clicked with no model loaded");
+                            return;
                         }
+                        log.debug("Backtrack clicked");
+                        MainFrame.instance().getView().showBacktrackingPanel(true);
+                        model.backtrackingOn();
                     }
                 });
         backtrackButton.setEnabled(false);
 
-        // Steps spinner for selecting multiple steps
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 100, 1); // Default range
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 100, 1);
         stepsSpinner = new JSpinner(spinnerModel);
-        stepsSpinner.setPreferredSize(new Dimension(60, 25)); // Default size
+        stepsSpinner.setPreferredSize(new Dimension(60, 25));
 
-        // Status label (assuming this was added and is desired)
         statusLabel = new JLabel("Ready");
-        statusLabel.setFont(new Font("Monospaced", Font.BOLD, 12)); // Default style
+        statusLabel.setFont(new Font("Monospaced", Font.BOLD, 12));
     }
 
     /** Layout the child components in this panel. */
     private void layoutComponents() {
-        // Create container for step spinner and its label
         JPanel spinnerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         spinnerPanel.setBackground(PANEL_BACKGROUND);
         spinnerPanel.add(new JLabel("Steps:"));
         spinnerPanel.add(stepsSpinner);
 
-        // Add components with the GPanel's addc helper method
         addc(
                 stepBackButton,
                 0,
@@ -238,7 +254,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-
         addc(
                 stepForwardButton,
                 1,
@@ -253,7 +268,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-
         addc(
                 spinnerPanel,
                 2,
@@ -268,7 +282,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-
         addc(
                 runStepsButton,
                 3,
@@ -283,7 +296,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-
         addc(
                 resetButton,
                 4,
@@ -298,7 +310,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-
         addc(
                 backtrackButton,
                 5,
@@ -313,8 +324,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 5,
                 5,
                 5);
-
-        // Add status label if it's part of the layout
         addc(
                 statusLabel,
                 6,
@@ -322,19 +331,19 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 1,
                 1,
                 1.0,
-                0.0, // Give it remaining horizontal space
+                0.0,
                 GridBagConstraints.EAST,
                 GridBagConstraints.NONE,
                 5,
                 15,
                 5,
-                5); // Align East
+                5);
     }
 
     /** Update the panel based on the current state of the problem model. */
     private void updateView() {
         boolean modelExists = (model != null);
-        // Check if model exists before accessing its state
+
         boolean canStepBack = modelExists && model.canStepBack();
         boolean canStepForward = modelExists && !model.hasFinished();
         boolean canRun = modelExists && !model.hasFinished();
@@ -345,19 +354,28 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         stepForwardButton.setEnabled(canStepForward);
         runStepsButton.setEnabled(canRun);
         resetButton.setEnabled(canReset);
-        stepsSpinner.setEnabled(canRun); // Enable spinner when running is possible
+        stepsSpinner.setEnabled(canRun);
         backtrackButton.setEnabled(canBacktrack);
 
-        if (modelExists) {
-            // Update status label with current line number or other relevant info
-            if (model.hasFinished()) {
-                statusLabel.setText("Finished!");
-            } else {
-                int displayNum = (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
-                statusLabel.setText(" Line: " + String.format("%2d", displayNum));
-            }
-        } else {
+        if (!modelExists) {
             statusLabel.setText("No model loaded");
+            lastDisplayedLine = Integer.MIN_VALUE;
+            return;
+        }
+
+        if (model.hasFinished()) {
+            statusLabel.setText("Finished!");
+            lastDisplayedLine = Integer.MIN_VALUE;
+            return;
+        }
+
+        // Guard only if DEBUG is enabled (formatting work + getter calls)
+        int displayNum = (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
+        statusLabel.setText(" Line: " + String.format("%2d", displayNum));
+
+        if (log.isDebugEnabled() && displayNum != lastDisplayedLine) {
+            log.debug("StepViewPanel status updated: displayLine={}", displayNum);
+            lastDisplayedLine = displayNum;
         }
     }
 
@@ -368,6 +386,6 @@ public class StepViewPanel extends GPanel implements ProblemListener {
      */
     @Override
     public void problemUpdated(Problem problem) {
-        updateView(); // Refresh button states and status label
+        updateView();
     }
 }

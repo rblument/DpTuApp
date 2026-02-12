@@ -20,6 +20,7 @@ package edu.regis.dptu.err;
  *
  * @author Rickb
  */
+@SuppressWarnings("Logging")
 public abstract class DpTuException extends Exception {
 
     /**

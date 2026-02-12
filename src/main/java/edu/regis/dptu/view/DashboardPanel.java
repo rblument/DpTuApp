@@ -256,7 +256,7 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         studentModel = student.getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        DashboardPanel.log.info("DashboardPanel: applying scaffold level rules for {0}", lvl);
+        DashboardPanel.log.info("DashboardPanel: applying scaffold level rules for {}", lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

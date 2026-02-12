@@ -47,10 +47,10 @@ public class MatrixChainProblem extends Problem {
     private EXECUTION_STATE executionState;
 
     // Stack to record changes to m[i][j]
-    private Stack<int[]> mHistory = new Stack<>();
+    private final Stack<int[]> mHistory = new Stack<>();
 
     // For storing split table changes
-    private Stack<int[]> sHistory = new Stack<>();
+    private final Stack<int[]> sHistory = new Stack<>();
 
     // Parenthesization result
     private String currentParens = "";
@@ -59,7 +59,7 @@ public class MatrixChainProblem extends Problem {
     private int[][] bTable;
 
     // Stack for backtracking
-    private Stack<Object> btStack = new Stack<>();
+    private final Stack<Object> btStack = new Stack<>();
 
     private static final String CLOSE_PAREN = ")";
 
@@ -101,6 +101,14 @@ public class MatrixChainProblem extends Problem {
         tableVariable = "m";
         executionState = EXECUTION_STATE.PRE;
 
+        log.debug(
+                "MatrixChainProblem created: id={}, n={}, d.size={}, sizes[0]={}x{}",
+                id,
+                n,
+                d.size(),
+                sizes[0][0],
+                sizes[0][1]);
+
         loadCodeStatements();
     }
 
@@ -111,12 +119,19 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public boolean backtrackReady() {
+        // (As written, this is effectively always true unless POST? Keeping behavior unchanged.)
         return executionState == EXECUTION_STATE.POST
                 || executionState != EXECUTION_STATE.BACKTRACK_DONE;
     }
 
     @Override
     public void backtrackingOn() {
+        log.debug(
+                "Backtracking enabled: priorState={}, nextLineNumber={} -> {}",
+                executionState,
+                nextLineNumber,
+                BACKTRACKING_START_NUM);
+
         nextLineNumber = BACKTRACKING_START_NUM;
         executionState = EXECUTION_STATE.BACKTRACK_PRE;
 
@@ -147,6 +162,14 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public void reset() {
+        log.debug(
+                "Reset requested: state {} -> PRE; histories cleared (exec={}, mHist={}, sHist={}, btStack={})",
+                executionState,
+                executionHistory.size(),
+                mHistory.size(),
+                sHistory.size(),
+                btStack.size());
+
         executionState = EXECUTION_STATE.PRE;
         nextLineNumber = 0;
 
@@ -214,6 +237,11 @@ public class MatrixChainProblem extends Problem {
         variables.put("i", 0);
         executionState = EXECUTION_STATE.R_LOOP;
         nextLineNumber = 1;
+
+        log.debug(
+                "executeLine0: i=0, state -> {}, nextLineNumber={}",
+                executionState,
+                nextLineNumber);
     }
 
     public void executeLine1() {
@@ -224,10 +252,17 @@ public class MatrixChainProblem extends Problem {
         mHistory.push(new int[] {i, i, m[i][i]});
         m[i][i] = 0;
 
+        log.debug("executeLine1: set m[{}][{}]=0; n={}, i={}", i, i, n, i);
+
         if (i + 1 == n) {
             variables.put("c", 1);
             executionState = EXECUTION_STATE.C_LOOP;
             nextLineNumber = 2;
+
+            log.debug(
+                    "executeLine1: finished diagonal init; c=1, state -> {}, nextLineNumber={}",
+                    executionState,
+                    nextLineNumber);
         } else {
             variables.put("i", i + 1);
             nextLineNumber = 1;
@@ -241,9 +276,19 @@ public class MatrixChainProblem extends Problem {
         if (c == n) {
             executionState = EXECUTION_STATE.POST;
             nextLineNumber = 9;
+
+            log.debug(
+                    "executeLine2: done (c==n); state -> {}, nextLineNumber={}",
+                    executionState,
+                    nextLineNumber);
         } else {
             variables.put("i", 0);
             nextLineNumber = 3;
+
+            log.debug(
+                    "executeLine2: start chain length c={}; i=0, nextLineNumber={}",
+                    c,
+                    nextLineNumber);
         }
     }
 
@@ -255,6 +300,8 @@ public class MatrixChainProblem extends Problem {
         if (i > n - c - 1) {
             variables.put("c", c + 1);
             nextLineNumber = 2;
+
+            log.debug("executeLine3: advance c -> {}; reset loop via line2", c + 1);
         } else {
             nextLineNumber = 4;
         }
@@ -266,6 +313,8 @@ public class MatrixChainProblem extends Problem {
 
         variables.put("j", i + c);
         nextLineNumber = 5;
+
+        log.debug("executeLine4: set j=i+c -> j={}, i={}, c={}", i + c, i, c);
     }
 
     public void executeLine5() {
@@ -278,6 +327,13 @@ public class MatrixChainProblem extends Problem {
         variables.put("k", i);
 
         nextLineNumber = 6;
+
+        log.debug(
+                "executeLine5: init m[{}][{}]=INF; k=i -> {}; nextLineNumber={}",
+                i,
+                j,
+                i,
+                nextLineNumber);
     }
 
     public void executeLine6() {
@@ -288,9 +344,19 @@ public class MatrixChainProblem extends Problem {
             int i = (int) variables.get("i");
             variables.put("i", i + 1);
             nextLineNumber = 3;
-        } else nextLineNumber = 7;
+
+            log.debug(
+                    "executeLine6: k>=j (k={}, j={}); i -> {}; nextLineNumber={}",
+                    k,
+                    j,
+                    i + 1,
+                    nextLineNumber);
+        } else {
+            nextLineNumber = 7;
+        }
     }
 
+    @SuppressWarnings("unchecked")
     public void executeLine7() {
         int[][] m = (int[][]) variables.get("m");
         int i = (int) variables.get("i");
@@ -302,6 +368,8 @@ public class MatrixChainProblem extends Problem {
 
         variables.put("cost", cost);
         nextLineNumber = 8;
+
+        log.debug("executeLine7: cost computed for (i={}, j={}, k={}): {}", i, j, k, cost);
     }
 
     public void executeLine8() {
@@ -311,7 +379,9 @@ public class MatrixChainProblem extends Problem {
         int[][] m = (int[][]) variables.get("m");
 
         if (cost < m[i][j]) {
-            mHistory.push(new int[] {i, j, m[i][j]});
+            int prev = m[i][j];
+
+            mHistory.push(new int[] {i, j, prev});
             m[i][j] = cost;
 
             int[][] s = (int[][]) variables.get("s");
@@ -319,6 +389,16 @@ public class MatrixChainProblem extends Problem {
 
             sHistory.push(new int[] {i, j, s[i][j]});
             s[i][j] = kVal;
+
+            log.debug(
+                    "executeLine8: improved m[{}][{}]: {} -> {}; set s[{}][{}]={}",
+                    i,
+                    j,
+                    prev,
+                    cost,
+                    i,
+                    j,
+                    kVal);
         }
 
         int k = (int) variables.get("k");
@@ -328,6 +408,7 @@ public class MatrixChainProblem extends Problem {
 
     public void executeLine9() {
         executionState = EXECUTION_STATE.POST;
+        log.debug("executeLine9: state -> POST");
     }
 
     // =========================================================================
@@ -343,12 +424,22 @@ public class MatrixChainProblem extends Problem {
 
         executionState = EXECUTION_STATE.BACKTRACK_PRE;
         nextLineNumber = 101;
+
+        log.debug(
+                "executeLine100: init backtrack stack with (0, {}); nextLineNumber={}",
+                n - 1,
+                nextLineNumber);
     }
 
     public void executeLine101() {
         if (btStack.isEmpty()) {
             executionState = EXECUTION_STATE.BACKTRACK_DONE;
             nextLineNumber = 118;
+
+            log.debug(
+                    "executeLine101: btStack empty; state -> {}, nextLineNumber={}",
+                    executionState,
+                    nextLineNumber);
         } else {
             executionState = EXECUTION_STATE.BACKTRACK_LOOP;
             nextLineNumber = 102;
@@ -362,6 +453,8 @@ public class MatrixChainProblem extends Problem {
             currentParens += ")";
             executionState = EXECUTION_STATE.BACKTRACK_CLOSE;
             nextLineNumber = 101;
+
+            log.debug("executeLine102: pop CLOSE_PAREN; currentParens='{}'", currentParens);
             return;
         }
 
@@ -371,6 +464,12 @@ public class MatrixChainProblem extends Problem {
 
         executionState = EXECUTION_STATE.BACKTRACK_POP;
         nextLineNumber = 103;
+
+        log.debug(
+                "executeLine102: pop pair (i={}, j={}); nextLineNumber={}",
+                pair[0],
+                pair[1],
+                nextLineNumber);
     }
 
     public void executeLine103() {
@@ -383,6 +482,8 @@ public class MatrixChainProblem extends Problem {
 
             executionState = EXECUTION_STATE.BACKTRACK_LEAF;
             nextLineNumber = 101;
+
+            log.debug("executeLine103: leaf (i==j=={}); currentParens='{}'", i, currentParens);
             return;
         }
 
@@ -407,20 +508,34 @@ public class MatrixChainProblem extends Problem {
 
         executionState = EXECUTION_STATE.BACKTRACK_SPLIT;
         nextLineNumber = 101;
+
+        log.debug(
+                "executeLine104: split (i={}, j={}) at k={}; push (i,k)=({},{}), (k+1,j)=({},{}); currentParens='{}'",
+                i,
+                j,
+                k,
+                i,
+                k,
+                k + 1,
+                j,
+                currentParens);
     }
 
     public void executeLine118() {
         executionState = EXECUTION_STATE.BACKTRACK_DONE;
+        log.debug("executeLine118: state -> BACKTRACK_DONE; currentParens='{}'", currentParens);
     }
 
     // =========================================================================
-    // — UNDO METHODS (unchanged except removal of bState references) —
+    // — UNDO METHODS —
     // =========================================================================
 
     public void undoLine0() {
         variables.put("i", 0);
         executionState = EXECUTION_STATE.PRE;
         nextLineNumber = 0;
+
+        log.debug("undoLine0: state -> PRE; nextLineNumber=0");
     }
 
     public void undoLine1() {
@@ -428,6 +543,8 @@ public class MatrixChainProblem extends Problem {
             int[] change = mHistory.pop();
             int[][] m = (int[][]) variables.get("m");
             m[change[0]][change[1]] = change[2];
+
+            log.debug("undoLine1: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
         }
 
         int i = (int) variables.get("i") - 1;
@@ -438,15 +555,20 @@ public class MatrixChainProblem extends Problem {
         int c = (int) variables.get("c") - 1;
         variables.put("c", c);
         variables.put("i", 0);
+
+        log.debug("undoLine2: c -> {}; i -> 0", c);
     }
 
     public void undoLine3() {
         int i = (int) variables.get("i") - 1;
         variables.put("i", i);
+
+        log.debug("undoLine3: i -> {}", i);
     }
 
     public void undoLine4() {
         variables.put("j", 0);
+        log.debug("undoLine4: j -> 0");
     }
 
     public void undoLine5() {
@@ -454,16 +576,21 @@ public class MatrixChainProblem extends Problem {
             int[] change = mHistory.pop();
             int[][] m = (int[][]) variables.get("m");
             m[change[0]][change[1]] = change[2];
+
+            log.debug("undoLine5: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
         }
     }
 
     public void undoLine6() {
         int k = (int) variables.get("k") - 1;
         variables.put("k", k);
+
+        log.debug("undoLine6: k -> {}", k);
     }
 
     public void undoLine7() {
         variables.remove("cost");
+        log.debug("undoLine7: removed cost");
     }
 
     public void undoLine8() {
@@ -471,12 +598,16 @@ public class MatrixChainProblem extends Problem {
             int[] change = mHistory.pop();
             int[][] m = (int[][]) variables.get("m");
             m[change[0]][change[1]] = change[2];
+
+            log.debug("undoLine8: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
         }
 
         if (!sHistory.isEmpty()) {
             int[] prev = sHistory.pop();
             int[][] s = (int[][]) variables.get("s");
             s[prev[0]][prev[1]] = prev[2];
+
+            log.debug("undoLine8: restore s[{}][{}] -> {}", prev[0], prev[1], prev[2]);
         }
 
         int k = (int) variables.get("k") - 1;
@@ -486,11 +617,15 @@ public class MatrixChainProblem extends Problem {
     public void undoLine9() {
         variables.put("c", (int) variables.get("n"));
         executionState = EXECUTION_STATE.C_LOOP;
+
+        log.debug("undoLine9: state -> C_LOOP; c -> n");
     }
 
     public void undoLine100() {
         btStack.clear();
         currentParens = "";
+
+        log.debug("undoLine100: cleared btStack and currentParens");
     }
 
     public void undoLine101() {}
@@ -506,6 +641,8 @@ public class MatrixChainProblem extends Problem {
         if (currentParens.endsWith("A" + i)) {
             currentParens = currentParens.substring(0, currentParens.length() - ("A" + i).length());
         }
+
+        log.debug("undoLine103: unvisit b[{}][{}]; currentParens='{}'", i, j, currentParens);
     }
 
     public void undoLine104() {
@@ -516,10 +653,13 @@ public class MatrixChainProblem extends Problem {
         if (currentParens.endsWith("(")) {
             currentParens = currentParens.substring(0, currentParens.length() - 1);
         }
+
+        log.debug("undoLine104: unvisit b[{}][{}]; currentParens='{}'", i, j, currentParens);
     }
 
     public void undoLine118() {
         executionState = EXECUTION_STATE.BACKTRACK_LOOP;
+        log.debug("undoLine118: state -> BACKTRACK_LOOP");
     }
 
     public EXECUTION_STATE getExecutionState() {

@@ -54,7 +54,7 @@ public class CreateAcctAction extends DpTuGuiAction {
     /**
      * Return the singleton instance of this sign-in action.
      *
-     * @return
+     * @return the singleton {@link CreateAcctAction} instance.
      */
     public static CreateAcctAction instance() {
         return SINGLETON;
@@ -66,7 +66,6 @@ public class CreateAcctAction extends DpTuGuiAction {
 
         putValue(SHORT_DESCRIPTION, "Create a new user");
         putValue(MNEMONIC_KEY, KeyEvent.VK_A);
-        // putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
@@ -88,20 +87,25 @@ public class CreateAcctAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
-        Gson gson = new Gson();
-
         SplashFrame frame = SplashFrame.instance();
-
         Account account = frame.getAccount();
 
-        ClientRequest request = new ClientRequest(ServerRequestType.CREATE_ACCOUNT);
-        request.setData(gson.toJson(account));
+        // User-initiated action: INFO is appropriate.
+        log.info("Create account requested for userId={}", account.getUserId());
 
-        TutorReply reply = SvcFacade.instance().tutorRequest(request);
+        try {
+            Gson gson = new Gson();
 
-        String msg;
-        switch (reply.getStatus()) {
-            case "Created":
+            ClientRequest request = new ClientRequest(ServerRequestType.CREATE_ACCOUNT);
+            request.setData(gson.toJson(account));
+
+            TutorReply reply = SvcFacade.instance().tutorRequest(request);
+            String status = (reply == null) ? null : reply.getStatus();
+
+            log.debug("Create account reply: userId={}, status={}", account.getUserId(), status);
+
+            String msg;
+            if ("Created".equals(status)) {
                 frame.clearNewAccountPanel();
 
                 msg =
@@ -109,20 +113,39 @@ public class CreateAcctAction extends DpTuGuiAction {
                                 + "Press okay and we'll return you to the sign-in screen\n\n"
                                 + "Then, please sign-in to the tutor using this account.";
 
-                JOptionPane.showMessageDialog(SplashFrame.instance(), msg);
+                JOptionPane.showMessageDialog(frame, msg);
 
+                log.info("Create account succeeded for userId={}", account.getUserId());
                 frame.selectSplash();
-                break;
 
-            case "IllegalUserId":
+            } else if ("IllegalUserId".equals(status)) {
                 msg = "User id already exists: " + account.getUserId();
                 JOptionPane.showMessageDialog(
                         null, msg, "Information", JOptionPane.INFORMATION_MESSAGE);
-                break;
 
-            default: // "ERR" Error should have been logged in tutor.
+                log.warn(
+                        "Create account rejected (IllegalUserId) for userId={}",
+                        account.getUserId());
+
+            } else {
+                // Unknown or ERR: service should log, but we still log locally for correlation.
                 msg = "An unexpected error occurred. Please contact DpTu support";
                 JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
+
+                log.error(
+                        "Create account failed: userId={}, unexpected status={}",
+                        account.getUserId(),
+                        status);
+            }
+        } catch (RuntimeException e) {
+            // Covers unexpected runtime issues (including service call failures).
+            JOptionPane.showMessageDialog(
+                    null,
+                    "An unexpected error occurred. Please contact DpTu support",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
+            log.error("Create account failed due to exception: userId={}", account.getUserId(), e);
         }
     }
 }

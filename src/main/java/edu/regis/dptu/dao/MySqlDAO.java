@@ -86,13 +86,19 @@ public abstract class MySqlDAO {
                 IS_LOADED = true;
 
             } catch (MissingPropertyException e) {
-                log.info("Missing DB property: {0}", e.toString());
+                // Property initialization is required to establish a DB connection.
+                // Log at WARN to aid troubleshooting but allow the application to decide how to
+                // proceed (some execution paths may not require a DB).
+                log.warn("Missing DB property while initializing JDBC URL: {}", e.getMessage(), e);
             } catch (ClassNotFoundException e) {
-                log.error("MySqlDao-ERR-1: Illegal driver class name {0}", e.toString());
+                log.error("MySqlDAO-ERR-1: JDBC driver class not found: {}", DRIVER, e);
             } catch (InstantiationException e) {
-                log.error("MySqlDao-ERR-2: Illegal instance {0}", e.toString());
+                log.error("MySqlDAO-ERR-2: Unable to instantiate JDBC driver: {}", DRIVER, e);
             } catch (IllegalAccessException e) {
-                log.error("MySqlDao-ERR-3: No create driver permission {0}", e.toString());
+                log.error(
+                        "MySqlDAO-ERR-3: Illegal access while instantiating JDBC driver: {}",
+                        DRIVER,
+                        e);
             }
         }
     }
@@ -101,15 +107,15 @@ public abstract class MySqlDAO {
      * If the given connection or statement is open, close it, but log any errors that might be
      * thrown during the closing operations.
      *
-     * @param conn An JDBC Connection that will to be closed.
-     * @param stmt An JDBC Statement that will be closed.
+     * @param conn an JDBC Connection that will be closed.
+     * @param stmt an JDBC Statement that will be closed.
      */
     protected void close(Connection conn, Statement stmt) {
         if (stmt != null) {
             try {
                 stmt.close();
             } catch (Exception e) {
-                log.info("MySqlDao-ERR-4: stmt.close() {0}", e.toString());
+                log.debug("MySqlDAO-ERR-4: stmt.close() failed", e);
             }
         }
 
@@ -117,7 +123,7 @@ public abstract class MySqlDAO {
             try {
                 conn.close();
             } catch (Exception e) {
-                log.info("MySqlDao-ERR-5: close() {0}", e.toString());
+                log.debug("MySqlDAO-ERR-5: conn.close() failed", e);
             }
         }
     }
@@ -126,7 +132,7 @@ public abstract class MySqlDAO {
      * If the given connection is open, close it, but log any errors that occur in attempting to
      * close the connection.
      *
-     * @param conn
+     * @param conn an existing JDBC connection (may be null)
      */
     protected void close(Connection conn) {
         if (conn != null) {
@@ -134,7 +140,7 @@ public abstract class MySqlDAO {
                 conn.setAutoCommit(true); // Convenience
                 conn.close();
             } catch (Exception e) {
-                log.info("MySqlDao-ERR-6: close() {0}", e.toString());
+                log.debug("MySqlDAO-ERR-6: conn.close() failed", e);
             }
         }
     }
@@ -143,14 +149,14 @@ public abstract class MySqlDAO {
      * If the given statement is open, close it, but log any errors that occur in attempting to
      * close the connection.
      *
-     * @param stmt
+     * @param stmt an existing JDBC statement (may be null)
      */
     protected void close(Statement stmt) {
         if (stmt != null) {
             try {
                 stmt.close();
             } catch (Exception e) {
-                log.info("MySqlDao-ERR-7: close() {0}", e.toString());
+                log.debug("MySqlDAO-ERR-7: stmt.close() failed", e);
             }
         }
     }
