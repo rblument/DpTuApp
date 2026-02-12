@@ -23,6 +23,8 @@ public class SeeOneView extends GPanel implements ModeView {
     private SubproblemTableView tableView;
     private StepViewPanel stepViewPanel;
 
+    private Runnable onCompletedTaskSend;
+
     public SeeOneView() {
         SeeOneView.log.info("Initializing SeeOneView");
         initializeComponents();
@@ -47,6 +49,19 @@ public class SeeOneView extends GPanel implements ModeView {
 
         revalidate();
         repaint();
+    }
+
+    /**
+     * Injects the action that should occur when the current problem/task is completed.
+     *
+     * <p>NOTE: Temporary design. Eventually completion reporting should be handled by a
+     * controller/service layer rather than a view.
+     *
+     * @param r callback executed once when the problem finishes
+     */
+    public void setOnCompletedTaskSend(Runnable r) {
+        this.onCompletedTaskSend = r;
+        codeView.setOnTaskCompleted(r);
     }
 
     private void initializeComponents() {

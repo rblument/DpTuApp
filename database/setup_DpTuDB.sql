@@ -245,6 +245,17 @@ CREATE TABLE LCSProblem (
   PRIMARY KEY (Id)
 );
 
+#records when a student completes a Task, per student
+# used to persist progress across sessions
+CREATE TABLE CompletedTask (
+  UserId VARCHAR(256) NOT NULL,
+  TaskId INT NOT NULL,
+  CompletedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (UserId, TaskId)
+   FOREIGN KEY (UserId)
+      REFERENCES account(UserId)
+);
+
 /*********************************************************************************
 * Seeds
 */

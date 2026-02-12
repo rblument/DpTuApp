@@ -158,6 +158,51 @@ public class DpTuTutor implements TutorSvc {
     }
 
     /**
+     * handles a client request indicating a task has been completed by a student
+     *
+     * <p>this method is inv oked via reflection by {@link #request(ClientRequest)} when the request
+     * type is ":CompletedTask" The request() method is responsible for verifying the user's session
+     *
+     * <p>on success this method persists the user,task completion record so that progress can be
+     * reconstructed across sessions (for progress bars)
+     *
+     * @param data the request payload, expected to be a string rep of the TaskId
+     * @return a TutorReply indicating success or failure
+     */
+    public TutorReply completedTask(String data) {
+        try {
+            // ensure request() already verified the session and loaded student
+            if (student == null || student.getAccount() == null) {
+                TutorReply reply = new TutorReply(":ERR");
+                reply.setData("No authenticated student in session");
+                return reply;
+            }
+
+            // parse the task identifier from request payload
+            // the client is expected to send the TaskId as a simple string (ex: '12')
+            int taskId = Integer.parseInt(data.trim());
+
+            String userId = student.getAccount().getUserId();
+
+            // persist the completion event
+            ServiceFactory.findCompletedTaskSvc().markCompleted(userId, taskId);
+
+            TutorReply reply = new TutorReply(":OK");
+            reply.setData("Completed taskId= " + taskId);
+            return reply;
+        } catch (NumberFormatException ex) {
+            // client sent malformed data that could not be parsed into an Int TaskId
+            // likely a client-side bug or protocol mismatch
+            TutorReply reply = new TutorReply(":ERR");
+            reply.setData("Invalid task id: " + data);
+            return reply;
+        } catch (NonRecoverableException ex) {
+            // failure occurred when persisting completion state to database
+            return createError("Failed to record completed task: " + data, ex);
+        }
+    }
+
+    /**
      * Creates a new student account
      *
      * <p>This method handles ":CreateAccount" requests from the GUI client.
@@ -340,10 +385,6 @@ public class DpTuTutor implements TutorSvc {
         return reply;
     }
 
-    public TutorReply completedTask(String taskInfo) {
-        return new TutorReply();
-    }
-
     /**
      * Create and save a new tutoring session associated with the given account.
      *
@@ -368,6 +409,8 @@ public class DpTuTutor implements TutorSvc {
         // ToDo: This is really a kludge since the first task may not be the
         // problem task. Will/should every task represent the problem??
         tSession.setProblem(task.getProblem());
+        // taskId was not getting added so awkward fix
+        tSession.getProblem().setTaskId(task.getId());
 
         // Generate the security token for this tutoring session.
         Random rnd = new Random();

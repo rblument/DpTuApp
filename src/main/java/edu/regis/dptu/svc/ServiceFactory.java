@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.dao.AccountDAO;
+import edu.regis.dptu.dao.CompletedTaskDAO;
 import edu.regis.dptu.dao.CourseDAO;
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.dao.SessionDAO;
@@ -83,5 +84,15 @@ public class ServiceFactory {
     public static StudentModelSvc findStudentModelSvc() {
         log.debug("ServiceFactory: Retrieving StudentModelSvc instance");
         return new StudentModelDAO();
+    }
+
+    /**
+     * return a reference to the completed task svc
+     *
+     * @return CompletedTaskSvc
+     */
+    public static CompletedTaskSvc findCompletedTaskSvc() {
+        log.debug("ServiceFactory: Retrieving CompletedTaskSvc instance");
+        return new CompletedTaskDAO();
     }
 }

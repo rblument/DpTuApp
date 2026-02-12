@@ -53,6 +53,14 @@ public abstract class Problem extends TitledModel {
     protected int subTypeId;
 
     /**
+     * The id of the Task associated with this problem in the database.
+     *
+     * <p>This is used by the client to persist per-student completion (e.g., CompletedTask) even if
+     * the full PendingTask list is not available in the client session model.
+     */
+    protected int taskId = DEFAULT_ID;
+
+    /**
      * The variables used in the algorithmic solution to this dynamic programming problem, which is
      * determined by the child subclass.
      *
@@ -176,6 +184,24 @@ public abstract class Problem extends TitledModel {
         this.subTypeId = subTypeId;
     }
 
+    /**
+     * Return the Task id associated with this problem.
+     *
+     * @return task id from the Task table, or DEFAULT_ID if not set
+     */
+    public int getTaskId() {
+        return taskId;
+    }
+
+    /**
+     * Assign the Task id associated with this problem.
+     *
+     * @param taskId id from the Task table
+     */
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
+    }
+
     public ArrayList<String> getCodeStatements() {
         return codeStatements;
     }
@@ -281,10 +307,15 @@ public abstract class Problem extends TitledModel {
                             step();
                             count[0]++;
 
-                            if (hasFinished() || count[0] >= n) {
+                            boolean finishedNow = hasFinished();
+
+                            if (finishedNow || count[0] >= n) {
                                 ((javax.swing.Timer) e.getSource()).stop();
-                                // Notify listeners that we've finished running steps
-                                notifyProblemListeners();
+
+                                // only notify listeners on true completion
+                                if (finishedNow) {
+                                    notifyProblemListeners();
+                                }
                             }
                         });
         timer.start();
