@@ -1,5 +1,8 @@
 name: Logging Standards Check
 
+permissions:
+  contents: read
+
 # This workflow enforces the DpTu Logging Developer Guide.
 #
 # Goals:
