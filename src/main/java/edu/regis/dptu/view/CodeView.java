@@ -54,6 +54,7 @@ public class CodeView extends GPanel implements ProblemListener {
     // but no other classes watch problems and update as they do steps/complete currently
     private boolean completionNotified = false;
     private Runnable onTaskCompleted;
+
     /** Track last highlighted line to avoid repetitive debug spam. */
     private int lastHighlightedLine = -1;
 
