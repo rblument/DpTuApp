@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.security.CommonPasswords;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -96,7 +97,7 @@ public class NewAccountPanel extends GPanel {
     /**
      * Update and return the model with view's information.
      *
-     * @return
+     * @return the updated {@link Account} model.
      */
     public Account getModel() {
         updateModel();
@@ -761,57 +762,63 @@ public class NewAccountPanel extends GPanel {
      */
     private void checkStrength() {
 
-        int points = 0;
+        log.trace("Checking password strength");
 
-        char[] text = pass1.getPassword();
+        char[] pwd = pass1.getPassword();
+        int len = pwd.length;
 
-        if (text.length >= 6) {
-            points++;
+        if (len == 0) {
+            strength.setText("(Strength: Very poor)");
+            strength.setForeground(Color.RED);
+
+            log.trace("Password had very poor strength: empty password");
+            return;
         }
 
-        boolean isSpecial = false;
-        boolean isUpper = false;
-        boolean isLower = false;
-        for (int i = 0; i < text.length; i++) {
-            char ch = text[i];
+        if (CommonPasswords.isCommon(pwd)) {
+            strength.setText("(Strength: Very poor – common password)");
+            strength.setForeground(Color.RED);
 
-            if (Character.isLowerCase(ch)) {
-                isLower = true;
-            } else if (Character.isUpperCase(ch)) {
-                isUpper = true;
-            } else if (Character.isDigit(ch)) {
-                isSpecial = true;
-            } else if (!Character.isLetterOrDigit(ch)) {
-                isSpecial = true;
-            }
+            log.trace("Password had very poor strength: common password");
+            return;
         }
 
-        if (isSpecial) {
-            points++;
+        boolean hasLower = false;
+        boolean hasUpper = false;
+        boolean hasDigit = false;
+        boolean hasSymbol = false;
+
+        for (char c : pwd) {
+            if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+            else hasSymbol = true;
         }
 
-        if (isLower && isUpper) {
-            points++;
+        int score = 0;
+
+        if (len >= 8) score += 2;
+        if (len >= 12) score += 1;
+        if (hasLower) score += 1;
+        if (hasUpper) score += 1;
+        if (hasDigit) score += 1;
+        if (hasSymbol) score += 1;
+
+        if (score <= 2) {
+            strength.setText("(Strength: Very poor)");
+            strength.setForeground(Color.RED);
+        } else if (score <= 4) {
+            strength.setText("(Strength: Poor)");
+            strength.setForeground(Color.RED);
+        } else if (score <= 6) {
+            strength.setText("(Strength: Moderate)");
+            strength.setForeground(Color.ORANGE);
+        } else {
+            strength.setText("(Strength: Strong)");
+            strength.setForeground(Color.GREEN);
         }
 
-        switch (points) {
-            case 0:
-                strength.setText("(Strength: Very poor)");
-                strength.setForeground(Color.RED);
-                break;
-            case 1:
-                strength.setText("(Strength: Poor)");
-                strength.setForeground(Color.RED);
-                break;
-            case 2:
-                strength.setText("(Strength: Moderate)");
-                strength.setForeground(Color.YELLOW);
-                break;
-            default:
-                strength.setText("(Strength: Good)");
-                strength.setForeground(Color.GREEN);
-                break;
-        }
+        log.trace("Password strength evaluated with score {}: {}", score, strength.getText());
     }
 
     /**
@@ -958,7 +965,7 @@ public class NewAccountPanel extends GPanel {
             return String.format("%1$032X", i).toLowerCase();
 
         } catch (NoSuchAlgorithmException e) {
-            log.error(e.toString());
+            log.error("MD5 algorithm not available", e);
         }
 
         return "";
@@ -967,8 +974,8 @@ public class NewAccountPanel extends GPanel {
     /**
      * Encrypt the given password using SHA-256
      *
-     * @param base
-     * @return
+     * @param base the clear-text password.
+     * @return the lower-case hex representation of the SHA-256 digest.
      */
     public static String encryptSHA256(String base) {
         try {

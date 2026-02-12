@@ -23,6 +23,7 @@ import edu.regis.dptu.model.TutoringSession;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface SessionSvc {
     /**
      * Insert the given session into the database.

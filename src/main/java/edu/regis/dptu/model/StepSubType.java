@@ -20,6 +20,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum StepSubType {
     /** The user must acknowledge a message (i.e., perhaps via a pop-up dialog) */
     INFO_MESSAGE("Information Message"),

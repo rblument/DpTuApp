@@ -103,7 +103,7 @@ public abstract class Problem extends TitledModel {
     /**
      * Return the type of this Dynamic Programming problem.
      *
-     * @return
+     * @return the {@link ProblemKind} implemented by this instance.
      */
     public abstract ProblemKind getType();
 
@@ -124,9 +124,9 @@ public abstract class Problem extends TitledModel {
     protected abstract void loadBacktrackingCodeStatements();
 
     /**
-     * This prevents user from pressing the "step back" button when they shouldn't
+     * Indicates whether the current state of the problem supports a "step back".
      *
-     * @return
+     * @return true if the problem can step backward; false if already at the first step.
      */
     public abstract boolean canStepBack();
 
@@ -134,7 +134,7 @@ public abstract class Problem extends TitledModel {
      * This is to prevent the user from hitting the backtrack button before the dp table is filled
      * in completely.
      *
-     * @return
+     * @return true if the problem is in a state where backtracking is permitted.
      */
     public abstract boolean backtrackReady();
 
@@ -152,7 +152,7 @@ public abstract class Problem extends TitledModel {
      * CodeView, which cannot be handled from within the Problem object, since it does not know
      * about views.
      *
-     * @return
+     * @return true if the undo action should switch the code view from backtracking back to DP.
      */
     public abstract boolean undoingBacktrackButton();
 

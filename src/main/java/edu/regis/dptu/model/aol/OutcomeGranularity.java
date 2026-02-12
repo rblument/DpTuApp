@@ -19,6 +19,7 @@ package edu.regis.dptu.model.aol;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum OutcomeGranularity {
     COURSE("Course"),
 
@@ -47,8 +48,8 @@ public enum OutcomeGranularity {
     /**
      * Return the enum value for the given title.
      *
-     * @param aTitle
-     * @return
+     * @param aTitle the user-facing granularity title.
+     * @return the matching {@link OutcomeGranularity} or {@link #ERROR} if no match exists.
      */
     public static OutcomeGranularity findValue(String aTitle) {
         for (OutcomeGranularity kind : values()) {

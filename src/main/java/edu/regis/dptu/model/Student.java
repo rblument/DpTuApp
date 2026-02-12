@@ -39,7 +39,9 @@ public class Student {
      */
     public Student(Account account) {
         this.account = account;
-        studentModel = new StudentModel(account.getUserId());
+        this.studentModel = new StudentModel(account.getUserId());
+
+        log.debug("Student created: userId={}", account.getUserId());
     }
 
     /**
@@ -61,7 +63,14 @@ public class Student {
     }
 
     public void setStudentModel(StudentModel studentModel) {
+        StudentModel prev = this.studentModel;
         this.studentModel = studentModel;
+
+        log.debug(
+                "StudentModel replaced for userId={}: {} -> {}",
+                account.getUserId(),
+                prev,
+                studentModel);
     }
 
     @Override

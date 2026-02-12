@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     branches: [ main, development ]
+  workflow_dispatch: #allow manual runs
 
 permissions:
   contents: write
@@ -18,11 +19,12 @@ jobs:
         fetch-depth: 0
         ref: ${{ github.head_ref }}
 
-    - name: Set up JDK 17
+    - name: Set up JDK 17 (with Maven cache)
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: maven
 
     - name: Cache Maven dependencies
       uses: actions/cache@v4

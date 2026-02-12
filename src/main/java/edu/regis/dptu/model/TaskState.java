@@ -61,6 +61,8 @@ public class TaskState {
         completionTime = 0;
         stepTimestamps = new HashMap<>();
         hintTimestamps = new HashMap<>();
+
+        log.debug("TaskState created: startTime={}", startTime);
     }
 
     public int getCurrentTask() {
@@ -68,11 +70,15 @@ public class TaskState {
     }
 
     public void setCurrentTask(int currentTask) {
+        int prev = this.currentTask;
         this.currentTask = currentTask;
+        log.debug("TaskState currentTask: {} -> {}", prev, currentTask);
     }
 
     public void incfTask() {
+        int prev = currentTask;
         currentTask++;
+        log.debug("TaskState currentTask: {} -> {}", prev, currentTask);
     }
 
     public int getCurrentStep() {
@@ -80,11 +86,15 @@ public class TaskState {
     }
 
     public void setCurrentStep(int currentStep) {
+        int prev = this.currentStep;
         this.currentStep = currentStep;
+        log.debug("TaskState currentStep: {} -> {}", prev, currentStep);
     }
 
     public void incfStep() {
+        int prev = currentStep;
         currentStep++;
+        log.debug("TaskState currentStep: {} -> {}", prev, currentStep);
     }
 
     public int getCurrentHint() {
@@ -92,15 +102,21 @@ public class TaskState {
     }
 
     public void setCurrentHint(int currentHint) {
+        int prev = this.currentHint;
         this.currentHint = currentHint;
+        log.debug("TaskState currentHint: {} -> {}", prev, currentHint);
     }
 
     public void incfHint() {
+        int prev = currentHint;
         currentHint++;
+        log.debug("TaskState currentHint: {} -> {}", prev, currentHint);
     }
 
     public void addStepCompletion(StepCompletion step) {
         completedSteps.add(step);
+        // Avoid logging full StepCompletion (may have noisy toString); just log count.
+        log.debug("TaskState step completion added: completedStepsCount={}", completedSteps.size());
     }
 
     public LinkedList<StepCompletion> getCompletedSteps() {
@@ -108,7 +124,10 @@ public class TaskState {
     }
 
     public void setCompletedSteps(LinkedList<StepCompletion> completedSteps) {
+        int prevSize = (this.completedSteps == null) ? 0 : this.completedSteps.size();
+        int newSize = (completedSteps == null) ? 0 : completedSteps.size();
         this.completedSteps = completedSteps;
+        log.debug("TaskState completedSteps replaced: {} -> {}", prevSize, newSize);
     }
 
     /**
@@ -117,7 +136,9 @@ public class TaskState {
      * @param stepId ID of the completed step
      */
     public void recordStepCompletion(int stepId) {
-        stepTimestamps.put(stepId, System.currentTimeMillis());
+        long ts = System.currentTimeMillis();
+        stepTimestamps.put(stepId, ts);
+        log.debug("TaskState step completed: stepId={}, timestamp={}", stepId, ts);
     }
 
     /**
@@ -126,12 +147,18 @@ public class TaskState {
      * @param hintId ID of the requested hint
      */
     public void recordHintRequest(int hintId) {
-        hintTimestamps.put(hintId, System.currentTimeMillis());
+        long ts = System.currentTimeMillis();
+        hintTimestamps.put(hintId, ts);
+        log.debug("TaskState hint requested: hintId={}, timestamp={}", hintId, ts);
     }
 
     /** Record task completion and set completion timestamp. */
     public void recordTaskCompletion() {
         completionTime = System.currentTimeMillis();
+        log.debug(
+                "TaskState completed: completionTime={}, totalTimeMs={}",
+                completionTime,
+                getTotalTime());
     }
 
     /**

@@ -122,14 +122,14 @@ public class DashboardPanel extends GPanel {
         // Initialize progress bars
         seeOneProgressBar = new CustomProgressBar();
         seeOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        seeOneProgressBar.setValue(100);
-        seeOneProgressBar.setString("100%");
+        seeOneProgressBar.setValue(0);
+        seeOneProgressBar.setString("0%");
         seeOneProgressBar.setStringPainted(true);
 
         doOneProgressBar = new CustomProgressBar();
         doOneProgressBar.setOrientation(CustomProgressBar.VERTICAL);
-        doOneProgressBar.setValue(50);
-        doOneProgressBar.setString("50%");
+        doOneProgressBar.setValue(0);
+        doOneProgressBar.setString("0%");
         doOneProgressBar.setStringPainted(true);
 
         teachOneProgressBar = new CustomProgressBar();
@@ -256,7 +256,7 @@ public class DashboardPanel extends GPanel {
         // Get the current scaffold level.
         studentModel = student.getStudentModel();
         ScaffoldLevel lvl = studentModel.getScaffoldLevel();
-        DashboardPanel.log.info("DashboardPanel: applying scaffold level rules for {0}", lvl);
+        DashboardPanel.log.info("DashboardPanel: applying scaffold level rules for {}", lvl);
 
         // Create button enabled booleans.
         boolean seeOneButtonEnabled = false,

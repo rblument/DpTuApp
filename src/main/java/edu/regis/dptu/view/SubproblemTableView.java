@@ -325,7 +325,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         if (!(tableObj instanceof int[][])
                 || !(nObj instanceof Integer)
                 || !(mObj instanceof Integer)) {
-            log.error("SubproblemTableView: Model variable types are incorrect.");
+            log.error("SubproblemTableView: Model variable types are incorrect.", (Throwable) null);
             return;
         }
         int[][] lTable = (int[][]) tableObj;
@@ -334,7 +334,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
         // Ensure table has sufficient size
         if (dtm.getRowCount() < n + 1 || dtm.getColumnCount() < m + 2) {
-            log.error("SubproblemTableView: Table dimensions too small.");
+            log.error("SubproblemTableView: Table dimensions too small.", (Throwable) null);
             return;
         }
         // Iterate through DP table and update each cell

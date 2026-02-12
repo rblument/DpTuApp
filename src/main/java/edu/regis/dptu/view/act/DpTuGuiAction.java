@@ -38,9 +38,9 @@ public abstract class DpTuGuiAction extends AbstractAction {
      * Load and return the image icon specified by the given image file name, as found in the "img/"
      * directory in the root CLASSPATH.
      *
-     * @param imageFileName name of file with suffix in img/ director (e.g., "save16.gif"
-     * @param altText
-     * @return
+     * @param imageFileName name of file with suffix in img/ directory (e.g., "save16.gif")
+     * @param altText text used for accessibility / fallback descriptions.
+     * @return an {@link ImageIcon} created from the requested image resource.
      */
     protected ImageIcon loadIcon(String imageFileName, String altText) {
         // String imgLocation = "/img/" + imageName + "." + suffix;

@@ -182,7 +182,7 @@ public class LCSProblem extends Problem {
     /**
      * {@inheritDoc} These are the states from which it is okay to click the backtrack button
      *
-     * @return
+     * @return true if the problem is currently in a state where backtracking may begin/continue.
      */
     @Override
     public boolean backtrackReady() {
@@ -221,7 +221,7 @@ public class LCSProblem extends Problem {
     /**
      * {@inheritDoc}
      *
-     * @return
+     * @return true if the "Undo Backtrack" action should revert to the forward-execution state.
      */
     @Override
     public boolean undoingBacktrackButton() {
@@ -236,7 +236,7 @@ public class LCSProblem extends Problem {
     /**
      * {@inheritDoc}
      *
-     * @return
+     * @return true if the problem has a prior step to return to; false if already at the start.
      */
     @Override
     public boolean canStepBack() {
@@ -333,38 +333,43 @@ public class LCSProblem extends Problem {
     }
 
     /**
-     * Outputs to System.out the current state (of the algorithm variables). (Kept for potential
-     * manual debugging)
+     * Logs the current state (of the algorithm variables). Intended for debugging and diagnostics.
      */
     public void prettyPrint() {
-        // Original prettyPrint code retained
-        LCSProblem.log.info("--- LCSProblem State ---");
-        LCSProblem.log.info("ExecutionState: " + executionState);
-        LCSProblem.log.info("Current Line #: " + nextLineNumber);
-        LCSProblem.log.info("r (array idx): " + variables.get("r"));
-        LCSProblem.log.info("c (array idx): " + variables.get("c"));
+        log.info("--- LCSProblem State ---");
+        log.info("ExecutionState: {}", executionState);
+        log.info("Current Line #: {}", nextLineNumber);
+        log.info("r (array idx): {}", variables.get("r"));
+        log.info("c (array idx): {}", variables.get("c"));
 
         int n = (int) variables.get("n");
         int m = (int) variables.get("m");
         int[][] subproblemL = (int[][]) variables.get("l");
 
-        LCSProblem.log.info("DP Table (l):");
-        System.out.print("       "); // Align header
-        for (int q = 0; q <= m; q++) {
-            System.out.printf("%4d ", q - 1); // Print DP Col Index (-1 to m-1)
-        }
-        LCSProblem.log.info("");
+        log.info("DP Table (l):");
 
+        // Header row
+        StringBuilder header = new StringBuilder("       ");
+        for (int q = 0; q <= m; q++) {
+            header.append(String.format("%4d ", q - 1));
+        }
+        log.info(header.toString());
+
+        // Table rows
         for (int p = 0; p <= n; p++) {
-            System.out.printf("%4d | ", p - 1); // Print DP Row Index (-1 to n-1)
+            StringBuilder row = new StringBuilder();
+            row.append(String.format("%4d | ", p - 1));
+
             for (int q = 0; q <= m; q++) {
                 int val = subproblemL[p][q];
-                System.out.printf(
-                        "%4s ", (val == -1 ? "." : String.valueOf(val))); // Use '.' for uncomputed
+                row.append(String.format("%4s ", val == -1 ? "." : val));
             }
-            LCSProblem.log.info("|");
+
+            row.append("|");
+            log.info(row.toString());
         }
-        LCSProblem.log.info("------------------------");
+
+        log.info("------------------------");
     }
 
     // -----------------------LCS Algorithm-------------------------------------
@@ -413,7 +418,9 @@ public class LCSProblem extends Problem {
         if (subproblem != null && r >= 0 && r < subproblem.length) {
             subproblem[r][0] = 0; // Assign new value
         } else {
-            log.error("ERROR: LCSProblem executeLine2 accessing out of bounds: r=" + r);
+            log.error(
+                    "ERROR: LCSProblem executeLine2 accessing out of bounds: r=" + r,
+                    (Throwable) null);
         }
         nextLineNumber = 1; // Go back to check r loop condition
     }
@@ -455,7 +462,9 @@ public class LCSProblem extends Problem {
         if (subproblem != null && subproblem.length > 0 && c >= 0 && c < subproblem[0].length) {
             subproblem[0][c] = 0; // Assign new value
         } else {
-            log.error("ERROR: LCSProblem executeLine4 accessing out of bounds: c=" + c);
+            log.error(
+                    "ERROR: LCSProblem executeLine4 accessing out of bounds: c=" + c,
+                    (Throwable) null);
         }
         nextLineNumber = 3; // Go back to check c loop condition
     }
@@ -604,7 +613,9 @@ public class LCSProblem extends Problem {
             when the algorithm finishes */
             nextLineNumber = 12;
         } else {
-            log.error("ERROR: Reached line 11 unexpectedly. State: " + executionState);
+            log.error(
+                    "ERROR: Reached line 11 unexpectedly. State: " + executionState,
+                    (Throwable) null);
         }
     }
 

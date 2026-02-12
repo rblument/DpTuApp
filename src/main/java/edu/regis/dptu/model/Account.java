@@ -214,7 +214,7 @@ public class Account {
     /**
      * Return the id and user id of this student.
      *
-     * @return
+     * @return a human-readable string representation of this account.
      */
     @Override
     public String toString() {

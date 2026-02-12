@@ -1,0 +1,19 @@
+version: 2
+
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+    open-pull-requests-limit: 5
+
+    labels:
+      - "dependencies"
+      - "security"
+
+    # Group transitive dependency updates together
+    groups:
+      maven-security-updates:
+        patterns:
+          - "*"

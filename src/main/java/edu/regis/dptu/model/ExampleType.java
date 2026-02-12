@@ -17,6 +17,7 @@ package edu.regis.dptu.model;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public enum ExampleType {
     /**
      * Represents a request to

@@ -44,8 +44,11 @@ public class TeachOneAction extends DpTuGuiAction {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
+        log.debug("TeachOneAction triggered; activating Teach One mode");
+
         MainFrame frame = MainFrame.instance();
         frame.setVisible(true);
+
         // TODO: Add tutor notification in future sprint
     }
 }

@@ -13,8 +13,6 @@
 package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,9 +21,8 @@ import edu.regis.dptu.model.MatrixChainProblem;
 /**
  * @author corey
  */
+@SuppressWarnings("Logging")
 public class MatrixChainProblemTest {
-    private static final Logger log = LoggerFactory.getLogger(MatrixChainProblemTest.class);
-
     @Test
     public void testMatrixChainExecution() {
         // Input sizes for matrices: 10x5, 5x2, 2x20, 20x12, 12x4, 4x60

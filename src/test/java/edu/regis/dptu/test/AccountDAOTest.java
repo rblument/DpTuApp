@@ -38,6 +38,7 @@ import edu.regis.dptu.model.Account;
  *
  * @author benm
  */
+@SuppressWarnings("Logging")
 public class AccountDAOTest {
     private AccountDAO dao;
     private Connection mockConnection;

@@ -15,6 +15,9 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
@@ -27,13 +30,11 @@ import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
 public class DoOneAction extends DpTuGuiAction {
-    private static final DoOneAction SINGLETON;
+    private static final Logger log = LoggerFactory.getLogger(DoOneAction.class);
+
+    private static final DoOneAction SINGLETON = new DoOneAction();
 
     private final ProblemDAO problemDAO;
-
-    static {
-        SINGLETON = new DoOneAction();
-    }
 
     public static DoOneAction instance() {
         return SINGLETON;
@@ -49,17 +50,43 @@ public class DoOneAction extends DpTuGuiAction {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
+        log.debug("DoOneAction triggered");
+
+        ProblemKind kind = null;
+        Account account = null;
+
         try {
             DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
-            ProblemKind kind = dashboard.getSelectedProblemKind();
+            kind = dashboard.getSelectedProblemKind();
+
+            log.debug("Selected ProblemKind for DO_ONE: {}", kind);
+
             Problem problem = problemDAO.retrieveByKind(kind);
 
-            Account account = SplashFrame.instance().getAccount();
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
+            }
+
+            account = SplashFrame.instance().getAccount();
+
+            if (log.isDebugEnabled()) {
+                log.debug("Creating DO_ONE TutoringSession for account id={}", account.getUserId());
+            }
+
             TutoringSession ts = new TutoringSession(account, problem);
             ts.setMode(Mode.DO_ONE);
+
             SplashFrame.instance().selectLessonScreen(ts);
+
+            log.debug("DO_ONE session started successfully");
+
         } catch (ObjNotFoundException | NonRecoverableException e) {
-            DoOneAction.log.error(e.getMessage());
+            log.error(
+                    "Failed to start DO_ONE session (kind={}, accountId={})",
+                    kind,
+                    account != null ? account.getUserId() : null,
+                    e);
+
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }

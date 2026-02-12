@@ -125,9 +125,9 @@ public class ResourceMgr {
     /**
      * Return the cached property value for the given property.
      *
-     * @param name
-     * @return The value of the given property.
-     * @exception MissingPropertyException The given property wasn't found.
+     * @param name the property key to retrieve.
+     * @return the value of the given property.
+     * @throws MissingPropertyException if the given property wasn't found.
      */
     public String getProp(String name) throws MissingPropertyException {
         if (properties.containsKey(name)) {
@@ -153,9 +153,9 @@ public class ResourceMgr {
             properties.load(strm);
 
         } catch (FileNotFoundException e) {
-            log.trace("PropertyMgr-ERR_100: {0}", e.toString());
+            log.trace("PropertyMgr-ERR_100 property file not found: {}", path, e);
         } catch (IOException e) {
-            log.trace("PropertyMgr-ERR_101: {0}", e.toString());
+            log.trace("PropertyMgr-ERR_101 error reading property file: {}", path, e);
         }
     }
 }

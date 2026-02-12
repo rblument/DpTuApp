@@ -62,7 +62,7 @@ public class DpTuServer implements Runnable {
             }
 
         } catch (IOException e) {
-            log.error("EncryptionServer.run()", e);
+            log.error("EncryptionServer.run", e);
         }
     }
 
@@ -112,7 +112,7 @@ public class DpTuServer implements Runnable {
                 out.flush();
 
             } catch (IOException e) {
-                log.error("EncryptionConnection.run()", e);
+                log.error("EncryptionConnection.run", e);
             } finally {
                 // About as ugly as it gets, but the following code ensures that
                 // we've at least tried to close an open socket and its associated

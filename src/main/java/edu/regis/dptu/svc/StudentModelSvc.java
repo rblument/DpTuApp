@@ -27,6 +27,7 @@ import edu.regis.dptu.model.aol.StudentModel;
  *
  * @author rickb
  */
+@SuppressWarnings("Logging")
 public interface StudentModelSvc {
     /**
      * Insert the given StudentModel into the DB.

@@ -15,6 +15,9 @@ package edu.regis.dptu.view.act;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
@@ -27,13 +30,11 @@ import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
 public class SeeOneAction extends DpTuGuiAction {
-    private static final SeeOneAction SINGLETON;
+    private static final Logger log = LoggerFactory.getLogger(SeeOneAction.class);
+
+    private static final SeeOneAction SINGLETON = new SeeOneAction();
 
     private final ProblemDAO problemDAO;
-
-    static {
-        SINGLETON = new SeeOneAction();
-    }
 
     public static SeeOneAction instance() {
         return SINGLETON;
@@ -53,19 +54,46 @@ public class SeeOneAction extends DpTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        log.debug("SeeOneAction triggered");
+
+        ProblemKind kind = null;
+        Account account = null;
+
         try {
             DashboardPanel dashboard = SplashFrame.instance().getDashboardPanel();
-            ProblemKind kind = dashboard.getSelectedProblemKind();
+            kind = dashboard.getSelectedProblemKind();
+
+            log.debug("Selected ProblemKind for SEE_ONE: {}", kind);
 
             Problem problem = problemDAO.retrieveByKind(kind);
 
-            Account account = SplashFrame.instance().getAccount();
+            if (log.isDebugEnabled()) {
+                // Guard is intentional: avoid calling getters / touching domain object work if
+                // DEBUG is off.
+                log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
+            }
+
+            account = SplashFrame.instance().getAccount();
+
+            if (log.isDebugEnabled()) {
+                // Guard is intentional: avoid potential non-trivial getters when DEBUG is off.
+                log.debug(
+                        "Creating SEE_ONE TutoringSession for account id={}", account.getUserId());
+            }
+
             TutoringSession ts = new TutoringSession(account, problem);
             ts.setMode(Mode.SEE_ONE);
+
             SplashFrame.instance().selectLessonScreen(ts);
 
+            log.debug("SEE_ONE session started successfully");
+
         } catch (ObjNotFoundException | NonRecoverableException e) {
-            SeeOneAction.log.error(e.getMessage());
+            log.error(
+                    "Failed to start SEE_ONE session (kind={}, accountId={})",
+                    kind,
+                    account != null ? account.getUserId() : null,
+                    e);
             SplashFrame.instance().showError("Error", "Failed to load problem");
         }
     }
