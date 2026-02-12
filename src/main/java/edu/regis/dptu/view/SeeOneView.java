@@ -54,8 +54,8 @@ public class SeeOneView extends GPanel implements ModeView {
     /**
      * Injects the action that should occur when the current problem/task is completed.
      *
-     * <p>NOTE: Temporary design. Eventually completion reporting should be handled
-     * by a controller/service layer rather than a view.
+     * <p>NOTE: Temporary design. Eventually completion reporting should be handled by a
+     * controller/service layer rather than a view.
      *
      * @param r callback executed once when the problem finishes
      */
@@ -85,7 +85,8 @@ public class SeeOneView extends GPanel implements ModeView {
         codeView = new CodeView(); // Original init
         backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
-    };
+    }
+    ;
 
     public void layoutComponents() {
         addc(

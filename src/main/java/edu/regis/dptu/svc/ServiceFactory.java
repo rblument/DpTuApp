@@ -17,11 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.dao.AccountDAO;
+import edu.regis.dptu.dao.CompletedTaskDAO;
 import edu.regis.dptu.dao.CourseDAO;
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.dao.SessionDAO;
 import edu.regis.dptu.dao.StudentModelDAO;
-import edu.regis.dptu.dao.CompletedTaskDAO;
 
 /**
  * A singleton providing a concrete implementation of the service factory used to obtain references
@@ -88,7 +88,7 @@ public class ServiceFactory {
 
     /**
      * return a reference to the completed task svc
-     * 
+     *
      * @return CompletedTaskSvc
      */
     public static CompletedTaskSvc findCompletedTaskSvc() {

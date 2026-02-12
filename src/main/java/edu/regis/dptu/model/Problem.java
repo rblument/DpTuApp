@@ -55,11 +55,10 @@ public abstract class Problem extends TitledModel {
     /**
      * The id of the Task associated with this problem in the database.
      *
-     * <p>This is used by the client to persist per-student completion (e.g., CompletedTask)
-     * even if the full PendingTask list is not available in the client session model.
+     * <p>This is used by the client to persist per-student completion (e.g., CompletedTask) even if
+     * the full PendingTask list is not available in the client session model.
      */
     protected int taskId = DEFAULT_ID;
-
 
     /**
      * The variables used in the algorithmic solution to this dynamic programming problem, which is
@@ -203,7 +202,6 @@ public abstract class Problem extends TitledModel {
         this.taskId = taskId;
     }
 
-
     public ArrayList<String> getCodeStatements() {
         return codeStatements;
     }
@@ -314,11 +312,10 @@ public abstract class Problem extends TitledModel {
                             if (finishedNow || count[0] >= n) {
                                 ((javax.swing.Timer) e.getSource()).stop();
 
-                                //only notify listeners on true completion
+                                // only notify listeners on true completion
                                 if (finishedNow) {
                                     notifyProblemListeners();
                                 }
-                                
                             }
                         });
         timer.start();
