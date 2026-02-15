@@ -59,6 +59,9 @@ public class DashboardPanel extends GPanel {
     private JButton seeOneButton;
     private JButton doOneButton;
     private JButton teachOneButton;
+    private JButton seeOneStatsButton;
+    private JButton doOneStatsButton;
+    private JButton teachOneStatsButton;
     private CustomProgressBar seeOneProgressBar;
     private CustomProgressBar doOneProgressBar;
     private CustomProgressBar teachOneProgressBar;
@@ -148,6 +151,28 @@ public class DashboardPanel extends GPanel {
         teachOneButton = new JButton(TeachOneAction.instance());
         teachOneButton.setFocusPainted(false);
 
+        // Stats Buttons
+        seeOneStatsButton = new JButton("View Stats");
+        seeOneStatsButton.setFocusPainted(false);
+        seeOneStatsButton.addActionListener(e -> {
+            log.info("See One Stats button pressed");
+            //popup window code will go there later
+        });
+
+        doOneStatsButton = new JButton("View Stats");
+        doOneStatsButton.setFocusPainted(false);
+        doOneStatsButton.addActionListener(e -> {
+            log.info("Do One Stats button pressed");
+            //popup window code will go there later
+        });
+
+        teachOneStatsButton = new JButton("View Stats");
+        teachOneStatsButton.setFocusPainted(false);
+        teachOneStatsButton.addActionListener(e -> {
+            log.info("Teach One Stats button pressed");
+            //popup window code will go there later
+        });
+
         // Apply scaffold level rules for which buttons are visible.
         applyScaffoldLevelRules();
 
@@ -182,9 +207,9 @@ public class DashboardPanel extends GPanel {
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Create three columns
-        mainPanel.add(createColumn(seeOneProgressBar, seeOneButton, Mode.SEE_ONE.title()));
-        mainPanel.add(createColumn(doOneProgressBar, doOneButton, Mode.DO_ONE.title()));
-        mainPanel.add(createColumn(teachOneProgressBar, teachOneButton, Mode.TEACH_ONE.title()));
+        mainPanel.add(createColumn(seeOneProgressBar, seeOneButton, seeOneStatsButton, Mode.SEE_ONE.title()));
+        mainPanel.add(createColumn(doOneProgressBar, doOneButton, doOneStatsButton, Mode.DO_ONE.title()));
+        mainPanel.add(createColumn(teachOneProgressBar, teachOneButton, teachOneStatsButton, Mode.TEACH_ONE.title()));
 
         add(mainPanel, BorderLayout.CENTER);
 
@@ -206,7 +231,7 @@ public class DashboardPanel extends GPanel {
                 null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private JPanel createColumn(CustomProgressBar progressBar, JButton button, String labelText) {
+    private JPanel createColumn(CustomProgressBar progressBar, JButton button, JButton statsButton, String labelText) {
         JPanel column = new JPanel(new BorderLayout(0, 5));
         column.setBackground(BACKGROUND);
         column.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
@@ -223,10 +248,12 @@ public class DashboardPanel extends GPanel {
         column.add(progressPanel, BorderLayout.CENTER);
 
         // Button panel at the bottom
-        JPanel buttonPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 0, 5));
         buttonPanel.setBackground(BACKGROUND);
         buttonPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        buttonPanel.add(button, BorderLayout.CENTER);
+
+        buttonPanel.add(button);
+        buttonPanel.add(statsButton);
 
         column.add(buttonPanel, BorderLayout.SOUTH);
 
