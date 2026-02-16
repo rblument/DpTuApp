@@ -62,5 +62,4 @@ class OutcomeGranularityTest {
     void testFindValueNullReturnsError() {
         assertEquals(OutcomeGranularity.ERROR, OutcomeGranularity.findValue(null));
     }
-
 }

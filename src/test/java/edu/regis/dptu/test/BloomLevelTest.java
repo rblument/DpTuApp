@@ -64,5 +64,4 @@ class BloomLevelTest {
         assertEquals(BloomLevel.ERROR, BloomLevel.findValue(null));
         assertEquals(BloomLevel.ERROR, BloomLevel.findValue(""));
     }
-
 }
