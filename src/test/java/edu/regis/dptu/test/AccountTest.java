@@ -51,7 +51,11 @@ public class AccountTest {
         assertNull(a.getPassword());
         assertEquals(0, a.getSecurityQuestion());
         assertNull(a.getSecurityAnswer());
-        assertFalse(a.isStudent());
+        assertTrue(a.isStudent(), "clear() should not modify isStudent");
+
+        a.setIsStudent(false);
+
+        assertFalse(a.isStudent(), "clear() should not modify isStudent");
     }
 
     @Test
