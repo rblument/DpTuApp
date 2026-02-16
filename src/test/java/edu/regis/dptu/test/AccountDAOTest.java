@@ -23,15 +23,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 import edu.regis.dptu.dao.AccountDAO;
 import edu.regis.dptu.err.IllegalArgException;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit test class for AccountDAO using mocked database connections

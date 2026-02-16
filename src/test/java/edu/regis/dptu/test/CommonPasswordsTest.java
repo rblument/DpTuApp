@@ -17,9 +17,9 @@ import java.util.BitSet;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.regis.dptu.security.CommonPasswords;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link CommonPasswords}.

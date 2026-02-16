@@ -14,9 +14,9 @@ package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.regis.dptu.util.SHA_256;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Unit tests for {@link SHA_256}. */
 @SuppressWarnings("Logging")

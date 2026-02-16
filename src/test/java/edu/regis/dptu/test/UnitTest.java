@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TaskSelectionKind;
 import edu.regis.dptu.model.Unit;
 import edu.regis.dptu.model.UnitDigest;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /** Unit tests for {@link edu.regis.dptu.model.Unit}. */
 class UnitTest {
