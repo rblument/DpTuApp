@@ -59,8 +59,8 @@ class OutcomeGranularityTest {
     }
 
     @Test
-    void testFindValueNullThrowsNullPointerException() {
-        // Current implementation calls equalsIgnoreCase, so null input throws NPE.
-        assertThrows(NullPointerException.class, () -> OutcomeGranularity.findValue(null));
+    void testFindValueNullReturnsError() {
+        assertEquals(OutcomeGranularity.ERROR, OutcomeGranularity.findValue(null));
     }
+
 }

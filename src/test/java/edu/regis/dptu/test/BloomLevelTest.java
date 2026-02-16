@@ -60,9 +60,9 @@ class BloomLevelTest {
     }
 
     @Test
-    void testFindValueNullInputThrowsNullPointerException() {
-        // current implementation calls equalsIgnoreCase on title,
-        // so passing null will throw NPE. This documents current behavior.
-        assertThrows(NullPointerException.class, () -> BloomLevel.findValue(null));
+    void testFindValueNullInputReturnsError() {
+        assertEquals(BloomLevel.ERROR, BloomLevel.findValue(null));
+        assertEquals(BloomLevel.ERROR, BloomLevel.findValue(""));
     }
+
 }
