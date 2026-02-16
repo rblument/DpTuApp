@@ -22,47 +22,35 @@ import edu.regis.dptu.model.StepSubType;
 class StepSubTypeTest {
 
     @Test
-    void testGetSubTypeMatchesToString() {
+    void testGetSubTypeMatchesToStringForAllValues() {
         for (StepSubType type : StepSubType.values()) {
-            assertNotNull(type.getSubType());
+            assertNotNull(type.getSubType(), "getSubType() should never return null");
             assertEquals(
                     type.getSubType(),
                     type.toString(),
                     "toString() should return same value as getSubType()");
+            assertFalse(type.getSubType().isBlank(), "subType text should not be blank");
         }
     }
 
     @Test
-    void testSpecificEnumValues() {
+    void testSpecificHumanReadableLabels() {
         assertEquals("Complete Cell", StepSubType.COMPLETE_CELL.getSubType());
         assertEquals("Unknown", StepSubType.DEFAULT.getSubType());
         assertEquals("Information Message", StepSubType.INFO_MESSAGE.getSubType());
     }
 
     @Test
-    void testValueOfLookup() {
-        StepSubType type = StepSubType.valueOf("COMPLETE_CELL");
-        assertEquals(StepSubType.COMPLETE_CELL, type);
-        assertEquals("Complete Cell", type.getSubType());
+    void testValueOfLookupWorks() {
+        StepSubType t = StepSubType.valueOf("USE_LEFT");
+        assertEquals(StepSubType.USE_LEFT, t);
+        assertEquals("Cell Step: Use value of cell to the left.", t.getSubType());
     }
 
     @Test
-    void testAllEnumConstantsAccessible() {
+    void testEnumValuesArrayNotEmpty() {
         StepSubType[] values = StepSubType.values();
-
-        assertTrue(values.length > 0, "Enum should contain values");
-
-        for (StepSubType type : values) {
-            assertNotNull(type.name());
-            assertNotNull(type.getSubType());
-        }
-    }
-
-    @Test
-    void testToStringHumanReadable() {
-        StepSubType type = StepSubType.USE_LEFT;
-
-        assertEquals(type.getSubType(), type.toString());
-        assertFalse(type.toString().isEmpty());
+        assertTrue(values.length > 0);
+        assertNotNull(values[0]);
     }
 }
