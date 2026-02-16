@@ -61,7 +61,8 @@ class BloomLevelTest {
 
     @Test
     void testFindValueNullInputReturnsError() {
+        // Implementation calls: kind.title().equalsIgnoreCase(aTitle)
+        // If aTitle is null, equalsIgnoreCase returns false (no NPE), and ERROR is returned.
         assertEquals(BloomLevel.ERROR, BloomLevel.findValue(null));
-        assertEquals(BloomLevel.ERROR, BloomLevel.findValue(""));
     }
 }

@@ -60,6 +60,8 @@ class OutcomeGranularityTest {
 
     @Test
     void testFindValueNullReturnsError() {
+        // Implementation calls: kind.title().equalsIgnoreCase(aTitle)
+        // If aTitle is null, equalsIgnoreCase returns false (no NPE), and ERROR is returned.
         assertEquals(OutcomeGranularity.ERROR, OutcomeGranularity.findValue(null));
     }
 }
