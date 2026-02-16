@@ -20,7 +20,7 @@ package edu.regis.dptu.model;
 @SuppressWarnings("Logging")
 public enum ProblemKind {
     /** A Longest Common Subsequent (LCS) Dynamic Programming problem.. */
-    LCS_PROBLEM("Longest Commom Subsequence"),
+    LCS_PROBLEM("Longest Common Subsequence"),
 
     /** A Matrix Chaining Dynamic Programming problem */
     MATRIX_CHAIN("Matrix Chaining"),
