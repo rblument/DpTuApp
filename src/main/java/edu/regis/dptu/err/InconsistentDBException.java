@@ -37,10 +37,10 @@ public class InconsistentDBException extends NonRecoverableException {
 
     /**
      * Initialize this new instance with the given message and the underlying Java exception that
-     * caused this ShaTu exception and log the exception.
+     * caused this DpTu exception and log the exception.
      *
      * @param msg a string describing the cause of this exception.
-     * @param cause the Java exception that caused this ShaTu exception.
+     * @param cause the Java exception that caused this DpTu exception.
      */
     public InconsistentDBException(String msg, Throwable cause) {
         super(msg, cause);

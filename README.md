@@ -42,7 +42,7 @@ In the `documentation` directory, the `DatabaseDiagram.erdplus` file is an Entit
 
 As of 3 May 2025 (end of the Spring 2025 semester), this is the state of the database
 
-![The entity relation diagram of the ShaTu database](documentation/erd.png)
+![The entity relation diagram of the DpTu database](documentation/erd.png)
 
 This project was developed as part of the CS493_X01 Senior Capstone course.
 

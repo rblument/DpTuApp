@@ -13,7 +13,7 @@
 package edu.regis.dptu.svc;
 
 /**
- * Specifies the behaviors provided by the ShaTu tutor.
+ * Specifies the behaviors provided by the DpTu tutor.
  *
  * <p>The actual behaviors are specified by request type within the client request. These requests
  * are documented with
