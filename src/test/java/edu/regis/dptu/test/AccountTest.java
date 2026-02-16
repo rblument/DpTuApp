@@ -63,6 +63,7 @@ public class AccountTest {
 
         String s = a.toString();
         assertNotNull(s);
-        assertTrue(s.contains("u1") || s.contains("User"), "toString should include identifying info");
+        assertTrue(
+                s.contains("u1") || s.contains("User"), "toString should include identifying info");
     }
 }
