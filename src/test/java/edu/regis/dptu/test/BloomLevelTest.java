@@ -14,9 +14,9 @@ package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
 
-import edu.regis.dptu.model.BloomLevel;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import edu.regis.dptu.model.BloomLevel;
 
 /** Unit tests for {@link edu.regis.dptu.model.BloomLevel}. */
 class BloomLevelTest {

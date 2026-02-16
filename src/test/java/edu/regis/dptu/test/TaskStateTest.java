@@ -17,9 +17,9 @@ import java.util.LinkedList;
 
 import org.junit.jupiter.api.Test;
 
-import edu.regis.dptu.model.TaskState;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import edu.regis.dptu.model.TaskState;
 
 class TaskStateTest {
 

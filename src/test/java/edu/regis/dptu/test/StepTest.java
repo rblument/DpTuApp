@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.regis.dptu.model.Hint;
 import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepSubType;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class StepTest {
 

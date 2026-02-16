@@ -14,13 +14,11 @@ package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
 
-import edu.regis.dptu.model.aol.OutcomeGranularity;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for {@link edu.regis.dptu.model.aol.OutcomeGranularity}.
- */
+import edu.regis.dptu.model.aol.OutcomeGranularity;
+
+/** Unit tests for {@link edu.regis.dptu.model.aol.OutcomeGranularity}. */
 class OutcomeGranularityTest {
 
     @Test
@@ -40,7 +38,8 @@ class OutcomeGranularityTest {
     @Test
     void testFindValueCaseInsensitive() {
         assertEquals(OutcomeGranularity.COURSE, OutcomeGranularity.findValue("course"));
-        assertEquals(OutcomeGranularity.KNOWLEDGE_COMPONENT,
+        assertEquals(
+                OutcomeGranularity.KNOWLEDGE_COMPONENT,
                 OutcomeGranularity.findValue("KNOWLEDGE COMPONENT"));
         assertEquals(OutcomeGranularity.UNIT, OutcomeGranularity.findValue("uNiT"));
     }
@@ -62,7 +61,6 @@ class OutcomeGranularityTest {
     @Test
     void testFindValueNullThrowsNullPointerException() {
         // Current implementation calls equalsIgnoreCase, so null input throws NPE.
-        assertThrows(NullPointerException.class,
-                () -> OutcomeGranularity.findValue(null));
+        assertThrows(NullPointerException.class, () -> OutcomeGranularity.findValue(null));
     }
 }
