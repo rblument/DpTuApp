@@ -68,6 +68,32 @@ public class LCSProblem extends Problem {
     /** This keeps track of the lcs as determined by the backtracking algorithm */
     private String currentLcs = "";
 
+    private int lastMatchX = -1; //index into x string
+    private int lastMatchY = -1; //index into y string
+
+    public int getLastMatchX() { return lastMatchX ;}
+    public int getLastMatchY() { return lastMatchY; }
+
+    /**
+     * Record the most recent (x, y) char match chosen by the LCS BACKTRACKING ALG
+     * 
+     * <p> This is intentionally used during backtracking (diagonal "add to solution")
+     * steps, in executeLine104(), not during the forward DP table fill. DP fill may
+     * encounter many incidental matches that are not part of the final LCS
+     * 
+     * <p> After recording the indices this method notifies ProblemListeners so
+     * views (SubSequenceView) can highlight the corresponding characters
+     * 
+     * @param xIdx zero-based index into x (original input string)
+     * @param yIdx zero-based index into y (original input string)
+     */
+    private void recordMatch(int xIdx, int yIdx) {
+        lastMatchX = xIdx;
+        lastMatchY = yIdx;
+        notifyProblemListeners();
+        log.debug("LCSProblem: recordMatch({}, {})", xIdx, yIdx);
+    }
+
     /**
      * The current state of the algorithm, before the loops, in a loop, and after all of the loops
      * have executed.
@@ -691,6 +717,8 @@ public class LCSProblem extends Problem {
         int row = (int) variables.get("r");
         int col = (int) variables.get("c");
         int[][] bTable = (int[][]) variables.get(backtrackingTableVariable);
+        recordMatch(row - 1, col - 1);
+        log.debug("LCS BACKTRACK executeLine104 HIT: row={}, col={}, char={}", row, col, y.charAt(col - 1));
         bTable[row][col] = ADD_TO_SOLUTION; // highlight in green
         currentLcs = y.charAt(col - 1) + currentLcs;
         nextLineNumber = 105;

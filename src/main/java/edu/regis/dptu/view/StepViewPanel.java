@@ -153,7 +153,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                         }
                     }
                 });
-        stepBackButton.setEnabled(false);
+        stepBackButton.setEnabled(true);
 
         stepForwardButton = new JButton("Step Forward");
         stepForwardButton.setToolTipText("Advance one step in the algorithm");
