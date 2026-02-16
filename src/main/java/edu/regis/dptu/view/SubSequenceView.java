@@ -34,14 +34,13 @@ import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 
 /**
- * This is the Subsequence view for the TutoringSession View. 
- * 
- * <p> Displays the current LCS inputs (x, y) and renders a canvas that highlights 
- * characters belonging to the LCS as the alg executes. Highlighting is
- * driven by model updates (ProblemListener), specifically when BACKTRACKING
+ * This is the Subsequence view for the TutoringSession View.
  *
- * @author Sofia Reyes
- * Most recent updates Feb 15, 2026 Lindsey C
+ * <p>Displays the current LCS inputs (x, y) and renders a canvas that highlights characters
+ * belonging to the LCS as the alg executes. Highlighting is driven by model updates
+ * (ProblemListener), specifically when BACKTRACKING
+ *
+ * @author Sofia Reyes Most recent updates Feb 15, 2026 Lindsey C
  */
 class SubSequenceView extends JPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubSequenceView.class);
@@ -52,8 +51,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
     private static final int MAX_CANVAS_WIDTH = 4000;
     private static final int CANV_HORIZONTAL_PADDING = 40;
     private static final int DEFAULT_CANV_HEIGHT = 300;
-    //cache the last displayed words so we only reset the canvas when inputs truly change
-    //prevents per-step model updates from clearing previously highlighted characters
+    // cache the last displayed words so we only reset the canvas when inputs truly change
+    // prevents per-step model updates from clearing previously highlighted characters
     private String lastX = null;
     private String lastY = null;
 
@@ -136,8 +135,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
         canvasScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         canvasScrollPane.getViewport().setBackground(Color.WHITE);
-        //removed old "Step LCS" button. Highlighting is now driven by the model during
-        //execution/backtracking (ProblemListener updates), not manual stepping in this view
+        // removed old "Step LCS" button. Highlighting is now driven by the model during
+        // execution/backtracking (ProblemListener updates), not manual stepping in this view
 
         add(topPanel, BorderLayout.NORTH);
         add(canvasScrollPane, BorderLayout.CENTER);
@@ -149,12 +148,10 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * <p>Changes (April 17, 2025): - Dynamically updates all labels and canvas contents. - Forces
      * revalidation and repaint to ensure view reflects new inputs.
      *
-     * <p>Note: Updating the inputs resets the canvas highlight state. During normal step
-     * execution the inputs do not change, so highlights persist across model updates
+     * <p>Note: Updating the inputs resets the canvas highlight state. During normal step execution
+     * the inputs do not change, so highlights persist across model updates
      *
-     * @author EverettCV
-     * Recently updated 2/15/2026 Lindsey C
-     * 
+     * @author EverettCV Recently updated 2/15/2026 Lindsey C
      * @param word1 Updated first string input
      * @param word2 Updated second string input
      */
@@ -191,8 +188,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
 
         canvas.setPreferredSize(new Dimension(desiredWidth, desiredHeight));
         // Parent revalidate/repaint at the end will refresh the canvas; avoid redundant calls here.
-        //canvas.revalidate();
-        //canvas.repaint();
+        // canvas.revalidate();
+        // canvas.repaint();
 
         if (canvasScrollPane != null) canvasScrollPane.revalidate();
 
@@ -209,8 +206,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
     public void setModel(Problem model) {
 
         this.model = model;
-        //Reset cached input tracking when we bind a new model so the first updateView()
-        //call refreshes labels/canvas.
+        // Reset cached input tracking when we bind a new model so the first updateView()
+        // call refreshes labels/canvas.
         lastX = null;
         lastY = null;
 
@@ -247,19 +244,20 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * Refresh the words displayed in this view based on the model. If the model is an LCSProblem,
      * extract x and y strings. Push those strings into updateWords(), which updates the labels and
      * canvas. For non-LCS problems, log but skip the update.
-     * 
-     * <p>Two independent concerns happen here:
-     * <ul>
-     *      <li>If x/y changed, update labels + reset canvas highlight state via updateWords().<li>
-     *      <li>If the model reports a committed LCS match (during backtracking), apply a persistent
-     *          highlight to the canvas at the reported indices.<li>
-     * <ul>
-     * 
-     * <p>We cache lastX/lastY so per-step model updates do not repeatedly reset the canvas
-     * (which would erase previously highlighted chars)
      *
-     * @author hsherwin@regis.edu
-     * Last updated 2/15/2026 Lindsey C
+     * <p>Two independent concerns happen here:
+     *
+     * <ul>
+     *   <li>If x/y changed, update labels + reset canvas highlight state via updateWords().
+     *   <li>
+     *   <li>If the model reports a committed LCS match (during backtracking), apply a persistent
+     *       highlight to the canvas at the reported indices.
+     *   <li>
+     *       <ul>
+     *         <p>We cache lastX/lastY so per-step model updates do not repeatedly reset the canvas
+     *         (which would erase previously highlighted chars)
+     *
+     * @author hsherwin@regis.edu Last updated 2/15/2026 Lindsey C
      */
     private void updateView() {
         if (model instanceof LCSProblem lcs) {
@@ -275,8 +273,8 @@ class SubSequenceView extends JPanel implements ProblemListener {
                 lastY = y;
             }
 
-            //Apply the most recently committed solution match from the model (if any).
-            //Indices are 0-based string positions (not DP table coordinates).
+            // Apply the most recently committed solution match from the model (if any).
+            // Indices are 0-based string positions (not DP table coordinates).
             int mx = lcs.getLastMatchX();
             int my = lcs.getLastMatchY();
             log.debug("SubSequenceView: lastMatchX={}, lastMatchY={}", mx, my);
