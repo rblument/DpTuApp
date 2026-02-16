@@ -5,12 +5,14 @@
     <artifactId>DpTuApp</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
+
     <repositories>
         <repository>
           <id>CronApp</id>
@@ -18,6 +20,7 @@
           <url>	https://artifactory.cronapp.io/public-release/</url>
         </repository>
     </repositories>
+
     <build>
         <resources>
             <resource>
@@ -32,6 +35,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.4</version>
             </plugin>
+
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -65,9 +69,30 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                    <id>prepare-agent</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                    </execution>
+                    <execution>
+                    <id>report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-    
     </build>
+
     <dependencies>
         <!-- Source: https://mvnrepository.com/artifact/com.google.code.gson/gson-extras -->
         <dependency>
