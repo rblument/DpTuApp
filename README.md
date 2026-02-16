@@ -70,23 +70,23 @@ This project was developed as part of the CS493_X01 Senior Capstone course.
 
 4. Build the Project:
 
-_Using NetBeans_
-   - Open the project in Netbeans.
-   - Use "Build" or "Clean and Build" to compile the code.
+   - _Using NetBeans:_
+      - Open the project in NetBeans.
+      - Use "Build" or "Clean and Build" to compile the code.
 
-_In CI/CD or Another IDE_
-   - `mvn compile`
+   - _In CI/CD or Another IDE:_
+      - `mvn compile`
 
 ### Running the Application
 
 1. Start the Application:
 
-_if using Netbeans_
-   - Run edu.regis.dptu.DpTuApp
+   - _If using NetBeans:_
+      - Run edu.regis.dptu.DpTuApp
 
-_otherwise_
-   - `mvn exec:java -Dexec.mainClass="edu.regis.dptu.DpTuApp"`
-   - `find src -name "*.java" | entr -r mvn compile exec:java -Dexec.mainClass="edu.regis.dptu.DpTuApp"` if wanting hot reload
+   - _Otherwise:_
+      - `mvn exec:java -Dexec.mainClass="edu.regis.dptu.DpTuApp"`
+      - `find src -name "*.java" | entr -r mvn compile exec:java -Dexec.mainClass="edu.regis.dptu.DpTuApp"` if wanting hot reload
 
 2. Using the GUI:
    - Splash Screen: Choose "Sign In" or "New User".
@@ -103,11 +103,32 @@ _otherwise_
 - Running LCS:
   After sign-in, select a mode and use algorithm controls to step through LCS problem.
 
+## Developer Documentation
+
+The following developer guides describe repository standards and CI/CD automation.
+All contributors should review these before submitting pull requests.
+
+### Logging Standards
+
+Explains how logging is implemented, required logging patterns, and CI enforcement rules.
+
+📘 [`documentation/logging-developer-guide.md`](./documentation/logging-developer-guide.md)
+
+
+### GitHub Workflows & Dependency Management
+
+Explains all automated GitHub Actions workflows, CI enforcement, testing pipelines, formatting automation, security scanning, and Dependabot behavior.
+
+📘 [`documentation/workflows-developer-guide.md`](./documentation/workflows-developer-guide.md)
+
+
+These documents define required development practices and are enforced by repository automation.
+
 ## Contribution
 
-When contributing, be mindful to format the code before pushing it to GitHub. You can do this by running `mvn spotless:apply`. A plugin defined in [`pom.xml`](./pom.xml) controls the formatting of the project. The formatting keeps the code consistent for others to read, helping code readability and maintenance. 
+When contributing, be mindful to format the code before pushing it to GitHub. You can do this by running `mvn spotless:apply`. A plugin defined in [`pom.xml`](./pom.xml) controls the formatting of the project. The formatting keeps the code consistent for others to read, helping code readability and maintenance.
 
-If you forget to format the code, be mindful that a GitHub workflow will do this for you in [`.github/workflows/format-code.yml`](./.github/workflows/format-code.yml). It should only affect you when pushing multiple times without running it. 
+If you forget to format the code, be mindful that a GitHub workflow will do this for you in [`.github/workflows/format-code.yml`](./.github/workflows/format-code.yml). It should only affect you when pushing multiple times without running it.
 
 A future contribution could be how to configure Netbeans to run this automatically in a pre-commit hook (but as of Sept 2025, Netbeans does not support pre-commit hooks). 
 
@@ -123,7 +144,6 @@ A future contribution could be how to configure Netbeans to run this automatical
 
 ## License
 
-(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved.
+(C) 2019-2026 Johanna and Richard Blumenthal. All Rights Reserved.
 Unauthorized use, duplication or distribution without the authors' permission is strictly prohibited.
 This software is distributed on an "AS IS" basis without warranties or conditions of any kind, either expressed or implied.
-
