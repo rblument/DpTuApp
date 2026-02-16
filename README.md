@@ -1,6 +1,12 @@
 
 # DpTu - Dynamic Programming Tutor
 
+<!-- Status Badges -->
+
+[![Build](https://github.com/rblument/DpTuApp/actions/workflows/pr-build.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/pr-build.yml)
+[![Tests](https://github.com/rblument/DpTuApp/actions/workflows/test.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/test.yml)
+[![Coverage](https://raw.githubusercontent.com/rblument/DpTuApp/development/.github/badges/jacoco.svg)](./.github/badges/jacoco.svg)
+
 DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designed to help students learn and practice Dynamic Programming (DP) concepts and algorithms. It provides a step-by-step visual environment for specific DP problems, tracks student progress, and aims to adapt to individual learning needs.
 
 ## Features
