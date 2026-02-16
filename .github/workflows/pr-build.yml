@@ -5,6 +5,9 @@ on:
     branches: [ main, development ]
   workflow_dispatch: #allow manual runs
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
