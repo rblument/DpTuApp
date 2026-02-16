@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory for creating the GUI actions used in the ShaTu user interface.
+ * Factory for creating the GUI actions used in the DpTu user interface.
  *
  * @author rickb
  */

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.err.ObjNotFoundException;
 
 /**
- * A course that may be taught by the ShaTu tutor.
+ * A course that may be taught by the DpTu tutor.
  *
  * @author rickb
  */

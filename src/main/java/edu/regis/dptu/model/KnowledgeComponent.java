@@ -23,7 +23,7 @@ import edu.regis.dptu.model.aol.OutcomeGranularity;
  * Per VanLehn (2006), a component of knowledge (concept, rule, procedure, fact) possessed by a
  * student representing a fragment of task-specific information.
  *
- * <p>Knowledge components represent the Outcomes in the ShaTu tutor.
+ * <p>Knowledge components represent the Outcomes in the DpTu tutor.
  *
  * @author rickb
  */

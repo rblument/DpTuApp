@@ -25,7 +25,7 @@ import edu.regis.dptu.dao.StudentModelDAO;
 
 /**
  * A singleton providing a concrete implementation of the service factory used to obtain references
- * to various ShaTu tutoring services.
+ * to various DpTu tutoring services.
  *
  * <p>Use of the service factory allows easier changes to how the services are actually implemented
  * without directly affecting the consumers who use them.
@@ -80,7 +80,7 @@ public class ServiceFactory {
      *
      * @return StudentSvc
      */
-    // ToDo: add this support ala ShaTu
+    // ToDo: add this support ala DpTu
     public static StudentModelSvc findStudentModelSvc() {
         log.debug("ServiceFactory: Retrieving StudentModelSvc instance");
         return new StudentModelDAO();

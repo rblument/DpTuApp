@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.aol.StudentModel;
 
 /**
- * A Student is a user who is being tutored by the ShaTu tutor and consequently has an associated
+ * A Student is a user who is being tutored by the DpTu tutor and consequently has an associated
  * student model.
  *
  * @author rickb

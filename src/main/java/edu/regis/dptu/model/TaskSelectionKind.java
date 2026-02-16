@@ -22,7 +22,7 @@ package edu.regis.dptu.model;
 public enum TaskSelectionKind {
     /**
      * Via a gesture in the user interface, the student selects the next task. This is used in the
-     * ShaTu tutor to allow the student to practice a task at any time.
+     * DpTu tutor to allow the student to practice a task at any time.
      */
     STUDENT_CHOICE("Student Choice"),
 
