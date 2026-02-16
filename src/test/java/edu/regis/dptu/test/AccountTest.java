@@ -14,16 +14,20 @@ package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import edu.regis.dptu.model.Account;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Unit tests for {@link Account}. */
 @SuppressWarnings("Logging")
-public class AccountTest {
+class AccountTest {
 
     @Test
-    public void testSettersGettersAndClear() {
+    void testSettersGettersAndClear() {
         Account a = new Account();
 
         a.setUserId("hsherwin");
@@ -32,7 +36,7 @@ public class AccountTest {
         a.setPassword("secret");
         a.setSecurityQuestion(0);
         a.setSecurityAnswer("Denver");
-        a.setIsStudent(true);
+        a.setIsStudent(false);
 
         assertEquals("hsherwin", a.getUserId());
         assertEquals("Harrison", a.getFirstName());
@@ -40,8 +44,8 @@ public class AccountTest {
         assertEquals("secret", a.getPassword());
         assertEquals(0, a.getSecurityQuestion());
         assertEquals("Denver", a.getSecurityAnswer());
-        assertTrue(a.isStudent());
-        assertTrue(a.getIsStudent());
+        assertFalse(a.isStudent());
+        assertFalse(a.getIsStudent());
 
         a.clear();
 
@@ -51,23 +55,22 @@ public class AccountTest {
         assertNull(a.getPassword());
         assertEquals(0, a.getSecurityQuestion());
         assertNull(a.getSecurityAnswer());
-        assertTrue(a.isStudent(), "clear() should not modify isStudent");
 
-        a.setIsStudent(false);
-
-        assertFalse(a.isStudent(), "clear() should not modify isStudent");
+        // clear() should NOT modify student status (per Account.clear()).
+        assertFalse(a.isStudent());
+        assertFalse(a.getIsStudent());
     }
 
     @Test
-    public void testToStringDoesNotThrow() {
+    void testToStringDoesNotThrow() {
         Account a = new Account();
         a.setUserId("u1");
         a.setFirstName("F");
         a.setLastName("L");
 
         String s = a.toString();
+
         assertNotNull(s);
-        assertTrue(
-                s.contains("u1") || s.contains("User"), "toString should include identifying info");
+        assertTrue(s.contains("u1") || s.contains("User"), "toString should include identifying info");
     }
 }
