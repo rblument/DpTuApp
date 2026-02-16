@@ -14,13 +14,13 @@ package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
 
-import edu.regis.dptu.model.Account;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import edu.regis.dptu.model.Account;
 
 /** Unit tests for {@link Account}. */
 @SuppressWarnings("Logging")
@@ -71,6 +71,7 @@ class AccountTest {
         String s = a.toString();
 
         assertNotNull(s);
-        assertTrue(s.contains("u1") || s.contains("User"), "toString should include identifying info");
+        assertTrue(
+                s.contains("u1") || s.contains("User"), "toString should include identifying info");
     }
 }

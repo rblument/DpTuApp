@@ -14,9 +14,9 @@ package edu.regis.dptu.test;
 
 import org.junit.jupiter.api.Test;
 
-import edu.regis.dptu.model.StepSubType;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import edu.regis.dptu.model.StepSubType;
 
 class StepSubTypeTest {
 
@@ -38,8 +38,10 @@ class StepSubTypeTest {
         assertEquals("Complete First Col", StepSubType.COMPLETE_FIRST_COL.getSubType());
         assertEquals("Cell Step: Default Zero", StepSubType.DEFAULT_ZERO.getSubType());
         assertEquals(
-                "Cell Step: Increase Diagonal Value + 1", StepSubType.INCREASE_DIAGONAL.getSubType());
-        assertEquals("Cell Step: Use value of cell to the left.", StepSubType.USE_LEFT.getSubType());
+                "Cell Step: Increase Diagonal Value + 1",
+                StepSubType.INCREASE_DIAGONAL.getSubType());
+        assertEquals(
+                "Cell Step: Use value of cell to the left.", StepSubType.USE_LEFT.getSubType());
         assertEquals("Cell Step: Use value of cell above.", StepSubType.USE_UPPER.getSubType());
         assertEquals("Step Completion Reply", StepSubType.STEP_COMPLETION_REPLY.getSubType());
         assertEquals("Request Hint", StepSubType.REQUEST_HINT.getSubType());

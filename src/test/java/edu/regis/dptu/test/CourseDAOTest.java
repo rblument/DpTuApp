@@ -23,6 +23,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import edu.regis.dptu.dao.CourseDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
@@ -31,10 +35,6 @@ import edu.regis.dptu.model.CourseDigest;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.model.UnitDigest;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Unit test class for CourseDAO using mocked database connections
