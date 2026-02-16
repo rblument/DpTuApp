@@ -30,7 +30,7 @@ class StepSubTypeTest {
     @Test
     void testKnownSubTypeStrings() {
         assertEquals("Information Message", StepSubType.INFO_MESSAGE.getSubType());
-        assertEquals("Step Comleted", StepSubType.STEP_COMPLETED.getSubType());
+        assertEquals("Step Completed", StepSubType.STEP_COMPLETED.getSubType());
         assertEquals("Review Problem", StepSubType.PROBLEM_REVIEW.getSubType());
         assertEquals("GUI Action", StepSubType.GUI_ACTION.getSubType());
         assertEquals("Complete Cell", StepSubType.COMPLETE_CELL.getSubType());
