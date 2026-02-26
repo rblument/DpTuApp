@@ -17,7 +17,7 @@
  * Last Edited: 1/29/2026 Lindsey C
  */
 
-//TODO: the progress bar values are currently hardcoded, so that will need to be fixed!
+// TODO: the progress bar values are currently hardcoded, so that will need to be fixed!
 
 package edu.regis.dptu.view;
 
