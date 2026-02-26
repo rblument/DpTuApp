@@ -45,8 +45,6 @@ public class SeeOneView extends GPanel implements ModeView {
     public void updateView(Problem currentProblem) {
         SeeOneView.log.info("SeeOneView updating view");
 
-        problemInputView.setModel(currentProblem);
-
         revalidate();
         repaint();
     }
