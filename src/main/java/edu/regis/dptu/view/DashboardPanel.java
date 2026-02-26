@@ -14,10 +14,11 @@
  *   This class is only responsible for presentation. The progress bars are
  *   made in the CustomProgressBar.java class in util
  *
- *  To Do: the progress bar values are currently hardcoded, so that will need to be fixed!
- *
  * Last Edited: 1/29/2026 Lindsey C
  */
+
+//TODO: the progress bar values are currently hardcoded, so that will need to be fixed!
+
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
