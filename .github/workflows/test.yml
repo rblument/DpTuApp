@@ -35,7 +35,7 @@ jobs:
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/development' # Only commit from development branch
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
