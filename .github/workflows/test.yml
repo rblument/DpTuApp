@@ -3,6 +3,8 @@ name: Run Tests
 on:
   push:
     branches: [ main, development ]
+    paths-ignore:
+      - '.github/badges/**'
   pull_request:
     branches: [ main, development ]
   workflow_dispatch: #allow manual runs
@@ -14,6 +16,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@v4
@@ -51,20 +54,20 @@ jobs:
             writer = csv.DictWriter(dst, fieldnames=reader.fieldnames)
             writer.writeheader()
             for row in reader:
-            line_missed = int(row['LINE_MISSED'])
-            line_covered = int(row['LINE_COVERED'])
-            raw_line_missed += line_missed
-            raw_line_covered += line_covered
+              line_missed = int(row['LINE_MISSED'])
+              line_covered = int(row['LINE_COVERED'])
+              raw_line_missed += line_missed
+              raw_line_covered += line_covered
 
-                package_name = row['PACKAGE']
-                if package_name in excluded_exact:
-                    continue
-                if package_name.startswith(excluded_prefixes):
-                    continue
+              package_name = row['PACKAGE']
+              if package_name in excluded_exact:
+                continue
+              if package_name.startswith(excluded_prefixes):
+                continue
 
-                writer.writerow(row)
-            unit_line_missed += line_missed
-            unit_line_covered += line_covered
+              writer.writerow(row)
+              unit_line_missed += line_missed
+              unit_line_covered += line_covered
 
         raw_total = raw_line_covered + raw_line_missed
         unit_total = unit_line_covered + unit_line_missed
@@ -89,12 +92,12 @@ jobs:
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/development' # Only commit from direct pushes to development
+      if: github.event_name == 'push' && github.ref == 'refs/heads/development' && github.actor != 'github-actions[bot]' # Only commit from direct pushes to development
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add -A .github/badges
-        git diff --cached --quiet || git commit -m "chore(ci): update coverage badge"
+        git diff --cached --quiet || git commit -m "chore(ci): update coverage badge [skip ci]"
         git push
 
     - name: Publish test report
