@@ -29,7 +29,14 @@ jobs:
         cache: maven
 
     - name: Run tests and generate coverage report
-      run: mvn -B verify
+      timeout-minutes: 15
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress verify
 
     - name: Prepare unit-test coverage CSV (exclude Swing UI packages)
       run: |
