@@ -124,7 +124,7 @@ Resolve all compiler errors, commit, and push again.
 
 ### Purpose
 
-Executes all automated tests and publishes results. This ensures functional correctness and prevents regressions.
+Executes all automated tests, generates coverage artifacts, enforces the unit-test coverage threshold, and publishes test results. This ensures functional correctness and prevents regressions.
 
 ### When It Runs
 
@@ -140,10 +140,22 @@ Executes all automated tests and publishes results. This ensures functional corr
 4. Runs:
 
     ```shell
-    mvn test
+    mvn -B verify
     ```
 
-5. Publishes JUnit test reports to GitHub UI
+5. Builds a filtered JaCoCo CSV (`target/site/jacoco/jacoco.unit.csv`) that excludes Swing UI packages and the app entrypoint package from the unit-test coverage metric:
+
+   * `edu.regis.dptu.view*`
+   * `edu.regis.dptu.view.act*`
+   * `edu.regis.dptu`
+
+6. Generates the coverage badge from the filtered CSV and fails the workflow if filtered line coverage is below **40%**.
+7. Writes a workflow run summary showing both:
+
+   * Raw JaCoCo line coverage
+   * Unit-test scoped (filtered) line coverage
+
+8. Publishes JUnit test reports to GitHub UI
 
 ### What Causes Failure
 
@@ -156,10 +168,10 @@ Executes all automated tests and publishes results. This ensures functional corr
 Run locally:
 
 ```shell
-mvn test
+mvn verify
 ```
 
-Fix failing tests or underlying logic.
+Fix failing tests or underlying logic. If coverage fails, add or improve unit tests for non-UI code to reach at least 40% filtered line coverage.
 
 ---
 
@@ -418,4 +430,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 15 Feb 2026 by Harrison Sherwin
+**Last reviewed:** 03 Mar 2026 by GitHub Copilot
