@@ -28,10 +28,36 @@ jobs:
     - name: Run tests and generate coverage report
       run: mvn -B verify
 
+    - name: Prepare unit-test coverage CSV (exclude Swing UI packages)
+      run: |
+        python - <<'PY'
+        import csv
+        from pathlib import Path
+
+        source = Path('target/site/jacoco/jacoco.csv')
+        target = Path('target/site/jacoco/jacoco.unit.csv')
+
+        excluded_prefixes = ('edu.regis.dptu.view', 'edu.regis.dptu.view.act')
+        excluded_exact = {'edu.regis.dptu'}
+
+        with source.open(newline='', encoding='utf-8') as src, target.open('w', newline='', encoding='utf-8') as dst:
+            reader = csv.DictReader(src)
+            writer = csv.DictWriter(dst, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            for row in reader:
+                package_name = row['PACKAGE']
+                if package_name in excluded_exact:
+                    continue
+                if package_name.startswith(excluded_prefixes):
+                    continue
+                writer.writerow(row)
+        PY
+
     - name: Generate JaCoCo coverage badge
       uses: cicirello/jacoco-badge-generator@v2
       with:
-        jacoco-csv-file: target/site/jacoco/jacoco.csv
+        jacoco-csv-file: target/site/jacoco/jacoco.unit.csv
+        fail-if-coverage-less-than: 40
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
