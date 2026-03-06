@@ -128,8 +128,8 @@ Executes all automated tests, generates coverage artifacts, enforces the unit-te
 
 ### When It Runs
 
-* Push to: `development` or `main` branches.
-* Pull requests to those branches
+* Push to any branch (badge-only pushes are ignored)
+* Pull requests targeting `development` or `main`
 * Manual trigger
 
 ### What It Does
@@ -150,12 +150,14 @@ Executes all automated tests, generates coverage artifacts, enforces the unit-te
    * `edu.regis.dptu`
 
 6. Generates the coverage badge from the filtered CSV and fails the workflow if filtered line coverage is below **40%**.
-7. Writes a workflow run summary showing both:
+7. On push events, commits updated badge files (if changed) back to the pushed branch.
+8. README uses a repository-relative coverage badge path, so branch views display that branch’s current badge.
+9. Writes a workflow run summary showing both:
 
    * Raw JaCoCo line coverage
    * Unit-test scoped (filtered) line coverage
 
-8. Publishes JUnit test reports to GitHub UI
+10. Publishes JUnit test reports to GitHub UI
 
 ### What Causes Failure
 
@@ -430,4 +432,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 03 March 2026 by Harrison Sherwin
+**Last reviewed:** 05 March 2026 by GitHub Copilot

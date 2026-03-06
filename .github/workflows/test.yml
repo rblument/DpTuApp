@@ -2,7 +2,6 @@ name: Run Tests
 
 on:
   push:
-    branches: [ main, development ]
     paths-ignore:
       - '.github/badges/**'
   pull_request:
@@ -99,7 +98,7 @@ jobs:
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/development' && github.actor != 'github-actions[bot]' # Only commit from direct pushes to development
+      if: github.event_name == 'push' && github.actor != 'github-actions[bot]' # Commit badge updates on pushed branches
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
