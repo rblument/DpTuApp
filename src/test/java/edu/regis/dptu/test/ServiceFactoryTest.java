@@ -16,18 +16,24 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.regis.dptu.dao.AccountDAO;
+import edu.regis.dptu.dao.CompletedTaskDAO;
+import edu.regis.dptu.dao.CourseDAO;
+import edu.regis.dptu.dao.ProblemDAO;
+import edu.regis.dptu.dao.SessionDAO;
+import edu.regis.dptu.dao.StudentModelDAO;
 import edu.regis.dptu.svc.ServiceFactory;
 
 public class ServiceFactoryTest {
 
     @Test
     public void testFactoryMethodsReturnServices() {
-        assertNotNull(ServiceFactory.findAccountSvc());
-        assertNotNull(ServiceFactory.findCourseSvc());
-        assertNotNull(ServiceFactory.findProblemSvc());
-        assertNotNull(ServiceFactory.findSessionSvc());
-        assertNotNull(ServiceFactory.findStudentModelSvc());
-        assertNotNull(ServiceFactory.findCompletedTaskSvc());
+        assertInstanceOf(AccountDAO.class, ServiceFactory.findAccountSvc());
+        assertInstanceOf(CourseDAO.class, ServiceFactory.findCourseSvc());
+        assertInstanceOf(ProblemDAO.class, ServiceFactory.findProblemSvc());
+        assertInstanceOf(SessionDAO.class, ServiceFactory.findSessionSvc());
+        assertInstanceOf(StudentModelDAO.class, ServiceFactory.findStudentModelSvc());
+        assertInstanceOf(CompletedTaskDAO.class, ServiceFactory.findCompletedTaskSvc());
     }
 }
 

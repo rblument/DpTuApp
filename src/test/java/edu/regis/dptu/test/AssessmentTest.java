@@ -25,18 +25,24 @@ public class AssessmentTest {
     @Test
     public void testAssessmentMutatorsAndCounters() {
         KnowledgeComponent outcome = new KnowledgeComponent(101);
+        KnowledgeComponent replacementOutcome = new KnowledgeComponent(102);
         Assessment assessment = new Assessment(outcome, AssessmentLevel.LOW);
+
+        assessment.setOutcome(replacementOutcome);
+        assessment.setExposures(2);
+        assessment.setSuccessess(3);
+        assessment.setHints(4);
 
         assessment.incrementExposures();
         assessment.incrementSuccessess();
         assessment.incrementHints();
         assessment.setAssessment(AssessmentLevel.MEDIUM);
 
-        assertEquals(outcome, assessment.getOutcome());
+        assertEquals(replacementOutcome, assessment.getOutcome());
         assertEquals(AssessmentLevel.MEDIUM, assessment.getAssessment());
-        assertEquals(1, assessment.getExposures());
-        assertEquals(1, assessment.getSuccessess());
-        assertEquals(1, assessment.getHints());
+        assertEquals(3, assessment.getExposures());
+        assertEquals(4, assessment.getSuccessess());
+        assertEquals(5, assessment.getHints());
     }
 }
 

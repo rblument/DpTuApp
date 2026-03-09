@@ -76,5 +76,12 @@ public class TutoringSessionTest {
         session.removeTask(pendingTask);
         assertEquals(0, session.getTasks().size());
     }
+
+    @Test
+    public void testGetCurrentTaskThrowsWhenNoTasksExist() {
+        TutoringSession session = new TutoringSession("student@regis.edu");
+
+        assertThrows(IndexOutOfBoundsException.class, session::getCurrentTask);
+    }
 }
 

@@ -44,5 +44,12 @@ public class PendingTaskTest {
         assertNotNull(pendingTask.currentStep());
         assertEquals(task, pendingTask.getTask());
     }
+
+    @Test
+    public void testIsTaskCompletedWhenCurrentStepIsNull() {
+        PendingTask pendingTask = new PendingTask(new Task(99));
+
+        assertFalse(pendingTask.isTaskCompleted());
+    }
 }
 
