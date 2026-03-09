@@ -25,4 +25,3 @@ public class StudentModelFieldKindTest {
         assertEquals("Hints", StudentModelFieldKind.HINTS.title());
     }
 }
-

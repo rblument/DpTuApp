@@ -52,4 +52,3 @@ public class PendingTaskTest {
         assertFalse(pendingTask.isTaskCompleted());
     }
 }
-

@@ -25,4 +25,3 @@ public class ProblemKindTest {
         assertEquals("Longest Common Subsequence", ProblemKind.LCS_PROBLEM.title());
     }
 }
-

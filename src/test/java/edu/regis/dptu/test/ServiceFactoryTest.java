@@ -36,4 +36,3 @@ public class ServiceFactoryTest {
         assertInstanceOf(CompletedTaskDAO.class, ServiceFactory.findCompletedTaskSvc());
     }
 }
-

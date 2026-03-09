@@ -84,4 +84,3 @@ public class TutoringSessionTest {
         assertThrows(IndexOutOfBoundsException.class, session::getCurrentTask);
     }
 }
-

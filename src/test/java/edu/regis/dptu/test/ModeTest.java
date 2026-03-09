@@ -25,4 +25,3 @@ public class ModeTest {
         assertEquals("mode.seeOne", Mode.SEE_ONE.getMsgKey());
     }
 }
-

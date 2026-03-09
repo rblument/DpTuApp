@@ -25,4 +25,3 @@ public class ExampleTypeTest {
         assertEquals("Enter Cell Value", ExampleType.ENTER_CELL.toString());
     }
 }
-

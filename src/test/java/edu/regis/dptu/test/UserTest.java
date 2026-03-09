@@ -31,4 +31,3 @@ public class UserTest {
         assertTrue(user.toString().contains("updated@regis.edu"));
     }
 }
-

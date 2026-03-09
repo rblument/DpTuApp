@@ -36,4 +36,3 @@ public class StudentTest {
         assertSame(replacementModel, student.getStudentModel());
     }
 }
-

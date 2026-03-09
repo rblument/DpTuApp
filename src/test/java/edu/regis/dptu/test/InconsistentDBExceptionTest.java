@@ -29,4 +29,3 @@ public class InconsistentDBExceptionTest {
         assertSame(cause, ex.getCause());
     }
 }
-

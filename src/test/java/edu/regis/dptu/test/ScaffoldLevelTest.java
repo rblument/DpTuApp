@@ -26,4 +26,3 @@ public class ScaffoldLevelTest {
         assertNull(ScaffoldLevel.fromString("unknown"));
     }
 }
-
