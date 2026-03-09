@@ -232,6 +232,8 @@ Enforces repository logging rules. This workflow implements the policies defined
 
 ### What It Enforces
 
+Scope note: Logging checks are run against `*.java` source files only (non-test Java sources). Resource files such as `.properties`, `.xml`, images, and text files are not scanned by this workflow.
+
 #### Hard Failures (Build Stops)
 
 These patterns are forbidden:
@@ -432,4 +434,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 05 March 2026 by GitHub Copilot
+**Last reviewed:** 08 March 2026 by Harrison Sherwin
