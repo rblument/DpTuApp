@@ -25,4 +25,3 @@ public class GuiGestureTest {
         assertEquals("No Op", GuiGesture.NO_OP.toString());
     }
 }
-

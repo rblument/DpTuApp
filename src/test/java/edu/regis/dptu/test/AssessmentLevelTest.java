@@ -26,4 +26,3 @@ public class AssessmentLevelTest {
         assertNull(AssessmentLevel.fromString("not-a-level"));
     }
 }
-

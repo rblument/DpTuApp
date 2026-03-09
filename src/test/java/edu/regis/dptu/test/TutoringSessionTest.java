@@ -77,4 +77,3 @@ public class TutoringSessionTest {
         assertEquals(0, session.getTasks().size());
     }
 }
-

@@ -34,4 +34,3 @@ public class TutorReplyTest {
         assertEquals("new-data", reply.getData());
     }
 }
-

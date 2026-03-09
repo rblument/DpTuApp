@@ -45,4 +45,3 @@ public class PendingTaskTest {
         assertEquals(task, pendingTask.getTask());
     }
 }
-

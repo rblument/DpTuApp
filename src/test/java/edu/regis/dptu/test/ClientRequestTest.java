@@ -37,4 +37,3 @@ public class ClientRequestTest {
         assertEquals("{\"key\":\"value\"}", request.getData());
     }
 }
-

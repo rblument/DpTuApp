@@ -36,4 +36,3 @@ public class VariableTest {
         assertEquals(1, variable.getDimensions());
     }
 }
-

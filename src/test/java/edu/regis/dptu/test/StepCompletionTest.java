@@ -41,4 +41,3 @@ public class StepCompletionTest {
         assertTrue(completion.getDate() > originalDate);
     }
 }
-

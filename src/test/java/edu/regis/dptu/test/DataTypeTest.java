@@ -26,4 +26,3 @@ public class DataTypeTest {
         assertEquals("String", DataType.STRING.getPrettyName());
     }
 }
-

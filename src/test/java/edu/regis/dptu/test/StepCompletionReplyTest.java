@@ -43,4 +43,3 @@ public class StepCompletionReplyTest {
         assertEquals("payload", reply.getData());
     }
 }
-

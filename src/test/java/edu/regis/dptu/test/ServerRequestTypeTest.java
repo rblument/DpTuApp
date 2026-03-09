@@ -26,4 +26,3 @@ public class ServerRequestTypeTest {
         assertEquals(":RequestHint", ServerRequestType.REQUEST_HINT.toString());
     }
 }
-

@@ -29,4 +29,3 @@ public class XmlExceptionTest {
         assertSame(cause, ex.getCause());
     }
 }
-

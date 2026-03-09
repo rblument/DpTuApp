@@ -39,4 +39,3 @@ public class AssessmentTest {
         assertEquals(1, assessment.getHints());
     }
 }
-

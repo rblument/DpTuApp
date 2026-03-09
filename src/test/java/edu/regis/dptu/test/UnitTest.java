@@ -156,4 +156,3 @@ class UnitTest {
         assertThrows(NullPointerException.class, () -> u.findTaskBySequence(1));
     }
 }
-

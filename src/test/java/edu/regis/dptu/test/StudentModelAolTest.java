@@ -53,4 +53,3 @@ public class StudentModelAolTest {
         assertEquals(1, studentModel.getSessions().size());
     }
 }
-

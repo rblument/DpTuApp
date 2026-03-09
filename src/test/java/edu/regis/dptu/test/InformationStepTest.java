@@ -28,4 +28,3 @@ public class InformationStepTest {
         assertEquals("Read this first", informationStep.getMsg());
     }
 }
-
