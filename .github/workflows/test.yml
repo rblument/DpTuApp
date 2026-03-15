@@ -2,8 +2,7 @@ name: Run Tests
 
 on:
   push:
-    paths-ignore:
-      - '.github/badges/**'
+    branches: [ main, development ]
   pull_request:
     branches: [ main, development ]
   workflow_dispatch: #allow manual runs
@@ -11,6 +10,8 @@ on:
 permissions:
   contents: write
   checks: write
+  pull-requests: write
+  issues: write
 
 jobs:
   test:
@@ -37,73 +38,234 @@ jobs:
           -Dmaven.wagon.rto=30000
       run: mvn -B --no-transfer-progress verify
 
-    - name: Prepare unit-test coverage CSV (exclude Swing UI packages)
+    - name: Checkout development baseline
+      if: github.event_name == 'pull_request'
+      uses: actions/checkout@v4
+      with:
+        ref: development
+        path: baseline
+
+    - name: Run baseline tests and generate coverage report
+      if: github.event_name == 'pull_request'
+      working-directory: baseline
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress verify
+
+    - name: Compare coverage to development
+      if: always() && github.event_name == 'pull_request'
+      id: coverage_delta
+      shell: bash
       run: |
         python - <<'PY'
         import csv
         import os
         from pathlib import Path
 
-        source = Path('target/site/jacoco/jacoco.csv')
-        target = Path('target/site/jacoco/jacoco.unit.csv')
+        head_csv = Path('target/site/jacoco/jacoco.csv')
+        base_csv = Path('baseline/target/site/jacoco/jacoco.csv')
 
-        excluded_prefixes = ('edu.regis.dptu.view', 'edu.regis.dptu.view.act')
-        excluded_exact = {'edu.regis.dptu'}
+        def coverage_percent(csv_path: Path) -> float:
+            with csv_path.open(newline='', encoding='utf-8') as f:
+                rows = list(csv.DictReader(f))
+            covered = sum(int(r['LINE_COVERED']) for r in rows)
+            missed = sum(int(r['LINE_MISSED']) for r in rows)
+            total = covered + missed
+            return (100.0 * covered / total) if total else 0.0
 
-        raw_line_missed = 0
-        raw_line_covered = 0
-        unit_line_missed = 0
-        unit_line_covered = 0
+        output_path = Path(os.environ['GITHUB_OUTPUT'])
 
-        with source.open(newline='', encoding='utf-8') as src, target.open('w', newline='', encoding='utf-8') as dst:
-            reader = csv.DictReader(src)
-            writer = csv.DictWriter(dst, fieldnames=reader.fieldnames)
-            writer.writeheader()
-            for row in reader:
-              line_missed = int(row['LINE_MISSED'])
-              line_covered = int(row['LINE_COVERED'])
-              raw_line_missed += line_missed
-              raw_line_covered += line_covered
+        if not head_csv.exists() or not base_csv.exists():
+          with output_path.open('a', encoding='utf-8') as out:
+            out.write('available=false\n')
+            out.write('head=0.000\n')
+            out.write('base=0.000\n')
+            out.write('delta=0.000\n')
 
-              package_name = row['PACKAGE']
-              if package_name in excluded_exact:
-                continue
-              if package_name.startswith(excluded_prefixes):
-                continue
+          summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary_path:
+            with open(summary_path, 'a', encoding='utf-8') as summary:
+              summary.write('\n## Coverage Delta vs development\n')
+              summary.write('Coverage comparison unavailable because JaCoCo CSV was missing for PR or baseline run.\n')
+          raise SystemExit(0)
 
-              writer.writerow(row)
-              unit_line_missed += line_missed
-              unit_line_covered += line_covered
+        head_pct = coverage_percent(head_csv)
+        base_pct = coverage_percent(base_csv)
+        delta = head_pct - base_pct
 
-        raw_total = raw_line_covered + raw_line_missed
-        unit_total = unit_line_covered + unit_line_missed
-        raw_pct = (100.0 * raw_line_covered / raw_total) if raw_total else 0.0
-        unit_pct = (100.0 * unit_line_covered / unit_total) if unit_total else 0.0
+        with output_path.open('a', encoding='utf-8') as out:
+          out.write('available=true\n')
+          out.write(f'head={head_pct:.3f}\n')
+          out.write(f'base={base_pct:.3f}\n')
+          out.write(f'delta={delta:.3f}\n')
+
+    - name: Enforce minimum coverage (fail fast)
+      shell: bash
+      run: |
+        python - <<'PY'
+        import csv
+        from pathlib import Path
+
+        threshold = 40.0
+        csv_path = Path('target/site/jacoco/jacoco.csv')
+
+        if not csv_path.exists():
+          raise SystemExit('JaCoCo CSV not found; cannot enforce minimum coverage threshold.')
+
+        with csv_path.open(newline='', encoding='utf-8') as f:
+          rows = list(csv.DictReader(f))
+
+        covered = sum(int(r['LINE_COVERED']) for r in rows)
+        missed = sum(int(r['LINE_MISSED']) for r in rows)
+        total = covered + missed
+        pct = (100.0 * covered / total) if total else 0.0
+
+        print(f'Coverage: {pct:.3f}% (threshold: {threshold:.1f}%)')
+        if pct < threshold:
+          raise SystemExit(f'Coverage check failed: {pct:.3f}% < {threshold:.1f}%')
+        PY
+
+        summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary_path:
+            with open(summary_path, 'a', encoding='utf-8') as summary:
+                summary.write('\n## Coverage Delta vs development\n')
+                summary.write('| Branch | Coverage |\n')
+                summary.write('|---|---:|\n')
+                summary.write(f'| development | {base_pct:.3f}% |\n')
+                summary.write(f'| PR (current) | {head_pct:.3f}% |\n')
+                summary.write(f'| Delta | {delta:+.3f}% |\n')
+        PY
+
+    - name: Comment coverage delta on PR
+      if: always() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      env:
+        COVERAGE_AVAILABLE: ${{ steps.coverage_delta.outputs.available }}
+        HEAD_COVERAGE: ${{ steps.coverage_delta.outputs.head }}
+        BASE_COVERAGE: ${{ steps.coverage_delta.outputs.base }}
+        DELTA_COVERAGE: ${{ steps.coverage_delta.outputs.delta }}
+      with:
+        script: |
+          const marker = '<!-- coverage-delta-comment -->';
+          const available = (process.env.COVERAGE_AVAILABLE || '').toLowerCase() === 'true';
+          const head = Number(process.env.HEAD_COVERAGE || '0');
+          const base = Number(process.env.BASE_COVERAGE || '0');
+          const delta = Number(process.env.DELTA_COVERAGE || '0');
+
+          const body = available
+            ? [
+                marker,
+                '## Test Coverage Delta',
+                '',
+                `Coverage ${delta > 0 ? 'increased' : (delta < 0 ? 'decreased' : 'did not change')} compared to \`development\`.`,
+                '',
+                '| Branch | Coverage |',
+                '|---|---:|',
+                `| development | ${base.toFixed(3)}% |`,
+                `| this PR | ${head.toFixed(3)}% |`,
+                `| delta | ${delta >= 0 ? '+' : ''}${delta.toFixed(3)}% |`,
+              ].join('\n')
+            : [
+                marker,
+                '## Test Coverage Delta',
+                '',
+                'Coverage comparison to \`development\` is unavailable for this run because coverage artifacts were not produced for PR or baseline.',
+              ].join('\n');
+
+          const { owner, repo } = context.repo;
+          const issue_number = context.issue.number;
+          const comments = await github.paginate(github.rest.issues.listComments, {
+            owner,
+            repo,
+            issue_number,
+            per_page: 100,
+          });
+
+          const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+          if (existing) {
+            await github.rest.issues.updateComment({
+              owner,
+              repo,
+              comment_id: existing.id,
+              body,
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body,
+            });
+          }
+
+    - name: Summarize coverage hot spots
+      shell: bash
+      run: |
+        python - <<'PY'
+        import csv
+        import os
+        from pathlib import Path
+
+        csv_path = Path('target/site/jacoco/jacoco.csv')
+        if not csv_path.exists():
+          print('JaCoCo CSV not found; skipping summary output.')
+          raise SystemExit(0)
+
+        with csv_path.open(newline='', encoding='utf-8') as f:
+          rows = list(csv.DictReader(f))
+
+        covered = sum(int(r['LINE_COVERED']) for r in rows)
+        missed = sum(int(r['LINE_MISSED']) for r in rows)
+        total = covered + missed
+        coverage_pct = (100.0 * covered / total) if total else 0.0
+
+        hot_spots = [r for r in rows if int(r['LINE_MISSED']) > 0]
+        hot_spots.sort(key=lambda r: int(r['LINE_MISSED']), reverse=True)
+        top_ten = hot_spots[:10]
 
         step_summary = os.environ.get('GITHUB_STEP_SUMMARY')
-        if step_summary:
-          with open(step_summary, 'a', encoding='utf-8') as summary:
-            summary.write('## Coverage Summary\n')
-            summary.write('| Metric | Covered | Missed | Line Coverage |\n')
-            summary.write('|---|---:|---:|---:|\n')
-            summary.write(f'| Raw JaCoCo | {raw_line_covered} | {raw_line_missed} | {raw_pct:.2f}% |\n')
-            summary.write(f'| Unit-test scoped (excludes Swing UI packages) | {unit_line_covered} | {unit_line_missed} | {unit_pct:.2f}% |\n')
+        if not step_summary:
+          raise SystemExit(0)
+
+        with open(step_summary, 'a', encoding='utf-8') as summary:
+          summary.write('## Coverage Summary\n')
+          summary.write('| Metric | Covered | Missed | Line Coverage |\n')
+          summary.write('|---|---:|---:|---:|\n')
+          summary.write(f'| JaCoCo (overall) | {covered} | {missed} | {coverage_pct:.2f}% |\n')
+
+          summary.write('\n## Top 10 Classes Reducing Coverage\n')
+          summary.write('| Class | Missed Lines | Covered Lines | Line Coverage |\n')
+          summary.write('|---|---:|---:|---:|\n')
+
+          for r in top_ten:
+            class_name = f"{r['PACKAGE']}.{r['CLASS']}"
+            cls_missed = int(r['LINE_MISSED'])
+            cls_covered = int(r['LINE_COVERED'])
+            cls_total = cls_missed + cls_covered
+            cls_pct = (100.0 * cls_covered / cls_total) if cls_total else 0.0
+            summary.write(
+              f"| `{class_name}` | {cls_missed} | {cls_covered} | {cls_pct:.2f}% |\\n"
+            )
         PY
 
     - name: Generate JaCoCo coverage badge
       uses: cicirello/jacoco-badge-generator@v2
       with:
-        jacoco-csv-file: target/site/jacoco/jacoco.unit.csv
+        jacoco-csv-file: target/site/jacoco/jacoco.csv
         fail-if-coverage-less-than: 40
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
-      if: github.event_name == 'push' && github.actor != 'github-actions[bot]' # Commit badge updates on pushed branches
+      if: github.ref == 'refs/heads/development' # Only commit from development branch
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add -A .github/badges
-        git diff --cached --quiet || git commit -m "chore(ci): update coverage badge [skip ci]"
+        git add .github/badges/*.svg .github/badges/*.json || true
+        git diff --cached --quiet || git commit -m "chore(ci): update coverage badge"
         git push
 
     - name: Publish test report
