@@ -394,7 +394,12 @@ jobs:
           collect_violations "." current_violations.txt
           collect_violations "baseline" base_violations.txt
 
-          comm -13 base_violations.txt current_violations.txt > new_violations.txt || true
+          # Normalize file prefixes so baseline and current findings compare on the
+          # same relative path shape (e.g., src/... instead of baseline/src/...).
+          sed -E 's#\|baseline/src/#|src/#g; s#\|\./src/#|src/#g; s#\|src/#|src/#g' current_violations.txt > current_violations.normalized.txt
+          sed -E 's#\|baseline/src/#|src/#g; s#\|\./src/#|src/#g; s#\|src/#|src/#g' base_violations.txt > base_violations.normalized.txt
+
+          comm -13 base_violations.normalized.txt current_violations.normalized.txt > new_violations.txt || true
           count=$(grep -c '.' new_violations.txt || true)
           echo "count=$count" >> "$GITHUB_OUTPUT"
 
