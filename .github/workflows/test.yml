@@ -2,7 +2,8 @@ name: Run Tests
 
 on:
   push:
-    branches: [ main, development ]
+    paths-ignore:
+      - '.github/badges/**'
   pull_request:
     branches: [ main, development ]
   workflow_dispatch: #allow manual runs
@@ -14,6 +15,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@v4
@@ -26,21 +28,82 @@ jobs:
         cache: maven
 
     - name: Run tests and generate coverage report
-      run: mvn -B verify
+      timeout-minutes: 15
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress verify
+
+    - name: Prepare unit-test coverage CSV (exclude Swing UI packages)
+      run: |
+        python - <<'PY'
+        import csv
+        import os
+        from pathlib import Path
+
+        source = Path('target/site/jacoco/jacoco.csv')
+        target = Path('target/site/jacoco/jacoco.unit.csv')
+
+        excluded_prefixes = ('edu.regis.dptu.view', 'edu.regis.dptu.view.act')
+        excluded_exact = {'edu.regis.dptu'}
+
+        raw_line_missed = 0
+        raw_line_covered = 0
+        unit_line_missed = 0
+        unit_line_covered = 0
+
+        with source.open(newline='', encoding='utf-8') as src, target.open('w', newline='', encoding='utf-8') as dst:
+            reader = csv.DictReader(src)
+            writer = csv.DictWriter(dst, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            for row in reader:
+              line_missed = int(row['LINE_MISSED'])
+              line_covered = int(row['LINE_COVERED'])
+              raw_line_missed += line_missed
+              raw_line_covered += line_covered
+
+              package_name = row['PACKAGE']
+              if package_name in excluded_exact:
+                continue
+              if package_name.startswith(excluded_prefixes):
+                continue
+
+              writer.writerow(row)
+              unit_line_missed += line_missed
+              unit_line_covered += line_covered
+
+        raw_total = raw_line_covered + raw_line_missed
+        unit_total = unit_line_covered + unit_line_missed
+        raw_pct = (100.0 * raw_line_covered / raw_total) if raw_total else 0.0
+        unit_pct = (100.0 * unit_line_covered / unit_total) if unit_total else 0.0
+
+        step_summary = os.environ.get('GITHUB_STEP_SUMMARY')
+        if step_summary:
+          with open(step_summary, 'a', encoding='utf-8') as summary:
+            summary.write('## Coverage Summary\n')
+            summary.write('| Metric | Covered | Missed | Line Coverage |\n')
+            summary.write('|---|---:|---:|---:|\n')
+            summary.write(f'| Raw JaCoCo | {raw_line_covered} | {raw_line_missed} | {raw_pct:.2f}% |\n')
+            summary.write(f'| Unit-test scoped (excludes Swing UI packages) | {unit_line_covered} | {unit_line_missed} | {unit_pct:.2f}% |\n')
+        PY
 
     - name: Generate JaCoCo coverage badge
       uses: cicirello/jacoco-badge-generator@v2
       with:
-        jacoco-csv-file: target/site/jacoco/jacoco.csv
+        jacoco-csv-file: target/site/jacoco/jacoco.unit.csv
+        fail-if-coverage-less-than: 40
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
-      if: github.ref == 'refs/heads/development' # Only commit from development branch
+      if: github.event_name == 'push' && github.actor != 'github-actions[bot]' # Commit badge updates on pushed branches
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add .github/badges/*.svg .github/badges/*.json || true
-        git diff --cached --quiet || git commit -m "chore(ci): update coverage badge"
+        git add -A .github/badges
+        git diff --cached --quiet || git commit -m "chore(ci): update coverage badge [skip ci]"
         git push
 
     - name: Publish test report

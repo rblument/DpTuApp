@@ -124,12 +124,12 @@ Resolve all compiler errors, commit, and push again.
 
 ### Purpose
 
-Executes all automated tests and publishes results. This ensures functional correctness and prevents regressions.
+Executes all automated tests, generates coverage artifacts, enforces the unit-test coverage threshold, and publishes test results. This ensures functional correctness and prevents regressions.
 
 ### When It Runs
 
-* Push to: `development` or `main` branches.
-* Pull requests to those branches
+* Push to any branch (badge-only pushes are ignored)
+* Pull requests targeting `development` or `main`
 * Manual trigger
 
 ### What It Does
@@ -140,10 +140,24 @@ Executes all automated tests and publishes results. This ensures functional corr
 4. Runs:
 
     ```shell
-    mvn test
+    mvn -B verify
     ```
 
-5. Publishes JUnit test reports to GitHub UI
+5. Builds a filtered JaCoCo CSV (`target/site/jacoco/jacoco.unit.csv`) that excludes Swing UI packages and the app entrypoint package from the unit-test coverage metric:
+
+   * `edu.regis.dptu.view*`
+   * `edu.regis.dptu.view.act*`
+   * `edu.regis.dptu`
+
+6. Generates the coverage badge from the filtered CSV and fails the workflow if filtered line coverage is below **40%**.
+7. On push events, commits updated badge files (if changed) back to the pushed branch.
+8. README uses a repository-relative coverage badge path, so branch views display that branch’s current badge.
+9. Writes a workflow run summary showing both:
+
+   * Raw JaCoCo line coverage
+   * Unit-test scoped (filtered) line coverage
+
+10. Publishes JUnit test reports to GitHub UI
 
 ### What Causes Failure
 
@@ -156,10 +170,10 @@ Executes all automated tests and publishes results. This ensures functional corr
 Run locally:
 
 ```shell
-mvn test
+mvn verify
 ```
 
-Fix failing tests or underlying logic.
+Fix failing tests or underlying logic. If coverage fails, add or improve unit tests for non-UI code to reach at least 40% filtered line coverage.
 
 ---
 
@@ -217,6 +231,8 @@ Enforces repository logging rules. This workflow implements the policies defined
 * Manual trigger
 
 ### What It Enforces
+
+Scope note: Logging checks are run against `*.java` source files only (non-test Java sources). Resource files such as `.properties`, `.xml`, images, and text files are not scanned by this workflow.
 
 #### Hard Failures (Build Stops)
 
@@ -418,4 +434,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 15 Feb 2026 by Harrison Sherwin
+**Last reviewed:** 08 March 2026 by Harrison Sherwin
