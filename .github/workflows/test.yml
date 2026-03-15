@@ -38,23 +38,73 @@ jobs:
           -Dmaven.wagon.rto=30000
       run: mvn -B --no-transfer-progress verify
 
-    - name: Checkout development baseline
+    - name: Generate coverage summary snapshot
+      shell: bash
+      run: |
+        python - <<'PY'
+        import csv
+        import json
+        from pathlib import Path
+
+        csv_path = Path('target/site/jacoco/jacoco.csv')
+        output_path = Path('.github/badges/coverage-summary.json')
+        ui_prefixes = ('edu.regis.dptu.view',)
+
+        if not csv_path.exists():
+          raise SystemExit('JaCoCo CSV not found; cannot generate coverage summary snapshot.')
+
+        with csv_path.open(newline='', encoding='utf-8') as f:
+          rows = list(csv.DictReader(f))
+
+        def totals(include_ui: bool) -> tuple[int, int]:
+          covered = 0
+          missed = 0
+          for row in rows:
+            package_name = row['PACKAGE']
+            if not include_ui and package_name.startswith(ui_prefixes):
+              continue
+            covered += int(row['LINE_COVERED'])
+            missed += int(row['LINE_MISSED'])
+          return covered, missed
+
+        def percent(covered: int, missed: int) -> float:
+          total = covered + missed
+          return (100.0 * covered / total) if total else 0.0
+
+        all_covered, all_missed = totals(include_ui=True)
+        non_ui_covered, non_ui_missed = totals(include_ui=False)
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with output_path.open('w', encoding='utf-8') as f:
+          json.dump(
+            {
+              'all_classes': {
+                'covered': all_covered,
+                'missed': all_missed,
+                'percent': round(percent(all_covered, all_missed), 3),
+              },
+              'non_swing_ui_classes': {
+                'covered': non_ui_covered,
+                'missed': non_ui_missed,
+                'percent': round(percent(non_ui_covered, non_ui_missed), 3),
+              },
+            },
+            f,
+            indent=2,
+          )
+          f.write('\n')
+        PY
+
+    - name: Checkout development coverage baseline
       if: github.event_name == 'pull_request'
       uses: actions/checkout@v4
       with:
         ref: development
         path: baseline
-
-    - name: Run baseline tests and generate coverage report
-      if: github.event_name == 'pull_request'
-      working-directory: baseline
-      env:
-        MAVEN_OPTS: >-
-          -Daether.transport.http.connectTimeout=10000
-          -Daether.transport.http.requestTimeout=30000
-          -Dmaven.wagon.http.retryHandler.count=2
-          -Dmaven.wagon.rto=30000
-      run: mvn -B --no-transfer-progress verify
+        fetch-depth: 1
+        sparse-checkout: |
+          .github/badges/coverage-summary.json
+        sparse-checkout-cone-mode: false
 
     - name: Compare coverage to development
       if: always() && github.event_name == 'pull_request'
@@ -62,37 +112,16 @@ jobs:
       shell: bash
       run: |
         python - <<'PY'
-        import csv
+        import json
         import os
         from pathlib import Path
 
-        head_csv = Path('target/site/jacoco/jacoco.csv')
-        base_csv = Path('baseline/target/site/jacoco/jacoco.csv')
-        ui_prefixes = ('edu.regis.dptu.view',)
-
-        def coverage_totals(csv_path: Path, include_ui: bool) -> tuple[int, int]:
-            with csv_path.open(newline='', encoding='utf-8') as f:
-                rows = list(csv.DictReader(f))
-
-          covered = 0
-          missed = 0
-          for row in rows:
-            package_name = row['PACKAGE']
-            if not include_ui and package_name.startswith(ui_prefixes):
-              continue
-
-            covered += int(row['LINE_COVERED'])
-            missed += int(row['LINE_MISSED'])
-
-          return covered, missed
-
-        def percent(covered: int, missed: int) -> float:
-          total = covered + missed
-          return (100.0 * covered / total) if total else 0.0
+        head_summary_path = Path('.github/badges/coverage-summary.json')
+        base_summary_path = Path('baseline/.github/badges/coverage-summary.json')
 
         output_path = Path(os.environ['GITHUB_OUTPUT'])
 
-        if not head_csv.exists() or not base_csv.exists():
+        if not head_summary_path.exists() or not base_summary_path.exists():
           with output_path.open('a', encoding='utf-8') as out:
             out.write('available=false\n')
             out.write('all_head=0.000\n')
@@ -106,20 +135,20 @@ jobs:
           if summary_path:
             with open(summary_path, 'a', encoding='utf-8') as summary:
               summary.write('\n## Coverage Delta vs development\n')
-              summary.write('Coverage comparison unavailable because JaCoCo CSV was missing for PR or baseline run.\n')
+              summary.write('Coverage comparison unavailable because the stored development coverage summary was missing.\n')
           raise SystemExit(0)
 
-        all_head_covered, all_head_missed = coverage_totals(head_csv, include_ui=True)
-        all_base_covered, all_base_missed = coverage_totals(base_csv, include_ui=True)
-        non_ui_head_covered, non_ui_head_missed = coverage_totals(head_csv, include_ui=False)
-        non_ui_base_covered, non_ui_base_missed = coverage_totals(base_csv, include_ui=False)
+        with head_summary_path.open(encoding='utf-8') as f:
+          head_summary = json.load(f)
+        with base_summary_path.open(encoding='utf-8') as f:
+          base_summary = json.load(f)
 
-        all_head_pct = percent(all_head_covered, all_head_missed)
-        all_base_pct = percent(all_base_covered, all_base_missed)
+        all_head_pct = float(head_summary['all_classes']['percent'])
+        all_base_pct = float(base_summary['all_classes']['percent'])
         all_delta = all_head_pct - all_base_pct
 
-        non_ui_head_pct = percent(non_ui_head_covered, non_ui_head_missed)
-        non_ui_base_pct = percent(non_ui_base_covered, non_ui_base_missed)
+        non_ui_head_pct = float(head_summary['non_swing_ui_classes']['percent'])
+        non_ui_base_pct = float(base_summary['non_swing_ui_classes']['percent'])
         non_ui_delta = non_ui_head_pct - non_ui_base_pct
 
         with output_path.open('a', encoding='utf-8') as out:
@@ -212,7 +241,7 @@ jobs:
                 '',
                 '_This comment updates with future commits to this branch and is removed when there are no remaining coverage issues to report._',
                 '',
-                'Coverage comparison for all classes and non-Swing UI classes is unavailable for this run because coverage artifacts were not produced for PR or baseline.',
+                'Coverage comparison for all classes and non-Swing UI classes is unavailable for this run because the stored development coverage summary was not available.',
               ].join('\n');
 
           const { owner, repo } = context.repo;

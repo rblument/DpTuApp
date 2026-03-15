@@ -143,7 +143,7 @@ Executes all automated tests, generates coverage artifacts, compares PR coverage
     mvn -B verify
     ```
 
-5. On pull requests, checks out `development` as a baseline and runs tests there.
+5. Generates a stored coverage summary snapshot from the current branch's JaCoCo report.
 6. Compares PR JaCoCo line coverage to baseline coverage and posts/updates a sticky PR comment with separate percentages for:
 
     * all classes
@@ -151,6 +151,8 @@ Executes all automated tests, generates coverage artifacts, compares PR coverage
     * baseline coverage (`development`)
     * PR coverage
     * increase/decrease delta
+
+    On pull requests, the baseline values come from the coverage summary file already stored on `development`, rather than rerunning the full `development` test suite.
 
 7. Writes a workflow run summary including both all-class and non-Swing UI coverage, plus coverage hot spots (top classes by missed lines).
 8. Generates the coverage badge from JaCoCo output.
