@@ -407,6 +407,8 @@ jobs:
             echo "<!-- logging-violations-delta -->"
             echo "## Logging Violations Delta"
             echo
+            echo "_This comment updates with future commits to this branch and is removed when there are no remaining logging issues to report._"
+            echo
             if [ "$count" -eq 0 ]; then
               echo "No new logging workflow violations were introduced compared to \`development\`."
             else
