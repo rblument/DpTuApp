@@ -54,12 +54,6 @@
                             <include>src/test/java/**/*.java</include>
                         </includes>
                     </java>
-                    <xml>
-                        <indent>4</indent>
-                        <includes>
-                            <include>pom.xml</include>
-                        </includes>
-                    </xml>
                 </configuration>
                 <executions>
                     <execution>
