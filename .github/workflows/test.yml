@@ -121,9 +121,10 @@ jobs:
 
         output_path = Path(os.environ['GITHUB_OUTPUT'])
 
-        if not head_summary_path.exists() or not base_summary_path.exists():
+        if not head_summary_path.exists():
           with output_path.open('a', encoding='utf-8') as out:
             out.write('available=false\n')
+            out.write('baseline_mode=unavailable\n')
             out.write('all_head=0.000\n')
             out.write('all_base=0.000\n')
             out.write('all_delta=0.000\n')
@@ -135,13 +136,22 @@ jobs:
           if summary_path:
             with open(summary_path, 'a', encoding='utf-8') as summary:
               summary.write('\n## Coverage Delta vs development\n')
-              summary.write('Coverage comparison unavailable because the stored development coverage summary was missing.\n')
+              summary.write('Coverage comparison unavailable because the current-branch coverage summary could not be generated.\n')
           raise SystemExit(0)
 
         with head_summary_path.open(encoding='utf-8') as f:
           head_summary = json.load(f)
-        with base_summary_path.open(encoding='utf-8') as f:
-          base_summary = json.load(f)
+
+        if base_summary_path.exists():
+          with base_summary_path.open(encoding='utf-8') as f:
+            base_summary = json.load(f)
+          baseline_mode = 'stored'
+        else:
+          base_summary = {
+            'all_classes': {'percent': 0.0},
+            'non_swing_ui_classes': {'percent': 0.0},
+          }
+          baseline_mode = 'bootstrap-zero'
 
         all_head_pct = float(head_summary['all_classes']['percent'])
         all_base_pct = float(base_summary['all_classes']['percent'])
@@ -153,6 +163,7 @@ jobs:
 
         with output_path.open('a', encoding='utf-8') as out:
           out.write('available=true\n')
+          out.write(f'baseline_mode={baseline_mode}\n')
           out.write(f'all_head={all_head_pct:.3f}\n')
           out.write(f'all_base={all_base_pct:.3f}\n')
           out.write(f'all_delta={all_delta:.3f}\n')
@@ -164,6 +175,8 @@ jobs:
         if summary_path:
           with open(summary_path, 'a', encoding='utf-8') as summary:
             summary.write('\n## Coverage Delta vs development\n')
+            if baseline_mode == 'bootstrap-zero':
+              summary.write('_Bootstrap mode: development baseline summary missing; using 0.000% baseline for comparison._\n\n')
             summary.write('| Metric | development | PR (current) | Delta |\n')
             summary.write('|---|---:|---:|---:|\n')
             summary.write(f'| All classes | {all_base_pct:.3f}% | {all_head_pct:.3f}% | {all_delta:+.3f}% |\n')
@@ -175,6 +188,7 @@ jobs:
       uses: actions/github-script@v7
       env:
         COVERAGE_AVAILABLE: ${{ steps.coverage_delta.outputs.available }}
+        BASELINE_MODE: ${{ steps.coverage_delta.outputs.baseline_mode }}
         ALL_HEAD_COVERAGE: ${{ steps.coverage_delta.outputs.all_head }}
         ALL_BASE_COVERAGE: ${{ steps.coverage_delta.outputs.all_base }}
         ALL_DELTA_COVERAGE: ${{ steps.coverage_delta.outputs.all_delta }}
@@ -185,6 +199,7 @@ jobs:
         script: |
           const marker = '<!-- coverage-delta-comment -->';
           const available = (process.env.COVERAGE_AVAILABLE || '').toLowerCase() === 'true';
+          const baselineMode = process.env.BASELINE_MODE || 'unavailable';
           const allHead = Number(process.env.ALL_HEAD_COVERAGE || '0');
           const allBase = Number(process.env.ALL_BASE_COVERAGE || '0');
           const allDelta = Number(process.env.ALL_DELTA_COVERAGE || '0');
@@ -200,6 +215,9 @@ jobs:
                 '## Test Coverage Delta',
                 '',
                 '_This comment updates with future commits to this branch and is removed when there are no remaining coverage issues to report._',
+                baselineMode === 'bootstrap-zero'
+                  ? '_Bootstrap mode: development baseline summary missing; using 0.000% baseline for comparison._'
+                  : '_Baseline source: stored development coverage summary._',
                 '',
                 `All-classes coverage ${trend(allDelta)} compared to \`development\`.`,
                 `Non-Swing UI coverage ${trend(nonUiDelta)} compared to \`development\`.`,
