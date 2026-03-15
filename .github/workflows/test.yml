@@ -103,6 +103,17 @@ jobs:
           out.write(f'base={base_pct:.3f}\n')
           out.write(f'delta={delta:.3f}\n')
 
+        summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary_path:
+          with open(summary_path, 'a', encoding='utf-8') as summary:
+            summary.write('\n## Coverage Delta vs development\n')
+            summary.write('| Branch | Coverage |\n')
+            summary.write('|---|---:|\n')
+            summary.write(f'| development | {base_pct:.3f}% |\n')
+            summary.write(f'| PR (current) | {head_pct:.3f}% |\n')
+            summary.write(f'| Delta | {delta:+.3f}% |\n')
+        PY
+
     - name: Enforce minimum coverage (fail fast)
       shell: bash
       run: |
@@ -127,17 +138,6 @@ jobs:
         print(f'Coverage: {pct:.3f}% (threshold: {threshold:.1f}%)')
         if pct < threshold:
           raise SystemExit(f'Coverage check failed: {pct:.3f}% < {threshold:.1f}%')
-        PY
-
-        summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
-        if summary_path:
-            with open(summary_path, 'a', encoding='utf-8') as summary:
-                summary.write('\n## Coverage Delta vs development\n')
-                summary.write('| Branch | Coverage |\n')
-                summary.write('|---|---:|\n')
-                summary.write(f'| development | {base_pct:.3f}% |\n')
-                summary.write(f'| PR (current) | {head_pct:.3f}% |\n')
-                summary.write(f'| Delta | {delta:+.3f}% |\n')
         PY
 
     - name: Comment coverage delta on PR
