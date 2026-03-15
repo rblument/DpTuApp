@@ -144,13 +144,15 @@ Executes all automated tests, generates coverage artifacts, compares PR coverage
     ```
 
 5. On pull requests, checks out `development` as a baseline and runs tests there.
-6. Compares PR JaCoCo line coverage to baseline coverage and posts/updates a sticky PR comment with:
+6. Compares PR JaCoCo line coverage to baseline coverage and posts/updates a sticky PR comment with separate percentages for:
 
+    * all classes
+    * non-Swing UI classes
     * baseline coverage (`development`)
     * PR coverage
     * increase/decrease delta
 
-7. Writes a workflow run summary including coverage hot spots (top classes by missed lines).
+7. Writes a workflow run summary including both all-class and non-Swing UI coverage, plus coverage hot spots (top classes by missed lines).
 8. Generates the coverage badge from JaCoCo output.
 9. On `development` pushes, commits updated badge files (if changed).
 10. Publishes JUnit test reports to GitHub UI.
