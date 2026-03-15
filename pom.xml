@@ -13,14 +13,6 @@
         <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
 
-    <repositories>
-        <repository>
-          <id>CronApp</id>
-          <name>CronApp Repository</name>
-          <url>	https://artifactory.cronapp.io/public-release/</url>
-        </repository>
-    </repositories>
-
     <build>
         <resources>
             <resource>

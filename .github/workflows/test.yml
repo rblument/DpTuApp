@@ -346,7 +346,7 @@ jobs:
 
     - name: Publish test report
       uses: dorny/test-reporter@v1
-      if: always()
+      if: always() && hashFiles('target/surefire-reports/*.xml') != ''
       with:
         name: Maven Tests
         path: target/surefire-reports/*.xml
