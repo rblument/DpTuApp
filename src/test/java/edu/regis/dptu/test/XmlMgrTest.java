@@ -97,9 +97,7 @@ public class XmlMgrTest {
         assertFalse(XmlMgr.getBooleanAttribute(rootByName, "missingBool"));
 
         Document doc =
-                DocumentBuilderFactory.newInstance()
-                        .newDocumentBuilder()
-                        .parse(TEST_XML.toFile());
+                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(TEST_XML.toFile());
         Element rootByFile = mgr.findRoot(TEST_XML.toFile());
         assertEquals(doc.getDocumentElement().getTagName(), rootByFile.getTagName());
     }

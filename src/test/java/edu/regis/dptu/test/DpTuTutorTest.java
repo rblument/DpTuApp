@@ -16,9 +16,9 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.google.gson.Gson;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Step;
