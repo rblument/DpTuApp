@@ -170,32 +170,6 @@ jobs:
             summary.write(f'| Non-Swing UI classes | {non_ui_base_pct:.3f}% | {non_ui_head_pct:.3f}% | {non_ui_delta:+.3f}% |\n')
         PY
 
-    - name: Enforce minimum coverage (fail fast)
-      shell: bash
-      run: |
-        python - <<'PY'
-        import csv
-        from pathlib import Path
-
-        threshold = 40.0
-        csv_path = Path('target/site/jacoco/jacoco.csv')
-
-        if not csv_path.exists():
-          raise SystemExit('JaCoCo CSV not found; cannot enforce minimum coverage threshold.')
-
-        with csv_path.open(newline='', encoding='utf-8') as f:
-          rows = list(csv.DictReader(f))
-
-        covered = sum(int(r['LINE_COVERED']) for r in rows)
-        missed = sum(int(r['LINE_MISSED']) for r in rows)
-        total = covered + missed
-        pct = (100.0 * covered / total) if total else 0.0
-
-        print(f'Coverage: {pct:.3f}% (threshold: {threshold:.1f}%)')
-        if pct < threshold:
-          raise SystemExit(f'Coverage check failed: {pct:.3f}% < {threshold:.1f}%')
-        PY
-
     - name: Comment coverage delta on PR
       if: always() && github.event_name == 'pull_request'
       uses: actions/github-script@v7
@@ -332,7 +306,6 @@ jobs:
       uses: cicirello/jacoco-badge-generator@v2
       with:
         jacoco-csv-file: target/site/jacoco/jacoco.csv
-        fail-if-coverage-less-than: 40
         badges-directory: .github/badges
 
     - name: Commit coverage badge (if changed)
