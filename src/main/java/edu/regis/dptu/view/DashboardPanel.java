@@ -158,7 +158,7 @@ public class DashboardPanel extends GPanel {
         seeOneStatsButton.addActionListener(
                 e -> {
                     log.info("See One Stats button pressed");
-                    // popup window code will go there later
+                    new StatsWindow("See One Stats");
                 });
 
         doOneStatsButton = new JButton("View Stats");
@@ -166,7 +166,7 @@ public class DashboardPanel extends GPanel {
         doOneStatsButton.addActionListener(
                 e -> {
                     log.info("Do One Stats button pressed");
-                    // popup window code will go there later
+                    new StatsWindow("Do One Stats");
                 });
 
         teachOneStatsButton = new JButton("View Stats");
@@ -174,7 +174,7 @@ public class DashboardPanel extends GPanel {
         teachOneStatsButton.addActionListener(
                 e -> {
                     log.info("Teach One Stats button pressed");
-                    // popup window code will go there later
+                    new StatsWindow("Teach One Stats");
                 });
 
         // Apply scaffold level rules for which buttons are visible.
