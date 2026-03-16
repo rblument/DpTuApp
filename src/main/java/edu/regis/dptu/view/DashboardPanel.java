@@ -66,6 +66,9 @@ public class DashboardPanel extends GPanel {
     private CustomProgressBar seeOneProgressBar;
     private CustomProgressBar doOneProgressBar;
     private CustomProgressBar teachOneProgressBar;
+    private StatsWindow seeOneStatsWindow;
+    private StatsWindow doOneStatsWindow;
+    private StatsWindow teachOneStatsWindow;
     private JLabel welcomeLabel;
     private JComboBox<String> problemSelector; // @author EverettCV
 
@@ -157,24 +160,51 @@ public class DashboardPanel extends GPanel {
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
                 e -> {
-                    log.info("See One Stats button pressed");
-                    new StatsWindow("See One Stats");
+                    //log.info("See One Stats button pressed");
+                    if (seeOneStatsWindow == null || !seeOneStatsWindow.isDisplayable())
+                    {
+                        seeOneStatsWindow = new StatsWindow("See One Stats");
+                    }
+                    else
+                    {
+                        seeOneStatsWindow.toFront();
+                        seeOneStatsWindow.requestFocus();
+                    }
+                    seeOneStatsWindow.setVisible(true);
                 });
 
         doOneStatsButton = new JButton("View Stats");
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
                 e -> {
-                    log.info("Do One Stats button pressed");
-                    new StatsWindow("Do One Stats");
+                    //log.info("Do One Stats button pressed");
+                    if (doOneStatsWindow == null || !doOneStatsWindow.isDisplayable())
+                    {
+                        doOneStatsWindow = new StatsWindow("Do One Stats");
+                    }
+                    else
+                    {
+                        doOneStatsWindow.toFront();
+                        doOneStatsWindow.requestFocus();
+                    }
+                    doOneStatsWindow.setVisible(true);
                 });
 
         teachOneStatsButton = new JButton("View Stats");
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
                 e -> {
-                    log.info("Teach One Stats button pressed");
-                    new StatsWindow("Teach One Stats");
+                    //log.info("Teach One Stats button pressed");
+                    if (teachOneStatsWindow == null || !teachOneStatsWindow.isDisplayable())
+                    {
+                        teachOneStatsWindow = new StatsWindow("Teach One Stats");
+                    }
+                    else
+                    {
+                        teachOneStatsWindow.toFront();
+                        teachOneStatsWindow.requestFocus();
+                    }
+                    teachOneStatsWindow.setVisible(true);
                 });
 
         // Apply scaffold level rules for which buttons are visible.
