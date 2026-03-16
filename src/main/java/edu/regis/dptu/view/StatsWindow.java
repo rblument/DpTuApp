@@ -1,19 +1,15 @@
 /**
- * StatsWindow is a simple popup window used to display statistics
- * related to tutoring progress in the DashboardPanel.
+ * StatsWindow is a simple popup window used to display statistics related to tutoring progress in
+ * the DashboardPanel.
  *
- * <p>This window is opened when the user presses a "View Stats"
- * button for one of the tutoring stages (See One, Do One, Teach One).
- * Currently it displays a placeholder message, but it is intended
- * to later contain charts or statistics about task completion.
+ * <p>This window is opened when the user presses a "View Stats" button for one of the tutoring
+ * stages (See One, Do One, Teach One). Currently it displays a placeholder message, but it is
+ * intended to later contain charts or statistics about task completion.
  *
  * <p>The window is created once and reused if it already exists.
  *
  * @author Lindsey Cox
  */
-
-
-
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
@@ -33,8 +29,7 @@ public class StatsWindow extends JFrame {
     /**
      * Creates a new StatsWindow with the given title.
      *
-     * <p>The window displays a placeholder label where statistics
-     * will eventually be rendered.
+     * <p>The window displays a placeholder label where statistics will eventually be rendered.
      *
      * @param title the title displayed in the window frame
      */

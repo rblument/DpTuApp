@@ -160,13 +160,10 @@ public class DashboardPanel extends GPanel {
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
                 e -> {
-                    //log.info("See One Stats button pressed");
-                    if (seeOneStatsWindow == null || !seeOneStatsWindow.isDisplayable())
-                    {
+                    // log.info("See One Stats button pressed");
+                    if (seeOneStatsWindow == null || !seeOneStatsWindow.isDisplayable()) {
                         seeOneStatsWindow = new StatsWindow("See One Stats");
-                    }
-                    else
-                    {
+                    } else {
                         seeOneStatsWindow.toFront();
                         seeOneStatsWindow.requestFocus();
                     }
@@ -177,13 +174,10 @@ public class DashboardPanel extends GPanel {
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
                 e -> {
-                    //log.info("Do One Stats button pressed");
-                    if (doOneStatsWindow == null || !doOneStatsWindow.isDisplayable())
-                    {
+                    // log.info("Do One Stats button pressed");
+                    if (doOneStatsWindow == null || !doOneStatsWindow.isDisplayable()) {
                         doOneStatsWindow = new StatsWindow("Do One Stats");
-                    }
-                    else
-                    {
+                    } else {
                         doOneStatsWindow.toFront();
                         doOneStatsWindow.requestFocus();
                     }
@@ -194,13 +188,10 @@ public class DashboardPanel extends GPanel {
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
                 e -> {
-                    //log.info("Teach One Stats button pressed");
-                    if (teachOneStatsWindow == null || !teachOneStatsWindow.isDisplayable())
-                    {
+                    // log.info("Teach One Stats button pressed");
+                    if (teachOneStatsWindow == null || !teachOneStatsWindow.isDisplayable()) {
                         teachOneStatsWindow = new StatsWindow("Teach One Stats");
-                    }
-                    else
-                    {
+                    } else {
                         teachOneStatsWindow.toFront();
                         teachOneStatsWindow.requestFocus();
                     }
