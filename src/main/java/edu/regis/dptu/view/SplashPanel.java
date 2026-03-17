@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.User;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.SHA_256;
 import edu.regis.dptu.view.act.NewUserAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -229,7 +230,7 @@ public class SplashPanel extends GPanel {
 
         JLabel copyright =
                 new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
-        copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
+        copyright.setFont(ReusableFonts.instance().getFont("Copyright"));
         addc(
                 copyright,
                 0,
@@ -255,7 +256,7 @@ public class SplashPanel extends GPanel {
         panel.setBackground(new Color(223, 242, 245));
 
         JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
-        ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
+        ccis.setFont(ReusableFonts.instance().getFont("CCIS"));
         ccis.setForeground(Color.BLUE);
 
         panel.addc(
@@ -274,7 +275,7 @@ public class SplashPanel extends GPanel {
                 5);
 
         JLabel newLabel = new JLabel("New to DpTu?");
-        newLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+        newLabel.setFont(ReusableFonts.instance().getFont("12ptLabel"));
         newLabel.setForeground(Color.GRAY);
 
         panel.addc(
@@ -424,7 +425,7 @@ public class SplashPanel extends GPanel {
         panel.setPreferredSize(new Dimension(300, 400));
 
         JLabel logo = new JLabel("DpTu: Dynamic Programming Tutor");
-        logo.setFont(new Font("Dialog", Font.PLAIN, 20));
+        logo.setFont(ReusableFonts.instance().getFont("Logo"));
         logo.setForeground(Color.MAGENTA);
 
         panel.addc(
@@ -443,7 +444,7 @@ public class SplashPanel extends GPanel {
                 5);
 
         JLabel name = new JLabel("A See_1, Do_1, Teach_1 Intelligent Tutoring System.");
-        name.setFont(new Font("Dialog", Font.PLAIN, 14));
+        name.setFont(ReusableFonts.instance().getFont("Name"));
         panel.addc(
                 name,
                 0,
@@ -463,7 +464,7 @@ public class SplashPanel extends GPanel {
         descr.setEditable(false);
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
-        descr.setFont(new Font("Dialog", Font.PLAIN, 12));
+        descr.setFont(ReusableFonts.instance().getFont("Description"));
         descr.append("DpTu provides individualized tutoring practice focused ");
         descr.append("on understanding Dynamic Programming and the");
         descr.append("underlying computer science concepts upon which it is ");

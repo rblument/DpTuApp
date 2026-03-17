@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.util.ReusableFonts;
 
 /**
  * This is the Subsequence view for the TutoringSession View. The title, words, and button are
@@ -75,14 +76,14 @@ class SubSequenceView extends JPanel implements ProblemListener {
     private void initializeComponents() {
         titleLabel = new JLabel("Subsequence Highlighter");
         titleLabel.setForeground(Color.BLACK);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setFont(ReusableFonts.instance().getFont("18ptBold"));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         lengthLabel1 = new JLabel();
-        lengthLabel1.setFont(new Font("Dialog", Font.PLAIN, 16));
+        lengthLabel1.setFont(ReusableFonts.instance().getFont("16ptLabel"));
 
         lengthLabel2 = new JLabel();
-        lengthLabel2.setFont(new Font("Dialog", Font.PLAIN, 16));
+        lengthLabel2.setFont(ReusableFonts.instance().getFont("16ptLabel"));
 
         stepButton = new JButton("Step LCS");
         stepButton.addActionListener(e -> stepThroughLCS());
@@ -109,7 +110,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
         JPanel line1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line1.add(lengthLabel1);
         wordLabel1 = new JLabel();
-        wordLabel1.setFont(new Font("Dialog", Font.PLAIN, 16));
+        wordLabel1.setFont(ReusableFonts.instance().getFont("16ptLabel"));
         line1.add(wordLabel1);
 
         // Changed (April 17, 2025 - EverettCV): Now loads default value of the second variable
@@ -117,7 +118,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
         JPanel line2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         line2.add(lengthLabel2);
         wordLabel2 = new JLabel();
-        wordLabel2.setFont(new Font("Dialog", Font.PLAIN, 16));
+        wordLabel2.setFont(ReusableFonts.instance().getFont("16ptLabel"));
         line2.add(wordLabel2);
 
         wordPanel.add(line1);

@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.util.ReusableFonts;
 
 /**
  * A panel containing buttons and controls that allow a user to step forward and backward through
@@ -230,7 +231,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         stepsSpinner.setPreferredSize(new Dimension(60, 25));
 
         statusLabel = new JLabel("Ready");
-        statusLabel.setFont(new Font("Monospaced", Font.BOLD, 12));
+        statusLabel.setFont(ReusableFonts.instance().getFont("StatusLabel"));
     }
 
     /** Layout the child components in this panel. */

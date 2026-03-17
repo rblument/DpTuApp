@@ -45,6 +45,7 @@ import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.util.CustomProgressBar;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.view.act.DoOneAction;
 import edu.regis.dptu.view.act.SeeOneAction;
 import edu.regis.dptu.view.act.TeachOneAction;
@@ -116,7 +117,7 @@ public class DashboardPanel extends GPanel {
         welcomeLabel = new JLabel("Welcome, " + firstName + "!");
         welcomeLabel.setForeground(FILL);
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        welcomeLabel.setFont(ReusableFonts.instance().getFont("Header"));
 
         logOutButton = new JButton("Log Out");
         logOutButton.setFocusPainted(false);
@@ -230,7 +231,7 @@ public class DashboardPanel extends GPanel {
                         "(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved",
                         SwingConstants.CENTER);
         copyright.setForeground(FILL);
-        copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
+        copyright.setFont(ReusableFonts.instance().getFont("Copyright"));
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
         add(copyright, BorderLayout.SOUTH);
     }

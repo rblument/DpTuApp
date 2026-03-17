@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.security.CommonPasswords;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -207,7 +208,7 @@ public class NewAccountPanel extends GPanel {
 
         strength = new JLabel("(Strength: very poor)");
         strength.setForeground(Color.RED);
-        strength.setFont(new Font("Dialog", Font.PLAIN, 10));
+        strength.setFont(ReusableFonts.instance().getFont("10ptLabel"));
     }
 
     /**
@@ -266,7 +267,7 @@ public class NewAccountPanel extends GPanel {
 
         JLabel copyright =
                 new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
-        copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
+        copyright.setFont(ReusableFonts.instance().getFont("Copyright"));
         addc(
                 copyright,
                 0,
@@ -295,7 +296,7 @@ public class NewAccountPanel extends GPanel {
         panel.setBackground(LIGHT_BLUE);
 
         JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
-        ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
+        ccis.setFont(ReusableFonts.instance().getFont("CCIS"));
         ccis.setForeground(Color.BLUE);
 
         panel.addc(
@@ -330,7 +331,7 @@ public class NewAccountPanel extends GPanel {
         panel.setPreferredSize(new Dimension(300, 400));
 
         JLabel logo = new JLabel("DpTu");
-        logo.setFont(new Font("Dialog", Font.PLAIN, 20));
+        logo.setFont(ReusableFonts.instance().getFont("Logo"));
         logo.setForeground(Color.MAGENTA);
 
         panel.addc(
@@ -349,7 +350,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         JLabel name = new JLabel("A See_1, Do_1, Teach_1 Intelligent Tutoring System.");
-        name.setFont(new Font("Dialog", Font.PLAIN, 14));
+        name.setFont(ReusableFonts.instance().getFont("Name"));
         panel.addc(
                 name,
                 0,
@@ -369,7 +370,7 @@ public class NewAccountPanel extends GPanel {
         descr.setEditable(false);
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
-        descr.setFont(new Font("Dialog", Font.PLAIN, 12));
+        descr.setFont(ReusableFonts.instance().getFont("Description"));
         descr.append("DpTu provides individualized tutoring practice focused ");
         descr.append("on understanding Dynamic Programming and the");
         descr.append("underlying computer science concepts upon which it is ");
@@ -539,7 +540,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         label = new JLabel("(do not use your existing university password!)");
-        label.setFont(new Font("Dialog", Font.PLAIN, 10));
+        label.setFont(ReusableFonts.instance().getFont("10ptLabel"));
         label.setForeground(new Color(75, 66, 66));
 
         panel.addc(
@@ -588,7 +589,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         label = new JLabel("(try 6 characters, mixed case, and special chars)");
-        label.setFont(new Font("Dialog", Font.PLAIN, 10));
+        label.setFont(ReusableFonts.instance().getFont("10ptLabel"));
         label.setForeground(new Color(75, 66, 66));
         panel.addc(
                 label,
@@ -706,7 +707,7 @@ public class NewAccountPanel extends GPanel {
 
         msg = new JLabel("");
         // msg.setLabelFor(backBut);
-        msg.setFont(new Font("Dialog", Font.PLAIN, 10));
+        msg.setFont(ReusableFonts.instance().getFont("10ptLabel"));
         msg.setForeground(new Color(173, 7, 1));
 
         panel.addc(

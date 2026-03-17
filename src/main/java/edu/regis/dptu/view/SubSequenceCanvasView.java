@@ -12,6 +12,7 @@
  */
 package edu.regis.dptu.view;
 
+import edu.regis.dptu.util.ReusableFonts;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -147,7 +148,7 @@ public class SubSequenceCanvasView extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setFont(new Font("Arial", Font.PLAIN, 20));
+        g.setFont(ReusableFonts.instance().getFont("20ptArial"));
 
         if (word1 == null || word2 == null) {
             g.setColor(Color.RED);
