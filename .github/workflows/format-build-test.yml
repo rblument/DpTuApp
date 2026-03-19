@@ -1,11 +1,10 @@
-name: Run Tests
+name: Format Build Test
 
 on:
   push:
     branches: [ main, development ]
-  workflow_run:
-    workflows: [ "Format Code" ]
-    types: [ completed ]
+  pull_request:
+    branches: [ main, development ]
   workflow_dispatch: #allow manual runs
 
 permissions:
@@ -15,21 +14,22 @@ permissions:
   issues: write
 
 jobs:
-  test:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+  format:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
+    outputs:
+      autofixed: ${{ steps.format-action.outputs.autofixed }}
 
     steps:
-    - name: Checkout workflow-run head branch
-      if: github.event_name == 'workflow_run'
+    - name: Checkout PR branch
+      if: github.event_name == 'pull_request'
       uses: actions/checkout@v4
       with:
-        repository: ${{ github.event.workflow_run.head_repository.full_name }}
-        ref: ${{ github.event.workflow_run.head_branch }}
+        fetch-depth: 0
+        ref: ${{ github.head_ref }}
 
     - name: Checkout current ref
-      if: github.event_name != 'workflow_run'
+      if: github.event_name != 'pull_request'
       uses: actions/checkout@v4
 
     - name: Set up JDK 17 (with Maven cache)
@@ -39,7 +39,19 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Check formatting with Spotless
+    - name: Apply formatting on pull requests
+      if: github.event_name == 'pull_request'
+      timeout-minutes: 5
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress spotless:apply
+
+    - name: Check formatting on push/manual runs
+      if: github.event_name != 'pull_request'
       timeout-minutes: 5
       env:
         MAVEN_OPTS: >-
@@ -48,6 +60,95 @@ jobs:
           -Dmaven.wagon.http.retryHandler.count=2
           -Dmaven.wagon.rto=30000
       run: mvn -B --no-transfer-progress spotless:check
+
+    - name: Check for formatting changes
+      if: github.event_name == 'pull_request'
+      id: verify-changed-files
+      shell: bash
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Decide formatting action
+      if: github.event_name == 'pull_request'
+      id: format-action
+      shell: bash
+      run: |
+        changed='${{ steps.verify-changed-files.outputs.changed }}'
+        autofixed='false'
+        fail_for_manual_fix='false'
+
+        if [ "$changed" = 'true' ]; then
+          if [ '${{ github.event.pull_request.head.repo.full_name }}' = '${{ github.repository }}' ]; then
+            autofixed='true'
+          else
+            fail_for_manual_fix='true'
+          fi
+        fi
+
+        echo "autofixed=$autofixed" >> "$GITHUB_OUTPUT"
+        echo "fail_for_manual_fix=$fail_for_manual_fix" >> "$GITHUB_OUTPUT"
+
+    - name: Commit and push Spotless changes
+      if: github.event_name == 'pull_request' && steps.format-action.outputs.autofixed == 'true'
+      shell: bash
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Auto-format code with Spotless"
+        git push
+
+    - name: Fail fork PRs that require formatting changes
+      if: github.event_name == 'pull_request' && steps.format-action.outputs.fail_for_manual_fix == 'true'
+      shell: bash
+      run: |
+        echo "::error::Spotless found formatting changes in this pull request, but the workflow cannot push to a fork branch. Run 'mvn spotless:apply' locally and push the result."
+        exit 1
+
+  build:
+    needs: format
+    if: needs.format.outputs.autofixed != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17 (with Maven cache)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Compile project
+      timeout-minutes: 10
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress compile
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 17 (with Maven cache)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
 
     - name: Run tests and generate coverage report
       timeout-minutes: 15
@@ -117,7 +218,7 @@ jobs:
         PY
 
     - name: Checkout development coverage baseline
-      if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
+      if: github.event_name == 'pull_request'
       uses: actions/checkout@v4
       with:
         ref: development
@@ -128,7 +229,7 @@ jobs:
         sparse-checkout-cone-mode: false
 
     - name: Compare coverage to development
-      if: always() && github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
+      if: always() && github.event_name == 'pull_request'
       id: coverage_delta
       shell: bash
       run: |
@@ -205,7 +306,7 @@ jobs:
         PY
 
     - name: Comment coverage delta on PR
-      if: always() && github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
+      if: always() && github.event_name == 'pull_request'
       uses: actions/github-script@v7
       env:
         COVERAGE_AVAILABLE: ${{ steps.coverage_delta.outputs.available }}
@@ -219,13 +320,7 @@ jobs:
       with:
         script: |
           const marker = '<!-- coverage-delta-comment -->';
-          const workflowRunPullRequests = context.payload.workflow_run?.pull_requests || [];
-          const issue_number = workflowRunPullRequests[0]?.number;
-
-          if (!issue_number) {
-            core.info('No pull request associated with this workflow_run; skipping coverage comment.');
-            return;
-          }
+          const issue_number = context.issue.number;
 
           const available = (process.env.COVERAGE_AVAILABLE || '').toLowerCase() === 'true';
           const baselineMode = process.env.BASELINE_MODE || 'unavailable';
