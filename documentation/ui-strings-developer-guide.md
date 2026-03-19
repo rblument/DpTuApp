@@ -136,8 +136,3 @@ Before opening a PR:
 ## Scope Notes
 
 This pattern is for user-facing text. Internal exception messages and technical logs can remain code-local unless they are displayed directly to end users.
-
-## Related Docs
-
-- [documentation/logging-developer-guide.md](./logging-developer-guide.md)
-- [documentation/workflows-developer-guide.md](./workflows-developer-guide.md)
