@@ -124,7 +124,7 @@ Resolve all compiler errors, commit, and push again.
 
 ### Purpose
 
-Executes all automated tests, generates coverage artifacts, enforces the unit-test coverage threshold, and publishes test results. This ensures functional correctness and prevents regressions.
+Executes all automated tests, generates coverage artifacts, compares PR coverage against `development`, and publishes test results. This ensures functional correctness and highlights coverage regressions quickly.
 
 ### When It Runs
 
@@ -143,21 +143,21 @@ Executes all automated tests, generates coverage artifacts, enforces the unit-te
     mvn -B verify
     ```
 
-5. Builds a filtered JaCoCo CSV (`target/site/jacoco/jacoco.unit.csv`) that excludes Swing UI packages and the app entrypoint package from the unit-test coverage metric:
+5. Generates a stored coverage summary snapshot from the current branch's JaCoCo report.
+6. Compares PR JaCoCo line coverage to baseline coverage and posts/updates a sticky PR comment with separate percentages for:
 
-   * `edu.regis.dptu.view*`
-   * `edu.regis.dptu.view.act*`
-   * `edu.regis.dptu`
+    * all classes
+    * non-Swing UI classes
+    * baseline coverage (`development`)
+    * PR coverage
+    * increase/decrease delta
 
-6. Generates the coverage badge from the filtered CSV and fails the workflow if filtered line coverage is below **40%**.
-7. On push events, commits updated badge files (if changed) back to the pushed branch.
-8. README uses a repository-relative coverage badge path, so branch views display that branch’s current badge.
-9. Writes a workflow run summary showing both:
+    On pull requests, the baseline values come from the coverage summary file already stored on `development`, rather than rerunning the full `development` test suite.
 
-   * Raw JaCoCo line coverage
-   * Unit-test scoped (filtered) line coverage
-
-10. Publishes JUnit test reports to GitHub UI
+7. Writes a workflow run summary including both all-class and non-Swing UI coverage, plus coverage hot spots (top classes by missed lines).
+8. Generates the coverage badge from JaCoCo output.
+9. On `development` pushes, commits updated badge files (if changed).
+10. Publishes JUnit test reports to GitHub UI.
 
 ### What Causes Failure
 
@@ -173,7 +173,7 @@ Run locally:
 mvn verify
 ```
 
-Fix failing tests or underlying logic. If coverage fails, add or improve unit tests for non-UI code to reach at least 40% filtered line coverage.
+Fix failing tests or underlying logic. If coverage decreases unexpectedly, review the PR coverage-delta comment and add or improve tests around changed code.
 
 ---
 
@@ -250,6 +250,14 @@ These patterns are forbidden:
 
 * Classes with no logging
 * Logger declared but never used
+* Empty catch blocks
+* `log.error` calls without exception context
+
+### Pull Request Delta Comment
+
+On pull requests, the workflow compares current logging findings against `development` and posts/updates a sticky PR comment listing only **newly introduced violations**.
+
+This keeps legacy findings visible but focuses reviewer attention on what the PR added.
 
 ### Test Code Exemptions
 

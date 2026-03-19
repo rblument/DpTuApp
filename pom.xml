@@ -13,14 +13,6 @@
         <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
 
-    <repositories>
-        <repository>
-          <id>CronApp</id>
-          <name>CronApp Repository</name>
-          <url>	https://artifactory.cronapp.io/public-release/</url>
-        </repository>
-    </repositories>
-
     <build>
         <resources>
             <resource>
@@ -54,12 +46,6 @@
                             <include>src/test/java/**/*.java</include>
                         </includes>
                     </java>
-                    <xml>
-                        <indent>4</indent>
-                        <includes>
-                            <include>pom.xml</include>
-                        </includes>
-                    </xml>
                 </configuration>
                 <executions>
                     <execution>

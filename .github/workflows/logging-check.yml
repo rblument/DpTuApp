@@ -2,6 +2,8 @@ name: Logging Standards Check
 
 permissions:
   contents: read
+  pull-requests: write
+  issues: write
 
 # This workflow enforces the DpTu Logging Developer Guide.
 #
@@ -30,6 +32,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Checkout development baseline
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: development
+          path: baseline
 
       # ------------------------------------------------------------------
       # STEP 1: Fail-fast checks for forbidden patterns
@@ -281,3 +290,202 @@ jobs:
 
           echo
           echo "ℹ️ Advisory checks complete. Warnings do not fail the build."
+
+      - name: Compare logging violations to development
+        if: always() && github.event_name == 'pull_request'
+        id: logging_delta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          collect_java_files() {
+            local root="$1"
+            find "$root/src" -type f -name '*.java' \
+              ! -path '*/test/*' \
+              ! -path '*/tests/*' \
+              ! -path '*/integrationTest/*' \
+              ! -path '*/integrationTests/*' \
+              ! -name '*Test.java' \
+              ! -name '*Tests.java' \
+              ! -name '*IT.java'
+          }
+
+          collect_violations() {
+            local root="$1"
+            local out="$2"
+            : > "$out"
+
+            mapfile -t files < <(collect_java_files "$root")
+            if [ "${#files[@]}" -eq 0 ]; then
+              return 0
+            fi
+
+            # Error patterns
+            local ERROR_PATTERNS=(
+              "System\\.out\\.(print|println|printf|append)"
+              "System\\.err\\.(print|println|printf)"
+              "\\.printStackTrace\\s*\\("
+              "import java\\.util\\.logging\\."
+              "java\\.util\\.logging\\.Logger\\.getLogger"
+              "import org\\.apache\\.logging\\.log4j"
+              "LogManager\\.getLogger"
+              "System\\.exit\\s*\\("
+            )
+
+            for pattern in "${ERROR_PATTERNS[@]}"; do
+              grep -nH -E "$pattern" "${files[@]}" | sed "s#^#ERROR|$pattern|#" >> "$out" || true
+            done
+
+            local enum_files interface_files annotation_files record_files exempt_files suppressed_files
+            enum_files=$(grep -lE '^\s*(public\s+)?enum\s+[A-Za-z_][A-Za-z0-9_]*\b' "${files[@]}" || true)
+            interface_files=$(grep -lE '^\s*(public\s+)?interface\s+[A-Za-z_][A-Za-z0-9_]*\b' "${files[@]}" || true)
+            annotation_files=$(grep -lE '^\s*(public\s+)?@interface\s+[A-Za-z_][A-Za-z0-9_]*\b' "${files[@]}" || true)
+            record_files=$(grep -lE '^\s*(public\s+)?record\s+[A-Za-z_][A-Za-z0-9_]*\b' "${files[@]}" || true)
+            exempt_files=$({ printf "%s\n" $enum_files $interface_files $annotation_files $record_files 2>/dev/null || true; } | sed '/^\s*$/d' | sort -u)
+            suppressed_files=$(grep -l '@SuppressWarnings("Logging")' "${files[@]}" || true)
+
+            filter_suppressed() {
+              local list="$1"
+              if [ -n "$list" ] && [ -n "${suppressed_files:-}" ]; then
+                comm -23 \
+                  <(printf "%s\n" $list | sort -u) \
+                  <(printf "%s\n" $suppressed_files | sort -u)
+              else
+                printf "%s\n" $list | sed '/^\s*$/d' || true
+              fi
+            }
+
+            filter_exempt() {
+              local list="$1"
+              if [ -n "$list" ] && [ -n "${exempt_files:-}" ]; then
+                comm -23 \
+                  <(printf "%s\n" $list | sort -u) \
+                  <(printf "%s\n" $exempt_files | sort -u)
+              else
+                printf "%s\n" $list | sed '/^\s*$/d' || true
+              fi
+            }
+
+            local no_log_import unused_logger bad_suppress
+            no_log_import=$(grep -LE "org.slf4j.Logger" "${files[@]}" || true)
+            unused_logger=$(grep -l "org.slf4j.Logger" "${files[@]}" | xargs -r grep -EL "log\.(trace|debug|info|warn|error)\s*\(" || true)
+
+            no_log_import=$(filter_exempt "$(filter_suppressed "$no_log_import")")
+            unused_logger=$(filter_exempt "$(filter_suppressed "$unused_logger")")
+
+            if [ -n "${suppressed_files:-}" ]; then
+              bad_suppress=$(comm -23 \
+                <(printf "%s\n" $suppressed_files | sort -u) \
+                <(printf "%s\n" $exempt_files | sort -u) || true)
+            else
+              bad_suppress=""
+            fi
+
+            [ -n "$no_log_import" ] && printf "%s\n" $no_log_import | sed 's#^#WARN|NO_LOG_IMPORT|#' >> "$out"
+            [ -n "$unused_logger" ] && printf "%s\n" $unused_logger | sed 's#^#WARN|UNUSED_LOGGER|#' >> "$out"
+            [ -n "$bad_suppress" ] && printf "%s\n" $bad_suppress | sed 's#^#WARN|BAD_SUPPRESS|#' >> "$out"
+
+            grep -nH -E "catch\s*\([^)]*\)\s*\{\s*\}" "${files[@]}" | sed 's#^#WARN|EMPTY_CATCH|#' >> "$out" || true
+            grep -nH -E "log\.error\s*\([^,)]*\)" "${files[@]}" | sed 's#^#WARN|ERROR_NO_EXCEPTION|#' >> "$out" || true
+
+            sort -u "$out" -o "$out"
+          }
+
+          collect_violations "." current_violations.txt
+          collect_violations "baseline" base_violations.txt
+
+          # Normalize file prefixes so baseline and current findings compare on the
+          # same relative path shape (e.g., src/... instead of baseline/src/...).
+          sed -E 's#\|baseline/src/#|src/#g; s#\|\./src/#|src/#g; s#\|src/#|src/#g' current_violations.txt > current_violations.normalized.txt
+          sed -E 's#\|baseline/src/#|src/#g; s#\|\./src/#|src/#g; s#\|src/#|src/#g' base_violations.txt > base_violations.normalized.txt
+
+          comm -13 base_violations.normalized.txt current_violations.normalized.txt > new_violations.txt || true
+          count=$(grep -c '.' new_violations.txt || true)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "<!-- logging-violations-delta -->"
+            echo "## Logging Violations Delta"
+            echo
+            echo "_This comment updates with future commits to this branch and is removed when there are no remaining logging issues to report._"
+            echo
+            if [ "$count" -eq 0 ]; then
+              echo "No new logging workflow violations were introduced compared to \`development\`."
+            else
+              echo "This PR introduces **$count** new logging workflow violation(s) compared to \`development\`."
+              echo
+              echo "| Type | Details |"
+              echo "|---|---|"
+              head -n 50 new_violations.txt | while IFS='|' read -r severity rule detail; do
+                safe_detail=$(printf '%s' "$detail" | sed 's/`/\\`/g')
+                safe_rule=$(printf '%s' "$rule" | sed 's/`/\\`/g')
+                echo "| $severity / \`$safe_rule\` | \`$safe_detail\` |"
+              done
+              if [ "$count" -gt 50 ]; then
+                echo
+                echo "_Showing first 50 violations._"
+              fi
+            fi
+          } > logging_delta_comment.md
+
+      - name: Comment logging violations delta on PR
+        if: always() && github.event_name == 'pull_request' && steps.logging_delta.outputs.count != '0'
+        uses: actions/github-script@v7
+        env:
+          NEW_LOGGING_VIOLATIONS: ${{ steps.logging_delta.outputs.count }}
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- logging-violations-delta -->';
+            const body = fs.readFileSync('logging_delta_comment.md', 'utf8');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
+
+      - name: Remove stale logging delta comment on PR
+        if: always() && github.event_name == 'pull_request' && steps.logging_delta.outputs.count == '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- logging-violations-delta -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+              });
+            }
