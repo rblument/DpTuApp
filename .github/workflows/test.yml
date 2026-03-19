@@ -326,14 +326,19 @@ jobs:
         jacoco-csv-file: target/site/jacoco/jacoco.csv
         badges-directory: .github/badges
 
-    - name: Commit coverage badge (if changed)
-      if: github.ref == 'refs/heads/development' # Only commit from development branch
+    - name: Commit coverage badge (if branch is writable)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/development' && !github.ref_protected
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add .github/badges/*.svg .github/badges/*.json || true
         git diff --cached --quiet || git commit -m "chore(ci): update coverage badge"
         git push
+
+    - name: Note skipped badge commit on protected branch
+      if: github.event_name == 'push' && github.ref == 'refs/heads/development' && github.ref_protected
+      run: |
+        echo "Branch is protected; skipping automatic badge commit to respect branch protection rules." >> "$GITHUB_STEP_SUMMARY"
 
     - name: Publish test report
       uses: dorny/test-reporter@v1
