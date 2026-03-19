@@ -27,6 +27,7 @@ import edu.regis.dptu.svc.ClientRequest;
 import edu.regis.dptu.svc.ServerRequestType;
 import edu.regis.dptu.svc.SvcFacade;
 import edu.regis.dptu.svc.TutorReply;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.SplashFrame;
 
 /**
@@ -62,9 +63,11 @@ public class CreateAcctAction extends DpTuGuiAction {
 
     /** Initialize this create account action with the "Create Account" text. */
     private CreateAcctAction() {
-        super("Create Account");
+        super(ResourceMgr.instance().string("action.createAccount.name"));
 
-        putValue(SHORT_DESCRIPTION, "Create a new user");
+        putValue(
+                SHORT_DESCRIPTION,
+                ResourceMgr.instance().string("action.createAccount.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_A);
     }
 
@@ -108,10 +111,7 @@ public class CreateAcctAction extends DpTuGuiAction {
             if ("Created".equals(status)) {
                 frame.clearNewAccountPanel();
 
-                msg =
-                        "Student user account successfully created\n\n"
-                                + "Press okay and we'll return you to the sign-in screen\n\n"
-                                + "Then, please sign-in to the tutor using this account.";
+                msg = ResourceMgr.instance().string("account.create.success");
 
                 JOptionPane.showMessageDialog(frame, msg);
 
@@ -119,9 +119,12 @@ public class CreateAcctAction extends DpTuGuiAction {
                 frame.selectSplash();
 
             } else if ("IllegalUserId".equals(status)) {
-                msg = "User id already exists: " + account.getUserId();
+        msg = ResourceMgr.instance().string("account.create.error.duplicateUser", account.getUserId());
                 JOptionPane.showMessageDialog(
-                        null, msg, "Information", JOptionPane.INFORMATION_MESSAGE);
+            null,
+            msg,
+            ResourceMgr.instance().string("dialog.title.information"),
+            JOptionPane.INFORMATION_MESSAGE);
 
                 log.warn(
                         "Create account rejected (IllegalUserId) for userId={}",
@@ -129,8 +132,12 @@ public class CreateAcctAction extends DpTuGuiAction {
 
             } else {
                 // Unknown or ERR: service should log, but we still log locally for correlation.
-                msg = "An unexpected error occurred. Please contact DpTu support";
-                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
+                msg = ResourceMgr.instance().string("error.unexpectedContactSupport");
+                JOptionPane.showMessageDialog(
+                        null,
+                        msg,
+                        ResourceMgr.instance().string("dialog.title.error"),
+                        JOptionPane.ERROR_MESSAGE);
 
                 log.error(
                         "Create account failed: userId={}, unexpected status={}",
@@ -141,8 +148,8 @@ public class CreateAcctAction extends DpTuGuiAction {
             // Covers unexpected runtime issues (including service call failures).
             JOptionPane.showMessageDialog(
                     null,
-                    "An unexpected error occurred. Please contact DpTu support",
-                    "Error",
+                    ResourceMgr.instance().string("error.unexpectedContactSupport"),
+                    ResourceMgr.instance().string("dialog.title.error"),
                     JOptionPane.ERROR_MESSAGE);
 
             log.error("Create account failed due to exception: userId={}", account.getUserId(), e);
