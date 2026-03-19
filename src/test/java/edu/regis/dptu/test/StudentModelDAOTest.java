@@ -90,7 +90,8 @@ public class StudentModelDAOTest {
 
         when(mockConnection.prepareStatement(startsWith("INSERT INTO StudentModel")))
                 .thenReturn(stmt1);
-        when(mockConnection.prepareStatement(startsWith("INSERT INTO Assessment"), eq(Statement.RETURN_GENERATED_KEYS)))
+        when(mockConnection.prepareStatement(
+                        startsWith("INSERT INTO Assessment"), eq(Statement.RETURN_GENERATED_KEYS)))
                 .thenReturn(stmt2);
         when(stmt2.getGeneratedKeys()).thenReturn(keys);
         when(keys.next()).thenReturn(true);
@@ -98,7 +99,8 @@ public class StudentModelDAOTest {
 
         assertDoesNotThrow(() -> dao.create(student));
 
-        Assessment assessment = student.getStudentModel().getAssessments().values().iterator().next();
+        Assessment assessment =
+                student.getStudentModel().getAssessments().values().iterator().next();
         assertEquals(700, assessment.getId());
         verify(mockConnection).setAutoCommit(false);
         verify(mockConnection).commit();
@@ -110,7 +112,7 @@ public class StudentModelDAOTest {
 
         SQLException sqlEx = mock(SQLException.class);
         when(mockConnection.prepareStatement(startsWith("INSERT INTO StudentModel")))
-            .thenThrow(sqlEx);
+                .thenThrow(sqlEx);
 
         assertThrows(NonRecoverableException.class, () -> dao.create(student));
         verify(mockConnection).rollback();
@@ -245,10 +247,16 @@ public class StudentModelDAOTest {
         when(mockConnection.prepareStatement(startsWith("UPDATE Assessment SET Hints")))
                 .thenReturn(hintsStmt);
 
-        assertDoesNotThrow(() -> dao.updateAssessment(model, assessment, StudentModelFieldKind.ASSESSMENT_LEVEL));
-        assertDoesNotThrow(() -> dao.updateAssessment(model, assessment, StudentModelFieldKind.ATTEMPTS));
-        assertDoesNotThrow(() -> dao.updateAssessment(model, assessment, StudentModelFieldKind.SUCCESSES));
-        assertDoesNotThrow(() -> dao.updateAssessment(model, assessment, StudentModelFieldKind.HINTS));
+        assertDoesNotThrow(
+                () ->
+                        dao.updateAssessment(
+                                model, assessment, StudentModelFieldKind.ASSESSMENT_LEVEL));
+        assertDoesNotThrow(
+                () -> dao.updateAssessment(model, assessment, StudentModelFieldKind.ATTEMPTS));
+        assertDoesNotThrow(
+                () -> dao.updateAssessment(model, assessment, StudentModelFieldKind.SUCCESSES));
+        assertDoesNotThrow(
+                () -> dao.updateAssessment(model, assessment, StudentModelFieldKind.HINTS));
 
         verify(assessmentLevelStmt).execute();
         verify(attemptsStmt).execute();
@@ -265,7 +273,7 @@ public class StudentModelDAOTest {
 
         assertThrows(
                 NonRecoverableException.class,
-            () -> dao.updateAssessment(model, assessment, StudentModelFieldKind.ALL));
+                () -> dao.updateAssessment(model, assessment, StudentModelFieldKind.ALL));
     }
 
     @Test
@@ -273,7 +281,8 @@ public class StudentModelDAOTest {
         PreparedStatement stmt = mock(PreparedStatement.class);
         ResultSet rs = mock(ResultSet.class);
 
-        when(mockConnection.prepareStatement(startsWith("SELECT UserId FROM StudentModel"))).thenReturn(stmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT UserId FROM StudentModel")))
+                .thenReturn(stmt);
         when(stmt.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true).thenReturn(false);
 
@@ -294,7 +303,11 @@ public class StudentModelDAOTest {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
 
-        when(mockResultSet.next()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(mockResultSet.next())
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(false);
         when(mockResultSet.getString("Title")).thenReturn("Lesson 1", "Lesson 2", "Lesson 3");
         when(mockResultSet.getString("AssessmentLevel"))
                 .thenReturn("Not Started", "In Progress", "Completed");
@@ -342,7 +355,8 @@ public class StudentModelDAOTest {
         account.setUserId(userId);
 
         Student student = new Student(account);
-        Assessment assessment = new Assessment(new KnowledgeComponent(22), AssessmentLevel.NOT_STARTED);
+        Assessment assessment =
+                new Assessment(new KnowledgeComponent(22), AssessmentLevel.NOT_STARTED);
         student.getStudentModel().addAssessment(assessment);
 
         return student;

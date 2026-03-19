@@ -76,8 +76,7 @@ public class CompletedTaskDAOTest {
         when(mockConnection.prepareStatement(anyString())).thenThrow(sqlEx);
 
         assertThrows(
-                NonRecoverableException.class,
-                () -> dao.markCompleted("student@regis.edu", 11));
+                NonRecoverableException.class, () -> dao.markCompleted("student@regis.edu", 11));
     }
 
     @Test

@@ -79,7 +79,8 @@ public class SessionDAOTest {
         PreparedStatement insertStmt = mock(PreparedStatement.class);
 
         when(mockConnection.prepareStatement(contains("SELECT SessionId"))).thenReturn(existsStmt);
-        when(mockConnection.prepareStatement(startsWith("INSERT INTO TutoringSession"), any(String[].class)))
+        when(mockConnection.prepareStatement(
+                        startsWith("INSERT INTO TutoringSession"), any(String[].class)))
                 .thenReturn(insertStmt);
         when(existsStmt.executeQuery()).thenReturn(existsRs);
         when(existsRs.next()).thenReturn(false);
@@ -121,7 +122,8 @@ public class SessionDAOTest {
 
     @Test
     public void testRetrieveSuccess() throws Exception {
-        when(mockConnection.prepareStatement(startsWith("SELECT SessionId"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("SELECT SessionId")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true);
         when(mockResultSet.getInt(1)).thenReturn(100);
@@ -153,7 +155,8 @@ public class SessionDAOTest {
 
     @Test
     public void testRetrieveNotFoundThrows() throws Exception {
-        when(mockConnection.prepareStatement(startsWith("SELECT SessionId"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("SELECT SessionId")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(false);
 
@@ -165,7 +168,8 @@ public class SessionDAOTest {
 
     @Test
     public void testRetrieveSecurityTokenSuccess() throws Exception {
-        when(mockConnection.prepareStatement(startsWith("SELECT SecurityToken"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("SELECT SecurityToken")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true);
         when(mockResultSet.getString(1)).thenReturn("token-123");
@@ -175,17 +179,20 @@ public class SessionDAOTest {
 
     @Test
     public void testRetrieveSecurityTokenNotFound() throws Exception {
-        when(mockConnection.prepareStatement(startsWith("SELECT SecurityToken"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("SELECT SecurityToken")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(false);
 
-        assertThrows(ObjNotFoundException.class, () -> dao.retrieveSecurityToken("student@regis.edu"));
+        assertThrows(
+                ObjNotFoundException.class, () -> dao.retrieveSecurityToken("student@regis.edu"));
     }
 
     @Test
     public void testUpdateSuccess() throws Exception {
         TutoringSession session = buildSession(88, "student@regis.edu");
-        when(mockConnection.prepareStatement(startsWith("UPDATE TutoringSession"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("UPDATE TutoringSession")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
 
         assertDoesNotThrow(() -> dao.update(session));
@@ -197,7 +204,8 @@ public class SessionDAOTest {
     @Test
     public void testUpdateBadRowCountRollsBack() throws Exception {
         TutoringSession session = buildSession(88, "student@regis.edu");
-        when(mockConnection.prepareStatement(startsWith("UPDATE TutoringSession"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("UPDATE TutoringSession")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
 
         assertThrows(NonRecoverableException.class, () -> dao.update(session));
@@ -206,7 +214,8 @@ public class SessionDAOTest {
 
     @Test
     public void testDeleteSuccess() throws Exception {
-        when(mockConnection.prepareStatement(startsWith("DELETE FROM TutoringSession"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM TutoringSession")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
 
         assertDoesNotThrow(() -> dao.delete("student@regis.edu"));
@@ -217,7 +226,8 @@ public class SessionDAOTest {
 
     @Test
     public void testDeleteBadRowCountRollsBack() throws Exception {
-        when(mockConnection.prepareStatement(startsWith("DELETE FROM TutoringSession"))).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM TutoringSession")))
+                .thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
 
         assertThrows(NonRecoverableException.class, () -> dao.delete("student@regis.edu"));
