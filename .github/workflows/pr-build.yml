@@ -3,8 +3,9 @@ name: PR Build Validation
 on:
   push:
     branches: [ main, development ]
-  pull_request:
-    branches: [ main, development ]
+  workflow_run:
+    workflows: [ "Format Code" ]
+    types: [ completed ]
   workflow_dispatch: #allow manual runs
 
 permissions:
@@ -12,10 +13,20 @@ permissions:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout workflow-run head branch
+      if: github.event_name == 'workflow_run'
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.event.workflow_run.head_repository.full_name }}
+        ref: ${{ github.event.workflow_run.head_branch }}
+
+    - name: Checkout current ref
+      if: github.event_name != 'workflow_run'
+      uses: actions/checkout@v4
     
     - name: Set up JDK 17 (with Maven cache)
       uses: actions/setup-java@v4

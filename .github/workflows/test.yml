@@ -3,8 +3,9 @@ name: Run Tests
 on:
   push:
     branches: [ main, development ]
-  pull_request:
-    branches: [ main, development ]
+  workflow_run:
+    workflows: [ "Format Code" ]
+    types: [ completed ]
   workflow_dispatch: #allow manual runs
 
 permissions:
@@ -15,11 +16,21 @@ permissions:
 
 jobs:
   test:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout workflow-run head branch
+      if: github.event_name == 'workflow_run'
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.event.workflow_run.head_repository.full_name }}
+        ref: ${{ github.event.workflow_run.head_branch }}
+
+    - name: Checkout current ref
+      if: github.event_name != 'workflow_run'
+      uses: actions/checkout@v4
 
     - name: Set up JDK 17 (with Maven cache)
       uses: actions/setup-java@v4
@@ -27,6 +38,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: Check formatting with Spotless
+      timeout-minutes: 5
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress spotless:check
 
     - name: Run tests and generate coverage report
       timeout-minutes: 15
@@ -36,7 +57,7 @@ jobs:
           -Daether.transport.http.requestTimeout=30000
           -Dmaven.wagon.http.retryHandler.count=2
           -Dmaven.wagon.rto=30000
-      run: mvn -B --no-transfer-progress verify
+      run: mvn -B --no-transfer-progress test jacoco:report
 
     - name: Generate coverage summary snapshot
       shell: bash
@@ -96,7 +117,7 @@ jobs:
         PY
 
     - name: Checkout development coverage baseline
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
       uses: actions/checkout@v4
       with:
         ref: development
@@ -107,7 +128,7 @@ jobs:
         sparse-checkout-cone-mode: false
 
     - name: Compare coverage to development
-      if: always() && github.event_name == 'pull_request'
+      if: always() && github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
       id: coverage_delta
       shell: bash
       run: |
@@ -184,7 +205,7 @@ jobs:
         PY
 
     - name: Comment coverage delta on PR
-      if: always() && github.event_name == 'pull_request'
+      if: always() && github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
       uses: actions/github-script@v7
       env:
         COVERAGE_AVAILABLE: ${{ steps.coverage_delta.outputs.available }}
@@ -198,6 +219,14 @@ jobs:
       with:
         script: |
           const marker = '<!-- coverage-delta-comment -->';
+          const workflowRunPullRequests = context.payload.workflow_run?.pull_requests || [];
+          const issue_number = workflowRunPullRequests[0]?.number;
+
+          if (!issue_number) {
+            core.info('No pull request associated with this workflow_run; skipping coverage comment.');
+            return;
+          }
+
           const available = (process.env.COVERAGE_AVAILABLE || '').toLowerCase() === 'true';
           const baselineMode = process.env.BASELINE_MODE || 'unavailable';
           const allHead = Number(process.env.ALL_HEAD_COVERAGE || '0');
@@ -237,7 +266,6 @@ jobs:
               ].join('\n');
 
           const { owner, repo } = context.repo;
-          const issue_number = context.issue.number;
           const comments = await github.paginate(github.rest.issues.listComments, {
             owner,
             repo,
