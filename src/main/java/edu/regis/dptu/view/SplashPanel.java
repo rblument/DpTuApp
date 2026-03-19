@@ -75,11 +75,6 @@ public class SplashPanel extends GPanel {
         layoutComponents();
 
         log.debug("SplashPanel initialized");
-
-        // ToDo: Temp for easy login while in development
-        userId.setText("test@regis.edu");
-        password.setText("TestP@ss");
-        log.debug("SplashPanel dev credentials prefilled (remove before production)");
     }
 
     /** Set the default focus to the user id field. */

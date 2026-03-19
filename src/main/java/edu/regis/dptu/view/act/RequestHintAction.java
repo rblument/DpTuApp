@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.MainFrame;
 
 /**
@@ -36,7 +37,7 @@ public class RequestHintAction extends DpTuGuiAction {
 
     /** Create the singleton instance on class load. */
     static {
-        SINGLETON = new RequestHintAction("Hint");
+        SINGLETON = new RequestHintAction(ResourceMgr.instance().string("action.hint.name"));
     }
 
     /**
@@ -56,7 +57,7 @@ public class RequestHintAction extends DpTuGuiAction {
     public RequestHintAction(String name) {
         super(name);
 
-        putValue(SHORT_DESCRIPTION, "Get a hint for this step");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.hint.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_H);
     }
 
@@ -70,8 +71,11 @@ public class RequestHintAction extends DpTuGuiAction {
         log.info("Hint requested.");
         // Show a simple static hint message to the student
         // Basic implementation for DPTU-45
-        String hintText = "Try focusing on how this step connects to the previous subproblem.";
+        String hintText = ResourceMgr.instance().string("hint.default.text");
         JOptionPane.showMessageDialog(
-                MainFrame.instance(), hintText, "Hint", JOptionPane.INFORMATION_MESSAGE);
+            MainFrame.instance(),
+            hintText,
+            ResourceMgr.instance().string("dialog.title.hint"),
+            JOptionPane.INFORMATION_MESSAGE);
     }
 }

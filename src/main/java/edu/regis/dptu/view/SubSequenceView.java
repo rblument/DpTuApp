@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * This is the Subsequence view for the TutoringSession View.
@@ -78,7 +79,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * @param word2
      */
     private void initializeComponents() {
-        titleLabel = new JLabel("Subsequence Highlighter");
+        titleLabel = new JLabel(ResourceMgr.instance().string("subSequence.title"));
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -160,14 +161,14 @@ class SubSequenceView extends JPanel implements ProblemListener {
         if (word2 == null) word2 = "";
 
         // Update lengths
-        lengthLabel1.setText("n=" + word1.length());
-        lengthLabel2.setText("m=" + word2.length());
+        lengthLabel1.setText(ResourceMgr.instance().string("subSequence.length.n", word1.length()));
+        lengthLabel2.setText(ResourceMgr.instance().string("subSequence.length.m", word2.length()));
 
         String compactOne = compactWord(word1);
         String compactTwo = compactWord(word2);
 
-        wordLabel1.setText("x=" + compactOne);
-        wordLabel2.setText("y=" + compactTwo);
+        wordLabel1.setText(ResourceMgr.instance().string("subSequence.word.x", compactOne));
+        wordLabel2.setText(ResourceMgr.instance().string("subSequence.word.y", compactTwo));
 
         wordLabel1.setToolTipText(word1.isEmpty() ? null : word1);
         wordLabel2.setToolTipText(word2.isEmpty() ? null : word2);
