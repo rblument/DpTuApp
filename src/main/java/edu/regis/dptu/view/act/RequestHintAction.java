@@ -73,9 +73,9 @@ public class RequestHintAction extends DpTuGuiAction {
         // Basic implementation for DPTU-45
         String hintText = ResourceMgr.instance().string("hint.default.text");
         JOptionPane.showMessageDialog(
-            MainFrame.instance(),
-            hintText,
-            ResourceMgr.instance().string("dialog.title.hint"),
-            JOptionPane.INFORMATION_MESSAGE);
+                MainFrame.instance(),
+                hintText,
+                ResourceMgr.instance().string("dialog.title.hint"),
+                JOptionPane.INFORMATION_MESSAGE);
     }
 }

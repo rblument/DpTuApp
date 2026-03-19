@@ -14,7 +14,9 @@ public class StatsWindow extends JFrame {
         super(title);
         setLayout(new BorderLayout());
         JLabel placeholder =
-            new JLabel(ResourceMgr.instance().string("statsWindow.placeholder"), SwingConstants.CENTER);
+                new JLabel(
+                        ResourceMgr.instance().string("statsWindow.placeholder"),
+                        SwingConstants.CENTER);
         add(placeholder, BorderLayout.CENTER);
         setSize(new Dimension(400, 300));
         setLocationRelativeTo(null); // center on screen

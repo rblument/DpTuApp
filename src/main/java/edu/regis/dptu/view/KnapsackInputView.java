@@ -42,7 +42,8 @@ public class KnapsackInputView extends JPanel {
         add(itemField, gbc);
 
         // TODO: Add 'Add' button and create/append to list
-        JButton addButton = new JButton(ResourceMgr.instance().string("knapsackInput.button.addItem"));
+        JButton addButton =
+                new JButton(ResourceMgr.instance().string("knapsackInput.button.addItem"));
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.SOUTHEAST;

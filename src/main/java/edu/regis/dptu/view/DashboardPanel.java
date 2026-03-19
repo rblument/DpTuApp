@@ -154,7 +154,8 @@ public class DashboardPanel extends GPanel {
         teachOneButton.setFocusPainted(false);
 
         // Stats Buttons
-        seeOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
+        seeOneStatsButton =
+                new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
                 e -> {
@@ -170,12 +171,14 @@ public class DashboardPanel extends GPanel {
                     new StatsWindow(ResourceMgr.instance().string("dashboard.stats.doOne.title"));
                 });
 
-        teachOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
+        teachOneStatsButton =
+                new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
                 e -> {
                     log.info("Teach One Stats button pressed");
-                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.teachOne.title"));
+                    new StatsWindow(
+                            ResourceMgr.instance().string("dashboard.stats.teachOne.title"));
                 });
 
         // Apply scaffold level rules for which buttons are visible.
@@ -228,9 +231,7 @@ public class DashboardPanel extends GPanel {
 
         // Copyright footer
         JLabel copyright =
-                new JLabel(
-                ResourceMgr.instance().string("app.copyright"),
-                        SwingConstants.CENTER);
+                new JLabel(ResourceMgr.instance().string("app.copyright"), SwingConstants.CENTER);
         copyright.setForeground(FILL);
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
@@ -239,12 +240,12 @@ public class DashboardPanel extends GPanel {
 
     private void displayWelcomeDialog() {
         String welcomeMessage =
-            ResourceMgr.instance().string("dashboard.welcome.sessionStarted", firstName);
+                ResourceMgr.instance().string("dashboard.welcome.sessionStarted", firstName);
         JOptionPane.showMessageDialog(
-            null,
-            welcomeMessage,
-            ResourceMgr.instance().string("dialog.title.welcome"),
-            JOptionPane.INFORMATION_MESSAGE);
+                null,
+                welcomeMessage,
+                ResourceMgr.instance().string("dialog.title.welcome"),
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private JPanel createColumn(

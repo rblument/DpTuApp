@@ -223,8 +223,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        JLabel copyright =
-                new JLabel(ResourceMgr.instance().string("app.copyright"));
+        JLabel copyright = new JLabel(ResourceMgr.instance().string("app.copyright"));
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         addc(
                 copyright,
@@ -250,8 +249,7 @@ public class SplashPanel extends GPanel {
         GPanel panel = new GPanel();
         panel.setBackground(new Color(223, 242, 245));
 
-        JLabel ccis =
-                new JLabel(ResourceMgr.instance().string("splash.header.department"));
+        JLabel ccis = new JLabel(ResourceMgr.instance().string("splash.header.department"));
         ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
         ccis.setForeground(Color.BLUE);
 

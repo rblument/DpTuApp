@@ -63,7 +63,7 @@ public class MatrixInputView extends JPanel {
 
         // "Remove" button
         JButton removeButton =
-            new JButton(ResourceMgr.instance().string("matrixInput.button.removeSelected"));
+                new JButton(ResourceMgr.instance().string("matrixInput.button.removeSelected"));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -96,7 +96,8 @@ public class MatrixInputView extends JPanel {
             int cols = dims[1];
 
             if (rows <= 0 || cols <= 0) {
-                showValidationError(ResourceMgr.instance().string("matrixInput.error.positiveWhole"));
+                showValidationError(
+                        ResourceMgr.instance().string("matrixInput.error.positiveWhole"));
                 return;
             }
 

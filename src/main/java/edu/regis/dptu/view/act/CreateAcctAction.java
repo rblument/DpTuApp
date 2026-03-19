@@ -65,9 +65,7 @@ public class CreateAcctAction extends DpTuGuiAction {
     private CreateAcctAction() {
         super(ResourceMgr.instance().string("action.createAccount.name"));
 
-        putValue(
-                SHORT_DESCRIPTION,
-                ResourceMgr.instance().string("action.createAccount.tooltip"));
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.createAccount.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_A);
     }
 
@@ -119,12 +117,14 @@ public class CreateAcctAction extends DpTuGuiAction {
                 frame.selectSplash();
 
             } else if ("IllegalUserId".equals(status)) {
-        msg = ResourceMgr.instance().string("account.create.error.duplicateUser", account.getUserId());
+                msg =
+                        ResourceMgr.instance()
+                                .string("account.create.error.duplicateUser", account.getUserId());
                 JOptionPane.showMessageDialog(
-            null,
-            msg,
-            ResourceMgr.instance().string("dialog.title.information"),
-            JOptionPane.INFORMATION_MESSAGE);
+                        null,
+                        msg,
+                        ResourceMgr.instance().string("dialog.title.information"),
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 log.warn(
                         "Create account rejected (IllegalUserId) for userId={}",

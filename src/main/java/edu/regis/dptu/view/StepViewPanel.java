@@ -129,13 +129,12 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     /** Create the child GUI components appearing in this panel. */
     private void initializeComponents() {
         setBorder(
-            BorderFactory.createTitledBorder(
-                ResourceMgr.instance().string("stepView.border.algorithmControl")));
+                BorderFactory.createTitledBorder(
+                        ResourceMgr.instance().string("stepView.border.algorithmControl")));
         setBackground(PANEL_BACKGROUND);
 
         stepBackButton = new JButton(ResourceMgr.instance().string("stepView.button.stepBack"));
-        stepBackButton.setToolTipText(
-            ResourceMgr.instance().string("stepView.tooltip.stepBack"));
+        stepBackButton.setToolTipText(ResourceMgr.instance().string("stepView.tooltip.stepBack"));
         stepBackButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -160,9 +159,9 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         stepBackButton.setEnabled(true);
 
         stepForwardButton =
-            new JButton(ResourceMgr.instance().string("stepView.button.stepForward"));
+                new JButton(ResourceMgr.instance().string("stepView.button.stepForward"));
         stepForwardButton.setToolTipText(
-            ResourceMgr.instance().string("stepView.tooltip.stepForward"));
+                ResourceMgr.instance().string("stepView.tooltip.stepForward"));
         stepForwardButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -378,8 +377,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         // Guard only if DEBUG is enabled (formatting work + getter calls)
         int displayNum = (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
         statusLabel.setText(
-            ResourceMgr.instance()
-                .string("stepView.status.line", String.format("%2d", displayNum)));
+                ResourceMgr.instance()
+                        .string("stepView.status.line", String.format("%2d", displayNum)));
 
         if (log.isDebugEnabled() && displayNum != lastDisplayedLine) {
             log.debug("StepViewPanel status updated: displayLine={}", displayNum);

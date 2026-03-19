@@ -180,7 +180,7 @@ public class NewAccountPanel extends GPanel {
         lName.getDocument().addDocumentListener(docListener);
 
         userId =
-            new HintTextField(ResourceMgr.instance().string("newAccount.hint.userIdEmail"), 10);
+                new HintTextField(ResourceMgr.instance().string("newAccount.hint.userIdEmail"), 10);
         userId.setIsEmailAddr(true);
         userId.getDocument().addDocumentListener(docListener);
 
@@ -210,7 +210,8 @@ public class NewAccountPanel extends GPanel {
         backBut = new JButton(BackAction.instance());
         backBut.setEnabled(true);
 
-        strength = new JLabel(ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
+        strength =
+                new JLabel(ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
         strength.setForeground(Color.RED);
         strength.setFont(new Font("Dialog", Font.PLAIN, 10));
     }
@@ -269,8 +270,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        JLabel copyright =
-            new JLabel(ResourceMgr.instance().string("app.copyright"));
+        JLabel copyright = new JLabel(ResourceMgr.instance().string("app.copyright"));
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         addc(
                 copyright,
@@ -299,8 +299,7 @@ public class NewAccountPanel extends GPanel {
         GPanel panel = new GPanel();
         panel.setBackground(LIGHT_BLUE);
 
-        JLabel ccis =
-            new JLabel(ResourceMgr.instance().string("newAccount.header.department"));
+        JLabel ccis = new JLabel(ResourceMgr.instance().string("newAccount.header.department"));
         ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
         ccis.setForeground(Color.BLUE);
 
@@ -765,7 +764,8 @@ public class NewAccountPanel extends GPanel {
         int len = pwd.length;
 
         if (len == 0) {
-            strength.setText(ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
             strength.setForeground(Color.RED);
 
             log.trace("Password had very poor strength: empty password");
@@ -803,13 +803,15 @@ public class NewAccountPanel extends GPanel {
         if (hasSymbol) score += 1;
 
         if (score <= 2) {
-            strength.setText(ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
             strength.setForeground(Color.RED);
         } else if (score <= 4) {
             strength.setText(ResourceMgr.instance().string("newAccount.password.strength.poor"));
             strength.setForeground(Color.RED);
         } else if (score <= 6) {
-            strength.setText(ResourceMgr.instance().string("newAccount.password.strength.moderate"));
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.moderate"));
             strength.setForeground(Color.ORANGE);
         } else {
             strength.setText(ResourceMgr.instance().string("newAccount.password.strength.strong"));
@@ -883,7 +885,8 @@ public class NewAccountPanel extends GPanel {
         } else if (!isPass2Valid) {
             msg.setText(ResourceMgr.instance().string("newAccount.validation.passwordMismatch"));
         } else if (!isSecAnswerValid) {
-            msg.setText(ResourceMgr.instance().string("newAccount.validation.invalidSecurityAnswer"));
+            msg.setText(
+                    ResourceMgr.instance().string("newAccount.validation.invalidSecurityAnswer"));
         } else {
             msg.setText("");
         }

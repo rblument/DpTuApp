@@ -177,10 +177,10 @@ public class SplashFrame extends JFrame {
             showError(
                     ResourceMgr.instance().string("dialog.title.signInError"),
                     ResourceMgr.instance()
-                        .string(
-                            "auth.error.invalidPasswordAttempt",
-                            signInAttempts,
-                            MAX_SIGNIN_ATTEMPTS));
+                            .string(
+                                    "auth.error.invalidPasswordAttempt",
+                                    signInAttempts,
+                                    MAX_SIGNIN_ATTEMPTS));
         } else {
             log.error("User locked out after {} invalid sign-in attempts", MAX_SIGNIN_ATTEMPTS);
 
@@ -242,8 +242,8 @@ public class SplashFrame extends JFrame {
         log.warn("Unknown user sign-in attempt: {}", user.getUserId());
 
         showError(
-            ResourceMgr.instance().string("dialog.title.warning"),
-            ResourceMgr.instance().string("auth.error.unknownUserDetails", user.getUserId()));
+                ResourceMgr.instance().string("dialog.title.warning"),
+                ResourceMgr.instance().string("auth.error.unknownUserDetails", user.getUserId()));
     }
 
     /** Select the practice screen panel */

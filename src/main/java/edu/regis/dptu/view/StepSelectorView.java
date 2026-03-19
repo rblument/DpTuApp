@@ -199,7 +199,8 @@ public class StepSelectorView extends GPanel {
             return;
         }
 
-        titleLabel.setText(ResourceMgr.instance().string("stepSelector.taskTitle", currentTask.getTitle()));
+        titleLabel.setText(
+                ResourceMgr.instance().string("stepSelector.taskTitle", currentTask.getTitle()));
 
         for (StepSelection selection : StepSelection.values()) {
             JLabel stepLabel = createStepLabel(selection);
