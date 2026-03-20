@@ -18,6 +18,7 @@ import java.awt.event.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.SplashFrame;
 
 /**
@@ -38,9 +39,9 @@ public class BackAction extends DpTuGuiAction {
 
     /** Initialize this back action. */
     private BackAction() {
-        super("Back");
+        super(ResourceMgr.instance().string("action.back.name"));
 
-        putValue(SHORT_DESCRIPTION, "Go Back to the previous Panel");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.back.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_B);
     }
 

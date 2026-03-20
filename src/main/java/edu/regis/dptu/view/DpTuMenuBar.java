@@ -20,6 +20,7 @@ import javax.swing.JMenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.act.SaveSessionAction;
 
 /**
@@ -43,7 +44,7 @@ public class DpTuMenuBar extends JMenuBar {
     private void createFileMenu() {
         log.debug("Creating 'File' menu...");
 
-        JMenu menu = new JMenu("File");
+        JMenu menu = new JMenu(ResourceMgr.instance().string("menu.file"));
         log.debug("'File' menu created.");
 
         JMenuItem item = new JMenuItem(SaveSessionAction.instance());

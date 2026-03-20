@@ -24,6 +24,8 @@ import javax.swing.JTextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
+
 /**
  * Displays the result of a student completing a step, which gives the student a suggestion as to
  * what to do next, but allows alternative choices.
@@ -82,13 +84,16 @@ public class StepCompletionReplyView extends GPanel implements ActionListener {
     private void initializeComponents() {
         msg = new JTextArea(5, 80);
 
-        nextTaskBut = new JButton("Move on to Next Task");
+        nextTaskBut = new JButton(ResourceMgr.instance().string("stepCompletion.button.nextTask"));
 
-        sameProblemBut = new JButton("Try Same problem Again");
+        sameProblemBut =
+                new JButton(ResourceMgr.instance().string("stepCompletion.button.sameProblem"));
 
-        similarProblemBut = new JButton("Try a Similar Problem");
+        similarProblemBut =
+                new JButton(ResourceMgr.instance().string("stepCompletion.button.similarProblem"));
 
-        correctAnswerBut = new JButton("Show the Correct Answer");
+        correctAnswerBut =
+                new JButton(ResourceMgr.instance().string("stepCompletion.button.correctAnswer"));
 
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new CardLayout());

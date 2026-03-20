@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
+
 /**
  * The current step within a pending task that a student needs to complete as part of the current
  * tutoring session.
@@ -94,7 +96,7 @@ public class PendingStep {
 
         if (hints.isEmpty()) {
             Hint noHint = new Hint();
-            noHint.setText("Sorry, no hints available");
+            noHint.setText(ResourceMgr.instance().string("hint.noneAvailable"));
             log.debug("PendingStep {} has no hints available", id);
             return noHint;
         }

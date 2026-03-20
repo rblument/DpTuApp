@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.security.CommonPasswords;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -170,15 +171,16 @@ public class NewAccountPanel extends GPanel {
         LoginDocumentListener docListener = new LoginDocumentListener();
 
         // fName = new JTextField("First", 15);
-        fName = new HintTextField("First", 15);
+        fName = new HintTextField(ResourceMgr.instance().string("newAccount.hint.firstName"), 15);
         // fName.setForeground(new Color(230,230,230));
         fName.getDocument().addDocumentListener(docListener);
         // ((AbstractDocument) fName.getDocument()).setDocumentFilter(new NameFilter());
 
-        lName = new HintTextField("Last", 30);
+        lName = new HintTextField(ResourceMgr.instance().string("newAccount.hint.lastName"), 30);
         lName.getDocument().addDocumentListener(docListener);
 
-        userId = new HintTextField("userId@university.edu", 10);
+        userId =
+                new HintTextField(ResourceMgr.instance().string("newAccount.hint.userIdEmail"), 10);
         userId.setIsEmailAddr(true);
         userId.getDocument().addDocumentListener(docListener);
 
@@ -188,7 +190,10 @@ public class NewAccountPanel extends GPanel {
         pass2 = new JPasswordField(20);
         pass2.getDocument().addDocumentListener(docListener);
 
-        String s1[] = {"What city were you born in?", "What is your mother's maiden name?"};
+        String s1[] = {
+            ResourceMgr.instance().string("newAccount.security.question.birthCity"),
+            ResourceMgr.instance().string("newAccount.security.question.maidenName")
+        };
         secQuestions = new JComboBox<String>(s1);
 
         secAnswer = new JPasswordField(20);
@@ -205,7 +210,8 @@ public class NewAccountPanel extends GPanel {
         backBut = new JButton(BackAction.instance());
         backBut.setEnabled(true);
 
-        strength = new JLabel("(Strength: very poor)");
+        strength =
+                new JLabel(ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
         strength.setForeground(Color.RED);
         strength.setFont(new Font("Dialog", Font.PLAIN, 10));
     }
@@ -264,8 +270,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        JLabel copyright =
-                new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
+        JLabel copyright = new JLabel(ResourceMgr.instance().string("app.copyright"));
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         addc(
                 copyright,
@@ -294,7 +299,7 @@ public class NewAccountPanel extends GPanel {
         GPanel panel = new GPanel();
         panel.setBackground(LIGHT_BLUE);
 
-        JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
+        JLabel ccis = new JLabel(ResourceMgr.instance().string("newAccount.header.department"));
         ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
         ccis.setForeground(Color.BLUE);
 
@@ -329,7 +334,7 @@ public class NewAccountPanel extends GPanel {
         panel.setSize(300, 400);
         panel.setPreferredSize(new Dimension(300, 400));
 
-        JLabel logo = new JLabel("DpTu");
+        JLabel logo = new JLabel(ResourceMgr.instance().string("newAccount.overview.logo"));
         logo.setFont(new Font("Dialog", Font.PLAIN, 20));
         logo.setForeground(Color.MAGENTA);
 
@@ -348,7 +353,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        JLabel name = new JLabel("A See_1, Do_1, Teach_1 Intelligent Tutoring System.");
+        JLabel name = new JLabel(ResourceMgr.instance().string("newAccount.overview.tagline"));
         name.setFont(new Font("Dialog", Font.PLAIN, 14));
         panel.addc(
                 name,
@@ -370,16 +375,7 @@ public class NewAccountPanel extends GPanel {
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
         descr.setFont(new Font("Dialog", Font.PLAIN, 12));
-        descr.append("DpTu provides individualized tutoring practice focused ");
-        descr.append("on understanding Dynamic Programming and the");
-        descr.append("underlying computer science concepts upon which it is ");
-        descr.append("based.\n\n");
-        descr.append("Please sign in or use 'New User' to create a student account.");
-
-        descr.append("\n\n");
-        descr.append("Use your university email address as your user id, but ");
-        descr.append("DO NOT use your existing university password. Instead,");
-        descr.append("use a different password for the DpTu tutor.");
+        descr.setText(ResourceMgr.instance().string("newAccount.overview.description"));
         panel.addc(
                 descr,
                 0,
@@ -395,7 +391,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        JLabel loginMsg = new JLabel("To use the tutor, you must sign in.");
+        JLabel loginMsg = new JLabel(ResourceMgr.instance().string("newAccount.overview.loginMsg"));
         panel.addc(
                 loginMsg,
                 0,
@@ -441,7 +437,7 @@ public class NewAccountPanel extends GPanel {
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
-        JLabel label = new JLabel("Name");
+        JLabel label = new JLabel(ResourceMgr.instance().string("newAccount.form.name"));
         label.setLabelFor(fName);
         panel.addc(
                 label,
@@ -487,7 +483,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("User Id:");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.userId"));
         label.setLabelFor(userId);
 
         panel.addc(
@@ -520,7 +516,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("Create a Password:");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.createPassword"));
         label.setLabelFor(pass1);
 
         panel.addc(
@@ -538,7 +534,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("(do not use your existing university password!)");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.passwordWarning"));
         label.setFont(new Font("Dialog", Font.PLAIN, 10));
         label.setForeground(new Color(75, 66, 66));
 
@@ -587,7 +583,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("(try 6 characters, mixed case, and special chars)");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.passwordHint"));
         label.setFont(new Font("Dialog", Font.PLAIN, 10));
         label.setForeground(new Color(75, 66, 66));
         panel.addc(
@@ -605,7 +601,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("Confirm your password:");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.confirmPassword"));
         label.setLabelFor(pass1);
 
         panel.addc(
@@ -638,7 +634,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("Choose Security Question:");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.securityQuestion"));
         label.setLabelFor(secQuestions);
 
         panel.addc(
@@ -671,7 +667,7 @@ public class NewAccountPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("Answer:");
+        label = new JLabel(ResourceMgr.instance().string("newAccount.form.answer"));
         label.setLabelFor(secAnswer);
 
         panel.addc(
@@ -768,7 +764,8 @@ public class NewAccountPanel extends GPanel {
         int len = pwd.length;
 
         if (len == 0) {
-            strength.setText("(Strength: Very poor)");
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
             strength.setForeground(Color.RED);
 
             log.trace("Password had very poor strength: empty password");
@@ -776,7 +773,8 @@ public class NewAccountPanel extends GPanel {
         }
 
         if (CommonPasswords.isCommon(pwd)) {
-            strength.setText("(Strength: Very poor – common password)");
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.veryPoorCommon"));
             strength.setForeground(Color.RED);
 
             log.trace("Password had very poor strength: common password");
@@ -805,16 +803,18 @@ public class NewAccountPanel extends GPanel {
         if (hasSymbol) score += 1;
 
         if (score <= 2) {
-            strength.setText("(Strength: Very poor)");
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
             strength.setForeground(Color.RED);
         } else if (score <= 4) {
-            strength.setText("(Strength: Poor)");
+            strength.setText(ResourceMgr.instance().string("newAccount.password.strength.poor"));
             strength.setForeground(Color.RED);
         } else if (score <= 6) {
-            strength.setText("(Strength: Moderate)");
+            strength.setText(
+                    ResourceMgr.instance().string("newAccount.password.strength.moderate"));
             strength.setForeground(Color.ORANGE);
         } else {
-            strength.setText("(Strength: Strong)");
+            strength.setText(ResourceMgr.instance().string("newAccount.password.strength.strong"));
             strength.setForeground(Color.GREEN);
         }
 
@@ -875,17 +875,18 @@ public class NewAccountPanel extends GPanel {
         If you want to change the priority of which message shows first,
         change the order of if/else chain*/
         if (!isFNameValid) {
-            msg.setText(("Invalid first name"));
+            msg.setText(ResourceMgr.instance().string("newAccount.validation.invalidFirstName"));
         } else if (!isLNameValid) {
-            msg.setText("Invalid last name");
+            msg.setText(ResourceMgr.instance().string("newAccount.validation.invalidLastName"));
         } else if (!isUserIdValid) {
-            msg.setText("Invalid email");
+            msg.setText(ResourceMgr.instance().string("newAccount.validation.invalidEmail"));
         } else if (!isPass1Valid) {
-            msg.setText("Invalid password");
+            msg.setText(ResourceMgr.instance().string("newAccount.validation.invalidPassword"));
         } else if (!isPass2Valid) {
-            msg.setText("Passwords do not match");
+            msg.setText(ResourceMgr.instance().string("newAccount.validation.passwordMismatch"));
         } else if (!isSecAnswerValid) {
-            msg.setText("Invalid answer to security question");
+            msg.setText(
+                    ResourceMgr.instance().string("newAccount.validation.invalidSecurityAnswer"));
         } else {
             msg.setText("");
         }
