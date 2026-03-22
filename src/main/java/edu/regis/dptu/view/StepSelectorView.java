@@ -37,6 +37,7 @@ import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.aol.AssessmentLevel;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * A view that displays a list of available steps for the student to select. Steps can be marked
@@ -47,24 +48,24 @@ public class StepSelectorView extends GPanel {
 
     /** Enum representing the different step selections available. */
     public enum StepSelection {
-        INIT_FIRST_ROW("Initialize First Row", StepSubType.COMPLETE_FIRST_ROW),
-        INIT_FIRST_COL("Initialize First Column", StepSubType.COMPLETE_FIRST_COL),
-        GENERAL_CELL("Complete Cell", StepSubType.COMPLETE_CELL),
-        MATCH_CELL("Increase Diagonal", StepSubType.INCREASE_DIAGONAL),
-        USE_LEFT_CELL("Use Left Value", StepSubType.USE_LEFT),
-        USE_UPPER_CELL("Use Upper Value", StepSubType.USE_UPPER);
+        INIT_FIRST_ROW("stepSelector.step.initFirstRow", StepSubType.COMPLETE_FIRST_ROW),
+        INIT_FIRST_COL("stepSelector.step.initFirstCol", StepSubType.COMPLETE_FIRST_COL),
+        GENERAL_CELL("stepSelector.step.generalCell", StepSubType.COMPLETE_CELL),
+        MATCH_CELL("stepSelector.step.matchCell", StepSubType.INCREASE_DIAGONAL),
+        USE_LEFT_CELL("stepSelector.step.useLeftCell", StepSubType.USE_LEFT),
+        USE_UPPER_CELL("stepSelector.step.useUpperCell", StepSubType.USE_UPPER);
 
-        private final String displayName;
+        private final String displayKey;
         private final StepSubType stepType;
         private JLabel label;
 
-        StepSelection(String displayName, StepSubType stepType) {
-            this.displayName = displayName;
+        StepSelection(String displayKey, StepSubType stepType) {
+            this.displayKey = displayKey;
             this.stepType = stepType;
         }
 
         public String getDisplayName() {
-            return displayName;
+            return ResourceMgr.instance().string(displayKey);
         }
 
         public StepSubType getStepType() {
@@ -159,7 +160,7 @@ public class StepSelectorView extends GPanel {
 
     /** Create the child GUI components appearing in this view. */
     private void initializeComponents() {
-        titleLabel = new JLabel("DP Steps");
+        titleLabel = new JLabel(ResourceMgr.instance().string("stepSelector.title"));
         titleLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 
         stepsPanel = new JPanel();
@@ -190,7 +191,7 @@ public class StepSelectorView extends GPanel {
         stepsPanel.removeAll();
 
         if (currentTask == null) {
-            JLabel placeholder = new JLabel("No steps available");
+            JLabel placeholder = new JLabel(ResourceMgr.instance().string("stepSelector.noSteps"));
             placeholder.setAlignmentX(Component.LEFT_ALIGNMENT);
             stepsPanel.add(placeholder);
             stepsPanel.revalidate();
@@ -198,7 +199,8 @@ public class StepSelectorView extends GPanel {
             return;
         }
 
-        titleLabel.setText(currentTask.getTitle() + " Steps");
+        titleLabel.setText(
+                ResourceMgr.instance().string("stepSelector.taskTitle", currentTask.getTitle()));
 
         for (StepSelection selection : StepSelection.values()) {
             JLabel stepLabel = createStepLabel(selection);

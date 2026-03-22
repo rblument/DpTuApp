@@ -26,6 +26,7 @@ import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.TutoringSession;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
@@ -44,7 +45,7 @@ public class DoOneAction extends DpTuGuiAction {
         super(Mode.DO_ONE.title());
         this.problemDAO = new ProblemDAO();
 
-        putValue(SHORT_DESCRIPTION, "Start a \"do one\" (practice) session");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.doOne.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_D);
     }
 
@@ -87,7 +88,10 @@ public class DoOneAction extends DpTuGuiAction {
                     account != null ? account.getUserId() : null,
                     e);
 
-            SplashFrame.instance().showError("Error", "Failed to load problem");
+            SplashFrame.instance()
+                    .showError(
+                            ResourceMgr.instance().string("dialog.title.error"),
+                            ResourceMgr.instance().string("error.failedToLoadProblem"));
         }
     }
 }

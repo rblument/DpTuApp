@@ -15,7 +15,9 @@ package edu.regis.dptu.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -81,6 +83,9 @@ public class ResourceMgr {
     /** The current locale, as specified in the DpTu.properties file */
     private Locale locale;
 
+    /** Placeholder format when a message key is missing. */
+    private static final String MISSING_KEY_FMT = "!!{0}!!";
+
     /**
      * Map from property keys to all text messages displayed in the UI according to the current
      * locale (see locale above).
@@ -119,7 +124,40 @@ public class ResourceMgr {
      * @return the locale specific String for the given key
      */
     public String string(String key) {
-        return msgs.getString(key);
+        if (msgs == null) {
+            log.warn("Message bundle not initialized. key={}", key);
+            return missingKeyValue(key);
+        }
+
+        try {
+            return msgs.getString(key);
+        } catch (MissingResourceException e) {
+            log.warn("Missing UI message key: {}", key);
+            return missingKeyValue(key);
+        }
+    }
+
+    /**
+     * Return the current locale specific UI text message for the given key and optional args.
+     *
+     * @param key unique identifier for a UI text display message
+     * @param args optional values inserted into the localized text pattern
+     * @return locale specific, formatted String for the given key
+     */
+    public String string(String key, Object... args) {
+        String pattern = string(key);
+
+        if (args == null || args.length == 0) {
+            return pattern;
+        }
+
+        Locale activeLocale = (locale == null) ? Locale.getDefault() : locale;
+        MessageFormat formatter = new MessageFormat(pattern, activeLocale);
+        return formatter.format(args);
+    }
+
+    private String missingKeyValue(String key) {
+        return MessageFormat.format(MISSING_KEY_FMT, key);
     }
 
     /**

@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.MainFrame;
 
 /**
@@ -36,7 +37,7 @@ public class NewExampleAction extends DpTuGuiAction {
 
     /** Create the singleton instance on class load. */
     static {
-        SINGLETON = new NewExampleAction("New Example");
+        SINGLETON = new NewExampleAction(ResourceMgr.instance().string("action.newExample.name"));
     }
 
     /**
@@ -56,7 +57,7 @@ public class NewExampleAction extends DpTuGuiAction {
     public NewExampleAction(String name) {
         super(name);
 
-        putValue(SHORT_DESCRIPTION, "Get a new example for this step");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.newExample.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_N);
 
         log.debug("NewExampleAction initialized (stub)");
@@ -77,8 +78,8 @@ public class NewExampleAction extends DpTuGuiAction {
 
         JOptionPane.showMessageDialog(
                 MainFrame.instance(),
-                "New example functionality will be available in a future update.",
-                "Feature Not Available",
+                ResourceMgr.instance().string("feature.newExample.unavailable"),
+                ResourceMgr.instance().string("dialog.title.featureUnavailable"),
                 JOptionPane.INFORMATION_MESSAGE);
     }
 }
