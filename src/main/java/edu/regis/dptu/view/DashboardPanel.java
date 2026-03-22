@@ -67,9 +67,6 @@ public class DashboardPanel extends GPanel {
     private CustomProgressBar seeOneProgressBar;
     private CustomProgressBar doOneProgressBar;
     private CustomProgressBar teachOneProgressBar;
-    private StatsWindow seeOneStatsWindow;
-    private StatsWindow doOneStatsWindow;
-    private StatsWindow teachOneStatsWindow;
     private JLabel welcomeLabel;
     private JComboBox<String> problemSelector; // @author EverettCV
 
@@ -162,32 +159,16 @@ public class DashboardPanel extends GPanel {
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
                 e -> {
-                    if (seeOneStatsWindow == null || !seeOneStatsWindow.isDisplayable()) {
-                        seeOneStatsWindow =
-                                new StatsWindow(
-                                        ResourceMgr.instance()
-                                                .string("dashboard.stats.seeOne.title"));
-                    } else {
-                        seeOneStatsWindow.toFront();
-                        seeOneStatsWindow.requestFocus();
-                    }
-                    seeOneStatsWindow.setVisible(true);
+                    log.info("See One Stats button pressed");
+                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.seeOne.title"));
                 });
 
         doOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
                 e -> {
-                    if (doOneStatsWindow == null || !doOneStatsWindow.isDisplayable()) {
-                        doOneStatsWindow =
-                                new StatsWindow(
-                                        ResourceMgr.instance()
-                                                .string("dashboard.stats.doOne.title"));
-                    } else {
-                        doOneStatsWindow.toFront();
-                        doOneStatsWindow.requestFocus();
-                    }
-                    doOneStatsWindow.setVisible(true);
+                    log.info("Do One Stats button pressed");
+                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.doOne.title"));
                 });
 
         teachOneStatsButton =
@@ -195,16 +176,9 @@ public class DashboardPanel extends GPanel {
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
                 e -> {
-                    if (teachOneStatsWindow == null || !teachOneStatsWindow.isDisplayable()) {
-                        teachOneStatsWindow =
-                                new StatsWindow(
-                                        ResourceMgr.instance()
-                                                .string("dashboard.stats.teachOne.title"));
-                    } else {
-                        teachOneStatsWindow.toFront();
-                        teachOneStatsWindow.requestFocus();
-                    }
-                    teachOneStatsWindow.setVisible(true);
+                    log.info("Teach One Stats button pressed");
+                    new StatsWindow(
+                            ResourceMgr.instance().string("dashboard.stats.teachOne.title"));
                 });
 
         // Apply scaffold level rules for which buttons are visible.
