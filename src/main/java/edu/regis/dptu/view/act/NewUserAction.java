@@ -18,6 +18,7 @@ import java.awt.event.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.SplashFrame;
 
 /**
@@ -52,9 +53,9 @@ public class NewUserAction extends DpTuGuiAction {
 
     /** Initialize this new user action. */
     private NewUserAction() {
-        super("New User");
+        super(ResourceMgr.instance().string("action.newUser.name"));
 
-        putValue(SHORT_DESCRIPTION, "Request to create a new user");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.newUser.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_U);
     }
 

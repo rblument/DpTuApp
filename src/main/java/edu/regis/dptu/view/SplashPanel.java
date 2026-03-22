@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.User;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.util.SHA_256;
 import edu.regis.dptu.view.act.NewUserAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -74,11 +75,6 @@ public class SplashPanel extends GPanel {
         layoutComponents();
 
         log.debug("SplashPanel initialized");
-
-        // ToDo: Temp for easy login while in development
-        userId.setText("test@regis.edu");
-        password.setText("TestP@ss");
-        log.debug("SplashPanel dev credentials prefilled (remove before production)");
     }
 
     /** Set the default focus to the user id field. */
@@ -227,8 +223,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        JLabel copyright =
-                new JLabel("(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved");
+        JLabel copyright = new JLabel(ResourceMgr.instance().string("app.copyright"));
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         addc(
                 copyright,
@@ -254,7 +249,7 @@ public class SplashPanel extends GPanel {
         GPanel panel = new GPanel();
         panel.setBackground(new Color(223, 242, 245));
 
-        JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
+        JLabel ccis = new JLabel(ResourceMgr.instance().string("splash.header.department"));
         ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
         ccis.setForeground(Color.BLUE);
 
@@ -273,7 +268,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        JLabel newLabel = new JLabel("New to DpTu?");
+        JLabel newLabel = new JLabel(ResourceMgr.instance().string("splash.header.newToDptu"));
         newLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
         newLabel.setForeground(Color.GRAY);
 
@@ -316,7 +311,7 @@ public class SplashPanel extends GPanel {
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
-        JLabel label = new JLabel("Sign in");
+        JLabel label = new JLabel(ResourceMgr.instance().string("splash.login.title"));
         panel.addc(
                 label,
                 0,
@@ -332,7 +327,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("User Id");
+        label = new JLabel(ResourceMgr.instance().string("splash.login.userId"));
         label.setLabelFor(userId);
 
         panel.addc(
@@ -365,7 +360,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        label = new JLabel("Password:");
+        label = new JLabel(ResourceMgr.instance().string("splash.login.password"));
         label.setLabelFor(password);
 
         panel.addc(
@@ -423,7 +418,7 @@ public class SplashPanel extends GPanel {
         panel.setSize(300, 400);
         panel.setPreferredSize(new Dimension(300, 400));
 
-        JLabel logo = new JLabel("DpTu: Dynamic Programming Tutor");
+        JLabel logo = new JLabel(ResourceMgr.instance().string("splash.overview.logo"));
         logo.setFont(new Font("Dialog", Font.PLAIN, 20));
         logo.setForeground(Color.MAGENTA);
 
@@ -442,7 +437,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        JLabel name = new JLabel("A See_1, Do_1, Teach_1 Intelligent Tutoring System.");
+        JLabel name = new JLabel(ResourceMgr.instance().string("splash.overview.tagline"));
         name.setFont(new Font("Dialog", Font.PLAIN, 14));
         panel.addc(
                 name,
@@ -464,12 +459,7 @@ public class SplashPanel extends GPanel {
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
         descr.setFont(new Font("Dialog", Font.PLAIN, 12));
-        descr.append("DpTu provides individualized tutoring practice focused ");
-        descr.append("on understanding Dynamic Programming and the");
-        descr.append("underlying computer science concepts upon which it is ");
-        descr.append("based.\n\n");
-        descr.append("Please sign in or use 'New User' to create a student account.");
-        descr.append("\n\n");
+        descr.setText(ResourceMgr.instance().string("splash.overview.description"));
 
         panel.addc(
                 descr,
@@ -486,7 +476,7 @@ public class SplashPanel extends GPanel {
                 5,
                 5);
 
-        JLabel loginMsg = new JLabel("To use the tutor, you must sign in.");
+        JLabel loginMsg = new JLabel(ResourceMgr.instance().string("splash.overview.loginMsg"));
         panel.addc(
                 loginMsg,
                 0,

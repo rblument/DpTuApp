@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.act.ActionFactory;
 
 /**
@@ -61,7 +62,7 @@ public class MainFrame extends JFrame implements WindowListener {
 
     /** Initialize and layout the child components displayed in this frame. */
     private MainFrame() {
-        super("DpTu");
+        super(ResourceMgr.instance().string("app.title.short"));
 
         MainFrame.log.info("Initializing MainFrame");
 

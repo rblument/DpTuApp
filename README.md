@@ -127,6 +127,13 @@ Explains all automated GitHub Actions workflows, CI enforcement, testing pipelin
 📘 [`documentation/workflows-developer-guide.md`](./documentation/workflows-developer-guide.md)
 
 
+### UI Strings & Localization
+
+Explains why user-facing text should be centralized in message bundles, how the `ResourceMgr` + `Msgs.properties` pattern works, and how to add localized strings safely.
+
+📘 [`documentation/ui-strings-developer-guide.md`](./documentation/ui-strings-developer-guide.md)
+
+
 These documents define required development practices and are enforced by repository automation.
 
 ## Contribution

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * So much of this code is specific to LCSProblem, it might be worthwhile to write separate variable
@@ -67,19 +68,19 @@ public class VariablesView extends GPanel implements ProblemListener {
 
     private void initializeComponents() {
         log.debug("Initializing JLabel components...");
-        rName = new JLabel("row = ");
+        rName = new JLabel(ResourceMgr.instance().string("variables.label.row"));
         rValue = new JLabel();
-        cName = new JLabel("col = ");
+        cName = new JLabel(ResourceMgr.instance().string("variables.label.col"));
         cValue = new JLabel();
-        nName = new JLabel("n = ");
+        nName = new JLabel(ResourceMgr.instance().string("variables.label.n"));
         nValue = new JLabel();
-        mName = new JLabel("m = ");
+        mName = new JLabel(ResourceMgr.instance().string("variables.label.m"));
         mValue = new JLabel();
-        xrName = new JLabel("x[row] = ");
+        xrName = new JLabel(ResourceMgr.instance().string("variables.label.xRow"));
         xrValue = new JLabel();
-        ycName = new JLabel("y[col] = ");
+        ycName = new JLabel(ResourceMgr.instance().string("variables.label.yCol"));
         ycValue = new JLabel();
-        lcsName = new JLabel("lcs = ");
+        lcsName = new JLabel(ResourceMgr.instance().string("variables.label.lcs"));
         lcsValue = new JLabel();
         log.debug("JLabel components initialized.");
     }

@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
+
 // DPTU-104: MatrixInputView input field already implemented in 103
 
 /*
@@ -47,20 +49,21 @@ public class MatrixInputView extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        add(new JLabel("Matrix Entry (e.g., 10x20):"), gbc);
+        add(new JLabel(ResourceMgr.instance().string("matrixInput.label.entry")), gbc);
 
         gbc.gridx = 1;
         add(matrixField, gbc);
 
         // "Add" button
-        JButton addButton = new JButton("Add Matrix");
+        JButton addButton = new JButton(ResourceMgr.instance().string("matrixInput.button.add"));
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
         add(addButton, gbc);
 
         // "Remove" button
-        JButton removeButton = new JButton("Remove Selected");
+        JButton removeButton =
+                new JButton(ResourceMgr.instance().string("matrixInput.button.removeSelected"));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -93,7 +96,8 @@ public class MatrixInputView extends JPanel {
             int cols = dims[1];
 
             if (rows <= 0 || cols <= 0) {
-                showValidationError("Rows and columns must be positive whole numbers.");
+                showValidationError(
+                        ResourceMgr.instance().string("matrixInput.error.positiveWhole"));
                 return;
             }
 
@@ -111,7 +115,7 @@ public class MatrixInputView extends JPanel {
 
         } catch (IllegalArgumentException ex) {
             log.warn("Invalid matrix input: {}", text, ex);
-            showValidationError("Invalid format. Try something like 10x20.");
+            showValidationError(ResourceMgr.instance().string("matrixInput.error.invalidFormat"));
         }
     }
 
@@ -141,7 +145,10 @@ public class MatrixInputView extends JPanel {
     /** Shows a simple warning popup if the input is not valid. */
     private void showValidationError(String message) {
         JOptionPane.showMessageDialog(
-                this, message, "Invalid Matrix Input", JOptionPane.WARNING_MESSAGE);
+                this,
+                message,
+                ResourceMgr.instance().string("dialog.title.invalidMatrixInput"),
+                JOptionPane.WARNING_MESSAGE);
     }
 
     /**
