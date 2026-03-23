@@ -28,6 +28,7 @@ import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * The first window displayed to a student user, which contains a splash panel and associated panels
@@ -121,7 +122,7 @@ public class SplashFrame extends JFrame {
 
     /** Create and layout the child components in this Splash JFrame. */
     private SplashFrame() {
-        super("DpTu");
+        super(ResourceMgr.instance().string("app.title.short"));
 
         setMinimumSize(new Dimension(875, 650));
 
@@ -174,15 +175,18 @@ public class SplashFrame extends JFrame {
             log.warn("Invalid password attempt {} of {}", signInAttempts, MAX_SIGNIN_ATTEMPTS);
 
             showError(
-                    "SignIn Error",
-                    "Invalid Password attempt " + signInAttempts + " of " + MAX_SIGNIN_ATTEMPTS);
+                    ResourceMgr.instance().string("dialog.title.signInError"),
+                    ResourceMgr.instance()
+                            .string(
+                                    "auth.error.invalidPasswordAttempt",
+                                    signInAttempts,
+                                    MAX_SIGNIN_ATTEMPTS));
         } else {
             log.error("User locked out after {} invalid sign-in attempts", MAX_SIGNIN_ATTEMPTS);
 
             showError(
-                    "SignIn Error",
-                    "You exceeded the max number of sign in attempts\n"
-                            + "Please contact the DpTu administrator");
+                    ResourceMgr.instance().string("dialog.title.signInError"),
+                    ResourceMgr.instance().string("auth.error.maxAttemptsExceeded"));
 
             // Graceful shutdown — NO System.exit
             this.dispose();
@@ -238,10 +242,8 @@ public class SplashFrame extends JFrame {
         log.warn("Unknown user sign-in attempt: {}", user.getUserId());
 
         showError(
-                "Warning",
-                user.getUserId()
-                        + " is not a known user.\n\n"
-                        + "Perhaps, try creating a 'New User' first.");
+                ResourceMgr.instance().string("dialog.title.warning"),
+                ResourceMgr.instance().string("auth.error.unknownUserDetails", user.getUserId()));
     }
 
     /** Select the practice screen panel */

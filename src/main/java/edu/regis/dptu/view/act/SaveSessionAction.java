@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.util.ImgFactory;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * Handler for GUI gestures requesting to save the current session.
@@ -52,10 +53,13 @@ public class SaveSessionAction extends DpTuGuiAction {
 
     /** Initialize this action. */
     private SaveSessionAction() {
-        super("Save");
+        super(ResourceMgr.instance().string("action.save.name"));
 
-        putValue(SMALL_ICON, ImgFactory.createIcon("Save16.gif", "Save Tutoring Session"));
-        putValue(SHORT_DESCRIPTION, "Save the current tutoring session");
+        putValue(
+                SMALL_ICON,
+                ImgFactory.createIcon(
+                        "Save16.gif", ResourceMgr.instance().string("action.save.iconAlt")));
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.save.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('S', KeyEvent.CTRL_DOWN_MASK));
     }

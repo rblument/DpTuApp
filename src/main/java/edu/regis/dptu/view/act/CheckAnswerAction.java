@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.MainFrame;
 
 /**
@@ -32,7 +33,8 @@ public class CheckAnswerAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(CheckAnswerAction.class);
 
     /** The singleton instance of this action. */
-    private static final CheckAnswerAction SINGLETON = new CheckAnswerAction("Check Answer");
+    private static final CheckAnswerAction SINGLETON =
+            new CheckAnswerAction(ResourceMgr.instance().string("action.checkAnswer.name"));
 
     /**
      * Return the singleton instance of this action.
@@ -51,7 +53,7 @@ public class CheckAnswerAction extends DpTuGuiAction {
     public CheckAnswerAction(String name) {
         super(name);
 
-        putValue(SHORT_DESCRIPTION, "Check your answer for this step");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.checkAnswer.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_C);
     }
 
@@ -67,8 +69,8 @@ public class CheckAnswerAction extends DpTuGuiAction {
 
         JOptionPane.showMessageDialog(
                 MainFrame.instance(),
-                "Answer checking functionality will be available in a future update.",
-                "Feature Not Available",
+                ResourceMgr.instance().string("feature.checkAnswer.unavailable"),
+                ResourceMgr.instance().string("dialog.title.featureUnavailable"),
                 JOptionPane.INFORMATION_MESSAGE);
     }
 }
