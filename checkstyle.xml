@@ -5,12 +5,17 @@
 
 <module name="Checker">
 
+    <!-- File-Level Rules -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+    </module>
+
     <!-- Basic File Rules -->
     <module name="TreeWalker">
 
         <!-- COMMENTS -->
         <!-- Enforcing a space after the "//" -->
-        <module name-"RegexpSingleline">
+        <module name="RegexpSingleline">
             <property name="format" value="//[^ ]"/>
             <property name="message" value="Add a space after the '//'"/>
             <property name="ignoreComments" value="false"/>
@@ -23,15 +28,10 @@
         <module name="ParameterName"/>
 
         <!-- CODE QUALITY -->
-        <module name="Unused Imports"/>
+        <module name="UnusedImports"/>
         <module name="EmptyBlock"/>
         <module name="NeedBraces"/>
-
-        <!-- BASIC READABILITY -->
-        <module name="LineLength">
-            <property name="max" value="120"/>
-        </module>
-
+        
     </module>
     
 </module>

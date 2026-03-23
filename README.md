@@ -124,7 +124,7 @@ Explains how logging is implemented, required logging patterns, and CI enforceme
 
 This project uses Checkstyle and Spotless to maintain consistent code style.
 
-See: `documentation/code-quality.md`
+📘 [`documentation/code-quality.md`](./documentation/code-quality.md)
 
 
 ### GitHub Workflows & Dependency Management
