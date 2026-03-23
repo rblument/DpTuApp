@@ -159,6 +159,10 @@ public class TutoringSession {
     }
 
     public PendingTask getCurrentTask() {
+        if (tasks == null || tasks.isEmpty()) {
+            log.warn("Session {} has no current tasks", userId);
+            return null;
+        }
         return tasks.get(0);
     }
 
@@ -185,6 +189,7 @@ public class TutoringSession {
         tasks.removeIf(task -> task.getTask().getId() == taskId);
         log.debug("Session {} removed task with id={}", userId, taskId);
     }
+
 
     public Mode getMode() {
         return mode;

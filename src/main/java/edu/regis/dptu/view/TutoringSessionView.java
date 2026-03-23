@@ -25,6 +25,7 @@ import edu.regis.dptu.svc.ServerRequestType;
 import edu.regis.dptu.svc.SvcFacade;
 import edu.regis.dptu.svc.TutorReply;
 import edu.regis.dptu.svc.TutorSvc;
+import edu.regis.dptu.model.PendingTask;
 
 /**
  * Displays a tutoring session (the top-level GUI view for the application). Integrates views and
@@ -106,11 +107,20 @@ public class TutoringSessionView extends GPanel {
                             String token = model.getSecurityToken();
 
                             // TaskId comes from the current task in session
-                            if (model.getTasks().isEmpty()) {
+                            PendingTask currentTask = model.getCurrentTask();
+                            if (currentTask == null || currentTask.getTask() == null) {
+                                log.warn("No current task available in session; cannot send CompletedTask);");
+                                return;
+                            }
+
+                            /**
+                             * if (model.getTasks().isEmpty()) {
                                 log.warn(
                                         "No current task available/no problem in session; cannot send CompletedTask");
                                 return;
                             }
+                             */
+
 
                             int taskId = model.getProblem().getTaskId();
                             if (taskId < 0) {

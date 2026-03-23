@@ -29,6 +29,8 @@ import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
+import edu.regis.dptu.model.Task;
+import edu.regis.dptu.model.PendingTask;
 
 public class SeeOneAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(SeeOneAction.class);
@@ -84,6 +86,24 @@ public class SeeOneAction extends DpTuGuiAction {
 
             TutoringSession ts = new TutoringSession(account, problem);
             ts.setMode(Mode.SEE_ONE);
+            
+            int taskId = problem.getTaskId();
+            if (taskId < 0) {
+                log.warn("SEE_ONE session created with invalid problem.taskId={}", taskId);
+            } else {
+                Task task = new Task(taskId);
+                task.setProblem(problem);
+                PendingTask pendingTask = new PendingTask(task);
+                ts.addTask(pendingTask);
+                /**
+                 * If some later code expects the PendingTask to also have a current step we might 
+                 * need smth like this:
+                 * if (task.getCurrentStep() != null) {
+                    pendingTask.setCurrentStep(new PendingStep(task.getCurrentStep()));
+                    }
+                 */
+                log.info("Initialized SEE_ONE session with PendingTask taskId={}", taskId);
+            }
 
             SplashFrame.instance().selectLessonScreen(ts);
 

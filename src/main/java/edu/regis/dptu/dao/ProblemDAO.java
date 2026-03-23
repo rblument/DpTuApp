@@ -104,7 +104,10 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 problem.setTitle(rs.getString(3));
                 problem.setDescription(rs.getString(4));
 
-                log.debug("Problem retrieved successfully for kind={}", kind);
+                int taskId = retrieveTaskIdForProblem(problem.getId(), conn);
+                problem.setTaskId(taskId);
+
+                log.debug("Problem retrieved successfully for kind={}, taskId={}", kind, taskId);
                 return problem;
             } else {
                 log.warn("No problem found for kind={}", kind);
@@ -179,6 +182,44 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
+        }
+    }
+
+    /**
+     * Retrieve the TaskId for the Task that represents the given Problem.
+     *
+     * @param problemId the id of the problem
+     * @param conn open database connection
+     * @return the task id, or -1 if no matching task exists
+     * @throws NonRecoverableException if the query fails
+     */
+    private int retrieveTaskIdForProblem(int problemId, Connection conn)
+            throws NonRecoverableException {
+        final String sql = "SELECT TaskId FROM Task WHERE Kind = ? AND KindId = ?";
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, "PROBLEM");
+            stmt.setInt(2, problemId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int taskId = rs.getInt(1);
+                log.debug("Found taskId={} for problemId={}", taskId, problemId);
+                return taskId;
+            }
+
+            log.warn("No Task found for problemId={}", problemId);
+            return -1;
+
+        } catch (SQLException e) {
+            log.error("SQLException retrieving taskId for problemId={}", problemId, e);
+            throw new NonRecoverableException("ProblemDAO-ERR-taskLookup " + e.toString(), e);
+        } finally {
+            close(stmt);
         }
     }
 }
