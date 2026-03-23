@@ -206,6 +206,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 };
 
         table.setAutoCreateRowSorter(false);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // Set custom header renderer to center-align header text
         final JTableHeader header = table.getTableHeader();
@@ -248,6 +249,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
 
         // Wrap table in scroll pane for overflow
         sp = new JScrollPane(table);
+        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
 
     /** Adds components to this panel using GridBagLayout constraints. */
@@ -258,10 +261,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 0,
                 1,
                 1,
-                0.0,
-                0.0,
+                1.0,
+                1.0,
                 GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
+                GridBagConstraints.BOTH,
                 5,
                 5,
                 5,
