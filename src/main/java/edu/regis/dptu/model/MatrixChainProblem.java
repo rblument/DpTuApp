@@ -664,11 +664,35 @@ public class MatrixChainProblem extends Problem {
 
     public EXECUTION_STATE getExecutionState() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExecutionState'");
+        return executionState;
     }
 
     public void prettyPrint() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'prettyPrint'");
+        log.info("--- MatrixChainProblem State ---");
+        log.info("ExecutionState: {}", executionState);
+        log.info("Current Line #: {}", nextLineNumber);
+        log.info("i: {}", variables.get("i"));
+        log.info("j: {}", variables.get("j"));
+        log.info("k: {}", variables.get("k"));
+        log.info("c: {}", variables.get("c"));
+        log.info("n: {}", variables.get("n"));
+
+        int n = (int) variables.get("n");
+        int[][] m = (int[][]) variables.get("m");
+
+        log.info("DP Table (m):");
+        StringBuilder header = new StringBuilder("     ");
+        for (int j = 0; j < n; j++) header.append(String.format("%6d", j));
+        log.info(header.toString());
+
+        for (int i = 0; i < n; i++) {
+            StringBuilder row = new StringBuilder(String.format("%4d |", i));
+            for (int j = 0; j < n; j++) {
+                row.append(String.format("%6s", m[i][j] == -1 ? "." : m[i][j]));
+            }
+            log.info(row.toString());
+        }
+        log.info("--------------------------------");
     }
 }
