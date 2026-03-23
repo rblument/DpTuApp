@@ -190,7 +190,6 @@ public class TutoringSession {
         log.debug("Session {} removed task with id={}", userId, taskId);
     }
 
-
     public Mode getMode() {
         return mode;
     }
