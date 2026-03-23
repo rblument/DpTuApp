@@ -89,10 +89,24 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             ProblemKind pKind = model.getType();
             switch (pKind) {
                 case MATRIX_CHAIN:
-                    // TODO
+                    // TODO 
+                    int n = (int) model.getVariableObject("n");
+                    
+                    //build string of n characters to use as axis labels (A, B, C,...
+                    
+                    StringBuilder matrixLabels = new StringBuilder();
+                    for (int idx = 0; idx < n; idx++){
+                        matrixLabels.append((char) ('A'+idx));
+                    }
+                    String labelStr = matrixLabels.toString();
+                    updateStrings(labelStr, labelStr);
                     break;
                 case KNAPSACK_0_1:
                     // TODO
+                    // knapsackproblem class not implemented yet
+                    log.warn("SubproblemTableView: KNAPSACK_0_1 is not yet"
+                            + "supported.");
+                    setVisible(false);
                     break;
                 default: // i.e. LCS_PROBLEM
                     String s1 = ((LCSProblem) model).getX();
