@@ -10,7 +10,7 @@
 
         <!-- COMMENTS -->
         <!-- Enforcing a space after the "//" -->
-        <module name-"RegexpSingleline">
+        <module name="RegexpSingleline">
             <property name="format" value="//[^ ]"/>
             <property name="message" value="Add a space after the '//'"/>
             <property name="ignoreComments" value="false"/>
