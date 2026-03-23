@@ -3,9 +3,8 @@
 
 <!-- Status Badges -->
 
-[![Build](https://github.com/rblument/DpTuApp/actions/workflows/pr-build.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/pr-build.yml)
-[![Tests](https://github.com/rblument/DpTuApp/actions/workflows/test.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/test.yml)
-[![Coverage](./.github/badges/jacoco.svg)]([./.github/badges/jacoco.svg](https://github.com/rblument/DpTuApp/actions/workflows/test.yml))
+[![Format Build Test](https://github.com/rblument/DpTuApp/actions/workflows/format-build-test.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/format-build-test.yml)
+[![Coverage](./.github/badges/jacoco.svg)](https://github.com/rblument/DpTuApp/actions/workflows/format-build-test.yml)
 
 DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designed to help students learn and practice Dynamic Programming (DP) concepts and algorithms. It provides a step-by-step visual environment for specific DP problems, tracks student progress, and aims to adapt to individual learning needs.
 
@@ -141,7 +140,7 @@ These documents define required development practices and are enforced by reposi
 
 When contributing, be mindful to format the code before pushing it to GitHub. You can do this by running `mvn spotless:apply`. A plugin defined in [`pom.xml`](./pom.xml) controls the formatting of the project. The formatting keeps the code consistent for others to read, helping code readability and maintenance.
 
-If you forget to format the code, be mindful that a GitHub workflow will do this for you in [`.github/workflows/format-code.yml`](./.github/workflows/format-code.yml). It should only affect you when pushing multiple times without running it.
+If you forget to format the code, be mindful that the consolidated CI workflow [`.github/workflows/format-build-test.yml`](./.github/workflows/format-build-test.yml) applies formatting on same-repository pull requests and may push an auto-format commit.
 
 A future contribution could be how to configure Netbeans to run this automatically in a pre-commit hook (but as of Sept 2025, Netbeans does not support pre-commit hooks). 
 
