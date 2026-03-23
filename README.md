@@ -61,7 +61,7 @@ This project was developed as part of the CS493_X01 Senior Capstone course.
    `cd DpTuApp`
 
 2. Database Setup:
-   - Ensure your MySQL server is running (all instructions after this can be accomlished by running the [`setup_DpTuDB.sql`](./database/setup_DpTuDB.sql) script).
+   - Ensure your MySQL server is running (all instructions after this can be accomplished by running the [`setup_DpTuDB.sql`](./database/setup_DpTuDB.sql) script).
    - Create a database (`DpTuDB`).
    - Create a MySQL user (e.g., `DpTu2023`) with privileges on the database.
    - Create the database tables.
