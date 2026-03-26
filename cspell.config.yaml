@@ -26,7 +26,6 @@ files:
   - .github/**/*.yml
   - .github/**/*.yaml
   - src/main/resources/Msgs.properties
-  - src/main/java/resources/Msgs.properties
 
 ignoreRegExpList:
   - /edu\.regis\.dptu\.[A-Za-z0-9_.]+/
