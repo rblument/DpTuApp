@@ -1,0 +1,31 @@
+version: "0.2"
+language: en-US
+allowCompoundWords: true
+useGitignore: true
+
+dictionaryDefinitions:
+  - name: dptu-terms
+    path: ./.cspell/project-words.txt
+    addWords: true
+
+dictionaries:
+  - dptu-terms
+  - softwareTerms
+
+ignorePaths:
+  - target/**
+  - .git/**
+  - documentation/DatabaseDiagram.erdplus
+  - database/**/*.png
+  - documentation/**/*.png
+  - documentation/**/*.svg
+
+files:
+  - README.md
+  - documentation/**/*.md
+  - .github/**/*.yml
+  - .github/**/*.yaml
+  - src/main/resources/Msgs.properties
+
+ignoreRegExpList:
+  - /edu\.regis\.dptu\.[A-Za-z0-9_.]+/
