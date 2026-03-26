@@ -159,6 +159,10 @@ public class TutoringSession {
     }
 
     public PendingTask getCurrentTask() {
+        if (tasks == null || tasks.isEmpty()) {
+            log.warn("Session {} has no current tasks", userId);
+            return null;
+        }
         return tasks.get(0);
     }
 
