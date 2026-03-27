@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Problem;
+import edu.regis.dptu.util.ResourceMgr;
 
 public class SeeOneView extends GPanel implements ModeView {
     private static final Logger log = LoggerFactory.getLogger(SeeOneView.class);
@@ -45,8 +46,6 @@ public class SeeOneView extends GPanel implements ModeView {
     public void updateView(Problem currentProblem) {
         SeeOneView.log.info("SeeOneView updating view");
 
-        problemInputView.setModel(currentProblem);
-
         revalidate();
         repaint();
     }
@@ -67,7 +66,7 @@ public class SeeOneView extends GPanel implements ModeView {
     private void initializeComponents() {
         SeeOneView.log.info("SeeOneView initializing components");
         variablesView = new VariablesView();
-        subproblemView = new JLabel("Subproblem View");
+        subproblemView = new JLabel(ResourceMgr.instance().string("seeOne.subproblemView.title"));
 
         problemInputView =
                 new ProblemInputView(

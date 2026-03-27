@@ -151,9 +151,9 @@ public class StepCompletionView extends GPanel {
         answerField.setFont(ReusableFonts.instance().getFont("AnswerField"));
 
         // Action buttons
-        checkButton = new JButton(new CheckAnswerAction("Check Answer"));
-        newExampleButton = new JButton(new NewExampleAction("New Example"));
-        hintButton = new JButton(new RequestHintAction("Hint"));
+        checkButton = new JButton(CheckAnswerAction.instance());
+        newExampleButton = new JButton(NewExampleAction.instance());
+        hintButton = new JButton(RequestHintAction.instance());
 
         // Status and hint labels
         statusLabel = new JLabel();

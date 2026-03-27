@@ -23,9 +23,12 @@ import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Mode;
+import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TutoringSession;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
 
@@ -44,7 +47,7 @@ public class SeeOneAction extends DpTuGuiAction {
         super(Mode.SEE_ONE.title());
         this.problemDAO = new ProblemDAO();
 
-        putValue(SHORT_DESCRIPTION, "Start a teaching session");
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.seeOne.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
     }
 
@@ -84,6 +87,22 @@ public class SeeOneAction extends DpTuGuiAction {
             TutoringSession ts = new TutoringSession(account, problem);
             ts.setMode(Mode.SEE_ONE);
 
+            int taskId = problem.getTaskId();
+            if (taskId < 0) {
+                log.warn("SEE_ONE session created with invalid problem.taskId={}", taskId);
+            } else {
+                Task task = new Task(taskId);
+                task.setProblem(problem);
+                PendingTask pendingTask = new PendingTask(task);
+                ts.addTask(pendingTask);
+                /**
+                 * If some later code expects the PendingTask to also have a current step we might
+                 * need smth like this: if (task.getCurrentStep() != null) {
+                 * pendingTask.setCurrentStep(new PendingStep(task.getCurrentStep())); }
+                 */
+                log.info("Initialized SEE_ONE session with PendingTask taskId={}", taskId);
+            }
+
             SplashFrame.instance().selectLessonScreen(ts);
 
             log.debug("SEE_ONE session started successfully");
@@ -94,7 +113,10 @@ public class SeeOneAction extends DpTuGuiAction {
                     kind,
                     account != null ? account.getUserId() : null,
                     e);
-            SplashFrame.instance().showError("Error", "Failed to load problem");
+            SplashFrame.instance()
+                    .showError(
+                            ResourceMgr.instance().string("dialog.title.error"),
+                            ResourceMgr.instance().string("error.failedToLoadProblem"));
         }
     }
 }

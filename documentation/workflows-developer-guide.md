@@ -55,13 +55,14 @@ Many DpTu workflows can also be run manually using **workflow_dispatch**.
 Typical pull request lifecycle:
 
 1. Developer opens PR
-2. Formatting workflow may auto-format code
-3. Logging enforcement runs
+2. Consolidated PR validation workflow evaluates formatting first
+3. Same-repository PRs may receive an auto-format commit if Spotless finds changes
 4. Project compilation is validated
-5. Tests run
-6. Security analysis runs (CodeQL)
-7. Approver reviews PR
-8. Merge allowed if checks pass
+5. Tests run and coverage is reported
+6. Logging enforcement runs
+7. Security analysis runs (CodeQL)
+8. Approver reviews PR
+9. Merge allowed if checks pass
 
 On push to main/development:
 
@@ -79,132 +80,80 @@ Separately:
 
 ---
 
-## 1. PR Build Validation (`pr-build.yml`)
+## 1. Format Build Test (`format-build-test.yml`)
 
 ### Purpose
 
-Ensures the project **compiles successfully** before merging. This prevents broken code from entering the main branches.
+Consolidates pull request and branch validation into a single ordered workflow with explicit stages: format, build, and test.
 
 ### When It Runs
 
-* Pull request targetting: `development` or `main` branches.
+* Push to `development` or `main`
+* Pull requests targeting `development` or `main`
 * Manual trigger
 
 ### What It Does
 
-1. Checks out repository code
-2. Sets up JDK 17
-3. Caches Maven dependencies
-4. Runs:
+1. Runs a `format` job first.
+2. On same-repository pull requests, runs:
 
     ```shell
-    mvn compile
+    mvn -B spotless:apply
     ```
+
+   If formatting changes are required, the workflow commits and pushes them. A new workflow run then validates the updated branch.
+
+3. On push/manual runs, checks formatting with:
+
+    ```shell
+    mvn -B spotless:check
+    ```
+
+4. On fork pull requests, if Spotless would change files, the workflow fails and instructs the contributor to run Spotless locally.
+5. Runs a `build` job after formatting succeeds:
+
+    ```shell
+    mvn -B compile
+    ```
+
+6. Runs a `test` job after build succeeds:
+
+    ```shell
+    mvn -B test jacoco:report
+    ```
+
+7. Generates a coverage summary snapshot and compares PR coverage against stored `development` baseline.
+8. Updates coverage summary comments and run summaries.
+9. Generates and, on `development` pushes, commits updated coverage badges.
+10. Publishes JUnit test reports.
 
 ### What Causes Failure
 
+* Formatting violations on push/manual runs
+* Formatting violations on fork pull requests
 * Compilation errors
 * Missing dependencies
 * Broken imports
 * Syntax errors
-
-### How to Fix Failures
-
-Compile locally before pushing:
-
-```shell
-mvn compile
-```
-
-Resolve all compiler errors, commit, and push again.
-
----
-
-## 2. Run Tests (`test.yml`)
-
-### Purpose
-
-Executes all automated tests and publishes results. This ensures functional correctness and prevents regressions.
-
-### When It Runs
-
-* Push to: `development` or `main` branches.
-* Pull requests to those branches
-* Manual trigger
-
-### What It Does
-
-1. Checks out code
-2. Sets up JDK 17
-3. Caches Maven dependencies
-4. Runs:
-
-    ```shell
-    mvn test
-    ```
-
-5. Publishes JUnit test reports to GitHub UI
-
-### What Causes Failure
-
 * Failing tests
 * Runtime exceptions in tests
-* Test configuration errors
+* Coverage processing/report generation errors
 
 ### How to Fix Failures
 
-Run locally:
-
-```shell
-mvn test
-```
-
-Fix failing tests or underlying logic.
-
----
-
-## 3. Code Formatting (`format-code.yml`)
-
-### Purpose
-
-Automatically formats code using [**Spotless**](https://github.com/diffplug/spotless) to enforce consistent style. This prevents style-related review noise.
-
-### When It Runs
-
-* Pull request opened or updated
-* Manual trigger
-
-### What It Does
-
-1. Checks out PR branch
-2. Sets up JDK 17
-3. Caches Maven dependencies
-4. Runs:
-
-    ```shell
-    mvn spotless:apply
-    ```
-
-5. If formatting changes were made:
-
-   * Commits changes automatically
-   * Pushes back to the PR branch
-
-### Developer Impact
-
-You may see new commits appear automatically in your PR and these commits bypass other workflows. This is expected.
-
-### Best Practice
-
-Format locally before pushing:
+Run locally before pushing:
 
 ```shell
 mvn spotless:apply
+mvn compile
+mvn test jacoco:report
 ```
+
+Resolve formatting, compile, or test failures, commit, and push again.
 
 ---
 
-## 4. Logging Standards Enforcement (`logging-check.yml`)
+## 2. Logging Standards Enforcement (`logging-check.yml`)
 
 ### Purpose
 
@@ -217,6 +166,8 @@ Enforces repository logging rules. This workflow implements the policies defined
 * Manual trigger
 
 ### What It Enforces
+
+Scope note: Logging checks are run against `*.java` source files only (non-test Java sources). Resource files such as `.properties`, `.xml`, images, and text files are not scanned by this workflow.
 
 #### Hard Failures (Build Stops)
 
@@ -234,6 +185,14 @@ These patterns are forbidden:
 
 * Classes with no logging
 * Logger declared but never used
+* Empty catch blocks
+* `log.error` calls without exception context
+
+### Pull Request Delta Comment
+
+On pull requests, the workflow compares current logging findings against `development` and posts/updates a sticky PR comment listing only **newly introduced violations**.
+
+This keeps legacy findings visible but focuses reviewer attention on what the PR added.
 
 ### Test Code Exemptions
 
@@ -250,7 +209,7 @@ Follow the logging developer guide:
 
 ---
 
-## 5. CodeQL Security Analysis (`codeql.yml`)
+## 3. CodeQL Security Analysis (`codeql.yml`)
 
 ### Purpose
 
@@ -291,7 +250,7 @@ Do not ignore alerts without review.
 
 ---
 
-## 6. Dependabot (`dependabot.yml`)
+## 4. Dependabot (`dependabot.yml`)
 
 ### Purpose
 
@@ -356,9 +315,8 @@ This is useful for:
 
 | Workflow                 | Fix Location               |
 | ------------------------ | -------------------------- |
+| Format/Build/Test fails  | Formatting, compile, tests |
 | Build fails              | Compilation errors         |
-| Tests fail               | Application logic or tests |
-| Formatting changed       | Accept auto-format commit  |
 | Logging enforcement      | Update logging usage       |
 | CodeQL alerts            | Fix security issue         |
 | Dependabot PR tests fail | Dependency compatibility   |
@@ -372,9 +330,9 @@ Never merge failing checks.
 Before pushing code:
 
 ```shell
-mvn compile
-mvn test
 mvn spotless:apply
+mvn compile
+mvn test jacoco:report
 ```
 
 Also verify:
@@ -418,4 +376,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 15 Feb 2026 by Harrison Sherwin
+**Last reviewed:** 18 March 2026 by Harrison Sherwin

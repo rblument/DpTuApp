@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+
+    <!-- File-Level Rules -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+    </module>
+
+    <!-- Basic File Rules -->
+    <module name="TreeWalker">
+
+        <!-- COMMENTS -->
+        <!-- Enforcing a space after the "//" -->
+        <module name="RegexpSingleline">
+            <property name="format" value="//[^ ]"/>
+            <property name="message" value="Add a space after the '//'"/>
+            <property name="ignoreComments" value="false"/>
+        </module>
+
+        <!-- NAMING CONVENTIONS-->
+        <module name="MethodName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="ParameterName"/>
+
+        <!-- CODE QUALITY -->
+        <module name="UnusedImports"/>
+        <module name="EmptyBlock"/>
+        <module name="NeedBraces"/>
+        
+    </module>
+    
+</module>

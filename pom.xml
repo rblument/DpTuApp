@@ -13,14 +13,6 @@
         <exec.mainClass>edu.regis.dptu.DpTuApp</exec.mainClass>
     </properties>
 
-    <repositories>
-        <repository>
-          <id>CronApp</id>
-          <name>CronApp Repository</name>
-          <url>	https://artifactory.cronapp.io/public-release/</url>
-        </repository>
-    </repositories>
-
     <build>
         <resources>
             <resource>
@@ -33,13 +25,13 @@
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>3.5.5</version>
             </plugin>
 
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.4.0</version>
                 <configuration>
                     <java>
                         <googleJavaFormat>
@@ -54,12 +46,6 @@
                             <include>src/test/java/**/*.java</include>
                         </includes>
                     </java>
-                    <xml>
-                        <indent>4</indent>
-                        <includes>
-                            <include>pom.xml</include>
-                        </includes>
-                    </xml>
                 </configuration>
                 <executions>
                     <execution>
@@ -119,7 +105,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.21.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>

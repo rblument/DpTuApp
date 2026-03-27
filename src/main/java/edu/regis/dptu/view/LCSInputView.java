@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * LCSInputView provides two input fields and a submit button for entering strings in the LCS
@@ -53,7 +54,7 @@ public class LCSInputView extends JPanel {
         inputField1 = new JTextField(15);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(new JLabel("String 1:"), gbc);
+        add(new JLabel(ResourceMgr.instance().string("lcsInput.label.string1")), gbc);
         gbc.gridx = 1;
         add(inputField1, gbc);
 
@@ -61,12 +62,12 @@ public class LCSInputView extends JPanel {
         inputField2 = new JTextField(15);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("String 2:"), gbc);
+        add(new JLabel(ResourceMgr.instance().string("lcsInput.label.string2")), gbc);
         gbc.gridx = 1;
         add(inputField2, gbc);
 
         // Submit button positioned at bottom right
-        submitButton = new JButton("Submit");
+        submitButton = new JButton(ResourceMgr.instance().string("lcsInput.button.submit"));
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.NORTHEAST;
@@ -124,8 +125,12 @@ public class LCSInputView extends JPanel {
             LCSProblem newProblem = new LCSProblem(string1, string2);
             submitListener.problemUpdated(newProblem);
         } else {
-            String msg = "Strings must contain at least one letter, number, or symbol.";
-            JOptionPane.showMessageDialog(this, msg, "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            String msg = ResourceMgr.instance().string("lcsInput.error.invalidInput");
+            JOptionPane.showMessageDialog(
+                    this,
+                    msg,
+                    ResourceMgr.instance().string("dialog.title.invalidInput"),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 

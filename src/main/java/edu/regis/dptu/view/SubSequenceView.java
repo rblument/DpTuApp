@@ -33,14 +33,16 @@ import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 import edu.regis.dptu.util.ReusableFonts;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
- * This is the Subsequence view for the TutoringSession View. The title, words, and button are
- * displayed. Both words entered to find LCS are shown with the length of each. When the button is
- * pressed, it will display a step-by-step process to finding the LCS and highlight them
- * accordingly.
+ * This is the Subsequence view for the TutoringSession View.
  *
- * @author Sofia Reyes
+ * <p>Displays the current LCS inputs (x, y) and renders a canvas that highlights characters
+ * belonging to the LCS as the alg executes. Highlighting is driven by model updates
+ * (ProblemListener), specifically when BACKTRACKING
+ *
+ * @author Sofia Reyes Most recent updates Feb 15, 2026 Lindsey C
  */
 class SubSequenceView extends JPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubSequenceView.class);
@@ -51,6 +53,10 @@ class SubSequenceView extends JPanel implements ProblemListener {
     private static final int MAX_CANVAS_WIDTH = 4000;
     private static final int CANV_HORIZONTAL_PADDING = 40;
     private static final int DEFAULT_CANV_HEIGHT = 300;
+    // cache the last displayed words so we only reset the canvas when inputs truly change
+    // prevents per-step model updates from clearing previously highlighted characters
+    private String lastX = null;
+    private String lastY = null;
 
     private JLabel titleLabel, lengthLabel1, lengthLabel2, wordLabel1, wordLabel2;
     private JButton stepButton;
@@ -74,7 +80,7 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * @param word2
      */
     private void initializeComponents() {
-        titleLabel = new JLabel("Subsequence Highlighter");
+        titleLabel = new JLabel(ResourceMgr.instance().string("subSequence.title"));
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setFont(ReusableFonts.instance().getFont("18ptBold"));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -84,9 +90,6 @@ class SubSequenceView extends JPanel implements ProblemListener {
 
         lengthLabel2 = new JLabel();
         lengthLabel2.setFont(ReusableFonts.instance().getFont("16ptLabel"));
-
-        stepButton = new JButton("Step LCS");
-        stepButton.addActionListener(e -> stepThroughLCS());
 
         canvas = new SubSequenceCanvasView("word1", "word2");
     }
@@ -134,31 +137,12 @@ class SubSequenceView extends JPanel implements ProblemListener {
         canvasScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         canvasScrollPane.getViewport().setBackground(Color.WHITE);
-        // Button added
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(stepButton);
+        // removed old "Step LCS" button. Highlighting is now driven by the model during
+        // execution/backtracking (ProblemListener updates), not manual stepping in this view
 
         add(topPanel, BorderLayout.NORTH);
         add(canvasScrollPane, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
     }
-
-    // Button trigger
-    private void stepThroughLCS() {
-        canvas.highlightLCS();
-    }
-
-    //    public void setModel(Problem currentProblem) {
-    //        if (currentProblem != null && currentProblem instanceof LCSProblem) {
-    //            this.updateWords(
-    //                    ((LCSProblem) currentProblem).getX(), ((LCSProblem)
-    // currentProblem).getY());
-    //
-    //            setVisible(true);
-    //        } else if (currentProblem == null) {
-    //            setVisible(false);
-    //        }
-    //    }
 
     /**
      * Updates the displayed input strings and lengths when new inputs are submitted.
@@ -166,9 +150,10 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * <p>Changes (April 17, 2025): - Dynamically updates all labels and canvas contents. - Forces
      * revalidation and repaint to ensure view reflects new inputs.
      *
-     * <p>TODO: In the future, improve resizing to dynamically fit very long words.
+     * <p>Note: Updating the inputs resets the canvas highlight state. During normal step execution
+     * the inputs do not change, so highlights persist across model updates
      *
-     * @author EverettCV
+     * @author EverettCV Recently updated 2/15/2026 Lindsey C
      * @param word1 Updated first string input
      * @param word2 Updated second string input
      */
@@ -177,14 +162,14 @@ class SubSequenceView extends JPanel implements ProblemListener {
         if (word2 == null) word2 = "";
 
         // Update lengths
-        lengthLabel1.setText("n=" + word1.length());
-        lengthLabel2.setText("m=" + word2.length());
+        lengthLabel1.setText(ResourceMgr.instance().string("subSequence.length.n", word1.length()));
+        lengthLabel2.setText(ResourceMgr.instance().string("subSequence.length.m", word2.length()));
 
         String compactOne = compactWord(word1);
         String compactTwo = compactWord(word2);
 
-        wordLabel1.setText("x=" + compactOne);
-        wordLabel2.setText("y=" + compactTwo);
+        wordLabel1.setText(ResourceMgr.instance().string("subSequence.word.x", compactOne));
+        wordLabel2.setText(ResourceMgr.instance().string("subSequence.word.y", compactTwo));
 
         wordLabel1.setToolTipText(word1.isEmpty() ? null : word1);
         wordLabel2.setToolTipText(word2.isEmpty() ? null : word2);
@@ -204,8 +189,9 @@ class SubSequenceView extends JPanel implements ProblemListener {
         if (canvas.getPreferredSize() != null) desiredHeight = canvas.getPreferredSize().height;
 
         canvas.setPreferredSize(new Dimension(desiredWidth, desiredHeight));
-        canvas.revalidate();
-        canvas.repaint();
+        // Parent revalidate/repaint at the end will refresh the canvas; avoid redundant calls here.
+        // canvas.revalidate();
+        // canvas.repaint();
 
         if (canvasScrollPane != null) canvasScrollPane.revalidate();
 
@@ -222,6 +208,10 @@ class SubSequenceView extends JPanel implements ProblemListener {
     public void setModel(Problem model) {
 
         this.model = model;
+        // Reset cached input tracking when we bind a new model so the first updateView()
+        // call refreshes labels/canvas.
+        lastX = null;
+        lastY = null;
 
         if (this.model != null) {
 
@@ -257,7 +247,19 @@ class SubSequenceView extends JPanel implements ProblemListener {
      * extract x and y strings. Push those strings into updateWords(), which updates the labels and
      * canvas. For non-LCS problems, log but skip the update.
      *
-     * @author hsherwin@regis.edu
+     * <p>Two independent concerns happen here:
+     *
+     * <ul>
+     *   <li>If x/y changed, update labels + reset canvas highlight state via updateWords().
+     *   <li>
+     *   <li>If the model reports a committed LCS match (during backtracking), apply a persistent
+     *       highlight to the canvas at the reported indices.
+     *   <li>
+     *       <ul>
+     *         <p>We cache lastX/lastY so per-step model updates do not repeatedly reset the canvas
+     *         (which would erase previously highlighted chars)
+     *
+     * @author hsherwin@regis.edu Last updated 2/15/2026 Lindsey C
      */
     private void updateView() {
         if (model instanceof LCSProblem lcs) {
@@ -265,8 +267,24 @@ class SubSequenceView extends JPanel implements ProblemListener {
             String x = (lcs.getX() == null) ? "" : lcs.getX();
             String y = (lcs.getY() == null) ? "" : lcs.getY();
 
-            // Update the view with the current words.
-            updateWords(x, y);
+            boolean wordsChanged = !x.equals(lastX) || !y.equals(lastY);
+            if (wordsChanged) {
+                log.debug("SubSequenceView: words changed; updating labels/canvas");
+                updateWords(x, y);
+                lastX = x;
+                lastY = y;
+            }
+
+            // Apply the most recently committed solution match from the model (if any).
+            // Indices are 0-based string positions (not DP table coordinates).
+            int mx = lcs.getLastMatchX();
+            int my = lcs.getLastMatchY();
+            log.debug("SubSequenceView: lastMatchX={}, lastMatchY={}", mx, my);
+
+            if (mx >= 0 && my >= 0) {
+                log.debug("SubSequenceView: applying highlightAt({}, {})", mx, my);
+                canvas.highlightAt(mx, my);
+            }
         } else if (model != null) {
             log.debug("SubSequenceView: model is not LCSProblem; " + "no word update performed");
         }

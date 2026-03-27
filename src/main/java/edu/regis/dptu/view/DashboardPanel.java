@@ -14,10 +14,11 @@
  *   This class is only responsible for presentation. The progress bars are
  *   made in the CustomProgressBar.java class in util
  *
- *  To Do: the progress bar values are currently hardcoded, so that will need to be fixed!
- *
  * Last Edited: 1/29/2026 Lindsey C
  */
+
+// TODO: the progress bar values are currently hardcoded, so that will need to be fixed!
+
 package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
@@ -46,6 +47,7 @@ import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.util.CustomProgressBar;
 import edu.regis.dptu.util.ReusableFonts;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.act.DoOneAction;
 import edu.regis.dptu.view.act.SeeOneAction;
 import edu.regis.dptu.view.act.TeachOneAction;
@@ -85,7 +87,8 @@ public class DashboardPanel extends GPanel {
     /* Greets user by name in JOptionPanne and dashboard header. */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-        welcomeLabel.setText("Welcome, " + firstName + "!");
+        welcomeLabel.setText(
+                String.format(ResourceMgr.instance().string("dashboard.welcome"), firstName));
         displayWelcomeDialog();
     }
 
@@ -111,15 +114,18 @@ public class DashboardPanel extends GPanel {
         setBackground(BACKGROUND); // Dark blue background
 
         // Top bar components
-        settingsButton = new JButton("Settings");
+        settingsButton = new JButton(ResourceMgr.instance().string("dashboard.button.settings"));
         settingsButton.setFocusPainted(false);
 
-        welcomeLabel = new JLabel("Welcome, " + firstName + "!");
+        welcomeLabel =
+                new JLabel(
+                        String.format(
+                                ResourceMgr.instance().string("dashboard.welcome"), firstName));
         welcomeLabel.setForeground(FILL);
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(ReusableFonts.instance().getFont("Header"));
 
-        logOutButton = new JButton("Log Out");
+        logOutButton = new JButton(ResourceMgr.instance().string("dashboard.button.logOut"));
         logOutButton.setFocusPainted(false);
         logOutButton.addActionListener(e -> logOutButtonActionPerformed(e));
 
@@ -153,28 +159,31 @@ public class DashboardPanel extends GPanel {
         teachOneButton.setFocusPainted(false);
 
         // Stats Buttons
-        seeOneStatsButton = new JButton("View Stats");
+        seeOneStatsButton =
+                new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
                 e -> {
                     log.info("See One Stats button pressed");
-                    // popup window code will go there later
+                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.seeOne.title"));
                 });
 
-        doOneStatsButton = new JButton("View Stats");
+        doOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
                 e -> {
                     log.info("Do One Stats button pressed");
-                    // popup window code will go there later
+                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.doOne.title"));
                 });
 
-        teachOneStatsButton = new JButton("View Stats");
+        teachOneStatsButton =
+                new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
                 e -> {
                     log.info("Teach One Stats button pressed");
-                    // popup window code will go there later
+                    new StatsWindow(
+                            ResourceMgr.instance().string("dashboard.stats.teachOne.title"));
                 });
 
         // Apply scaffold level rules for which buttons are visible.
@@ -227,9 +236,7 @@ public class DashboardPanel extends GPanel {
 
         // Copyright footer
         JLabel copyright =
-                new JLabel(
-                        "(C) 2019-2025 Johanna and Richard Blumenthal. All Rights Reserved",
-                        SwingConstants.CENTER);
+                new JLabel(ResourceMgr.instance().string("app.copyright"), SwingConstants.CENTER);
         copyright.setForeground(FILL);
         copyright.setFont(ReusableFonts.instance().getFont("Copyright"));
         copyright.setBorder(new EmptyBorder(5, 0, 5, 0));
@@ -238,9 +245,14 @@ public class DashboardPanel extends GPanel {
 
     private void displayWelcomeDialog() {
         String welcomeMessage =
-                "Welcome, " + firstName + "! " + "Your session has successfully started.";
+                String.format(
+                        ResourceMgr.instance().string("dashboard.welcome.sessionStarted"),
+                        firstName);
         JOptionPane.showMessageDialog(
-                null, welcomeMessage, "Welcome", JOptionPane.INFORMATION_MESSAGE);
+                null,
+                welcomeMessage,
+                ResourceMgr.instance().string("dialog.title.welcome"),
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private JPanel createColumn(

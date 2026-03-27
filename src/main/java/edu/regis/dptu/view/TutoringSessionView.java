@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Mode;
+import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.svc.ClientRequest;
 import edu.regis.dptu.svc.ServerRequestType;
@@ -106,12 +107,18 @@ public class TutoringSessionView extends GPanel {
                             String token = model.getSecurityToken();
 
                             // TaskId comes from the current task in session
-                            if (model.getTasks().isEmpty()) {
+                            PendingTask currentTask = model.getCurrentTask();
+                            if (currentTask == null || currentTask.getTask() == null) {
                                 log.warn(
-                                        "No current task available/no problem in session; cannot send CompletedTask");
+                                        "No current task available in session; cannot send CompletedTask);");
                                 return;
                             }
 
+                            /**
+                             * if (model.getTasks().isEmpty()) { log.warn( "No current task
+                             * available/no problem in session; cannot send CompletedTask"); return;
+                             * }
+                             */
                             int taskId = model.getProblem().getTaskId();
                             if (taskId < 0) {
                                 log.warn(

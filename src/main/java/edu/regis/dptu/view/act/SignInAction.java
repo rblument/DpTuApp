@@ -34,6 +34,7 @@ import edu.regis.dptu.svc.ClientRequest;
 import edu.regis.dptu.svc.ServerRequestType;
 import edu.regis.dptu.svc.SvcFacade;
 import edu.regis.dptu.svc.TutorReply;
+import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.SplashFrame;
 
 /**
@@ -58,8 +59,8 @@ public class SignInAction extends DpTuGuiAction {
     }
 
     private SignInAction() {
-        super("Sign In");
-        putValue(SHORT_DESCRIPTION, "Sign-in to the tutor");
+        super(ResourceMgr.instance().string("action.signIn.name"));
+        putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.signIn.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
     }
 
@@ -97,13 +98,15 @@ public class SignInAction extends DpTuGuiAction {
 
                 break;
             case "InvalidPassword":
-                JOptionPane.showMessageDialog(null, "Authentication Error: " + "Invalid Password!");
+                JOptionPane.showMessageDialog(
+                        null, ResourceMgr.instance().string("auth.error.invalidPassword"));
                 break;
             case "UnknownUser":
-                JOptionPane.showMessageDialog(null, "Authentication Error: " + "Unknown User ID!");
+                JOptionPane.showMessageDialog(
+                        null, ResourceMgr.instance().string("auth.error.unknownUser"));
             default:
                 JOptionPane.showMessageDialog(
-                        null, "Unknown Error Occured, " + "Please try again!");
+                        null, ResourceMgr.instance().string("error.unknownTryAgain"));
         }
     }
 }

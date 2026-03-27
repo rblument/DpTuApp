@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 import edu.regis.dptu.util.ReusableFonts;
+import edu.regis.dptu.util.ResourceMgr;
 
 /**
  * A panel containing buttons and controls that allow a user to step forward and backward through
@@ -128,11 +129,13 @@ public class StepViewPanel extends GPanel implements ProblemListener {
 
     /** Create the child GUI components appearing in this panel. */
     private void initializeComponents() {
-        setBorder(BorderFactory.createTitledBorder("Algorithm Control"));
+        setBorder(
+                BorderFactory.createTitledBorder(
+                        ResourceMgr.instance().string("stepView.border.algorithmControl")));
         setBackground(PANEL_BACKGROUND);
 
-        stepBackButton = new JButton("Step Back");
-        stepBackButton.setToolTipText("Go back one step in the algorithm");
+        stepBackButton = new JButton(ResourceMgr.instance().string("stepView.button.stepBack"));
+        stepBackButton.setToolTipText(ResourceMgr.instance().string("stepView.tooltip.stepBack"));
         stepBackButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -154,10 +157,12 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                         }
                     }
                 });
-        stepBackButton.setEnabled(false);
+        stepBackButton.setEnabled(true);
 
-        stepForwardButton = new JButton("Step Forward");
-        stepForwardButton.setToolTipText("Advance one step in the algorithm");
+        stepForwardButton =
+                new JButton(ResourceMgr.instance().string("stepView.button.stepForward"));
+        stepForwardButton.setToolTipText(
+                ResourceMgr.instance().string("stepView.tooltip.stepForward"));
         stepForwardButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -173,8 +178,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 });
         stepForwardButton.setEnabled(false);
 
-        runStepsButton = new JButton("Run Steps");
-        runStepsButton.setToolTipText("Run multiple steps at once");
+        runStepsButton = new JButton(ResourceMgr.instance().string("stepView.button.runSteps"));
+        runStepsButton.setToolTipText(ResourceMgr.instance().string("stepView.tooltip.runSteps"));
         runStepsButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -191,8 +196,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 });
         runStepsButton.setEnabled(false);
 
-        resetButton = new JButton("Reset");
-        resetButton.setToolTipText("Reset algorithm to initial state");
+        resetButton = new JButton(ResourceMgr.instance().string("stepView.button.reset"));
+        resetButton.setToolTipText(ResourceMgr.instance().string("stepView.tooltip.reset"));
         resetButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -209,8 +214,8 @@ public class StepViewPanel extends GPanel implements ProblemListener {
                 });
         resetButton.setEnabled(false);
 
-        backtrackButton = new JButton("Backtrack");
-        backtrackButton.setToolTipText("Find the problem solution");
+        backtrackButton = new JButton(ResourceMgr.instance().string("stepView.button.backtrack"));
+        backtrackButton.setToolTipText(ResourceMgr.instance().string("stepView.tooltip.backtrack"));
         backtrackButton.addActionListener(
                 new ActionListener() {
                     @Override
@@ -230,7 +235,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         stepsSpinner = new JSpinner(spinnerModel);
         stepsSpinner.setPreferredSize(new Dimension(60, 25));
 
-        statusLabel = new JLabel("Ready");
+        statusLabel = new JLabel(ResourceMgr.instance().string("stepView.status.ready"));
         statusLabel.setFont(ReusableFonts.instance().getFont("StatusLabel"));
     }
 
@@ -238,7 +243,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
     private void layoutComponents() {
         JPanel spinnerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         spinnerPanel.setBackground(PANEL_BACKGROUND);
-        spinnerPanel.add(new JLabel("Steps:"));
+        spinnerPanel.add(new JLabel(ResourceMgr.instance().string("stepView.label.steps")));
         spinnerPanel.add(stepsSpinner);
 
         addc(
@@ -359,20 +364,22 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         backtrackButton.setEnabled(canBacktrack);
 
         if (!modelExists) {
-            statusLabel.setText("No model loaded");
+            statusLabel.setText(ResourceMgr.instance().string("stepView.status.noModel"));
             lastDisplayedLine = Integer.MIN_VALUE;
             return;
         }
 
         if (model.hasFinished()) {
-            statusLabel.setText("Finished!");
+            statusLabel.setText(ResourceMgr.instance().string("stepView.status.finished"));
             lastDisplayedLine = Integer.MIN_VALUE;
             return;
         }
 
         // Guard only if DEBUG is enabled (formatting work + getter calls)
         int displayNum = (model.getNextLineNumber() % model.getBacktrackingStartNum()) + 1;
-        statusLabel.setText(" Line: " + String.format("%2d", displayNum));
+        statusLabel.setText(
+                ResourceMgr.instance()
+                        .string("stepView.status.line", String.format("%2d", displayNum)));
 
         if (log.isDebugEnabled() && displayNum != lastDisplayedLine) {
             log.debug("StepViewPanel status updated: displayLine={}", displayNum);
