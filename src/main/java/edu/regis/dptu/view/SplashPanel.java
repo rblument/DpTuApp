@@ -14,7 +14,6 @@ package edu.regis.dptu.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 
 import javax.swing.BorderFactory;
@@ -30,8 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.User;
-import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.SHA_256;
 import edu.regis.dptu.view.act.NewUserAction;
 import edu.regis.dptu.view.act.SignInAction;

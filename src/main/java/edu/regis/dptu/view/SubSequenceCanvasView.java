@@ -12,7 +12,6 @@
  */
 package edu.regis.dptu.view;
 
-import edu.regis.dptu.util.ReusableFonts;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;

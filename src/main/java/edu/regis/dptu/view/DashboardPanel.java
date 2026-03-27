@@ -24,7 +24,6 @@ package edu.regis.dptu.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Arrays;
 
@@ -46,8 +45,8 @@ import edu.regis.dptu.model.ScaffoldLevel;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.util.CustomProgressBar;
-import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.view.act.DoOneAction;
 import edu.regis.dptu.view.act.SeeOneAction;
 import edu.regis.dptu.view.act.TeachOneAction;

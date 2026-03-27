@@ -14,7 +14,6 @@ package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

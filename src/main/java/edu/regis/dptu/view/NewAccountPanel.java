@@ -15,7 +15,6 @@ package edu.regis.dptu.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -41,8 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.security.CommonPasswords;
-import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;

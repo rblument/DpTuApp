@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -32,8 +31,8 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
-import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 
 /**
  * This is the Subsequence view for the TutoringSession View.
