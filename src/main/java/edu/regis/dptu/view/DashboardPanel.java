@@ -239,7 +239,8 @@ public class DashboardPanel extends GPanel {
     }
 
     private void displayWelcomeDialog() {
-        String welcomeMessage = ResourceMgr.instance().string("dashboard.welcome.sessionStarted", firstName);
+        String welcomeMessage =
+                ResourceMgr.instance().string("dashboard.welcome.sessionStarted", firstName);
         JOptionPane.showMessageDialog(
                 null,
                 welcomeMessage,
