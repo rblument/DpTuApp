@@ -86,8 +86,7 @@ public class DashboardPanel extends GPanel {
     /* Greets user by name in JOptionPanne and dashboard header. */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-        welcomeLabel.setText(
-                String.format(ResourceMgr.instance().string("dashboard.welcome"), firstName));
+        welcomeLabel.setText(ResourceMgr.instance().string("dashboard.welcome", firstName));
         displayWelcomeDialog();
     }
 
@@ -116,10 +115,7 @@ public class DashboardPanel extends GPanel {
         settingsButton = new JButton(ResourceMgr.instance().string("dashboard.button.settings"));
         settingsButton.setFocusPainted(false);
 
-        welcomeLabel =
-                new JLabel(
-                        String.format(
-                                ResourceMgr.instance().string("dashboard.welcome"), firstName));
+        welcomeLabel = new JLabel(ResourceMgr.instance().string("dashboard.welcome", firstName));
         welcomeLabel.setForeground(FILL);
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -243,10 +239,7 @@ public class DashboardPanel extends GPanel {
     }
 
     private void displayWelcomeDialog() {
-        String welcomeMessage =
-                String.format(
-                        ResourceMgr.instance().string("dashboard.welcome.sessionStarted"),
-                        firstName);
+        String welcomeMessage = ResourceMgr.instance().string("dashboard.welcome.sessionStarted", firstName);
         JOptionPane.showMessageDialog(
                 null,
                 welcomeMessage,
