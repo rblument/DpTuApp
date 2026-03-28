@@ -49,16 +49,6 @@ public class ReusableFonts {
     }
 
     /**
-     * Adds a Font to the reusable fonts map with a named key
-     *
-     * @param name The key to add the Font under
-     * @param font The Font object to be added
-     */
-    public void addFont(String name, Font font) {
-        fonts.put(name, font);
-    }
-
-    /**
      * Gets a Font object based on the named key
      *
      * @param name The key to get the Font from
@@ -68,19 +58,11 @@ public class ReusableFonts {
         Font font = fonts.get(name);
 
         if (font == null) {
-            log.debug("Font with name {} was not successfully retrieved", name);
+            log.warn("Font with name {} was not successfully retrieved", name);
+            throw new IllegalArgumentException("Error: Name " + name + " is not in font list.");
         }
 
         return font;
-    }
-
-    /**
-     * Gets the full HashMap of String/Font Key/Value pairs
-     *
-     * @return The full HashMap of String/Font Key/Value pairs
-     */
-    public HashMap<String, Font> getAllFonts() {
-        return fonts;
     }
 
     /**
@@ -90,27 +72,27 @@ public class ReusableFonts {
     private void setupInitialFonts() {
         log.info("ReusableFonts: Setting up inital fonts");
 
-        addFont("Copyright", new Font("Dialog", Font.PLAIN, 10));
-        addFont("CCIS", new Font("Dialog", Font.PLAIN, 20));
-        addFont("Logo", new Font("Dialog", Font.PLAIN, 20));
-        addFont("Header", new Font("Segoe UI", Font.PLAIN, 18));
-        addFont("Name", new Font("Dialog", Font.PLAIN, 14));
-        addFont("Description", new Font("Dialog", Font.PLAIN, 12));
+        fonts.put("Copyright", new Font("Dialog", Font.PLAIN, 10));
+        fonts.put("CCIS", new Font("Dialog", Font.PLAIN, 20));
+        fonts.put("Logo", new Font("Dialog", Font.PLAIN, 20));
+        fonts.put("Header", new Font("Segoe UI", Font.PLAIN, 18));
+        fonts.put("Name", new Font("Dialog", Font.PLAIN, 14));
+        fonts.put("Description", new Font("Dialog", Font.PLAIN, 12));
 
-        addFont("10ptLabel", new Font("Dialog", Font.PLAIN, 10));
-        addFont("12ptLabel", new Font("Dialog", Font.PLAIN, 12));
-        addFont("14ptLabel", new Font("Dialog", Font.PLAIN, 14));
-        addFont("16ptLabel", new Font("Dialog", Font.PLAIN, 16));
-        addFont("18ptLabel", new Font("Dialog", Font.PLAIN, 18));
-        addFont("20ptLabel", new Font("Dialog", Font.PLAIN, 20));
+        fonts.put("10ptLabel", new Font("Dialog", Font.PLAIN, 10));
+        fonts.put("12ptLabel", new Font("Dialog", Font.PLAIN, 12));
+        fonts.put("14ptLabel", new Font("Dialog", Font.PLAIN, 14));
+        fonts.put("16ptLabel", new Font("Dialog", Font.PLAIN, 16));
+        fonts.put("18ptLabel", new Font("Dialog", Font.PLAIN, 18));
+        fonts.put("20ptLabel", new Font("Dialog", Font.PLAIN, 20));
 
-        addFont("18ptBold", new Font("Segoe UI", Font.BOLD, 18));
+        fonts.put("18ptBold", new Font("Segoe UI", Font.BOLD, 18));
 
-        addFont("20ptArial", new Font("Arial", Font.PLAIN, 20));
+        fonts.put("20ptArial", new Font("Arial", Font.PLAIN, 20));
 
-        addFont("AnswerField", new Font("Monospaced", Font.PLAIN, 14));
-        addFont("HintLabel", new Font("Dialog", Font.ITALIC, 12));
-        addFont("StatusLabel", new Font("Monospaced", Font.BOLD, 12));
-        addFont("StepsLabel", new Font("Dialog", Font.BOLD, 14));
+        fonts.put("AnswerField", new Font("Monospaced", Font.PLAIN, 14));
+        fonts.put("HintLabel", new Font("Dialog", Font.ITALIC, 12));
+        fonts.put("StatusLabel", new Font("Monospaced", Font.BOLD, 12));
+        fonts.put("StepsLabel", new Font("Dialog", Font.BOLD, 14));
     }
 }
