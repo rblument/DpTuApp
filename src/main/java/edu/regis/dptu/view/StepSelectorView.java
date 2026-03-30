@@ -17,7 +17,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -38,6 +37,7 @@ import edu.regis.dptu.model.StepSubType;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.aol.AssessmentLevel;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 
 /**
  * A view that displays a list of available steps for the student to select. Steps can be marked
@@ -161,7 +161,7 @@ public class StepSelectorView extends GPanel {
     /** Create the child GUI components appearing in this view. */
     private void initializeComponents() {
         titleLabel = new JLabel(ResourceMgr.instance().string("stepSelector.title"));
-        titleLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+        titleLabel.setFont(ReusableFonts.instance().getFont("StepsLabel"));
 
         stepsPanel = new JPanel();
         stepsPanel.setLayout(new BoxLayout(stepsPanel, BoxLayout.Y_AXIS));
