@@ -14,7 +14,6 @@ package edu.regis.dptu.view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.Step;
 import edu.regis.dptu.model.StepCompletion;
 import edu.regis.dptu.model.StepSubType;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.view.act.CheckAnswerAction;
 import edu.regis.dptu.view.act.NewExampleAction;
 import edu.regis.dptu.view.act.RequestHintAction;
@@ -147,7 +147,7 @@ public class StepCompletionView extends GPanel {
     private void initializeComponents() {
         // Answer input field
         answerField = new JTextField(10);
-        answerField.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        answerField.setFont(ReusableFonts.instance().getFont("AnswerField"));
 
         // Action buttons
         checkButton = new JButton(CheckAnswerAction.instance());
@@ -160,7 +160,7 @@ public class StepCompletionView extends GPanel {
 
         hintLabel = new JLabel();
         hintLabel.setVisible(false);
-        hintLabel.setFont(new Font("Dialog", Font.ITALIC, 12));
+        hintLabel.setFont(ReusableFonts.instance().getFont("HintLabel"));
 
         // Card panel for different step types
         cardPanel = new JPanel();
