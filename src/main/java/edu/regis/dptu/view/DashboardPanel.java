@@ -25,6 +25,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
@@ -69,6 +71,8 @@ public class DashboardPanel extends GPanel {
     private CustomProgressBar teachOneProgressBar;
     private JLabel welcomeLabel;
     private JComboBox<String> problemSelector; // @author EverettCV
+
+    private static boolean isStatsOpen = false;
 
     private static final Color BACKGROUND = new Color(32, 88, 96); // dark seafoam green
     private static final Color TEXT = new Color(31, 41, 55); // deep charcoal
@@ -159,16 +163,48 @@ public class DashboardPanel extends GPanel {
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
                 e -> {
-                    log.info("See One Stats button pressed");
-                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.seeOne.title"));
+                    log.info("See One Stats button pressed, isStatsOpen = {}", isStatsOpen);
+                    if (!isStatsOpen) {
+                        log.info("See One Stats window opened");
+                        isStatsOpen = true;
+                        StatsWindow statsWindow =
+                                new StatsWindow(
+                                        ResourceMgr.instance()
+                                                .string("dashboard.stats.seeOne.title"));
+                        statsWindow.addWindowListener(
+                                new WindowAdapter() {
+                                    public void windowClosing(WindowEvent e) {
+                                        log.info("See One Stats window closing");
+                                        isStatsOpen = false;
+                                    }
+                                });
+                    } else {
+                        log.info("Another Stats window is already opened");
+                    }
                 });
 
         doOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
                 e -> {
-                    log.info("Do One Stats button pressed");
-                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.doOne.title"));
+                    log.info("Do One Stats button pressed, isStatsOpen = {}", isStatsOpen);
+                    if (!isStatsOpen) {
+                        log.info("Do One Stats window opened");
+                        isStatsOpen = true;
+                        StatsWindow statsWindow =
+                                new StatsWindow(
+                                        ResourceMgr.instance()
+                                                .string("dashboard.stats.doOne.title"));
+                        statsWindow.addWindowListener(
+                                new WindowAdapter() {
+                                    public void windowClosing(WindowEvent e) {
+                                        log.info("Do One Stats window closing");
+                                        isStatsOpen = false;
+                                    }
+                                });
+                    } else {
+                        log.info("Another Stats window is already opened");
+                    }
                 });
 
         teachOneStatsButton =
@@ -176,9 +212,24 @@ public class DashboardPanel extends GPanel {
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
                 e -> {
-                    log.info("Teach One Stats button pressed");
-                    new StatsWindow(
-                            ResourceMgr.instance().string("dashboard.stats.teachOne.title"));
+                    log.info("Teach One Stats button pressed, isStatsOpen = {}", isStatsOpen);
+                    if (!isStatsOpen) {
+                        log.info("Teach One Stats window opened");
+                        isStatsOpen = true;
+                        StatsWindow statsWindow =
+                                new StatsWindow(
+                                        ResourceMgr.instance()
+                                                .string("dashboard.stats.teachOne.title"));
+                        statsWindow.addWindowListener(
+                                new WindowAdapter() {
+                                    public void windowClosing(WindowEvent e) {
+                                        log.info("Teach One Stats window closing");
+                                        isStatsOpen = false;
+                                    }
+                                });
+                    } else {
+                        log.info("Another Stats window is already opened");
+                    }
                 });
 
         // Apply scaffold level rules for which buttons are visible.
