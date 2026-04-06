@@ -23,14 +23,14 @@ import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Mode;
+import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
+import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.DashboardPanel;
 import edu.regis.dptu.view.SplashFrame;
-import edu.regis.dptu.model.Task;
-import edu.regis.dptu.model.PendingTask;
 
 public class DoOneAction extends DpTuGuiAction {
     private static final Logger log = LoggerFactory.getLogger(DoOneAction.class);
@@ -52,11 +52,11 @@ public class DoOneAction extends DpTuGuiAction {
     }
 
     /**
-     *  Most Recently Edited: 
-     * @author Lindsey C
-     * 3/25/2026
+     * Most Recently Edited:
+     *
+     * @author Lindsey C 3/25/2026
      * @param evt
-     * */
+     */
     @Override
     public void actionPerformed(ActionEvent evt) {
         log.debug("DoOneAction triggered");
@@ -84,16 +84,15 @@ public class DoOneAction extends DpTuGuiAction {
 
             TutoringSession ts = new TutoringSession(account, problem);
             ts.setMode(Mode.DO_ONE);
-            
+
             /**
-             * for future students, in order to initialize a tutoring session, you need to populate the task list 
-             * for that session
-             * none of our constructors (there are three), do this automatically, except for the one that is 
-             * never called, so you need to do it manually
-             * unfortunately, there is no created list of "DoOne" tasks yet, so if you just "ungrey" the Do_One button,
-             *  and it doesn't compile and you come here, the reason is because there are no taskId's assigned to 
-             * whatever DoOne tasks you have created
-             * TODO: This code is replicated in SeeOne and TeachOne--fix this in the constructor of, 
+             * for future students, in order to initialize a tutoring session, you need to populate
+             * the task list for that session none of our constructors (there are three), do this
+             * automatically, except for the one that is never called, so you need to do it manually
+             * unfortunately, there is no created list of "DoOne" tasks yet, so if you just "ungrey"
+             * the Do_One button, and it doesn't compile and you come here, the reason is because
+             * there are no taskId's assigned to whatever DoOne tasks you have created TODO: This
+             * code is replicated in SeeOne and TeachOne--fix this in the constructor of,
              * TutoringSession(user, problem)
              */
             int taskId = problem.getTaskId();
