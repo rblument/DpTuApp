@@ -53,17 +53,9 @@ public class MatrixChainProblemCoverageTest {
         assertNotNull(problem.getExecutionState());
         assertEquals(MatrixChainProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
         assertDoesNotThrow(problem::prettyPrint);
-        
-        
-        
-        
-        
-        
-        
-        
 
-//        assertThrows(UnsupportedOperationException.class, problem::getExecutionState);
-//        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
+        //        assertThrows(UnsupportedOperationException.class, problem::getExecutionState);
+        //        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
     }
 
     @Test
