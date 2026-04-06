@@ -104,12 +104,16 @@ public class DoOneAction extends DpTuGuiAction {
                     task.getCurrentStep();
                 } catch (IndexOutOfBoundsException e) {
                     log.error(
-                        "DO_ONE task scaffold is incomplete: taskId={} has no steps/current step", taskId, e);
-                        SplashFrame.instance().showError(ResourceMgr.instance().string("dialog.title.error"),
-                                ResourceMgr.instance().string("error.failedToLoadProblem"));
-                                return;
+                            "DO_ONE task scaffold is incomplete: taskId={} has no steps/current step",
+                            taskId,
+                            e);
+                    SplashFrame.instance()
+                            .showError(
+                                    ResourceMgr.instance().string("dialog.title.error"),
+                                    ResourceMgr.instance().string("error.failedToLoadProblem"));
+                    return;
                 }
-                
+
                 PendingTask pendingTask = new PendingTask(task);
                 ts.addTask(pendingTask);
                 /**

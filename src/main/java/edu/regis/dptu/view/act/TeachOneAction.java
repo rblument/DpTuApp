@@ -56,6 +56,7 @@ public class TeachOneAction extends DpTuGuiAction {
 
     /**
      * Most Recently Edited:
+     *
      * @param evt
      */
     @Override
@@ -79,7 +80,9 @@ public class TeachOneAction extends DpTuGuiAction {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Creating TEACH_ONE TutoringSession for account id={}", account.getUserId());
+                log.debug(
+                        "Creating TEACH_ONE TutoringSession for account id={}",
+                        account.getUserId());
             }
 
             TutoringSession ts = new TutoringSession(account, problem);
@@ -105,12 +108,16 @@ public class TeachOneAction extends DpTuGuiAction {
                     task.getCurrentStep();
                 } catch (IndexOutOfBoundsException e) {
                     log.error(
-                        "TEACH_ONE task scaffold is incomplete: taskId={} has no steps/current step", taskId, e);
-                        SplashFrame.instance().showError(ResourceMgr.instance().string("dialog.title.error"),
-                                ResourceMgr.instance().string("error.failedToLoadProblem"));
-                                return;
+                            "TEACH_ONE task scaffold is incomplete: taskId={} has no steps/current step",
+                            taskId,
+                            e);
+                    SplashFrame.instance()
+                            .showError(
+                                    ResourceMgr.instance().string("dialog.title.error"),
+                                    ResourceMgr.instance().string("error.failedToLoadProblem"));
+                    return;
                 }
-                
+
                 PendingTask pendingTask = new PendingTask(task);
                 ts.addTask(pendingTask);
                 /**
@@ -120,7 +127,6 @@ public class TeachOneAction extends DpTuGuiAction {
                  */
                 log.info("Initialized TEACH_ONE session with PendingTask taskId={}", taskId);
             }
-
 
             SplashFrame.instance().selectLessonScreen(ts);
 
