@@ -56,8 +56,6 @@ public class TeachOneAction extends DpTuGuiAction {
 
     /**
      * Most Recently Edited:
-     *
-     * @author Lindsey C 3/25/2026
      * @param evt
      */
     @Override
@@ -74,24 +72,24 @@ public class TeachOneAction extends DpTuGuiAction {
             log.debug("Selected ProblemKind for TEACH_ONE: {}", kind);
 
             Problem problem = problemDAO.retrieveByKind(kind);
+            account = SplashFrame.instance().getAccount();
 
             if (log.isDebugEnabled()) {
                 log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
-                account = SplashFrame.instance().getAccount();
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Creating DO_ONE TutoringSession for account id={}", account.getUserId());
+                log.debug("Creating TEACH_ONE TutoringSession for account id={}", account.getUserId());
             }
 
             TutoringSession ts = new TutoringSession(account, problem);
-            ts.setMode(Mode.DO_ONE);
+            ts.setMode(Mode.TEACH_ONE);
 
             /**
              * for future students, in order to initialize a tutoring session, you need to populate
              * the task list for that session none of our constructors (there are three), do this
              * automatically, except for the one that is never called, so you need to do it manually
-             * unfortunately, there is no created list of "DoOne" tasks yet, so if you just "ungrey"
+             * unfortunately, there is no created list of "DoOne" tasks yet, so if you just activate
              * the Do_One button, and it doesn't compile and you come here, the reason is because
              * there are no taskId's assigned to whatever DoOne tasks you have created TODO: This
              * code is replicated in SeeOne and TeachOne--fix this in the constructor of,
@@ -99,10 +97,20 @@ public class TeachOneAction extends DpTuGuiAction {
              */
             int taskId = problem.getTaskId();
             if (taskId < 0) {
-                log.warn("DO_ONE session created with invalid problem.taskId={}", taskId);
+                log.warn("TEACH_ONE session created with invalid problem.taskId={}", taskId);
             } else {
                 Task task = new Task(taskId);
                 task.setProblem(problem);
+                try {
+                    task.getCurrentStep();
+                } catch (IndexOutOfBoundsException e) {
+                    log.error(
+                        "TEACH_ONE task scaffold is incomplete: taskId={} has no steps/current step", taskId, e);
+                        SplashFrame.instance().showError(ResourceMgr.instance().string("dialog.title.error"),
+                                ResourceMgr.instance().string("error.failedToLoadProblem"));
+                                return;
+                }
+                
                 PendingTask pendingTask = new PendingTask(task);
                 ts.addTask(pendingTask);
                 /**
@@ -110,8 +118,9 @@ public class TeachOneAction extends DpTuGuiAction {
                  * need smth like this: if (task.getCurrentStep() != null) {
                  * pendingTask.setCurrentStep(new PendingStep(task.getCurrentStep())); }
                  */
-                log.info("Initialized DO_ONE session with PendingTask taskId={}", taskId);
+                log.info("Initialized TEACH_ONE session with PendingTask taskId={}", taskId);
             }
+
 
             SplashFrame.instance().selectLessonScreen(ts);
 

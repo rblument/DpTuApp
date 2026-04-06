@@ -160,7 +160,7 @@ public class TutoringSession {
 
     public PendingTask getCurrentTask() {
         if (tasks == null || tasks.isEmpty()) {
-            log.warn("Session {} has no current tasks", userId);
+            log.debug("Session {} has no current tasks", userId);
             throw new IndexOutOfBoundsException(
                     "Error: Session " + userId + " has no current tasks.");
         }
