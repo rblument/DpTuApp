@@ -15,7 +15,6 @@ package edu.regis.dptu.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -42,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.security.CommonPasswords;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.view.act.BackAction;
 import edu.regis.dptu.view.act.CreateAcctAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -213,7 +213,7 @@ public class NewAccountPanel extends GPanel {
         strength =
                 new JLabel(ResourceMgr.instance().string("newAccount.password.strength.veryPoor"));
         strength.setForeground(Color.RED);
-        strength.setFont(new Font("Dialog", Font.PLAIN, 10));
+        strength.setFont(ReusableFonts.instance().getFont("10ptLabel"));
     }
 
     /**
@@ -271,7 +271,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         JLabel copyright = new JLabel(ResourceMgr.instance().string("app.copyright"));
-        copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
+        copyright.setFont(ReusableFonts.instance().getFont("Copyright"));
         addc(
                 copyright,
                 0,
@@ -300,7 +300,7 @@ public class NewAccountPanel extends GPanel {
         panel.setBackground(LIGHT_BLUE);
 
         JLabel ccis = new JLabel(ResourceMgr.instance().string("newAccount.header.department"));
-        ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
+        ccis.setFont(ReusableFonts.instance().getFont("CCIS"));
         ccis.setForeground(Color.BLUE);
 
         panel.addc(
@@ -335,7 +335,7 @@ public class NewAccountPanel extends GPanel {
         panel.setPreferredSize(new Dimension(300, 400));
 
         JLabel logo = new JLabel(ResourceMgr.instance().string("newAccount.overview.logo"));
-        logo.setFont(new Font("Dialog", Font.PLAIN, 20));
+        logo.setFont(ReusableFonts.instance().getFont("Logo"));
         logo.setForeground(Color.MAGENTA);
 
         panel.addc(
@@ -354,7 +354,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         JLabel name = new JLabel(ResourceMgr.instance().string("newAccount.overview.tagline"));
-        name.setFont(new Font("Dialog", Font.PLAIN, 14));
+        name.setFont(ReusableFonts.instance().getFont("Name"));
         panel.addc(
                 name,
                 0,
@@ -374,7 +374,7 @@ public class NewAccountPanel extends GPanel {
         descr.setEditable(false);
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
-        descr.setFont(new Font("Dialog", Font.PLAIN, 12));
+        descr.setFont(ReusableFonts.instance().getFont("Description"));
         descr.setText(ResourceMgr.instance().string("newAccount.overview.description"));
         panel.addc(
                 descr,
@@ -535,7 +535,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         label = new JLabel(ResourceMgr.instance().string("newAccount.form.passwordWarning"));
-        label.setFont(new Font("Dialog", Font.PLAIN, 10));
+        label.setFont(ReusableFonts.instance().getFont("10ptLabel"));
         label.setForeground(new Color(75, 66, 66));
 
         panel.addc(
@@ -584,7 +584,7 @@ public class NewAccountPanel extends GPanel {
                 5);
 
         label = new JLabel(ResourceMgr.instance().string("newAccount.form.passwordHint"));
-        label.setFont(new Font("Dialog", Font.PLAIN, 10));
+        label.setFont(ReusableFonts.instance().getFont("10ptLabel"));
         label.setForeground(new Color(75, 66, 66));
         panel.addc(
                 label,
@@ -702,7 +702,7 @@ public class NewAccountPanel extends GPanel {
 
         msg = new JLabel("");
         // msg.setLabelFor(backBut);
-        msg.setFont(new Font("Dialog", Font.PLAIN, 10));
+        msg.setFont(ReusableFonts.instance().getFont("10ptLabel"));
         msg.setForeground(new Color(173, 7, 1));
 
         panel.addc(

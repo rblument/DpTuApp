@@ -15,7 +15,6 @@ package edu.regis.dptu.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 
 /**
  * A panel containing buttons and controls that allow a user to step forward and backward through
@@ -235,7 +235,7 @@ public class StepViewPanel extends GPanel implements ProblemListener {
         stepsSpinner.setPreferredSize(new Dimension(60, 25));
 
         statusLabel = new JLabel(ResourceMgr.instance().string("stepView.status.ready"));
-        statusLabel.setFont(new Font("Monospaced", Font.BOLD, 12));
+        statusLabel.setFont(ReusableFonts.instance().getFont("StatusLabel"));
     }
 
     /** Layout the child components in this panel. */

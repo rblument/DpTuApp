@@ -3,9 +3,8 @@
 
 <!-- Status Badges -->
 
-[![Build](https://github.com/rblument/DpTuApp/actions/workflows/pr-build.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/pr-build.yml)
-[![Tests](https://github.com/rblument/DpTuApp/actions/workflows/test.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/test.yml)
-[![Coverage](./.github/badges/jacoco.svg)]([./.github/badges/jacoco.svg](https://github.com/rblument/DpTuApp/actions/workflows/test.yml))
+[![Format Build Test](https://github.com/rblument/DpTuApp/actions/workflows/format-build-test.yml/badge.svg?branch=development)](https://github.com/rblument/DpTuApp/actions/workflows/format-build-test.yml)
+[![Coverage](./.github/badges/jacoco.svg)](https://github.com/rblument/DpTuApp/actions/workflows/format-build-test.yml)
 
 DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designed to help students learn and practice Dynamic Programming (DP) concepts and algorithms. It provides a step-by-step visual environment for specific DP problems, tracks student progress, and aims to adapt to individual learning needs.
 
@@ -61,7 +60,7 @@ This project was developed as part of the CS493_X01 Senior Capstone course.
    `cd DpTuApp`
 
 2. Database Setup:
-   - Ensure your MySQL server is running (all instructions after this can be accomlished by running the [`setup_DpTuDB.sql`](./database/setup_DpTuDB.sql) script).
+   - Ensure your MySQL server is running (all instructions after this can be accomplished by running the [`setup_DpTuDB.sql`](./database/setup_DpTuDB.sql) script).
    - Create a database (`DpTuDB`).
    - Create a MySQL user (e.g., `DpTu2023`) with privileges on the database.
    - Create the database tables.
@@ -120,6 +119,12 @@ Explains how logging is implemented, required logging patterns, and CI enforceme
 
 📘 [`documentation/logging-developer-guide.md`](./documentation/logging-developer-guide.md)
 
+## Code Quality
+
+This project uses Checkstyle and Spotless to maintain consistent code style.
+
+📘 [`documentation/code-quality.md`](./documentation/code-quality.md)
+
 
 ### GitHub Workflows & Dependency Management
 
@@ -141,7 +146,7 @@ These documents define required development practices and are enforced by reposi
 
 When contributing, be mindful to format the code before pushing it to GitHub. You can do this by running `mvn spotless:apply`. A plugin defined in [`pom.xml`](./pom.xml) controls the formatting of the project. The formatting keeps the code consistent for others to read, helping code readability and maintenance.
 
-If you forget to format the code, be mindful that a GitHub workflow will do this for you in [`.github/workflows/format-code.yml`](./.github/workflows/format-code.yml). It should only affect you when pushing multiple times without running it.
+If you forget to format the code, be mindful that the consolidated CI workflow [`.github/workflows/format-build-test.yml`](./.github/workflows/format-build-test.yml) applies formatting on same-repository pull requests and may push an auto-format commit.
 
 A future contribution could be how to configure Netbeans to run this automatically in a pre-commit hook (but as of Sept 2025, Netbeans does not support pre-commit hooks). 
 

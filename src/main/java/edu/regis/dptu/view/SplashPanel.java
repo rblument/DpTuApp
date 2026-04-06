@@ -14,7 +14,6 @@ package edu.regis.dptu.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 
 import javax.swing.BorderFactory;
@@ -31,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.User;
 import edu.regis.dptu.util.ResourceMgr;
+import edu.regis.dptu.util.ReusableFonts;
 import edu.regis.dptu.util.SHA_256;
 import edu.regis.dptu.view.act.NewUserAction;
 import edu.regis.dptu.view.act.SignInAction;
@@ -224,7 +224,7 @@ public class SplashPanel extends GPanel {
                 5);
 
         JLabel copyright = new JLabel(ResourceMgr.instance().string("app.copyright"));
-        copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
+        copyright.setFont(ReusableFonts.instance().getFont("Copyright"));
         addc(
                 copyright,
                 0,
@@ -250,7 +250,7 @@ public class SplashPanel extends GPanel {
         panel.setBackground(new Color(223, 242, 245));
 
         JLabel ccis = new JLabel(ResourceMgr.instance().string("splash.header.department"));
-        ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
+        ccis.setFont(ReusableFonts.instance().getFont("CCIS"));
         ccis.setForeground(Color.BLUE);
 
         panel.addc(
@@ -269,7 +269,7 @@ public class SplashPanel extends GPanel {
                 5);
 
         JLabel newLabel = new JLabel(ResourceMgr.instance().string("splash.header.newToDptu"));
-        newLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+        newLabel.setFont(ReusableFonts.instance().getFont("12ptLabel"));
         newLabel.setForeground(Color.GRAY);
 
         panel.addc(
@@ -419,7 +419,7 @@ public class SplashPanel extends GPanel {
         panel.setPreferredSize(new Dimension(300, 400));
 
         JLabel logo = new JLabel(ResourceMgr.instance().string("splash.overview.logo"));
-        logo.setFont(new Font("Dialog", Font.PLAIN, 20));
+        logo.setFont(ReusableFonts.instance().getFont("Logo"));
         logo.setForeground(Color.MAGENTA);
 
         panel.addc(
@@ -438,7 +438,7 @@ public class SplashPanel extends GPanel {
                 5);
 
         JLabel name = new JLabel(ResourceMgr.instance().string("splash.overview.tagline"));
-        name.setFont(new Font("Dialog", Font.PLAIN, 14));
+        name.setFont(ReusableFonts.instance().getFont("Name"));
         panel.addc(
                 name,
                 0,
@@ -458,7 +458,7 @@ public class SplashPanel extends GPanel {
         descr.setEditable(false);
         descr.setLineWrap(true);
         descr.setWrapStyleWord(true);
-        descr.setFont(new Font("Dialog", Font.PLAIN, 12));
+        descr.setFont(ReusableFonts.instance().getFont("Description"));
         descr.setText(ResourceMgr.instance().string("splash.overview.description"));
 
         panel.addc(
