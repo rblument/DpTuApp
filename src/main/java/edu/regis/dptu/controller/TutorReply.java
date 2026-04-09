@@ -10,36 +10,19 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
-package edu.regis.dptu.svc;
+package edu.regis.dptu.controller;
 
 /**
- * A decorator that wraps a tutor reply to a user interface request.
- *
- * <p>The the initial request time specifies how to interpret the JSon encoded data.
+ * A reply from the tutor server, used by client controllers.
  *
  * @author rickb
  */
-@SuppressWarnings("Logging")
 public class TutorReply {
-    /** The status of this reply (of particular note is ERR) */
     private String status;
+    private String data;
 
-    /**
-     * A JSon encoded object whose format depends on the associated request to which this is a
-     * reply.
-     */
-    private String data = "";
+    public TutorReply() {}
 
-    /** A reply from the tutor with an ERR status. */
-    public TutorReply() {
-        this("ERR");
-    }
-
-    /**
-     * A reply from the tutor with the given status
-     *
-     * @param status
-     */
     public TutorReply(String status) {
         this.status = status;
     }

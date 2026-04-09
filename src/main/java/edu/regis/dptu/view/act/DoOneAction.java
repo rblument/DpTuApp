@@ -18,10 +18,9 @@ import java.awt.event.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.regis.dptu.dao.ProblemDAO;
-import edu.regis.dptu.err.NonRecoverableException;
-import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
@@ -35,15 +34,12 @@ public class DoOneAction extends DpTuGuiAction {
 
     private static final DoOneAction SINGLETON = new DoOneAction();
 
-    private final ProblemDAO problemDAO;
-
     public static DoOneAction instance() {
         return SINGLETON;
     }
 
     private DoOneAction() {
         super(Mode.DO_ONE.title());
-        this.problemDAO = new ProblemDAO();
 
         putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.doOne.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_D);
@@ -62,10 +58,19 @@ public class DoOneAction extends DpTuGuiAction {
 
             log.debug("Selected ProblemKind for DO_ONE: {}", kind);
 
-            Problem problem = problemDAO.retrieveByKind(kind);
+            Problem problem = null;
+            if (kind == ProblemKind.LCS_PROBLEM) {
+                problem = new LCSProblem();
+            } else if (kind == ProblemKind.MATRIX_CHAIN) {
+                problem = new MatrixChainProblem(new int[][] {{2, 3, 4}});
+            }
+
+            if (problem == null) {
+                throw new IllegalStateException("No problem implementation available for kind=" + kind);
+            }
 
             if (log.isDebugEnabled()) {
-                log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
+                log.debug("Created placeholder problem: id={}, type={}", problem.getId(), problem.getType());
             }
 
             account = SplashFrame.instance().getAccount();
@@ -81,7 +86,7 @@ public class DoOneAction extends DpTuGuiAction {
 
             log.debug("DO_ONE session started successfully");
 
-        } catch (ObjNotFoundException | NonRecoverableException e) {
+        } catch (RuntimeException e) {
             log.error(
                     "Failed to start DO_ONE session (kind={}, accountId={})",
                     kind,

@@ -18,14 +18,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.controller.ClientRequest;
+import edu.regis.dptu.controller.ControllerFacade;
+import edu.regis.dptu.controller.ServerRequestType;
+import edu.regis.dptu.controller.TutorReply;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.TutoringSession;
-import edu.regis.dptu.svc.ClientRequest;
-import edu.regis.dptu.svc.ServerRequestType;
-import edu.regis.dptu.svc.SvcFacade;
-import edu.regis.dptu.svc.TutorReply;
-import edu.regis.dptu.svc.TutorSvc;
 
 /**
  * Displays a tutoring session (the top-level GUI view for the application). Integrates views and
@@ -38,8 +37,6 @@ public class TutoringSessionView extends GPanel {
 
     private TutoringSession model;
     private ModeView currentModeView;
-    // service used to send requests to tutor/server
-    private TutorSvc tutorSvc;
 
     private static final Map<Mode, ModeView> modeViewStrategies =
             new HashMap<>() {
@@ -55,10 +52,6 @@ public class TutoringSessionView extends GPanel {
 
     /** no args necessary for MainFrame */
     public TutoringSessionView() {}
-
-    public void setTutorSvc(TutorSvc tutorSvc) {
-        this.tutorSvc = tutorSvc;
-    }
 
     /**
      * Sets the current tutoring session model for this view and updates the displayed mode view.
@@ -134,7 +127,7 @@ public class TutoringSessionView extends GPanel {
                             req.setData(String.valueOf(taskId));
                             log.info("Sending COMPLETED_TASK userId={} taskId{}", userId, taskId);
 
-                            TutorReply reply = SvcFacade.instance().tutorRequest(req);
+                            TutorReply reply = ControllerFacade.instance().tutorRequest(req);
                             log.info(
                                     "COMPLETED_TASK reply status={} data={}",
                                     reply.getStatus(),

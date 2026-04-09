@@ -17,11 +17,9 @@ import java.awt.event.KeyEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.regis.dptu.dao.ProblemDAO;
-import edu.regis.dptu.err.NonRecoverableException;
-import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.Problem;
@@ -37,15 +35,12 @@ public class SeeOneAction extends DpTuGuiAction {
 
     private static final SeeOneAction SINGLETON = new SeeOneAction();
 
-    private final ProblemDAO problemDAO;
-
     public static SeeOneAction instance() {
         return SINGLETON;
     }
 
     private SeeOneAction() {
         super(Mode.SEE_ONE.title());
-        this.problemDAO = new ProblemDAO();
 
         putValue(SHORT_DESCRIPTION, ResourceMgr.instance().string("action.seeOne.tooltip"));
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
@@ -68,12 +63,19 @@ public class SeeOneAction extends DpTuGuiAction {
 
             log.debug("Selected ProblemKind for SEE_ONE: {}", kind);
 
-            Problem problem = problemDAO.retrieveByKind(kind);
+            Problem problem = null;
+            if (kind == ProblemKind.LCS_PROBLEM) {
+                problem = new LCSProblem();
+            } else if (kind == ProblemKind.MATRIX_CHAIN) {
+                problem = new MatrixChainProblem(new int[][] {{2, 3, 4}});
+            }
+
+            if (problem == null) {
+                throw new IllegalStateException("No problem implementation available for kind=" + kind);
+            }
 
             if (log.isDebugEnabled()) {
-                // Guard is intentional: avoid calling getters / touching domain object work if
-                // DEBUG is off.
-                log.debug("Retrieved problem: id={}, type={}", problem.getId(), problem.getType());
+                log.debug("Created placeholder problem: id={}, type={}", problem.getId(), problem.getType());
             }
 
             account = SplashFrame.instance().getAccount();
@@ -107,7 +109,7 @@ public class SeeOneAction extends DpTuGuiAction {
 
             log.debug("SEE_ONE session started successfully");
 
-        } catch (ObjNotFoundException | NonRecoverableException e) {
+        } catch (RuntimeException e) {
             log.error(
                     "Failed to start SEE_ONE session (kind={}, accountId={})",
                     kind,

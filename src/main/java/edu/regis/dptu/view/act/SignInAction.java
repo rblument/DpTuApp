@@ -22,18 +22,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
-import edu.regis.dptu.dao.AccountDAO;
-import edu.regis.dptu.dao.StudentModelDAO;
-import edu.regis.dptu.err.NonRecoverableException;
-import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.controller.ClientRequest;
+import edu.regis.dptu.controller.ControllerFacade;
+import edu.regis.dptu.controller.ServerRequestType;
+import edu.regis.dptu.controller.TutorReply;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.User;
-import edu.regis.dptu.model.aol.StudentModel;
-import edu.regis.dptu.svc.ClientRequest;
-import edu.regis.dptu.svc.ServerRequestType;
-import edu.regis.dptu.svc.SvcFacade;
-import edu.regis.dptu.svc.TutorReply;
 import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.SplashFrame;
 
@@ -72,30 +67,14 @@ public class SignInAction extends DpTuGuiAction {
 
         ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
         request.setData(gson.toJson(user));
-        TutorReply reply = SvcFacade.instance().tutorRequest(request);
+        TutorReply reply = ControllerFacade.instance().tutorRequest(request);
 
         switch (reply.getStatus()) {
             case "Authenticated":
-                try {
-                    AccountDAO accDao = new AccountDAO();
-                    Account studentAccount = accDao.retrieve(user.getUserId());
-                    StudentModelDAO smDao = new StudentModelDAO();
-                    StudentModel sm = smDao.retrieve(user.getUserId());
-                    Student student = new Student(studentAccount);
-                    student.setStudentModel(sm);
-                    SplashFrame.instance().setStudent(student);
-
-                    if (student.getStudentModel().getSessions().isEmpty()) {
-                        frame.setIsFirstLogin(true);
-                    }
-                    String name = studentAccount.getFirstName();
-                    SplashFrame.instance().initializeDashboard(name);
-                } catch (ObjNotFoundException e) {
-                    log.error("No account found", e);
-                } catch (NonRecoverableException e) {
-                    log.error("Non-recoverable error during sign-in", e);
-                }
-
+                Account account = new Account(user.getUserId(), user.getPassword());
+                Student student = new Student(account);
+                SplashFrame.instance().setStudent(student);
+                SplashFrame.instance().initializeDashboard(user.getUserId());
                 break;
             case "InvalidPassword":
                 JOptionPane.showMessageDialog(

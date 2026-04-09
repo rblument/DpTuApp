@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.regis.dptu.svc.TutorReply;
+import edu.regis.dptu.controller.TutorReply;
 
 public class TutorReplyTest {
 

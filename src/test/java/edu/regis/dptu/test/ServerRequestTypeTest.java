@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.regis.dptu.svc.ServerRequestType;
+import edu.regis.dptu.controller.ServerRequestType;
 
 public class ServerRequestTypeTest {
 

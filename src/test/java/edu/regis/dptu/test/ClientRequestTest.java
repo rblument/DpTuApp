@@ -16,15 +16,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.regis.dptu.svc.ClientRequest;
-import edu.regis.dptu.svc.ServerRequestType;
+import edu.regis.dptu.controller.ClientRequest;
+import edu.regis.dptu.controller.ServerRequestType;
 
 public class ClientRequestTest {
 
     @Test
     public void testClientRequestFields() {
         ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
-        request.setRequest(ServerRequestType.REQUEST_HINT);
+        request.setRequestType(ServerRequestType.REQUEST_HINT);
         request.setUserId("student@regis.edu");
         request.setSecurityToken("security-token");
         request.setSessionId("session-id");

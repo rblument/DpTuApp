@@ -22,11 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import edu.regis.dptu.controller.ClientRequest;
+import edu.regis.dptu.controller.ControllerFacade;
+import edu.regis.dptu.controller.ServerRequestType;
+import edu.regis.dptu.controller.TutorReply;
 import edu.regis.dptu.model.Account;
-import edu.regis.dptu.svc.ClientRequest;
-import edu.regis.dptu.svc.ServerRequestType;
-import edu.regis.dptu.svc.SvcFacade;
-import edu.regis.dptu.svc.TutorReply;
 import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.SplashFrame;
 
@@ -100,7 +100,7 @@ public class CreateAcctAction extends DpTuGuiAction {
             ClientRequest request = new ClientRequest(ServerRequestType.CREATE_ACCOUNT);
             request.setData(gson.toJson(account));
 
-            TutorReply reply = SvcFacade.instance().tutorRequest(request);
+            TutorReply reply = ControllerFacade.instance().tutorRequest(request);
             String status = (reply == null) ? null : reply.getStatus();
 
             log.debug("Create account reply: userId={}, status={}", account.getUserId(), status);

@@ -16,7 +16,6 @@ package edu.regis.dptu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.regis.dptu.svc.DpTuServer;
 import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.MainFrame;
 import edu.regis.dptu.view.SplashFrame;
@@ -42,20 +41,7 @@ public class DpTuApp {
         log.info("DpTu properties initialization completed.");
 
         try {
-            log.info("Starting DpTu Server (Tutoring Service)...");
-            // ToDo: Separate the initialization of client and server
-            // Start the socket server for the DpTu tutor.
-            new Thread(new DpTuServer()).start();
-
-            // ToDo: This puts the main client UI thread to sleep to give the
-            // server a chance to finish starting. This won't be required once
-            // we separate the server into its own application that is separate
-            // from the GUI client since the server should "always" be running.
-            Thread.sleep(4000);
-
-            log.info(" Server is running.");
-
-            log.info(" Starting Client GUI...");
+            log.info("Starting Client GUI...");
 
             // Force the creation of the MainFrame singleton, which is not
             // made visible to the user until after they sign-in.
@@ -68,9 +54,6 @@ public class DpTuApp {
 
             log.info("DpTu Initialization successful.");
 
-        } catch (InterruptedException ex) {
-            log.error("Interrupted during startup", ex);
-            Thread.currentThread().interrupt();
         } catch (SecurityException e) {
             log.error("Couldn't create Data directory in NetBeans Project.", (Throwable) null);
             log.error("Perhaps, try changing permissions.");
