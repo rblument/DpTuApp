@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.MatrixChainProblem;
@@ -71,11 +72,15 @@ public class SeeOneAction extends DpTuGuiAction {
             }
 
             if (problem == null) {
-                throw new IllegalStateException("No problem implementation available for kind=" + kind);
+                throw new IllegalStateException(
+                        "No problem implementation available for kind=" + kind);
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Created placeholder problem: id={}, type={}", problem.getId(), problem.getType());
+                log.debug(
+                        "Created placeholder problem: id={}, type={}",
+                        problem.getId(),
+                        problem.getType());
             }
 
             account = SplashFrame.instance().getAccount();

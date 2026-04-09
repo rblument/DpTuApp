@@ -66,11 +66,15 @@ public class DoOneAction extends DpTuGuiAction {
             }
 
             if (problem == null) {
-                throw new IllegalStateException("No problem implementation available for kind=" + kind);
+                throw new IllegalStateException(
+                        "No problem implementation available for kind=" + kind);
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Created placeholder problem: id={}, type={}", problem.getId(), problem.getType());
+                log.debug(
+                        "Created placeholder problem: id={}, type={}",
+                        problem.getId(),
+                        problem.getType());
             }
 
             account = SplashFrame.instance().getAccount();

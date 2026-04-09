@@ -12,12 +12,16 @@
  */
 package edu.regis.dptu.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A reply from the tutor server, used by client controllers.
  *
  * @author rickb
  */
 public class TutorReply {
+    private static final Logger log = LoggerFactory.getLogger(TutorReply.class);
     private String status;
     private String data;
 

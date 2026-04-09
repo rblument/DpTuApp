@@ -12,12 +12,16 @@
  */
 package edu.regis.dptu.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Encapsulates a request sent from the GUI controller to the tutor server.
  *
  * @author rickb
  */
 public class ClientRequest {
+    private static final Logger log = LoggerFactory.getLogger(ClientRequest.class);
     private ServerRequestType requestType;
     private String userId;
     private String securityToken;
