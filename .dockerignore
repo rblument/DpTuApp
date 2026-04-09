@@ -1,0 +1,12 @@
+target/
+.git/
+*.md
+documentation/
+database/
+checkstyle.xml
+cspell.config.yaml
+licenseheader.txt
+nb-configuration.xml
+nbactions.xml
+.azure/
+README.md
