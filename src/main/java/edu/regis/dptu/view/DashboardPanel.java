@@ -25,7 +25,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
@@ -163,18 +162,24 @@ public class DashboardPanel extends GPanel {
                 new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
-                e -> statsButtonActionPerformed(ResourceMgr.instance().string("dashboard.stats.seeOne.title")));
+                e ->
+                        statsButtonActionPerformed(
+                                ResourceMgr.instance().string("dashboard.stats.seeOne.title")));
 
         doOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
-                e -> statsButtonActionPerformed(ResourceMgr.instance().string("dashboard.stats.doOne.title")));
+                e ->
+                        statsButtonActionPerformed(
+                                ResourceMgr.instance().string("dashboard.stats.doOne.title")));
 
         teachOneStatsButton =
                 new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
-                e -> statsButtonActionPerformed(ResourceMgr.instance().string("dashboard.stats.teachOne.title")));
+                e ->
+                        statsButtonActionPerformed(
+                                ResourceMgr.instance().string("dashboard.stats.teachOne.title")));
 
         // Apply scaffold level rules for which buttons are visible.
         applyScaffoldLevelRules();
@@ -278,9 +283,11 @@ public class DashboardPanel extends GPanel {
     }
 
     /**
-     * This function runs when any of the stats buttons are clicked, and handles creating and opening the respective stats window.
-     * It sets a flag when the window is successfully created, so that multiple windows can't be open at once, and resets the flag when the window is closed.
-     * 
+     * This function runs when any of the stats buttons are clicked, and handles creating and
+     * opening the respective stats window. It sets a flag when the window is successfully created,
+     * so that multiple windows can't be open at once, and resets the flag when the window is
+     * closed.
+     *
      * @param title The title used for this stats window
      */
     private void statsButtonActionPerformed(String title) {
@@ -296,8 +303,7 @@ public class DashboardPanel extends GPanel {
                                 isStatsOpen = false;
                             }
                         });
-            }
-            catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 log.error("Failed to create stats window", e);
             }
         } else {
