@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
@@ -89,7 +90,15 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             ProblemKind pKind = model.getType();
             switch (pKind) {
                 case MATRIX_CHAIN:
-                    // TODO
+                    int[][] tableVariable = (int[][]) ((MatrixChainProblem) model).getVariableObject(model.getTableVariable());
+                    int rows = tableVariable.length;
+                    int cols = tableVariable[0].length;
+                    log.debug("Updating Matrix Chain Table with (rows={}, cols={})", rows, cols);
+                    String Ms1 = "";
+                    String Ms2 = "";
+                    for (int i = 0; i < rows; i++) Ms1 += String.valueOf(i);
+                    for (int i = 0; i < rows; i++) Ms2 += String.valueOf(i);
+                    updateStrings(Ms1, Ms2);
                     break;
                 case KNAPSACK_0_1:
                     // TODO
@@ -155,6 +164,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         table =
                 new JTable() {
                     @Override
+                    // TODO: Figure out why this gets called for too many rows for MatrixChain, but the right amount for LCS
                     public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
                         Component component = super.prepareRenderer(renderer, row, col);
                         if (col < 1) {
@@ -319,8 +329,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             return;
         }
         Object tableObj = model.getVariableObject(model.getTableVariable());
-        Object nObj = model.getVariableObject("n");
-        Object mObj = model.getVariableObject("m");
+        Object nObj = model.getVariableObject("n"); // Number of rows
+        Object mObj = model.getVariableObject("m"); // Number of columns
         // Type check for DP table and indices
         if (!(tableObj instanceof int[][])
                 || !(nObj instanceof Integer)

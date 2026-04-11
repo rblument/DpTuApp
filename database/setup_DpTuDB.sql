@@ -245,13 +245,29 @@ CREATE TABLE LCSProblem (
   PRIMARY KEY (Id)
 );
 
+CREATE TABLE MatrixChainProblem (
+  Id INT NOT NULL,
+  PRIMARY KEY (Id)
+);
+
+-- A separate table for the matrix sizes is needed since SQL doesn't have arrays
+CREATE TABLE MatrixSizes (
+  SizeId INT NOT NULL,
+  ProblemId INT NOT NULL,
+  Width INT,
+  Height INT,
+  PRIMARY KEY (SizeId),
+  FOREIGN KEY (ProblemId) REFERENCES MatrixChainProblem(Id)
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 #records when a student completes a Task, per student
 # used to persist progress across sessions
 CREATE TABLE CompletedTask (
   UserId VARCHAR(256) NOT NULL,
   TaskId INT NOT NULL,
   CompletedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (UserId, TaskId)
+  PRIMARY KEY (UserId, TaskId),
    FOREIGN KEY (UserId)
       REFERENCES account(UserId)
 );
@@ -270,10 +286,15 @@ INSERT INTO Unit
   (CourseId, Title, Description, SequenceIndex, Pedagogy)
 VALUES
   (1, 'LCS: See One', 
-  'In this unit, the student will see an example of a Dynamic Programming
+   'In this unit, the student will see an example of a Dynamic Programming
    approach that solves a Longest Common Subsequence (LCS) problem for two
    string sequences.', 
-    0, 'FIXED_SEQUENCE');
+   0, 'FIXED_SEQUENCE'),
+  (1, 'Matrix Chain: See One', 
+   'In this unit, the student will see an example of a Dynamic Programming
+   approach that solves a Matrix Chain Optimization problem for a sequence 
+   of matricies.', 
+   0, 'FIXED_SEQUENCE');
 
 INSERT INTO Task
  (TaskId, CourseId, UnitId, SequenceIndex, Title,
@@ -282,7 +303,10 @@ INSERT INTO Task
  VALUES
  (0, 1, 1, 0, 'Problem Overview', 
   'Review the presentation of the current Dynamic Programming problem', 
-  'PROBLEM', 0);
+  'PROBLEM', 0),
+ (1, 1, 2, 0, 'Problem Overview',
+  'Review the presentation of the current Matrix Chain Dynamic Programming problem',
+  'PROBLEM', 1); -- Matrix Chain SEE ONE problem
 
 INSERT INTO Step 
  (Id, CourseId, UnitId, TaskId, SequenceIndex,
@@ -318,12 +342,30 @@ INSERT INTO Problem
  (Id, ProblemType, SubTypeId, Title, Description)
 VALUES
  (0, 'LCS_PROBLEM', 0, 'Longest Common Subsequence Problem 1',
-  'Determine the longests common subsequence for the given sequences/strings.');
+  'Determine the longest common subsequence for the given sequences/strings.'),
+ (1, 'MATRIX_CHAIN', 0, 'Matrix Chaining Problem 1',
+  'Determine the optimal number of operations in an optimal paranethization of the matrix sequence.');
 
 INSERT INTO LCSProblem
  (Id, Sequence1, Sequence2)
  VALUES
- (0, 'skullandbones', 'lullabybabies');
+ (0, 'skulls', 'babies');
+
+INSERT INTO MatrixChainProblem
+ (Id)
+ VALUES
+ (0);
+
+INSERT INTO MatrixSizes
+ (SizeId, ProblemId, Width, Height)
+ VALUES
+ -- ProblemId = 0: {10, 5}, {5, 2}, {2, 20}, {20, 12}, {12, 4}, {4, 60}
+ (0, 0, 10, 5 ),
+ (1, 0, 5,  2 ),
+ (2, 0, 2,  20),
+ (3, 0, 20, 12),
+ (4, 0, 12, 4 ),
+ (5, 0, 4,  60);
 
 /*********************************************************************************
 * Foreign Indexes

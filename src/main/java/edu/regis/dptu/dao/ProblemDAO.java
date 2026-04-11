@@ -17,6 +17,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+
+import javax.sql.rowset.serial.SerialArray;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.svc.ProblemSvc;
@@ -131,8 +135,9 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 return retrieveLCSProblem(id, subTypeId, conn);
 
             case MATRIX_CHAIN:
-                log.warn("MATRIX_CHAIN retrieval not implemented for id={}", id);
-                return null;
+                // TODO: Implement retrieving Matrix Chain problem from the database
+                //log.warn("MATRIX_CHAIN retrieval not implemented for id={}", id);
+                return retrieveMatrixChainProblem(id, subTypeId, conn);
 
             case KNAPSACK_0_1:
                 log.warn("KNAPSACK_0_1 retrieval not implemented for id={}", id);
@@ -180,6 +185,61 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             }
         } catch (SQLException e) {
             log.error("SQLException retrieving LCSProblem id={}, subTypeId={}", id, subTypeId, e);
+            throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
+        } finally {
+            close(stmt); // Don't close the connection, retrieve(courseId) will
+        }
+    }
+    
+    /**
+     * 
+     * 
+     * @param id the id of the returned Matrix Chain problem
+     * @param subTypeId the id of the specific Matrix Chain problem in the MatrixChainProblem table
+     * @param conn an open connection to the DB, which isn't closed.
+     * @return a MatrixChainProblem with the given id and subTypeId
+     * @throws NonRecoverableException possible see getCause()
+     */
+    private MatrixChainProblem retrieveMatrixChainProblem(int id, int subTypeId, Connection conn) throws NonRecoverableException {
+        log.debug("Retrieving MatrixChainProblem id={}, subTypeId={}", id, subTypeId);
+        final String sql = "SELECT SizeId, Width, Height from MatrixSizes where ProblemId = ?";
+        
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            stmt.setInt(1, subTypeId);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            // Get the number of rows returned, then add each width and height to a numRows by 2 array for MatrixChainProblem
+            if (rs.last()){
+                int numRows = rs.getRow();
+                log.debug("Number of Matrices={}", numRows);
+                
+                int[][] sizes = new int[numRows][2];
+                rs.beforeFirst();
+                int i = 0;
+                while (rs.next()) {
+                    sizes[i][0] = rs.getInt(2);
+                    sizes[i][1] = rs.getInt(3);
+                    i++;
+                }
+                log.debug("Matrix Sizes Array={}", Arrays.toString(sizes));
+                for (int[] size : sizes) log.debug("Size={}", Arrays.toString(size));
+                
+                MatrixChainProblem prob = new MatrixChainProblem(id, sizes);
+                prob.setSubTypeId(subTypeId);
+                
+                log.debug("MatrixChainProblem retrieved successfully id={}, subTypeId={}", id, subTypeId);
+                return prob;
+            }
+            else {
+                log.warn("MatrixChainProblem not found id={}, subTypeId={}", id, subTypeId);
+                throw new NonRecoverableException("Inconsistent DB MatrixChainProblem: " + id);
+            }
+        } catch (SQLException e) {
+            log.error("SQLException retrieving MatrixChainProblem id={}, subTypeId={}", id, subTypeId, e);
             throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
