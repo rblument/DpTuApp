@@ -293,7 +293,7 @@ VALUES
   (1, 'Matrix Chain: See One', 
    'In this unit, the student will see an example of a Dynamic Programming
    approach that solves a Matrix Chain Optimization problem for a sequence 
-   of matricies.', 
+   of matrices.', 
    0, 'FIXED_SEQUENCE');
 
 INSERT INTO Task
@@ -349,7 +349,7 @@ VALUES
 INSERT INTO LCSProblem
  (Id, Sequence1, Sequence2)
  VALUES
- (0, 'skulls', 'babies');
+ (0, 'skullandbones', 'lullabybabies');
 
 INSERT INTO MatrixChainProblem
  (Id)

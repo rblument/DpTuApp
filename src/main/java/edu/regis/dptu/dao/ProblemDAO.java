@@ -19,8 +19,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-import javax.sql.rowset.serial.SerialArray;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,8 +133,6 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 return retrieveLCSProblem(id, subTypeId, conn);
 
             case MATRIX_CHAIN:
-                // TODO: Implement retrieving Matrix Chain problem from the database
-                //log.warn("MATRIX_CHAIN retrieval not implemented for id={}", id);
                 return retrieveMatrixChainProblem(id, subTypeId, conn);
 
             case KNAPSACK_0_1:
@@ -192,7 +188,7 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
     }
     
     /**
-     * 
+     * Load and return a MatrixChainProblem from MatrixChainProblem table in the DB using the given subTypeId.
      * 
      * @param id the id of the returned Matrix Chain problem
      * @param subTypeId the id of the specific Matrix Chain problem in the MatrixChainProblem table

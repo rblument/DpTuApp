@@ -20,6 +20,8 @@ TABLE OF CONTENTS
 - Hint
 - KnowledgeComponent
 - LCSProblem
+- MatrixChainProblem
+- MatrixSizes
 - ExercisingLocation
 - Timeout
 - InfoMsgStep
@@ -133,6 +135,21 @@ Purpose: Stores input for Longest Common Subsequence problems.
 - Description: TEXT
 - Sequence1: TEXT [NOT NULL]
 - Sequence2: TEXT [NOT NULL]
+
+MATRIXCHAINPROBLEM
+
+Purpose: Stores input for Matrix Chain Optimization problems.
+
+- Id INT [PRIMARY KEY]
+
+MATRIXSIZES
+
+Purpose: Stores input on sizes of matrices for a specific Matrix Chain Optimization problem.
+
+- SizeId: INT [PRIMARY KEY]
+- ProblemId: INT [NOT NULL, FK to MatrixChainProblem(Id)]
+- Width: INT
+- Height: INT
 
 EXERCISING LOCATION
 

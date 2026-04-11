@@ -70,7 +70,7 @@ public class MatrixChainProblem extends Problem {
     public MatrixChainProblem(int id, int[][] sizes) {
         super(id);
 
-        int n = sizes.length; // Number of rows (i.e. number of matricies)
+        int n = sizes.length; // Number of rows (i.e. number of matrices)
         int m = n; // Number of columns (equal to rows)
         ArrayList<Integer> d = new ArrayList<>();
 
@@ -116,6 +116,7 @@ public class MatrixChainProblem extends Problem {
                 sizes[0][1]);
 
         loadCodeStatements();
+        loadBacktrackingCodeStatements();
     }
 
     @Override
