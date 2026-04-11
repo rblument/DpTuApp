@@ -90,7 +90,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             ProblemKind pKind = model.getType();
             switch (pKind) {
                 case MATRIX_CHAIN:
-                    int[][] tableVariable = (int[][]) ((MatrixChainProblem) model).getVariableObject(model.getTableVariable());
+                    int[][] tableVariable =
+                            (int[][])
+                                    ((MatrixChainProblem) model)
+                                            .getVariableObject(model.getTableVariable());
                     int rows = tableVariable.length;
                     int cols = tableVariable[0].length;
                     log.debug("Updating Matrix Chain Table with (rows={}, cols={})", rows, cols);
@@ -277,7 +280,12 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 headers.add("-1"); // Base case column
                 for (int i = 0; i < string.length(); i++) {
                     // HTML formatting to center label and index
-                    headers.add("<html><center>" + string.charAt(i) + "<br>(" + i + ")</center></html>");
+                    headers.add(
+                            "<html><center>"
+                                    + string.charAt(i)
+                                    + "<br>("
+                                    + i
+                                    + ")</center></html>");
                 }
                 break;
             case MATRIX_CHAIN:
@@ -291,7 +299,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 // TODO
                 break;
         }
-        
+
         columnHeaders = headers.toArray(new String[headers.size()]);
     }
 
@@ -304,13 +312,14 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         ProblemKind pKind = model.getType();
         List<Object[]> rows = new ArrayList<>();
         List<String> rowHeaders = new ArrayList<String>();
-        
+
         // Matrix Chain doesn't use "-1" labels
-        // TODO: Add header formatting logic if needed for 0-1 Knapsack once that problem is complete
+        // TODO: Add header formatting logic if needed for 0-1 Knapsack once that problem is
+        // complete
         if (pKind == ProblemKind.LCS_PROBLEM) {
             rowHeaders.add("-1"); // Base case row label
         }
-        
+
         for (int i = 0; i < string.length(); i++) {
             rowHeaders.add(String.valueOf(string.charAt(i)));
         }
@@ -325,7 +334,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 // Format row label with index
                 toadd[0] = rowHeaders.get(i);
                 // Only add index in parenthesis for LCS Problem
-                // TODO: Add header formatting logic if needed for 0-1 Knapsack once that problem is complete
+                // TODO: Add header formatting logic if needed for 0-1 Knapsack once that problem is
+                // complete
                 if (pKind == ProblemKind.LCS_PROBLEM) toadd[0] = toadd[0] + "  (" + (i - 1) + ")";
             } else {
                 toadd[0] = rowHeaders.get(i);
@@ -353,7 +363,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 || model.getVariableObject("m") == null) {
             return;
         }
-        ProblemKind pKind = model.getType(); 
+        ProblemKind pKind = model.getType();
         Object tableObj = model.getVariableObject(model.getTableVariable());
         Object nObj = model.getVariableObject("n"); // Number of rows
         Object mObj = model.getVariableObject("m"); // Number of columns
