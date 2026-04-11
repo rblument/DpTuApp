@@ -96,8 +96,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                     log.debug("Updating Matrix Chain Table with (rows={}, cols={})", rows, cols);
                     String Ms1 = "";
                     String Ms2 = "";
-                    for (int i = 0; i < rows; i++) Ms1 += String.valueOf(i);
-                    for (int i = 0; i < rows; i++) Ms2 += String.valueOf(i);
+                    for (int i = 0; i < rows - 1; i++) Ms1 += String.valueOf(i);
+                    for (int i = 0; i < rows - 1; i++) Ms2 += String.valueOf(i);
                     updateStrings(Ms1, Ms2);
                     break;
                 case KNAPSACK_0_1:
@@ -164,7 +164,6 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         table =
                 new JTable() {
                     @Override
-                    // TODO: Figure out why this gets called for too many rows for MatrixChain, but the right amount for LCS
                     public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
                         Component component = super.prepareRenderer(renderer, row, col);
                         if (col < 1) {
@@ -270,13 +269,29 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
      * @param string String whose characters become column labels
      */
     private void buildColumnHeaders(String string) {
+        ProblemKind pKind = model.getType();
         List<String> headers = new ArrayList<String>();
         headers.add("table"); // Top-left corner label
-        headers.add("-1"); // Base case column
-        for (int i = 0; i < string.length(); i++) {
-            // HTML formatting to center label and index
-            headers.add("<html><center>" + string.charAt(i) + "<br>(" + i + ")</center></html>");
+        switch (pKind) {
+            case LCS_PROBLEM:
+                headers.add("-1"); // Base case column
+                for (int i = 0; i < string.length(); i++) {
+                    // HTML formatting to center label and index
+                    headers.add("<html><center>" + string.charAt(i) + "<br>(" + i + ")</center></html>");
+                }
+                break;
+            case MATRIX_CHAIN:
+                // Matrix Chain doesn't use "-1" labels or multiline header labels
+                for (int i = 0; i < string.length(); i++) {
+                    // HTML formatting to center label
+                    headers.add("<html><center>" + string.charAt(i) + "</center></html>");
+                }
+                break;
+            case KNAPSACK_0_1:
+                // TODO
+                break;
         }
+        
         columnHeaders = headers.toArray(new String[headers.size()]);
     }
 
@@ -286,9 +301,16 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
      * @param string String whose characters become row labels
      */
     private void buildTableData(String string) {
+        ProblemKind pKind = model.getType();
         List<Object[]> rows = new ArrayList<>();
         List<String> rowHeaders = new ArrayList<String>();
-        rowHeaders.add("-1"); // Base case row label
+        
+        // Matrix Chain doesn't use "-1" labels
+        // TODO: Add header formatting logic if needed for 0-1 Knapsack once that problem is complete
+        if (pKind == ProblemKind.LCS_PROBLEM) {
+            rowHeaders.add("-1"); // Base case row label
+        }
+        
         for (int i = 0; i < string.length(); i++) {
             rowHeaders.add(String.valueOf(string.charAt(i)));
         }
@@ -301,7 +323,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             Object[] toadd = new Object[columnHeaders.length];
             if (i > 0) {
                 // Format row label with index
-                toadd[0] = rowHeaders.get(i) + "  (" + (i - 1) + ")";
+                toadd[0] = rowHeaders.get(i);
+                // Only add index in parenthesis for LCS Problem
+                // TODO: Add header formatting logic if needed for 0-1 Knapsack once that problem is complete
+                if (pKind == ProblemKind.LCS_PROBLEM) toadd[0] = toadd[0] + "  (" + (i - 1) + ")";
             } else {
                 toadd[0] = rowHeaders.get(i);
             }
@@ -328,6 +353,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 || model.getVariableObject("m") == null) {
             return;
         }
+        ProblemKind pKind = model.getType(); 
         Object tableObj = model.getVariableObject(model.getTableVariable());
         Object nObj = model.getVariableObject("n"); // Number of rows
         Object mObj = model.getVariableObject("m"); // Number of columns
@@ -342,6 +368,11 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         int n = (int) nObj;
         int m = (int) mObj;
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        // Since Matrix Chain doesn't use the extra "-1" rows and columns
+        if (pKind == ProblemKind.MATRIX_CHAIN) {
+            n--;
+            m--;
+        }
         // Ensure table has sufficient size
         if (dtm.getRowCount() < n + 1 || dtm.getColumnCount() < m + 2) {
             log.error("SubproblemTableView: Table dimensions too small.", (Throwable) null);
