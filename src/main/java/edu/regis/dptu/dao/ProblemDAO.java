@@ -186,33 +186,38 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             close(stmt); // Don't close the connection, retrieve(courseId) will
         }
     }
-    
+
     /**
-     * Load and return a MatrixChainProblem from MatrixChainProblem table in the DB using the given subTypeId.
-     * 
+     * Load and return a MatrixChainProblem from MatrixChainProblem table in the DB using the given
+     * subTypeId.
+     *
      * @param id the id of the returned Matrix Chain problem
      * @param subTypeId the id of the specific Matrix Chain problem in the MatrixChainProblem table
      * @param conn an open connection to the DB, which isn't closed.
      * @return a MatrixChainProblem with the given id and subTypeId
      * @throws NonRecoverableException possible see getCause()
      */
-    private MatrixChainProblem retrieveMatrixChainProblem(int id, int subTypeId, Connection conn) throws NonRecoverableException {
+    private MatrixChainProblem retrieveMatrixChainProblem(int id, int subTypeId, Connection conn)
+            throws NonRecoverableException {
         log.debug("Retrieving MatrixChainProblem id={}, subTypeId={}", id, subTypeId);
         final String sql = "SELECT SizeId, Width, Height from MatrixSizes where ProblemId = ?";
-        
+
         PreparedStatement stmt = null;
-        
+
         try {
-            stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            stmt =
+                    conn.prepareStatement(
+                            sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             stmt.setInt(1, subTypeId);
-            
+
             ResultSet rs = stmt.executeQuery();
-            
-            // Get the number of rows returned, then add each width and height to a numRows by 2 array for MatrixChainProblem
-            if (rs.last()){
+
+            // Get the number of rows returned, then add each width and height to a numRows by 2
+            // array for MatrixChainProblem
+            if (rs.last()) {
                 int numRows = rs.getRow();
                 log.debug("Number of Matrices={}", numRows);
-                
+
                 int[][] sizes = new int[numRows][2];
                 rs.beforeFirst();
                 int i = 0;
@@ -223,19 +228,25 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 }
                 log.debug("Matrix Sizes Array={}", Arrays.toString(sizes));
                 for (int[] size : sizes) log.debug("Size={}", Arrays.toString(size));
-                
+
                 MatrixChainProblem prob = new MatrixChainProblem(id, sizes);
                 prob.setSubTypeId(subTypeId);
-                
-                log.debug("MatrixChainProblem retrieved successfully id={}, subTypeId={}", id, subTypeId);
+
+                log.debug(
+                        "MatrixChainProblem retrieved successfully id={}, subTypeId={}",
+                        id,
+                        subTypeId);
                 return prob;
-            }
-            else {
+            } else {
                 log.warn("MatrixChainProblem not found id={}, subTypeId={}", id, subTypeId);
                 throw new NonRecoverableException("Inconsistent DB MatrixChainProblem: " + id);
             }
         } catch (SQLException e) {
-            log.error("SQLException retrieving MatrixChainProblem id={}, subTypeId={}", id, subTypeId, e);
+            log.error(
+                    "SQLException retrieving MatrixChainProblem id={}, subTypeId={}",
+                    id,
+                    subTypeId,
+                    e);
             throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will

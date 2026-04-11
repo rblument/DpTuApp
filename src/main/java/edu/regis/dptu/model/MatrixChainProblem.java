@@ -85,9 +85,9 @@ public class MatrixChainProblem extends Problem {
         variables.put("k", 0);
         variables.put("d", d);
         /* used "l" for table variable to be consistent with LCSProblem
-           and because this previously using "m" caused issues in 
-           SubproblemTableView since it expected n=rows m=columns l=table */
-        variables.put("l", new int[n + 1][m + 1]); 
+        and because this previously using "m" caused issues in
+        SubproblemTableView since it expected n=rows m=columns l=table */
+        variables.put("l", new int[n + 1][m + 1]);
         variables.put("s", new int[n + 1][m + 1]);
         variables.put("b", new int[n + 1][m + 1]);
         bTable = (int[][]) variables.get("b");
@@ -217,7 +217,8 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add("<html><pre>        for k = i to j-1</pre></html>"); // Line 6
         codeStatements.add(
                 "<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>"); // Line 7
-        codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>"); // Line 8
+        codeStatements.add(
+                "<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>"); // Line 8
         codeStatements.add("<html><pre>return m</pre></html>"); // Line 9
     }
 
