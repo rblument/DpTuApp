@@ -3,7 +3,7 @@
   <Properties>
     <Property name="APP_NAME">dptu</Property>
     <Property name="LOG_DIR">${sys:user.home}/.${APP_NAME}/logs</Property>
-    <Property name="ROOT_LEVEL">${sys:LOG_LEVEL:-INFO}</Property>
+    <Property name="ROOT_LEVEL">${sys:LOG_LEVEL:-DEBUG}</Property>
   </Properties>
 
   <Appenders>
