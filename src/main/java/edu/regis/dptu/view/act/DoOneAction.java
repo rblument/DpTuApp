@@ -52,7 +52,6 @@ public class DoOneAction extends DpTuGuiAction {
     }
 
     /**
-     *
      * @param evt
      */
     @Override
