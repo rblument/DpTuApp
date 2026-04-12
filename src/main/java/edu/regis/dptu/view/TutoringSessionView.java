@@ -126,8 +126,13 @@ public class TutoringSessionView extends GPanel {
                             ClientRequest req = new ClientRequest(ServerRequestType.COMPLETED_TASK);
                             req.setUserId(userId);
                             req.setSecurityToken(token);
+                            req.setSessionId(String.valueOf(model.getId()));
                             req.setData(String.valueOf(taskId));
-                            log.info("Sending COMPLETED_TASK userId={} taskId{}", userId, taskId);
+                            log.info(
+                                "Sending COMPLETED_TASK userId={} sessionId={} tokenPresent={} taskId={}",
+                                userId,
+                                model.getId(),
+                                token != null && !token.isBlank(), taskId);
 
                             TutorReply reply = SvcFacade.instance().tutorRequest(req);
                             log.info(

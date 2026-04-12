@@ -54,6 +54,9 @@ public class SplashFrame extends JFrame {
     /** Allowed consecutive illegal passwords before the user is locked out. */
     public static final int MAX_SIGNIN_ATTEMPTS = 3;
 
+    /** The tutoring session for the currently signed-in user gotten during login*/
+    private static TutoringSession SIGNED_IN_SESSION = null;;
+
     /** The single instance of this frame. */
     private static final SplashFrame SINGLETON;
 
@@ -91,6 +94,26 @@ public class SplashFrame extends JFrame {
         boolean reset = isFirstLogin;
         isFirstLogin = false;
         return reset;
+    }
+
+    public void setSignedInSession(TutoringSession session) {
+        SIGNED_IN_SESSION = session;
+    }
+
+    public TutoringSession getSignedInSession() {
+        return SIGNED_IN_SESSION;
+    }
+
+    public int getSessionId() {
+        return SIGNED_IN_SESSION.getId();
+    }
+
+    public String getSecurityToken() {
+        return SIGNED_IN_SESSION.getSecurityToken();
+    }
+
+    public String getUserId() {
+        return SIGNED_IN_SESSION.getUserId();
     }
 
     /** All student info should reside here. */
