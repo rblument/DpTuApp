@@ -88,22 +88,24 @@ public class SeeOneAction extends DpTuGuiAction {
             ts.setMode(Mode.SEE_ONE);
             TutoringSession signedInSession = SplashFrame.instance().getSignedInSession();
             log.debug(
-                "SeeOneAction retrieved signedInSession: userId={} sessionId={} token={}",
-                signedInSession != null ? signedInSession.getUserId() : null,
-                signedInSession != null ? signedInSession.getId() : null,
-                signedInSession != null ? signedInSession.getSecurityToken() : null);
+                    "SeeOneAction retrieved signedInSession: userId={} sessionId={} token={}",
+                    signedInSession != null ? signedInSession.getUserId() : null,
+                    signedInSession != null ? signedInSession.getId() : null,
+                    signedInSession != null ? signedInSession.getSecurityToken() : null);
 
             if (signedInSession != null) {
                 ts.setId(signedInSession.getId());
                 ts.setSecurityToken(signedInSession.getSecurityToken());
                 ts.setUserId(signedInSession.getUserId());
-                log.info("Initialized SEE_ONE session with existing sessionId={} and securityToken={} and userId={}", 
-                    ts.getId(), 
-                    ts.getSecurityToken(),
-                    ts.getUserId());
+                log.info(
+                        "Initialized SEE_ONE session with existing sessionId={} and securityToken={} and userId={}",
+                        ts.getId(),
+                        ts.getSecurityToken(),
+                        ts.getUserId());
             } else {
-                log.warn( "No signed-in session found in SplashFrame; " + 
-                    "SEE_ONE session has no authorization context (sessionId or securityToken)");
+                log.warn(
+                        "No signed-in session found in SplashFrame; "
+                                + "SEE_ONE session has no authorization context (sessionId or securityToken)");
             }
 
             int taskId = problem.getTaskId();

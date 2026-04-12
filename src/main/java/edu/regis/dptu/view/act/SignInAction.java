@@ -80,7 +80,8 @@ public class SignInAction extends DpTuGuiAction {
         switch (reply.getStatus()) {
             case "Authenticated":
                 try {
-                    JsonObject sessionJson = JsonParser.parseString(reply.getData()).getAsJsonObject();
+                    JsonObject sessionJson =
+                            JsonParser.parseString(reply.getData()).getAsJsonObject();
                     int sessionId = sessionJson.get("id").getAsInt();
                     String securityToken = sessionJson.get("securityToken").getAsString();
                     TutoringSession signedInSession = new TutoringSession(user.getUserId());
@@ -88,8 +89,11 @@ public class SignInAction extends DpTuGuiAction {
                     signedInSession.setSecurityToken(securityToken);
                     SplashFrame.instance().setSignedInSession(signedInSession);
                     signedInSession.setUserId(frame.getUserId());
-                    log.info("sessionId={} securityToken={} stored in SplashFrame for userId={}", sessionId, securityToken, signedInSession.getUserId());
-
+                    log.info(
+                            "sessionId={} securityToken={} stored in SplashFrame for userId={}",
+                            sessionId,
+                            securityToken,
+                            signedInSession.getUserId());
 
                     AccountDAO accDao = new AccountDAO();
                     Account studentAccount = accDao.retrieve(user.getUserId());
