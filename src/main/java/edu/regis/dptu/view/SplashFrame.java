@@ -105,16 +105,23 @@ public class SplashFrame extends JFrame {
         return SIGNED_IN_SESSION;
     }
 
+    private TutoringSession requireSignedInSession() {
+        if (SIGNED_IN_SESSION == null) {
+            throw new IllegalStateException("No user is currently signed in.");
+        }
+        return SIGNED_IN_SESSION;
+    }
+
     public int getSessionId() {
-        return SIGNED_IN_SESSION.getId();
+        return requireSignedInSession().getId();
     }
 
     public String getSecurityToken() {
-        return SIGNED_IN_SESSION.getSecurityToken();
+        return requireSignedInSession().getSecurityToken();
     }
 
     public String getUserId() {
-        return SIGNED_IN_SESSION.getUserId();
+        return requireSignedInSession().getUserId();
     }
 
     /** All student info should reside here. */
