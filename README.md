@@ -10,7 +10,7 @@ DpTu (Dynamic Programming Tutor) is an Intelligent Tutoring System (ITS) designe
 
 ## Features
 
-- User Authentication: Secure account creation and sign-in for students.
+- User Authentication: Secure account creation and sign-in for students. Students receive instant feedback on their work.
 - Dynamic Programming Tutoring: Currently focuses on the Longest Common Subsequence (LCS) problem.
 - Algorithm Visualization:
   - Step-by-step execution of the DP algorithm.

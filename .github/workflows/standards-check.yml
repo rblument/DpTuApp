@@ -1,22 +1,37 @@
-name: Logging Standards Check
+name: Standards Check
 
 permissions:
   contents: read
   pull-requests: write
   issues: write
 
-# This workflow enforces the DpTu Logging Developer Guide.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+# This workflow enforces DpTu coding standards:
 #
-# Goals:
-# 1) FAIL the build on forbidden logging patterns that bypass SLF4J
-# 2) WARN (non-blocking) on files that appear to have no logging at all
+# Job 1 – logging-standards (enforces the DpTu Logging Developer Guide)
+#   Goals:
+#   1) FAIL the build on forbidden logging patterns that bypass SLF4J
+#   2) WARN (non-blocking) on files that appear to have no logging at all
 #
-# Rationale:
-# - Application code must use SLF4J (org.slf4j.Logger) exclusively
-# - Direct console output, stack trace printing, JUL imports, or direct
-# backend usage (Log4j2) are not allowed in new code
-# - Some checks are warnings to avoid breaking legacy code while still
-# nudging developers toward the standard
+#   Rationale:
+#   - Application code must use SLF4J (org.slf4j.Logger) exclusively
+#   - Direct console output, stack trace printing, JUL imports, or direct
+#     backend usage (Log4j2) are not allowed in new code
+#   - Some checks are warnings to avoid breaking legacy code while still
+#     nudging developers toward the standard
+#
+# Job 2 – spelling-check (enforces spelling via cspell)
+#   Goals:
+#   1) FAIL the build on new spelling errors introduced by the PR
+#   2) Post / update / delete a sticky PR comment listing violations
+#
+#   Rationale:
+#   - Mis-spelled identifiers, comments, and documentation degrade quality
+#   - Only *new* violations (relative to the development baseline) block the
+#     build, so pre-existing issues never prevent ongoing work
+#   - Add accepted project-specific terms to .cspell/project-words.txt
 
 on:
   pull_request:
@@ -488,4 +503,198 @@ jobs:
                 repo,
                 comment_id: existing.id,
               });
+            }
+
+  # --------------------------------------------------------------------
+  # Job 2: Spelling check via cspell
+  # --------------------------------------------------------------------
+  spelling-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Checkout development baseline
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: development
+          path: baseline
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install cspell
+        run: npm install -g cspell@latest
+
+      # ------------------------------------------------------------------
+      # On push / workflow_dispatch: just report, never fail
+      # ------------------------------------------------------------------
+      - name: Run cspell (push / manual)
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set +e
+          cspell lint --config cspell.config.yaml --no-progress --show-context 2>&1
+          EXIT=$?
+          if [ $EXIT -ne 0 ]; then
+            echo "ℹ️ cspell found issues (advisory only on push/manual runs)."
+          else
+            echo "✅ cspell found no spelling issues."
+          fi
+          exit 0
+
+      # ------------------------------------------------------------------
+      # On PR: delta-based check — only violations NEW to this PR fail
+      # ------------------------------------------------------------------
+      - name: Run cspell on PR branch
+        if: github.event_name == 'pull_request'
+        id: cspell_head
+        shell: bash
+        run: |
+          set +e
+          cspell lint --config cspell.config.yaml --no-progress 2>&1 \
+            | grep -v '^CSpell:' | sort -u > /tmp/cspell_head.txt || true
+          head -20 /tmp/cspell_head.txt
+
+      - name: Run cspell on development baseline
+        if: github.event_name == 'pull_request'
+        id: cspell_base
+        shell: bash
+        run: |
+          set +e
+          cspell lint --config baseline/cspell.config.yaml --no-progress \
+            --root baseline 2>&1 \
+            | grep -v '^CSpell:' | sed 's#^baseline/##g' | sort -u > /tmp/cspell_base.txt || true
+          head -20 /tmp/cspell_base.txt
+
+      - name: Compute new spelling violations
+        if: github.event_name == 'pull_request'
+        id: spelling_delta
+        shell: bash
+        run: |
+          set +e
+          comm -13 /tmp/cspell_base.txt /tmp/cspell_head.txt > /tmp/cspell_new.txt 2>&1 || true
+          count=$(grep -c '^' /tmp/cspell_new.txt 2>/dev/null)
+          # Ensure count is numeric, default to 0 if empty
+          count=${count:-0}
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          
+          baseline_count=$(grep -c '^' /tmp/cspell_base.txt 2>/dev/null || echo 0)
+          head_count=$(grep -c '^' /tmp/cspell_head.txt 2>/dev/null || echo 0)
+          
+          echo "=== Violation Files Info ==="
+          ls -lh /tmp/cspell_*.txt 2>&1 | head -3
+          echo ""
+          echo "=== File Checksums (md5sum) ==="
+          md5sum /tmp/cspell_base.txt /tmp/cspell_head.txt 2>&1 | head -2
+          echo ""
+          echo "=== Debug Info ==="
+          echo "Baseline violations: $baseline_count"
+          echo "Head violations: $head_count"
+          echo "New violations: $count"
+          echo ""
+          echo "=== Baseline violations ===" 
+          cat -n /tmp/cspell_base.txt || echo "(none)"
+          echo ""
+          echo "=== Head violations ==="
+          cat -n /tmp/cspell_head.txt || echo "(none)"
+          echo ""
+          echo "=== New violations (comm -13 output) ==="
+          cat /tmp/cspell_new.txt || echo "(none)"
+
+          marker='<!-- cspell-violations-delta -->'
+          {
+            echo "$marker"
+            echo "## Spelling Violations Delta"
+            echo
+            echo "_This comment updates with each commit to this branch and is removed when all spelling issues are resolved._"
+            echo
+            if [ "$count" -eq 0 ]; then
+              echo "No new spelling violations were introduced compared to \`development\`."
+            else
+              echo "This PR introduces **$count** new spelling violation(s) compared to \`development\`."
+              echo
+              echo "To fix: correct the spelling or add accepted project-specific terms to \`.cspell/project-words.txt\`."
+              echo
+              echo "\`\`\`"
+              cat /tmp/cspell_new.txt
+              echo "\`\`\`"
+            fi
+          } > /tmp/cspell_comment.md
+
+      - name: Fail build on new spelling violations
+        if: github.event_name == 'pull_request' && steps.spelling_delta.outputs.count != '0'
+        shell: bash
+        run: |
+          echo "🚨 ${{ steps.spelling_delta.outputs.count }} new spelling violation(s) detected."
+          echo "See the PR comment for details or run: cspell lint --config cspell.config.yaml"
+          exit 1
+
+      - name: Post or update spelling delta comment on PR
+        if: always() && github.event_name == 'pull_request' && steps.spelling_delta.outputs.count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- cspell-violations-delta -->';
+            const body = fs.readFileSync('/tmp/cspell_comment.md', 'utf8');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+              console.log('🔄 Updated spelling violations comment.');
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+              console.log('✋ Posted spelling violations comment.');
+            }
+
+      - name: Remove stale spelling delta comment on PR
+        if: always() && github.event_name == 'pull_request' && steps.spelling_delta.outputs.count == '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- cspell-violations-delta -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+              });
+              console.log('✅ Removed stale spelling violations comment.');
+            } else {
+              console.log('ℹ️ No spelling violations comment found to remove.');
             }
