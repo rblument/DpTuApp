@@ -33,9 +33,12 @@ import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Course;
 import edu.regis.dptu.model.CourseDigest;
+import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Task;
 import edu.regis.dptu.model.TaskKind;
 import edu.regis.dptu.model.UnitDigest;
+import edu.regis.dptu.svc.ProblemSvc;
+import edu.regis.dptu.svc.ServiceFactory;
 
 /**
  * Unit test class for CourseDAO using mocked database connections
@@ -252,5 +255,174 @@ public class CourseDAOTest {
         assertThrows(
                 NonRecoverableException.class,
                 () -> dao.retrieveTask(TEST_COURSE_ID, TEST_TASK_ID, mockConnection));
+    }
+
+    /** Test full retrieve path that traverses units, tasks, steps, hints, and outcomes. */
+    @Test
+    public void testRetrieveFullCourseStructure() throws Exception {
+        PreparedStatement courseStmt = mock(PreparedStatement.class);
+        PreparedStatement locationsStmt = mock(PreparedStatement.class);
+        PreparedStatement unitsStmt = mock(PreparedStatement.class);
+        PreparedStatement tasksStmt = mock(PreparedStatement.class);
+        PreparedStatement stepsStmt = mock(PreparedStatement.class);
+        PreparedStatement timeoutStmt = mock(PreparedStatement.class);
+        PreparedStatement hintsStmt = mock(PreparedStatement.class);
+        PreparedStatement outcomesStmt = mock(PreparedStatement.class);
+
+        ResultSet courseRs = mock(ResultSet.class);
+        ResultSet locationsRs = mock(ResultSet.class);
+        ResultSet unitsRs = mock(ResultSet.class);
+        ResultSet tasksRs = mock(ResultSet.class);
+        ResultSet stepsRs = mock(ResultSet.class);
+        ResultSet timeoutRs = mock(ResultSet.class);
+        ResultSet hintsRs = mock(ResultSet.class);
+        ResultSet outcomesRs = mock(ResultSet.class);
+
+        when(mockConnection.prepareStatement(anyString()))
+                .thenReturn(courseStmt)
+                .thenReturn(locationsStmt)
+                .thenReturn(unitsStmt)
+                .thenReturn(tasksStmt)
+                .thenReturn(stepsStmt)
+                .thenReturn(timeoutStmt)
+                .thenReturn(hintsStmt)
+                .thenReturn(outcomesStmt);
+
+        when(courseStmt.executeQuery()).thenReturn(courseRs);
+        when(locationsStmt.executeQuery()).thenReturn(locationsRs);
+        when(unitsStmt.executeQuery()).thenReturn(unitsRs);
+        when(tasksStmt.executeQuery()).thenReturn(tasksRs);
+        when(stepsStmt.executeQuery()).thenReturn(stepsRs);
+        when(timeoutStmt.executeQuery()).thenReturn(timeoutRs);
+        when(hintsStmt.executeQuery()).thenReturn(hintsRs);
+        when(outcomesStmt.executeQuery()).thenReturn(outcomesRs);
+
+        when(courseRs.next()).thenReturn(true);
+        when(courseRs.getString(1)).thenReturn("Dynamic Programming");
+        when(courseRs.getString(2)).thenReturn("FIXED_SEQUENCE");
+        when(courseRs.getString(3)).thenReturn("Course description");
+
+        when(locationsRs.next()).thenReturn(true).thenReturn(false);
+        when(locationsRs.getInt(1)).thenReturn(0);
+        when(locationsRs.getInt(2)).thenReturn(1);
+        when(locationsRs.getInt(3)).thenReturn(5);
+        when(locationsRs.getInt(4)).thenReturn(9);
+
+        when(unitsRs.next()).thenReturn(true).thenReturn(false);
+        when(unitsRs.getInt(1)).thenReturn(1);
+        when(unitsRs.getString(2)).thenReturn("Unit 1");
+        when(unitsRs.getString(3)).thenReturn("Unit description");
+        when(unitsRs.getInt(4)).thenReturn(0);
+        when(unitsRs.getString(5)).thenReturn("Fixed Sequence");
+
+        when(tasksRs.next()).thenReturn(true).thenReturn(false);
+        when(tasksRs.getInt(1)).thenReturn(5);
+        when(tasksRs.getString(2)).thenReturn("Task 1");
+        when(tasksRs.getString(3)).thenReturn("Task description");
+        when(tasksRs.getString(4)).thenReturn("PROBLEM");
+        when(tasksRs.getInt(5)).thenReturn(0);
+        when(tasksRs.getInt(6)).thenReturn(10);
+
+        when(stepsRs.next()).thenReturn(true).thenReturn(false);
+        when(stepsRs.getInt(1)).thenReturn(9);
+        when(stepsRs.getString(2)).thenReturn("Step title");
+        when(stepsRs.getString(3)).thenReturn("Step description");
+        when(stepsRs.getInt(4)).thenReturn(0);
+        when(stepsRs.getString(5)).thenReturn("INFO_MESSAGE");
+        when(stepsRs.getInt(7)).thenReturn(2);
+
+        when(timeoutRs.next()).thenReturn(true);
+        when(timeoutRs.getString(1)).thenReturn("SOFT");
+        when(timeoutRs.getInt(2)).thenReturn(15);
+        when(timeoutRs.getString(3)).thenReturn("WARN");
+        when(timeoutRs.getString(4)).thenReturn("Keep going");
+
+        when(hintsRs.next()).thenReturn(true).thenReturn(false);
+        when(hintsRs.getInt(1)).thenReturn(1);
+        when(hintsRs.getString(2)).thenReturn("Hint text");
+        when(hintsRs.getInt(3)).thenReturn(0);
+
+        when(outcomesRs.next()).thenReturn(true).thenReturn(false);
+        when(outcomesRs.getInt(1)).thenReturn(111);
+        when(outcomesRs.getString(2)).thenReturn("Outcome 1");
+        when(outcomesRs.getString(3)).thenReturn("Outcome description");
+        when(outcomesRs.getString(4)).thenReturn("Knowledge");
+        when(outcomesRs.getBoolean(5)).thenReturn(true);
+        when(outcomesRs.getString(6)).thenReturn("Fixed Sequence");
+        when(outcomesRs.getString(7)).thenReturn("0");
+        when(outcomesRs.getString(8)).thenReturn("Course");
+
+        ProblemSvc problemSvc = mock(ProblemSvc.class);
+        when(problemSvc.retrieve(10)).thenReturn(new LCSProblem(10, "AB", "AC"));
+
+        try (MockedStatic<ServiceFactory> mockedFactory = mockStatic(ServiceFactory.class)) {
+            mockedFactory.when(ServiceFactory::findProblemSvc).thenReturn(problemSvc);
+
+            Course course = dao.retrieve(TEST_COURSE_ID);
+
+            assertNotNull(course);
+            assertEquals(TEST_COURSE_ID, course.getId());
+            assertEquals("Dynamic Programming", course.getTitle());
+            assertEquals(1, course.getUnits().size());
+            assertEquals(1, course.getOutcomes().size());
+            assertEquals(1, course.currentUnit().getTasks().size());
+            assertNotNull(course.currentUnit().getTasks().get(0).getProblem());
+        }
+    }
+
+    /** Test inconsistent DB branch when a PROBLEM task references a missing problem row. */
+    @Test
+    public void testRetrieveWithMissingProblemReferenceThrowsNonRecoverable() throws Exception {
+        PreparedStatement courseStmt = mock(PreparedStatement.class);
+        PreparedStatement locationsStmt = mock(PreparedStatement.class);
+        PreparedStatement unitsStmt = mock(PreparedStatement.class);
+        PreparedStatement tasksStmt = mock(PreparedStatement.class);
+
+        ResultSet courseRs = mock(ResultSet.class);
+        ResultSet locationsRs = mock(ResultSet.class);
+        ResultSet unitsRs = mock(ResultSet.class);
+        ResultSet tasksRs = mock(ResultSet.class);
+
+        when(mockConnection.prepareStatement(anyString()))
+                .thenReturn(courseStmt)
+                .thenReturn(locationsStmt)
+                .thenReturn(unitsStmt)
+                .thenReturn(tasksStmt);
+
+        when(courseStmt.executeQuery()).thenReturn(courseRs);
+        when(locationsStmt.executeQuery()).thenReturn(locationsRs);
+        when(unitsStmt.executeQuery()).thenReturn(unitsRs);
+        when(tasksStmt.executeQuery()).thenReturn(tasksRs);
+
+        when(courseRs.next()).thenReturn(true);
+        when(courseRs.getString(1)).thenReturn("Course");
+        when(courseRs.getString(2)).thenReturn("FIXED_SEQUENCE");
+        when(courseRs.getString(3)).thenReturn("Course description");
+
+        when(locationsRs.next()).thenReturn(false);
+
+        when(unitsRs.next()).thenReturn(true).thenReturn(false);
+        when(unitsRs.getInt(1)).thenReturn(1);
+        when(unitsRs.getString(2)).thenReturn("Unit 1");
+        when(unitsRs.getString(3)).thenReturn("Unit description");
+        when(unitsRs.getInt(4)).thenReturn(0);
+        when(unitsRs.getString(5)).thenReturn("Fixed Sequence");
+
+        when(tasksRs.next()).thenReturn(true);
+        when(tasksRs.getInt(1)).thenReturn(5);
+        when(tasksRs.getString(2)).thenReturn("Task 1");
+        when(tasksRs.getString(3)).thenReturn("Task description");
+        when(tasksRs.getString(4)).thenReturn("PROBLEM");
+        when(tasksRs.getInt(5)).thenReturn(0);
+        when(tasksRs.getInt(6)).thenReturn(222);
+
+        ProblemSvc problemSvc = mock(ProblemSvc.class);
+        when(problemSvc.retrieve(222)).thenThrow(new ObjNotFoundException("missing problem"));
+
+        try (MockedStatic<ServiceFactory> mockedFactory = mockStatic(ServiceFactory.class)) {
+            mockedFactory.when(ServiceFactory::findProblemSvc).thenReturn(problemSvc);
+
+            assertThrows(NonRecoverableException.class, () -> dao.retrieve(TEST_COURSE_ID));
+        }
     }
 }
