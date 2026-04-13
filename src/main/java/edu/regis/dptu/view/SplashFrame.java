@@ -56,7 +56,6 @@ public class SplashFrame extends JFrame {
 
     /** The tutoring session for the currently signed-in user gotten during login */
     private static TutoringSession SIGNED_IN_SESSION = null;
-    ;
 
     /** The single instance of this frame. */
     private static final SplashFrame SINGLETON;
