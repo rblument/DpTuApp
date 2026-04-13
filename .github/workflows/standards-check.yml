@@ -575,15 +575,14 @@ jobs:
         run: |
           set +e
           comm -13 /tmp/cspell_base.txt /tmp/cspell_head.txt > /tmp/cspell_new.txt 2>&1 || true
-          count=$(wc -l < /tmp/cspell_new.txt 2>/dev/null || echo 0)
-          # Remove trailing blank lines if any
-          count=$(grep -c . /tmp/cspell_new.txt 2>/dev/null || echo 0)
-          echo "count=$count" >> "$GITHUB_OUTPUT"
+          count=$(grep -c . /tmp/cspell_new.txt 2>/dev/null || echo "0")
+          # Trim any whitespace from count
+          count=$(printf '%d' "$count")
+          echo "count=${count}" >> "$GITHUB_OUTPUT"
           
-          echo "ℹ️ Debug info:"
-          echo "  Baseline violations: $(wc -l < /tmp/cspell_base.txt)"
-          echo "  Head violations: $(wc -l < /tmp/cspell_head.txt)"
-          echo "  New violations: $count"
+          baseline_count=$(grep -c . /tmp/cspell_base.txt 2>/dev/null || echo "0")
+          head_count=$(grep -c . /tmp/cspell_head.txt 2>/dev/null || echo "0")
+          echo "ℹ️ Debug: baseline=${baseline_count}, head=${head_count}, new=${count}"
 
           marker='<!-- cspell-violations-delta -->'
           {
