@@ -41,7 +41,7 @@ public class DpTuServerConnectionTest {
     @Test
     public void dpTuConnectionReadsRequestAndWritesReply() throws Exception {
         String requestJson =
-            "{\"requestType\":\"REQUEST_HINT\",\"data\":\"{}\",\"userId\":\"student@regis.edu\",\"securityToken\":\"token-1\"}\n";
+                "{\"requestType\":\"REQUEST_HINT\",\"data\":\"{}\",\"userId\":\"student@regis.edu\",\"securityToken\":\"token-1\"}\n";
 
         ByteArrayInputStream in =
                 new ByteArrayInputStream(requestJson.getBytes(StandardCharsets.UTF_8));
