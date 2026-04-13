@@ -90,9 +90,9 @@ public class SignInAction extends DpTuGuiAction {
                     SplashFrame.instance().setSignedInSession(signedInSession);
                     signedInSession.setUserId(frame.getUserId());
                     log.info(
-                            "sessionId={} securityToken={} stored in SplashFrame for userId={}",
+                            "sessionId={} securityTokenPresent={} stored in SplashFrame for userId={}",
                             sessionId,
-                            securityToken,
+                            securityToken != null && !securityToken.isEmpty(),
                             signedInSession.getUserId());
 
                     AccountDAO accDao = new AccountDAO();
