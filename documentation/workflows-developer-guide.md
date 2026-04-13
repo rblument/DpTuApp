@@ -153,50 +153,85 @@ Resolve formatting, compile, or test failures, commit, and push again.
 
 ---
 
-## 2. Logging Standards Enforcement (`logging-check.yml`)
+## 2. Standards Check (`standards-check.yml`)
 
 ### Purpose
 
-Enforces repository logging rules. This workflow implements the policies defined in: `documentation/logging-developer-guide.md`. All developers should follow that guide.
+Enforces repository coding standards including:
+
+* **Logging standards** — enforces the policies defined in: `documentation/logging-developer-guide.md`
+* **Spelling standards** — enforces correct spelling via cspell in documentation, workflows, and configuration
+
+All developers should follow both guides.
 
 ### When It Runs
 
-* Push to: `development` or `main` branches.
+* Push to: `development` or `main` branches
 * Pull requests
 * Manual trigger
 
 ### What It Enforces
 
-Scope note: Logging checks are run against `*.java` source files only (non-test Java sources). Resource files such as `.properties`, `.xml`, images, and text files are not scanned by this workflow.
+#### Job 1: `logging-standards`
 
-#### Hard Failures (Build Stops)
+**Scope:** Logging checks are run against `*.java` source files only (non-test Java sources).
+
+**Hard Failures (Build Stops):**
 
 These patterns are forbidden:
 
-* `System.out.*`
-* `System.err.*`
-* `printStackTrace()`
-* `java.util.logging`
-* Direct Log4j usage
+* `System.out.*` (console output)
+* `System.err.*` (console error)
+* `printStackTrace()` (stack trace printing)
+* `java.util.logging` (direct JUL usage)
+* Direct Log4j usage (must use SLF4J)
 * Logging framework bypasses
-* `System.exit(...)`
+* `System.exit(...)` (abrupt JVM termination)
 
-#### Warnings (Non-blocking)
+**Warnings (Non-blocking):**
 
 * Classes with no logging
 * Logger declared but never used
 * Empty catch blocks
 * `log.error` calls without exception context
 
-### Pull Request Delta Comment
+#### Job 2: `spelling-check` (NEW)
 
-On pull requests, the workflow compares current logging findings against `development` and posts/updates a sticky PR comment listing only **newly introduced violations**.
+**Scope:** Spelling checks via cspell are run on:
 
-This keeps legacy findings visible but focuses reviewer attention on what the PR added.
+* `README.md`
+* `documentation/**/*.md` (markdown documentation)
+* `.github/**/*.yml` and `.github/**/*.yaml` (workflow files)
+* `src/main/resources/Msgs.properties` (UI message strings)
+
+**Ignored files:** `target/`, `.git/`, image files, database scripts, and class names matching the domain qualifier pattern `edu.regis.dptu.*`.
+
+**Hard Failures on PRs:**
+
+Only *new* spelling violations introduced by the PR fail the build (delta-based check against `development`).
+
+**Advisory (Non-blocking) on push/manual runs:**
+
+Spelling issues are reported but do not fail the build.
+
+**Project Dictionary:**
+
+Project-specific terms (DpTu, SLF4J, JaCoCo, etc.) are stored in `.cspell/project-words.txt`.
+
+To add accepted terms, edit this file and commit.
+
+### Pull Request Delta Comments
+
+On pull requests, the workflow compares findings against `development` and posts/updates sticky PR comments:
+
+* **Logging violations comment** (`<!-- logging-violations-delta -->`): lists newly introduced logging issues
+* **Spelling violations comment** (`<!-- cspell-violations-delta -->`): lists newly introduced spelling errors
+
+If a later commit resolves all violations, the corresponding comment is automatically deleted.
 
 ### Test Code Exemptions
 
-Test sources are excluded from enforcement.
+Test sources are excluded from logging enforcement.
 
 ### How to Fix Failures
 
@@ -361,6 +396,7 @@ Together they create a stable, secure, production-ready development environment.
 ## Related Documentation
 
 * `documentation/logging-developer-guide.md` — Logging standards and enforcement rules
+* `documentation/code-quality.md` — Code style, formatting, and spelling standards
 
 ---
 
@@ -376,4 +412,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 18 March 2026 by Harrison Sherwin
+**Last reviewed:** 12 April 2026 by Harrison Sherwin
