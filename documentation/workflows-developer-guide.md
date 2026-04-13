@@ -160,7 +160,7 @@ Resolve formatting, compile, or test failures, commit, and push again.
 Enforces repository coding standards including:
 
 * **Logging standards** — enforces the policies defined in: `documentation/logging-developer-guide.md`
-* **Spelling standards** — enforces correct spelling via cspell in documentation, workflows, and configuration
+* **Spelling standards** — enforces correct spelling via cspell in documentation, workflows, and configuration as defined in: `documentation/code-quality.md`
 
 All developers should follow both guides.
 
