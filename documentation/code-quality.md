@@ -90,6 +90,59 @@ Future improvements may include:
 
 ---
 
+## Spelling Standards (cspell)
+
+### What It Does
+
+The project uses [**cspell**](https://cspell.org/) to detect and prevent spelling errors in:
+
+* Documentation (Markdown files)
+* GitHub workflows (YAML)
+* Configuration files
+* UI message strings (Msgs.properties)
+
+This ensures that misspellings in comments, documentation, and public-facing text don't slip into releases.
+
+### Configuration
+
+The cspell configuration is defined in: `cspell.config.yaml`
+
+Project-specific accepted terms (domain names, acronyms, product names) are maintained in: `.cspell/project-words.txt`
+
+### Developer Workflow
+
+#### Check Spelling Locally
+
+Before committing changes to documentation or workflows:
+
+```shell
+npx cspell lint --config cspell.config.yaml
+```
+
+#### Add Accepted Terms
+
+If a term is correct but flagged as a misspelling (e.g., a project name, acronym, or technical term):
+
+1. Edit `.cspell/project-words.txt`
+2. Add the term (one per line, alphabetically sorted)
+3. Commit and push
+
+Example entries:
+
+```plaintext
+DpTu
+SLF4J
+JaCoCo
+```
+
+### Enforcement Strategy
+
+* **On PRs:** Only *new* spelling violations introduced by the PR are flagged. Pre-existing issues on `development` do not block merges.
+* **On push/manual runs:** Spelling issues are reported but do not fail the build (advisory only).
+* **In CI/CD:** A sticky PR comment lists spelling violations and is automatically deleted when all are resolved.
+
+---
+
 ## Notes
 
 * Existing code may not fully comply with all rules

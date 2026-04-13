@@ -67,6 +67,7 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
 
                 problem.setTitle(rs.getString(3));
                 problem.setDescription(rs.getString(4));
+                problemId = retrieveTaskIdForProblem(problemId, conn);
 
                 log.debug("Problem retrieved successfully id={}", problemId);
                 return problem;

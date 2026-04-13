@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import edu.regis.dptu.dao.AccountDAO;
 import edu.regis.dptu.dao.StudentModelDAO;
@@ -28,6 +30,7 @@ import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.Account;
 import edu.regis.dptu.model.Student;
+import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
 import edu.regis.dptu.model.aol.StudentModel;
 import edu.regis.dptu.svc.ClientRequest;
@@ -77,6 +80,31 @@ public class SignInAction extends DpTuGuiAction {
         switch (reply.getStatus()) {
             case "Authenticated":
                 try {
+                    JsonObject sessionJson =
+                            JsonParser.parseString(reply.getData()).getAsJsonObject();
+                    if (!sessionJson.has("id") || !sessionJson.has("securityToken")) {
+                        log.error(
+                                "SIGN_IN reply missing required session fields: {}",
+                                reply.getData());
+                        SplashFrame.instance()
+                                .showError(
+                                        ResourceMgr.instance().string("dialog.title.error"),
+                                        "Login succeeded but session data was incomplete");
+                        return;
+                    }
+                    int sessionId = sessionJson.get("id").getAsInt();
+                    String securityToken = sessionJson.get("securityToken").getAsString();
+                    TutoringSession signedInSession = new TutoringSession(user.getUserId());
+                    signedInSession.setId(sessionId);
+                    signedInSession.setSecurityToken(securityToken);
+                    SplashFrame.instance().setSignedInSession(signedInSession);
+                    signedInSession.setUserId(frame.getUserId());
+                    log.info(
+                            "sessionId={} securityTokenPresent={} stored in SplashFrame for userId={}",
+                            sessionId,
+                            securityToken != null && !securityToken.isEmpty(),
+                            signedInSession.getUserId());
+
                     AccountDAO accDao = new AccountDAO();
                     Account studentAccount = accDao.retrieve(user.getUserId());
                     StudentModelDAO smDao = new StudentModelDAO();
