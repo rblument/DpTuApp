@@ -660,6 +660,7 @@ jobs:
                 comment_id: existing.id,
                 body,
               });
+              console.log('🔄 Updated spelling violations comment.');
             } else {
               await github.rest.issues.createComment({
                 owner,
@@ -667,6 +668,7 @@ jobs:
                 issue_number,
                 body,
               });
+              console.log('✋ Posted spelling violations comment.');
             }
 
       - name: Remove stale spelling delta comment on PR
@@ -692,4 +694,7 @@ jobs:
                 repo,
                 comment_id: existing.id,
               });
+              console.log('✅ Removed stale spelling violations comment.');
+            } else {
+              console.log('ℹ️ No spelling violations comment found to remove.');
             }
