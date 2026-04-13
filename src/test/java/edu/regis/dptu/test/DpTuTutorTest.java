@@ -76,16 +76,22 @@ public class DpTuTutorTest {
     }
 
     @Test
-    public void requestHintThroughRequestDispatcher() {
+    public void requestHintThroughRequestDispatcher() throws Exception {
         DpTuTutor tutor = new DpTuTutor();
 
-        ClientRequest req = new ClientRequest(ServerRequestType.REQUEST_HINT);
-        req.setData("{}");
+        try (MockedStatic<ServiceFactory> mockedFactory = mockStatic(ServiceFactory.class)) {
+            mockedFactory.when(ServiceFactory::findSessionSvc).thenReturn(mockSessionSvc);
+            when(mockSessionSvc.retrieveSecurityToken(anyString())).thenReturn("db-token");
 
-        TutorReply reply = tutor.request(req);
+            ClientRequest req = new ClientRequest(ServerRequestType.REQUEST_HINT);
+            req.setData("{}");
+            // Empty securityToken does not match "db-token" → verifySession returns false → :ERR
 
-        assertEquals(":ERR", reply.getStatus());
-        assertNotNull(reply.getData());
+            TutorReply reply = tutor.request(req);
+
+            assertEquals(":ERR", reply.getStatus());
+            assertNotNull(reply.getData());
+        }
     }
 
     @Test

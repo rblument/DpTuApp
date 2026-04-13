@@ -14,6 +14,8 @@ package edu.regis.dptu.test;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -107,6 +109,8 @@ public class ProblemCoreTest {
         backtracking.add("back1");
         problem.setBacktrackingCodeStatements(backtracking);
 
+        // Reset to line 0 so executeLine0/undoLine0 are invoked by step/undo.
+        problem.setNextLineNumber(0);
         problem.step();
         problem.step();
         problem.undo(2);
@@ -115,28 +119,21 @@ public class ProblemCoreTest {
         assertEquals(99, problem.getTaskId());
         assertEquals(1, problem.getCodeStatements().size());
         assertEquals(1, problem.getBacktrackingCodeStatements().size());
-        assertEquals(0, problem.undoCount);
+        assertEquals(2, problem.undoCount);
     }
 
     @Test
-    public void stepNUsesTimerAndStopsWhenFinished() {
+    public void stepNUsesTimerAndStopsWhenFinished() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         FakeProblem problem = new FakeProblem();
         CountingListener listener = new CountingListener();
         problem.addProblemListener(listener);
+        problem.addProblemListener(p -> latch.countDown());
 
         problem.finishOnNextStep = true;
         problem.step(3);
 
-        long deadline = System.currentTimeMillis() + 6000;
-        while (problem.executeCount == 0 && System.currentTimeMillis() < deadline) {
-            try {
-                Thread.sleep(25);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
-        }
-
+        assertTrue(latch.await(6, TimeUnit.SECONDS), "Timer callback did not fire within 6s");
         assertTrue(problem.executeCount >= 1);
         assertTrue(listener.updateCount >= 1);
     }

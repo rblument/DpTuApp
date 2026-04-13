@@ -68,16 +68,21 @@ public class ProblemDAOTest {
     public void retrieveReturnsLcsProblemWithMetadata() throws Exception {
         PreparedStatement mainStmt = mock(PreparedStatement.class);
         PreparedStatement subTypeStmt = mock(PreparedStatement.class);
+        PreparedStatement taskStmt = mock(PreparedStatement.class);
         ResultSet mainRs = mock(ResultSet.class);
         ResultSet subTypeRs = mock(ResultSet.class);
+        ResultSet taskRs = mock(ResultSet.class);
 
         when(mockConnection.prepareStatement(startsWith("SELECT ProblemType")))
                 .thenReturn(mainStmt);
         when(mockConnection.prepareStatement(startsWith("SELECT Sequence1")))
                 .thenReturn(subTypeStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT TaskId"))).thenReturn(taskStmt);
 
         when(mainStmt.executeQuery()).thenReturn(mainRs);
         when(subTypeStmt.executeQuery()).thenReturn(subTypeRs);
+        when(taskStmt.executeQuery()).thenReturn(taskRs);
+        when(taskRs.next()).thenReturn(false);
 
         when(mainRs.next()).thenReturn(true);
         when(mainRs.getString(1)).thenReturn(ProblemKind.LCS_PROBLEM.name());
