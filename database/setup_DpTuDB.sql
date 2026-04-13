@@ -294,7 +294,7 @@ VALUES
    'In this unit, the student will see an example of a Dynamic Programming
    approach that solves a Matrix Chain Optimization problem for a sequence 
    of matrices.', 
-   0, 'FIXED_SEQUENCE');
+   1, 'FIXED_SEQUENCE');
 
 INSERT INTO Task
  (TaskId, CourseId, UnitId, SequenceIndex, Title,
@@ -344,7 +344,7 @@ VALUES
  (0, 'LCS_PROBLEM', 0, 'Longest Common Subsequence Problem 1',
   'Determine the longest common subsequence for the given sequences/strings.'),
  (1, 'MATRIX_CHAIN', 0, 'Matrix Chaining Problem 1',
-  'Determine the optimal number of operations in an optimal paranethization of the matrix sequence.');
+  'Determine the optimal number of operations in an optimal parenthesization of the matrix sequence.');
 
 INSERT INTO LCSProblem
  (Id, Sequence1, Sequence2)

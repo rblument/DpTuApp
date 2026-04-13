@@ -140,7 +140,7 @@ MATRIXCHAINPROBLEM
 
 Purpose: Stores input for Matrix Chain Optimization problems.
 
-- Id INT [PRIMARY KEY]
+- Id: INT [PRIMARY KEY]
 
 MATRIXSIZES
 
