@@ -113,7 +113,12 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                         rowHeaders.add(Character.toUpperCase(rowStr.charAt(i)) + " (" + i + ")");
                     }
                     for (int i = 0; i < colStr.length(); i++) {
-                        colHeaders.add("<html><center>" + Character.toUpperCase(colStr.charAt(i)) + "<br>(" + i + ")</center></html>");
+                        colHeaders.add(
+                                "<html><center>"
+                                        + Character.toUpperCase(colStr.charAt(i))
+                                        + "<br>("
+                                        + i
+                                        + ")</center></html>");
                     }
                     updateStrings(rowHeaders, colHeaders);
             }
@@ -280,7 +285,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     private void buildColumnHeaders(ArrayList<String> strings) {
         ProblemKind pKind = model.getType();
         List<String> headers = new ArrayList<String>();
-        
+
         headers.add("table"); // Top-left corner label
         if (pKind == ProblemKind.LCS_PROBLEM) headers.add("-1"); // Base case column
         headers.addAll(strings);
@@ -439,7 +444,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     /**
      * Rebuilds table headers and data when input headers change. Dynamically reapplies renderers
      * and refreshes the view.
-     * 
+     *
      * @param rowHeaders ArrayList of row headers
      * @param colHeaders ArrayList of column headers
      */

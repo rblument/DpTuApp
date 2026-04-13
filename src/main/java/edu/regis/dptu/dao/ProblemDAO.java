@@ -200,7 +200,8 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
     private MatrixChainProblem retrieveMatrixChainProblem(int id, int subTypeId, Connection conn)
             throws NonRecoverableException {
         log.debug("Retrieving MatrixChainProblem id={}, subTypeId={}", id, subTypeId);
-        final String sql = "SELECT SizeId, Width, Height from MatrixSizes where ProblemId = ? ORDER BY SizeId";
+        final String sql =
+                "SELECT SizeId, Width, Height from MatrixSizes where ProblemId = ? ORDER BY SizeId";
 
         PreparedStatement stmt = null;
 
