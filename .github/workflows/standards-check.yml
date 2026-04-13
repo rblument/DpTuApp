@@ -586,18 +586,24 @@ jobs:
           baseline_count=$(grep -c '^' /tmp/cspell_base.txt 2>/dev/null || echo 0)
           head_count=$(grep -c '^' /tmp/cspell_head.txt 2>/dev/null || echo 0)
           
+          echo "=== Violation Files Info ==="
+          ls -lh /tmp/cspell_*.txt 2>&1 | head -3
+          echo ""
+          echo "=== File Checksums (md5sum) ==="
+          md5sum /tmp/cspell_base.txt /tmp/cspell_head.txt 2>&1 | head -2
+          echo ""
           echo "=== Debug Info ==="
           echo "Baseline violations: $baseline_count"
           echo "Head violations: $head_count"
           echo "New violations: $count"
           echo ""
           echo "=== Baseline violations ===" 
-          cat /tmp/cspell_base.txt || echo "(none)"
+          cat -n /tmp/cspell_base.txt || echo "(none)"
           echo ""
           echo "=== Head violations ==="
-          cat /tmp/cspell_head.txt || echo "(none)"
+          cat -n /tmp/cspell_head.txt || echo "(none)"
           echo ""
-          echo "=== New violations ==="
+          echo "=== New violations (comm -13 output) ==="
           cat /tmp/cspell_new.txt || echo "(none)"
 
           marker='<!-- cspell-violations-delta -->'
