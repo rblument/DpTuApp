@@ -82,6 +82,13 @@ public class SignInAction extends DpTuGuiAction {
                 try {
                     JsonObject sessionJson =
                             JsonParser.parseString(reply.getData()).getAsJsonObject();
+                    if (!sessionJson.has("id") || !sessionJson.has("securityToken")) {
+                        log.error("SIGN_IN reply missing required session fields: {}", reply.getData());
+                        SplashFrame.instance().showError(
+                            ResourceMgr.instance().string("dialog.title.error"),
+                            "Login succeeded but session data was incomplete");
+                        return;
+                    }
                     int sessionId = sessionJson.get("id").getAsInt();
                     String securityToken = sessionJson.get("securityToken").getAsString();
                     TutoringSession signedInSession = new TutoringSession(user.getUserId());
