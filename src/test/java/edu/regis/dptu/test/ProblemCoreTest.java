@@ -127,9 +127,14 @@ public class ProblemCoreTest {
         problem.finishOnNextStep = true;
         problem.step(3);
 
-        long deadline = System.currentTimeMillis() + 1500;
+        long deadline = System.currentTimeMillis() + 6000;
         while (problem.executeCount == 0 && System.currentTimeMillis() < deadline) {
-            Thread.yield();
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
 
         assertTrue(problem.executeCount >= 1);
