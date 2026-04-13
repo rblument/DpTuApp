@@ -25,6 +25,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
@@ -69,6 +71,8 @@ public class DashboardPanel extends GPanel {
     private CustomProgressBar teachOneProgressBar;
     private JLabel welcomeLabel;
     private JComboBox<String> problemSelector; // @author EverettCV
+
+    private static boolean isStatsOpen = false;
 
     private static final Color BACKGROUND = new Color(32, 88, 96); // dark seafoam green
     private static final Color TEXT = new Color(31, 41, 55); // deep charcoal
@@ -158,28 +162,24 @@ public class DashboardPanel extends GPanel {
                 new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         seeOneStatsButton.setFocusPainted(false);
         seeOneStatsButton.addActionListener(
-                e -> {
-                    log.info("See One Stats button pressed");
-                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.seeOne.title"));
-                });
+                e ->
+                        statsButtonActionPerformed(
+                                ResourceMgr.instance().string("dashboard.stats.seeOne.title")));
 
         doOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         doOneStatsButton.setFocusPainted(false);
         doOneStatsButton.addActionListener(
-                e -> {
-                    log.info("Do One Stats button pressed");
-                    new StatsWindow(ResourceMgr.instance().string("dashboard.stats.doOne.title"));
-                });
+                e ->
+                        statsButtonActionPerformed(
+                                ResourceMgr.instance().string("dashboard.stats.doOne.title")));
 
         teachOneStatsButton =
                 new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         teachOneStatsButton.setFocusPainted(false);
         teachOneStatsButton.addActionListener(
-                e -> {
-                    log.info("Teach One Stats button pressed");
-                    new StatsWindow(
-                            ResourceMgr.instance().string("dashboard.stats.teachOne.title"));
-                });
+                e ->
+                        statsButtonActionPerformed(
+                                ResourceMgr.instance().string("dashboard.stats.teachOne.title")));
 
         // Apply scaffold level rules for which buttons are visible.
         applyScaffoldLevelRules();
@@ -280,6 +280,35 @@ public class DashboardPanel extends GPanel {
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         SplashFrame.instance().logout();
+    }
+
+    /**
+     * This function runs when any of the stats buttons are clicked, and handles creating and
+     * opening the respective stats window. It sets a flag when the window is successfully created,
+     * so that multiple windows can't be open at once, and resets the flag when the window is
+     * closed.
+     *
+     * @param title The title used for this stats window
+     */
+    private void statsButtonActionPerformed(String title) {
+        if (!isStatsOpen) {
+            try {
+                StatsWindow statsWindow = new StatsWindow(title);
+                log.info("{} window opened", title);
+                isStatsOpen = true;
+                statsWindow.addWindowListener(
+                        new WindowAdapter() {
+                            public void windowClosed(WindowEvent e) {
+                                log.info("{} window closing", title);
+                                isStatsOpen = false;
+                            }
+                        });
+            } catch (RuntimeException e) {
+                log.error("Failed to create stats window", e);
+            }
+        } else {
+            log.info("Another Stats window is already opened");
+        }
     }
 
     /**
