@@ -60,12 +60,10 @@ public class ResourceMgrAndImgFactoryTest {
     public void imgFactoryMissingImagesReturnNullImageAndIconWithAltText() {
         assertNull(ImgFactory.createImage("missing-file.png"));
 
-        assertThrows(
-                NullPointerException.class,
-                () -> ImgFactory.createIcon("missing-file.png", "fallback"));
-
-        ImageIcon icon = new ImageIcon();
+        ImageIcon icon = ImgFactory.createIcon("missing-file.png", "fallback");
         assertNotNull(icon);
+        assertEquals("fallback", icon.getDescription());
         assertTrue(icon.getIconWidth() <= 0);
+        assertTrue(icon.getIconHeight() <= 0);
     }
 }
