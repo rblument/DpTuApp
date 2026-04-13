@@ -133,7 +133,7 @@ public class ProblemCoreTest {
         problem.finishOnNextStep = true;
         problem.step(3);
 
-        assertTrue(latch.await(6, TimeUnit.SECONDS), "Timer callback did not fire within 6s");
+        assertTrue(latch.await(2, TimeUnit.SECONDS), "Timer callback did not fire within 2s");
         assertTrue(problem.executeCount >= 1);
         assertTrue(listener.updateCount >= 1);
     }

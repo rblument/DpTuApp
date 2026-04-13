@@ -43,7 +43,7 @@ public class ModelTest {
         assertTrue(modelB.equals(new StubModel(7)));
         assertFalse(modelB.equals(modelC));
 
-        assertEquals(7, modelA.hashCode());
+        assertEquals(new StubModel(8).hashCode(), modelA.hashCode());
         assertNotEquals("", modelA.toString());
     }
 

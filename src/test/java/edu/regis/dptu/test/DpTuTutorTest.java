@@ -84,6 +84,8 @@ public class DpTuTutorTest {
             when(mockSessionSvc.retrieveSecurityToken(anyString())).thenReturn("db-token");
 
             ClientRequest req = new ClientRequest(ServerRequestType.REQUEST_HINT);
+            req.setUserId("");
+            req.setSecurityToken(null);
             req.setData("{}");
             // Empty securityToken does not match "db-token" → verifySession returns false → :ERR
 

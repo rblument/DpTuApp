@@ -279,14 +279,19 @@ public class CourseDAOTest {
         ResultSet outcomesRs = mock(ResultSet.class);
 
         when(mockConnection.prepareStatement(anyString()))
-                .thenReturn(courseStmt)
-                .thenReturn(locationsStmt)
-                .thenReturn(unitsStmt)
-                .thenReturn(tasksStmt)
-                .thenReturn(stepsStmt)
-                .thenReturn(timeoutStmt)
-                .thenReturn(hintsStmt)
-                .thenReturn(outcomesStmt);
+                .thenAnswer(
+                        invocation -> {
+                            String sql = invocation.getArgument(0, String.class).toLowerCase();
+                            if (sql.contains("primarypedagogy")) return courseStmt;
+                            if (sql.contains("from exercisinglocation")) return locationsStmt;
+                            if (sql.contains("from unit")) return unitsStmt;
+                            if (sql.contains("from task")) return tasksStmt;
+                            if (sql.contains("from step")) return stepsStmt;
+                            if (sql.contains("from timeout")) return timeoutStmt;
+                            if (sql.contains("from hint")) return hintsStmt;
+                            if (sql.contains("knowledgecomponent")) return outcomesStmt;
+                            return courseStmt;
+                        });
 
         when(courseStmt.executeQuery()).thenReturn(courseRs);
         when(locationsStmt.executeQuery()).thenReturn(locationsRs);
@@ -384,10 +389,15 @@ public class CourseDAOTest {
         ResultSet tasksRs = mock(ResultSet.class);
 
         when(mockConnection.prepareStatement(anyString()))
-                .thenReturn(courseStmt)
-                .thenReturn(locationsStmt)
-                .thenReturn(unitsStmt)
-                .thenReturn(tasksStmt);
+                .thenAnswer(
+                        invocation -> {
+                            String sql = invocation.getArgument(0, String.class).toLowerCase();
+                            if (sql.contains("primarypedagogy")) return courseStmt;
+                            if (sql.contains("exercisinglocation")) return locationsStmt;
+                            if (sql.contains("from unit")) return unitsStmt;
+                            if (sql.contains("from task")) return tasksStmt;
+                            return courseStmt;
+                        });
 
         when(courseStmt.executeQuery()).thenReturn(courseRs);
         when(locationsStmt.executeQuery()).thenReturn(locationsRs);
