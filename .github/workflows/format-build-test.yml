@@ -223,20 +223,9 @@ jobs:
           f.write('\n')
         PY
 
-    - name: Checkout development coverage baseline
-      if: github.event_name == 'pull_request'
-      uses: actions/checkout@v4
-      with:
-        ref: development
-        path: baseline
-        fetch-depth: 1
-        sparse-checkout: |
-          .github/badges/coverage-summary.json
-        sparse-checkout-cone-mode: false
-
-    - name: Compare coverage to development
+    - name: Load coverage summary metrics
       if: always() && github.event_name == 'pull_request'
-      id: coverage_delta
+      id: coverage_metrics
       shell: bash
       run: |
         python - <<'PY'
@@ -244,126 +233,103 @@ jobs:
         import os
         from pathlib import Path
 
-        head_summary_path = Path('.github/badges/coverage-summary.json')
-        base_summary_path = Path('baseline/.github/badges/coverage-summary.json')
+        summary_path = Path('.github/badges/coverage-summary.json')
 
         output_path = Path(os.environ['GITHUB_OUTPUT'])
 
-        if not head_summary_path.exists():
+        if not summary_path.exists():
           with output_path.open('a', encoding='utf-8') as out:
             out.write('available=false\n')
-            out.write('baseline_mode=unavailable\n')
-            out.write('all_head=0.000\n')
-            out.write('all_base=0.000\n')
-            out.write('all_delta=0.000\n')
-            out.write('non_ui_head=0.000\n')
-            out.write('non_ui_base=0.000\n')
-            out.write('non_ui_delta=0.000\n')
+            out.write('all_covered=0\n')
+            out.write('all_missed=0\n')
+            out.write('all_percent=0.000\n')
+            out.write('non_ui_covered=0\n')
+            out.write('non_ui_missed=0\n')
+            out.write('non_ui_percent=0.000\n')
 
-          summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
-          if summary_path:
-            with open(summary_path, 'a', encoding='utf-8') as summary:
-              summary.write('\n## Coverage Delta vs development\n')
-              summary.write('Coverage comparison unavailable because the current-branch coverage summary could not be generated.\n')
+          step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+          if step_summary_path:
+            with open(step_summary_path, 'a', encoding='utf-8') as summary:
+              summary.write('\n## Unit Test Coverage Summary\n')
+              summary.write('Coverage summary is unavailable because JaCoCo output was not generated for this run.\n')
           raise SystemExit(0)
 
-        with head_summary_path.open(encoding='utf-8') as f:
-          head_summary = json.load(f)
+        with summary_path.open(encoding='utf-8') as f:
+          summary_data = json.load(f)
 
-        if base_summary_path.exists():
-          with base_summary_path.open(encoding='utf-8') as f:
-            base_summary = json.load(f)
-          baseline_mode = 'stored'
-        else:
-          base_summary = {
-            'all_classes': {'percent': 0.0},
-            'non_swing_ui_classes': {'percent': 0.0},
-          }
-          baseline_mode = 'bootstrap-zero'
+        all_data = summary_data.get('all_classes', {})
+        non_ui_data = summary_data.get('non_swing_ui_classes', {})
 
-        all_head_pct = float(head_summary['all_classes']['percent'])
-        all_base_pct = float(base_summary['all_classes']['percent'])
-        all_delta = all_head_pct - all_base_pct
+        all_covered = int(all_data.get('covered', 0))
+        all_missed = int(all_data.get('missed', 0))
+        all_percent = float(all_data.get('percent', 0.0))
 
-        non_ui_head_pct = float(head_summary['non_swing_ui_classes']['percent'])
-        non_ui_base_pct = float(base_summary['non_swing_ui_classes']['percent'])
-        non_ui_delta = non_ui_head_pct - non_ui_base_pct
+        non_ui_covered = int(non_ui_data.get('covered', 0))
+        non_ui_missed = int(non_ui_data.get('missed', 0))
+        non_ui_percent = float(non_ui_data.get('percent', 0.0))
 
         with output_path.open('a', encoding='utf-8') as out:
           out.write('available=true\n')
-          out.write(f'baseline_mode={baseline_mode}\n')
-          out.write(f'all_head={all_head_pct:.3f}\n')
-          out.write(f'all_base={all_base_pct:.3f}\n')
-          out.write(f'all_delta={all_delta:.3f}\n')
-          out.write(f'non_ui_head={non_ui_head_pct:.3f}\n')
-          out.write(f'non_ui_base={non_ui_base_pct:.3f}\n')
-          out.write(f'non_ui_delta={non_ui_delta:.3f}\n')
+          out.write(f'all_covered={all_covered}\n')
+          out.write(f'all_missed={all_missed}\n')
+          out.write(f'all_percent={all_percent:.3f}\n')
+          out.write(f'non_ui_covered={non_ui_covered}\n')
+          out.write(f'non_ui_missed={non_ui_missed}\n')
+          out.write(f'non_ui_percent={non_ui_percent:.3f}\n')
 
-        summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
-        if summary_path:
-          with open(summary_path, 'a', encoding='utf-8') as summary:
-            summary.write('\n## Coverage Delta vs development\n')
-            if baseline_mode == 'bootstrap-zero':
-              summary.write('_Bootstrap mode: development baseline summary missing; using 0.000% baseline for comparison._\n\n')
-            summary.write('| Metric | development | PR (current) | Delta |\n')
+        step_summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+        if step_summary_path:
+          with open(step_summary_path, 'a', encoding='utf-8') as summary:
+            summary.write('\n## Unit Test Coverage Summary\n')
+            summary.write('| Metric | Covered Lines | Missed Lines | Coverage |\n')
             summary.write('|---|---:|---:|---:|\n')
-            summary.write(f'| All classes | {all_base_pct:.3f}% | {all_head_pct:.3f}% | {all_delta:+.3f}% |\n')
-            summary.write(f'| Non-Swing UI classes | {non_ui_base_pct:.3f}% | {non_ui_head_pct:.3f}% | {non_ui_delta:+.3f}% |\n')
+            summary.write(f'| All classes | {all_covered} | {all_missed} | {all_percent:.3f}% |\n')
+            summary.write(f'| Non-Swing UI classes | {non_ui_covered} | {non_ui_missed} | {non_ui_percent:.3f}% |\n')
         PY
 
-    - name: Comment coverage delta on PR
+    - name: Comment unit test coverage on PR
       if: always() && github.event_name == 'pull_request'
       uses: actions/github-script@v7
       env:
-        COVERAGE_AVAILABLE: ${{ steps.coverage_delta.outputs.available }}
-        BASELINE_MODE: ${{ steps.coverage_delta.outputs.baseline_mode }}
-        ALL_HEAD_COVERAGE: ${{ steps.coverage_delta.outputs.all_head }}
-        ALL_BASE_COVERAGE: ${{ steps.coverage_delta.outputs.all_base }}
-        ALL_DELTA_COVERAGE: ${{ steps.coverage_delta.outputs.all_delta }}
-        NON_UI_HEAD_COVERAGE: ${{ steps.coverage_delta.outputs.non_ui_head }}
-        NON_UI_BASE_COVERAGE: ${{ steps.coverage_delta.outputs.non_ui_base }}
-        NON_UI_DELTA_COVERAGE: ${{ steps.coverage_delta.outputs.non_ui_delta }}
+        COVERAGE_AVAILABLE: ${{ steps.coverage_metrics.outputs.available }}
+        ALL_COVERED_LINES: ${{ steps.coverage_metrics.outputs.all_covered }}
+        ALL_MISSED_LINES: ${{ steps.coverage_metrics.outputs.all_missed }}
+        ALL_COVERAGE_PCT: ${{ steps.coverage_metrics.outputs.all_percent }}
+        NON_UI_COVERED_LINES: ${{ steps.coverage_metrics.outputs.non_ui_covered }}
+        NON_UI_MISSED_LINES: ${{ steps.coverage_metrics.outputs.non_ui_missed }}
+        NON_UI_COVERAGE_PCT: ${{ steps.coverage_metrics.outputs.non_ui_percent }}
       with:
         script: |
-          const marker = '<!-- coverage-delta-comment -->';
+          const marker = '<!-- coverage-summary-comment -->';
           const issue_number = context.issue.number;
 
           const available = (process.env.COVERAGE_AVAILABLE || '').toLowerCase() === 'true';
-          const baselineMode = process.env.BASELINE_MODE || 'unavailable';
-          const allHead = Number(process.env.ALL_HEAD_COVERAGE || '0');
-          const allBase = Number(process.env.ALL_BASE_COVERAGE || '0');
-          const allDelta = Number(process.env.ALL_DELTA_COVERAGE || '0');
-          const nonUiHead = Number(process.env.NON_UI_HEAD_COVERAGE || '0');
-          const nonUiBase = Number(process.env.NON_UI_BASE_COVERAGE || '0');
-          const nonUiDelta = Number(process.env.NON_UI_DELTA_COVERAGE || '0');
-
-          const trend = (value) => value > 0 ? 'increased' : (value < 0 ? 'decreased' : 'did not change');
+          const allCovered = Number(process.env.ALL_COVERED_LINES || '0');
+          const allMissed = Number(process.env.ALL_MISSED_LINES || '0');
+          const allCoveragePct = Number(process.env.ALL_COVERAGE_PCT || '0');
+          const nonUiCovered = Number(process.env.NON_UI_COVERED_LINES || '0');
+          const nonUiMissed = Number(process.env.NON_UI_MISSED_LINES || '0');
+          const nonUiCoveragePct = Number(process.env.NON_UI_COVERAGE_PCT || '0');
 
           const body = available
             ? [
                 marker,
-                '## Test Coverage Delta',
+                '## Unit Test Coverage Summary',
                 '',
-                '_This comment updates with future commits to this branch and is removed when there are no remaining coverage issues to report._',
-                baselineMode === 'bootstrap-zero'
-                  ? '_Bootstrap mode: development baseline summary missing; using 0.000% baseline for comparison._'
-                  : '_Baseline source: stored development coverage summary._',
+                '_This comment updates with future commits to this branch._',
                 '',
-                `All-classes coverage ${trend(allDelta)} compared to \`development\`.`,
-                `Non-Swing UI coverage ${trend(nonUiDelta)} compared to \`development\`.`,
-                '',
-                '| Metric | development | this PR | delta |',
+                '| Metric | Covered Lines | Missed Lines | Coverage |',
                 '|---|---:|---:|---:|',
-                `| All classes | ${allBase.toFixed(3)}% | ${allHead.toFixed(3)}% | ${allDelta >= 0 ? '+' : ''}${allDelta.toFixed(3)}% |`,
-                `| Non-Swing UI classes | ${nonUiBase.toFixed(3)}% | ${nonUiHead.toFixed(3)}% | ${nonUiDelta >= 0 ? '+' : ''}${nonUiDelta.toFixed(3)}% |`,
+                `| All classes | ${allCovered} | ${allMissed} | ${allCoveragePct.toFixed(3)}% |`,
+                `| Non-Swing UI classes | ${nonUiCovered} | ${nonUiMissed} | ${nonUiCoveragePct.toFixed(3)}% |`,
               ].join('\n')
             : [
                 marker,
-                '## Test Coverage Delta',
+                '## Unit Test Coverage Summary',
                 '',
-                '_This comment updates with future commits to this branch and is removed when there are no remaining coverage issues to report._',
+                '_This comment updates with future commits to this branch._',
                 '',
-                'Coverage comparison for all classes and non-Swing UI classes is unavailable for this run because the stored development coverage summary was not available.',
+                'Coverage summary for all classes and non-Swing UI classes is unavailable for this run because JaCoCo output was not generated.',
               ].join('\n');
 
           const { owner, repo } = context.repo;
