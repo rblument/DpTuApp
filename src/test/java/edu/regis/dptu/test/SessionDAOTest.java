@@ -93,6 +93,8 @@ public class SessionDAOTest {
         PreparedStatement existsStmt = mock(PreparedStatement.class);
         ResultSet existsRs = mock(ResultSet.class);
         PreparedStatement insertStmt = mock(PreparedStatement.class);
+        PreparedStatement clearPendingTaskStmt = mock(PreparedStatement.class);
+        PreparedStatement clearPendingStepStmt = mock(PreparedStatement.class);
         PreparedStatement insertPendingStepStmt = mock(PreparedStatement.class);
         PreparedStatement insertPendingTaskStmt = mock(PreparedStatement.class);
         ResultSet keyRs = mock(ResultSet.class);
@@ -101,11 +103,14 @@ public class SessionDAOTest {
         when(mockConnection.prepareStatement(
                         startsWith("INSERT INTO TutoringSession"), any(String[].class)))
                 .thenReturn(insertStmt);
-        when(mockConnection.prepareStatement(
-                startsWith("INSERT INTO PendingStep"), anyInt()))
-            .thenReturn(insertPendingStepStmt);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingTask")))
+                .thenReturn(clearPendingTaskStmt);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingStep")))
+                .thenReturn(clearPendingStepStmt);
+        when(mockConnection.prepareStatement(startsWith("INSERT INTO PendingStep"), anyInt()))
+                .thenReturn(insertPendingStepStmt);
         when(mockConnection.prepareStatement(startsWith("INSERT INTO PendingTask")))
-            .thenReturn(insertPendingTaskStmt);
+                .thenReturn(insertPendingTaskStmt);
         when(existsStmt.executeQuery()).thenReturn(existsRs);
         when(existsRs.next()).thenReturn(false);
         when(insertStmt.executeUpdate()).thenReturn(1);
@@ -172,7 +177,8 @@ public class SessionDAOTest {
 
         PreparedStatement pendingStmt = mock(PreparedStatement.class);
         ResultSet pendingRs = mock(ResultSet.class);
-        when(mockConnection.prepareStatement(startsWith("SELECT pt.TaskId"))).thenReturn(pendingStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT pt.TaskId")))
+                .thenReturn(pendingStmt);
         when(pendingStmt.executeQuery()).thenReturn(pendingRs);
         when(pendingRs.next()).thenReturn(false);
 
@@ -207,7 +213,8 @@ public class SessionDAOTest {
         PreparedStatement pendingStmt = mock(PreparedStatement.class);
         ResultSet pendingRs = mock(ResultSet.class);
 
-        when(mockConnection.prepareStatement(startsWith("SELECT SessionId"))).thenReturn(sessionStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT SessionId")))
+                .thenReturn(sessionStmt);
         when(sessionStmt.executeQuery()).thenReturn(sessionRs);
         when(sessionRs.next()).thenReturn(true);
         when(sessionRs.getInt(1)).thenReturn(222);
@@ -219,7 +226,8 @@ public class SessionDAOTest {
         when(sessionRs.getInt(8)).thenReturn(55);
         when(sessionRs.getString(9)).thenReturn("SEE_ONE");
 
-        when(mockConnection.prepareStatement(startsWith("SELECT pt.TaskId"))).thenReturn(pendingStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT pt.TaskId")))
+                .thenReturn(pendingStmt);
         when(pendingStmt.executeQuery()).thenReturn(pendingRs);
         when(pendingRs.next()).thenReturn(true).thenReturn(false);
         when(pendingRs.getInt(1)).thenReturn(13);
@@ -236,7 +244,8 @@ public class SessionDAOTest {
         CourseSvc mockCourseSvc = mock(CourseSvc.class);
         ProblemSvc mockProblemSvc = mock(ProblemSvc.class);
         when(mockProblemSvc.retrieve(55)).thenReturn(problem);
-        when(mockCourseSvc.retrieveTask(eq(1), eq(13), any(Connection.class))).thenReturn(restoredTask);
+        when(mockCourseSvc.retrieveTask(eq(1), eq(13), any(Connection.class)))
+                .thenReturn(restoredTask);
 
         try (MockedStatic<ServiceFactory> mockedServiceFactory = mockStatic(ServiceFactory.class)) {
             mockedServiceFactory.when(ServiceFactory::findProblemSvc).thenReturn(mockProblemSvc);
@@ -312,13 +321,13 @@ public class SessionDAOTest {
         when(mockConnection.prepareStatement(startsWith("UPDATE TutoringSession")))
                 .thenReturn(mockStatement);
         when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingTask")))
-            .thenReturn(clearPendingTaskStmt);
+                .thenReturn(clearPendingTaskStmt);
         when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingStep")))
-            .thenReturn(clearPendingStepStmt);
+                .thenReturn(clearPendingStepStmt);
         when(mockConnection.prepareStatement(startsWith("INSERT INTO PendingStep"), anyInt()))
-            .thenReturn(insertPendingStepStmt);
+                .thenReturn(insertPendingStepStmt);
         when(mockConnection.prepareStatement(startsWith("INSERT INTO PendingTask")))
-            .thenReturn(insertPendingTaskStmt);
+                .thenReturn(insertPendingTaskStmt);
         when(mockStatement.executeUpdate()).thenReturn(1);
         when(insertPendingStepStmt.executeUpdate()).thenReturn(1);
         when(insertPendingTaskStmt.executeUpdate()).thenReturn(1);
@@ -347,6 +356,20 @@ public class SessionDAOTest {
 
     @Test
     public void testDeleteSuccess() throws Exception {
+        PreparedStatement lookupStmt = mock(PreparedStatement.class);
+        PreparedStatement clearPendingTaskStmt = mock(PreparedStatement.class);
+        PreparedStatement clearPendingStepStmt = mock(PreparedStatement.class);
+        ResultSet lookupRs = mock(ResultSet.class);
+
+        when(mockConnection.prepareStatement(startsWith("SELECT SessionId FROM TutoringSession")))
+                .thenReturn(lookupStmt);
+        when(lookupStmt.executeQuery()).thenReturn(lookupRs);
+        when(lookupRs.next()).thenReturn(true);
+        when(lookupRs.getInt(1)).thenReturn(88);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingTask")))
+                .thenReturn(clearPendingTaskStmt);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingStep")))
+                .thenReturn(clearPendingStepStmt);
         when(mockConnection.prepareStatement(startsWith("DELETE FROM TutoringSession")))
                 .thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
@@ -359,6 +382,20 @@ public class SessionDAOTest {
 
     @Test
     public void testDeleteBadRowCountRollsBack() throws Exception {
+        PreparedStatement lookupStmt = mock(PreparedStatement.class);
+        PreparedStatement clearPendingTaskStmt = mock(PreparedStatement.class);
+        PreparedStatement clearPendingStepStmt = mock(PreparedStatement.class);
+        ResultSet lookupRs = mock(ResultSet.class);
+
+        when(mockConnection.prepareStatement(startsWith("SELECT SessionId FROM TutoringSession")))
+                .thenReturn(lookupStmt);
+        when(lookupStmt.executeQuery()).thenReturn(lookupRs);
+        when(lookupRs.next()).thenReturn(true);
+        when(lookupRs.getInt(1)).thenReturn(88);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingTask")))
+                .thenReturn(clearPendingTaskStmt);
+        when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingStep")))
+                .thenReturn(clearPendingStepStmt);
         when(mockConnection.prepareStatement(startsWith("DELETE FROM TutoringSession")))
                 .thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
