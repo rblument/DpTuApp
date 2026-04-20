@@ -97,11 +97,12 @@ public class SessionDAOTest {
         PreparedStatement clearPendingStepStmt = mock(PreparedStatement.class);
         PreparedStatement insertPendingStepStmt = mock(PreparedStatement.class);
         PreparedStatement insertPendingTaskStmt = mock(PreparedStatement.class);
+        ResultSet sessionKeyRs = mock(ResultSet.class);
         ResultSet keyRs = mock(ResultSet.class);
 
         when(mockConnection.prepareStatement(contains("SELECT SessionId"))).thenReturn(existsStmt);
         when(mockConnection.prepareStatement(
-                        startsWith("INSERT INTO TutoringSession"), any(String[].class)))
+                        startsWith("INSERT INTO TutoringSession"), anyInt()))
                 .thenReturn(insertStmt);
         when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingTask")))
                 .thenReturn(clearPendingTaskStmt);
@@ -114,6 +115,9 @@ public class SessionDAOTest {
         when(existsStmt.executeQuery()).thenReturn(existsRs);
         when(existsRs.next()).thenReturn(false);
         when(insertStmt.executeUpdate()).thenReturn(1);
+        when(insertStmt.getGeneratedKeys()).thenReturn(sessionKeyRs);
+        when(sessionKeyRs.next()).thenReturn(true);
+        when(sessionKeyRs.getInt(1)).thenReturn(501);
         when(insertPendingStepStmt.executeUpdate()).thenReturn(1);
         when(insertPendingTaskStmt.executeUpdate()).thenReturn(1);
         when(insertPendingStepStmt.getGeneratedKeys()).thenReturn(keyRs);
@@ -130,9 +134,10 @@ public class SessionDAOTest {
         verify(insertStmt).setString(6, session.getProblem().getType().toString());
         verify(insertStmt).setInt(7, session.getProblem().getId());
         verify(insertStmt).setString(8, Mode.DO_ONE.name());
-        verify(insertPendingStepStmt).setInt(1, session.getId());
+        assertEquals(501, session.getId());
+        verify(insertPendingStepStmt).setInt(1, 501);
         verify(insertPendingStepStmt).setInt(2, 21);
-        verify(insertPendingTaskStmt).setInt(1, session.getId());
+        verify(insertPendingTaskStmt).setInt(1, 501);
         verify(insertPendingTaskStmt).setInt(2, 13);
         verify(insertPendingTaskStmt).setInt(3, 44);
     }
