@@ -17,7 +17,7 @@ It covers:
 2. The server returns a `TutoringSession` payload via `SIGN_IN`.
 3. The client stores this as the signed-in session in `SplashFrame`.
 4. Student starts a mode (`SEE_ONE`, `DO_ONE`, `TEACH_ONE`).
-5. If a saved session exists for that mode/problem kind with pending progress, the mode action resumes it.
+5. If a saved session exists for that mode and exact problem id with pending progress, the mode action resumes it.
 6. If no matching saved progress exists, a fresh in-memory lesson session is created.
 7. When the student triggers Save, `SaveSessionAction` writes session metadata and pending progress.
 
@@ -59,6 +59,12 @@ Relevant columns:
 - `ProblemId`
 - `Mode` (new)
 
+Why `Mode` is required:
+
+- A single signed-in user can work in different tutoring modes (`SEE_ONE`, `DO_ONE`, `TEACH_ONE`) that may target the same problem type.
+- Without persisting mode, resume logic cannot reliably determine which pedagogical flow should be restored.
+- Persisting mode prevents cross-mode accidental resume (for example, resuming a `DO_ONE` session when launching `SEE_ONE`).
+
 ### PendingTask and PendingStep tables
 
 These tables store resumable in-progress state for the active task/step:
@@ -86,7 +92,7 @@ Each mode action resumes only when all of these are true:
 
 - saved session mode equals action mode
 - saved session has a problem
-- saved session problem kind equals selected problem kind
+- saved session problem id and kind both match selected problem
 - saved session has pending task data
 
 Otherwise, action falls back to creating a fresh session scaffold.
@@ -109,6 +115,21 @@ For existing databases created before this change, add a migration before runnin
 ```sql
 ALTER TABLE TutoringSession
 ADD COLUMN Mode ENUM('SEE_ONE', 'DO_ONE', 'TEACH_ONE') DEFAULT 'SEE_ONE';
+```
+
+Recommended migration path:
+
+1. Add the `Mode` column as shown above.
+2. Backfill any null/unknown values to `SEE_ONE`.
+3. Deploy application code that reads/writes mode.
+4. Verify saved sessions can be resumed per mode in a lower environment before production rollout.
+
+Optional backfill SQL:
+
+```sql
+UPDATE TutoringSession
+SET Mode = 'SEE_ONE'
+WHERE Mode IS NULL;
 ```
 
 ## Tests
@@ -148,6 +169,12 @@ Not yet persisted:
 
 - full algorithm runtime state inside `Problem` (for example full DP table execution position history)
 - multiple pending tasks per session beyond active task row
+
+Why the single pending task/step limitation is a problem:
+
+- If a learning flow queues more than one pending task, only the active row is currently restorable.
+- Learners can resume into the right task but still lose downstream queued task context.
+- This is acceptable for single-active-task flows but should be expanded if multi-task continuity becomes a requirement.
 
 If full algorithm-level runtime replay is needed, extend `Problem` persistence separately.
 
