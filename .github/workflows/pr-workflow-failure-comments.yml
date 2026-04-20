@@ -6,6 +6,7 @@ on:
       - Format Build Test
       - Standards Check
       - CodeQL Advanced
+      - PR Workflow Failure Comments
     types:
       - completed
   pull_request:
@@ -70,9 +71,6 @@ jobs:
           known_names = set()
 
           for wf in all_workflow_files:
-            if wf == current_workflow:
-              continue
-
             text = wf.read_text(encoding='utf-8')
 
             if 'pr-workflow-failure-comments: ignore' in text:
