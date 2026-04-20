@@ -693,7 +693,7 @@ jobs:
 
   poll-and-report-workflow-failures:
     name: Poll Workflow Failures
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
 
     strategy:
       fail-fast: false

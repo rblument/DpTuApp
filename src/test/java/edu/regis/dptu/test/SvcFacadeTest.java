@@ -69,8 +69,10 @@ public class SvcFacadeTest {
                         });
 
         serverThread.start();
-        assertTrue(serverReady.await(10, TimeUnit.SECONDS), "Server did not start within timeout");
         try {
+            assertTrue(
+                    serverReady.await(10, TimeUnit.SECONDS),
+                    "Server did not start within timeout");
             SvcFacade facade = SvcFacade.instance();
             ClientRequest request = new ClientRequest(ServerRequestType.REQUEST_HINT);
             request.setData("{}");
