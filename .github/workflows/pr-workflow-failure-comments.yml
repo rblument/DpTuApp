@@ -319,6 +319,11 @@ jobs:
 
             const readJobLogExcerpt = async (jobId) => {
               try {
+                const fs = require('node:fs');
+                const os = require('node:os');
+                const path = require('node:path');
+                const { execFileSync } = require('node:child_process');
+
                 const logMeta = await github.request('GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs', {
                   owner,
                   repo,
@@ -337,20 +342,32 @@ jobs:
                 }
 
                 const archiveBuffer = await logArchiveResponse.arrayBuffer();
-                const AdmZip = require('adm-zip');
-                const zip = new AdmZip(Buffer.from(archiveBuffer));
-                const zipEntries = zip.getEntries();
+                const tempZipPath = path.join(
+                  os.tmpdir(),
+                  `job-${jobId}-logs-${Date.now()}-${Math.random().toString(16).slice(2)}.zip`
+                );
 
                 let logContent = '';
-                for (const entry of zipEntries) {
-                  if (!entry.isDirectory) {
-                    logContent = entry.getData().toString('utf8');
-                    break;
-                  }
-                }
+                try {
+                  fs.writeFileSync(tempZipPath, Buffer.from(archiveBuffer));
 
-                if (!logContent) {
-                  return { lines: [], reason: 'log_archive_empty' };
+                  const entryListOutput = execFileSync('unzip', ['-Z1', tempZipPath], { encoding: 'utf8' });
+                  const entryName = entryListOutput
+                    .split(/\r?\n/)
+                    .map((entry) => entry.trim())
+                    .find((entry) => entry && !entry.endsWith('/'));
+
+                  if (!entryName) {
+                    return { lines: [], reason: 'log_archive_empty' };
+                  }
+
+                  logContent = execFileSync('unzip', ['-p', tempZipPath, entryName], { encoding: 'utf8' });
+                } finally {
+                  try {
+                    fs.unlinkSync(tempZipPath);
+                  } catch (_) {
+                    // Ignore cleanup failures for temporary files.
+                  }
                 }
 
                 const lines = findFailExcerpt(logContent);
@@ -767,26 +784,57 @@ jobs:
                   return { lines: [], reason: 'no_log_download_url' };
                 }
 
+            const readJobLogExcerpt = async (jobId) => {
+              try {
+                const fs = require('node:fs');
+                const os = require('node:os');
+                const path = require('node:path');
+                const { execFileSync } = require('node:child_process');
+
+                const logMeta = await github.request('GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs', {
+                  owner,
+                  repo,
+                  job_id: jobId,
+                  request: { redirect: 'manual' },
+                });
+
+                const downloadUrl = logMeta.headers?.location;
+                if (!downloadUrl) {
+                  return { lines: [], reason: 'no_log_download_url' };
+                }
+
                 const logArchiveResponse = await fetch(downloadUrl);
                 if (!logArchiveResponse.ok) {
                   return { lines: [], reason: `log_download_http_${logArchiveResponse.status}` };
                 }
 
                 const archiveBuffer = await logArchiveResponse.arrayBuffer();
-                const AdmZip = require('adm-zip');
-                const zip = new AdmZip(Buffer.from(archiveBuffer));
-                const zipEntries = zip.getEntries();
+                const tempZipPath = path.join(
+                  os.tmpdir(),
+                  `job-${jobId}-logs-${Date.now()}-${Math.random().toString(16).slice(2)}.zip`
+                );
 
                 let logContent = '';
-                for (const entry of zipEntries) {
-                  if (!entry.isDirectory) {
-                    logContent = entry.getData().toString('utf8');
-                    break;
-                  }
-                }
+                try {
+                  fs.writeFileSync(tempZipPath, Buffer.from(archiveBuffer));
 
-                if (!logContent) {
-                  return { lines: [], reason: 'log_archive_empty' };
+                  const archiveEntriesOutput = execFileSync('unzip', ['-Z1', tempZipPath], { encoding: 'utf8' });
+                  const firstFileEntry = archiveEntriesOutput
+                    .split(/\r?\n/)
+                    .map((entry) => entry.trim())
+                    .find((entry) => entry && !entry.endsWith('/'));
+
+                  if (!firstFileEntry) {
+                    return { lines: [], reason: 'log_archive_empty' };
+                  }
+
+                  logContent = execFileSync('unzip', ['-p', tempZipPath, firstFileEntry], { encoding: 'utf8' });
+                } finally {
+                  try {
+                    fs.unlinkSync(tempZipPath);
+                  } catch (_) {
+                    // Ignore cleanup failures for temporary log archives.
+                  }
                 }
 
                 const lines = findFailExcerpt(logContent);
