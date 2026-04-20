@@ -28,8 +28,8 @@ import edu.regis.dptu.err.IllegalArgException;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
 import edu.regis.dptu.model.CourseDigest;
-import edu.regis.dptu.model.Model;
 import edu.regis.dptu.model.Mode;
+import edu.regis.dptu.model.Model;
 import edu.regis.dptu.model.PendingStep;
 import edu.regis.dptu.model.PendingTask;
 import edu.regis.dptu.model.Problem;
@@ -69,7 +69,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             throws IllegalArgException, NonRecoverableException {
         log.debug("Creating session id={}", session.getId());
         final String sql =
-            "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemType, ProblemId, Mode) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?,?)";
+                "INSERT INTO TutoringSession(SecurityToken, UserId, CourseId, UnitId, IsActive, StartDate, ProblemType, ProblemId, Mode) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP(),?,?,?)";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -95,7 +95,8 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             Problem prob = session.getProblem();
             stmt.setString(6, prob.getType().toString());
             stmt.setInt(7, prob.getId());
-            stmt.setString(8, (session.getMode() == null ? Mode.SEE_ONE : session.getMode()).name());
+            stmt.setString(
+                    8, (session.getMode() == null ? Mode.SEE_ONE : session.getMode()).name());
 
             int rows = stmt.executeUpdate();
             log.debug("Session created successfully id={}, rows affected={}", sessionId, rows);
@@ -116,7 +117,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         String userId = student.getAccount().getUserId();
         log.debug("Retrieving session for userId={}", userId);
         final String sql =
-            "SELECT SessionId, SecurityToken, StartDate, IsActive, CourseId, UnitId, ProblemType, ProblemId, Mode FROM TutoringSession WHERE UserId = ?";
+                "SELECT SessionId, SecurityToken, StartDate, IsActive, CourseId, UnitId, ProblemType, ProblemId, Mode FROM TutoringSession WHERE UserId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -202,7 +203,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             throws ObjNotFoundException, NonRecoverableException {
         log.debug("Updating session id={}", session.getId());
         final String sql =
-            "UPDATE TutoringSession SET SecurityToken = ?, CourseId = ?, UnitId = ?, IsActive = ?, Mode = ? WHERE SessionId = ?";
+                "UPDATE TutoringSession SET SecurityToken = ?, CourseId = ?, UnitId = ?, IsActive = ?, Mode = ? WHERE SessionId = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -216,7 +217,8 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
             stmt.setInt(2, session.getCourse().getId());
             stmt.setInt(3, session.getUnit().getId());
             stmt.setBoolean(4, session.isIsActive());
-            stmt.setString(5, (session.getMode() == null ? Mode.SEE_ONE : session.getMode()).name());
+            stmt.setString(
+                    5, (session.getMode() == null ? Mode.SEE_ONE : session.getMode()).name());
             stmt.setInt(6, session.getId());
 
             int rows = stmt.executeUpdate();
@@ -314,7 +316,7 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                 "INSERT INTO PendingTask(SessionId, TaskId, PendingStepId) VALUES (?,?,?)";
 
         try (PreparedStatement insertStepStmt =
-                conn.prepareStatement(pendingStepSql, Statement.RETURN_GENERATED_KEYS);
+                        conn.prepareStatement(pendingStepSql, Statement.RETURN_GENERATED_KEYS);
                 PreparedStatement insertTaskStmt = conn.prepareStatement(pendingTaskSql)) {
             insertStepStmt.setInt(1, sessionId);
             insertStepStmt.setInt(2, pendingStep.getStep().getId());
@@ -406,7 +408,8 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
         final String deletePendingStepSql = "DELETE FROM PendingStep WHERE SessionId = ?";
 
         try (PreparedStatement deletePendingTaskStmt = conn.prepareStatement(deletePendingTaskSql);
-                PreparedStatement deletePendingStepStmt = conn.prepareStatement(deletePendingStepSql)) {
+                PreparedStatement deletePendingStepStmt =
+                        conn.prepareStatement(deletePendingStepSql)) {
             deletePendingTaskStmt.setInt(1, sessionId);
             deletePendingTaskStmt.executeUpdate();
 
