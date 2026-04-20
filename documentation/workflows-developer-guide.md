@@ -458,13 +458,13 @@ This keeps PRs clean and informative without requiring developers to navigate to
 
 GitHub only evaluates `workflow_run.workflows` from the **default branch** (`development`) at dispatch time. This means a pull request that introduces or modifies watch-list entries cannot activate those changes until merged.
 
-To keep PR failure comments available before merge, DpTu also uses a backup polling workflow (`pr-workflow-failure-comments-poller.yml`) that runs directly from pull request events and polls watched workflow runs for the PR head SHA.
+To keep PR failure comments available before merge, DpTu uses a backup polling job embedded in the same workflow file (`pr-workflow-failure-comments.yml`). This job runs directly from pull request events and polls watched workflow runs for the PR head SHA.
 
-### Backup Poller Workflow (`pr-workflow-failure-comments-poller.yml`)
+### Backup Poller Job (Embedded)
 
 The poller is a secondary safety net for the same comment markers used by the primary workflow. It keeps failure comments working on PR branches before `workflow_run` watch-list changes are active on `development`.
 
-**When the poller runs:**
+**When the embedded poller runs:**
 
 * Pull request events: `opened`, `synchronize`, `reopened`, `labeled`, `unlabeled`, `ready_for_review`
 * Manual trigger
@@ -489,11 +489,9 @@ Additional hardening in the poller:
 
 **Important maintenance notes:**
 
-* The poller includes `# pr-workflow-failure-comments: ignore` so drift validation does not require poller self-registration.
-* Keep watched workflow names and marker formats aligned between:
-  * `pr-workflow-failure-comments.yml`
-  * `pr-workflow-failure-comments-poller.yml`
-* If you add a new PR-triggered workflow, update both files so primary and backup behavior stay in sync.
+* Keep the `workflow_run.workflows` list and embedded `watchedWorkflows` array aligned.
+* The `validate-watchlist-drift` job enforces this alignment automatically.
+* If you add a new PR-triggered workflow, update the unified workflow file so primary and backup behavior stay in sync.
 
 ### When It Runs
 
