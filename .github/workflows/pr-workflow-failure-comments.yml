@@ -138,12 +138,60 @@ jobs:
                 print(f'  - {item}')
             raise SystemExit(1)
 
+          marker_token = 'pr-workflow-failure:${workflowSlug}'
+          if marker_token not in own_text:
+            raise SystemExit('Primary workflow marker contract is missing expected token: pr-workflow-failure:${workflowSlug}')
+
+          poller_workflow = Path('.github/workflows/pr-workflow-failure-comments-poller.yml')
+          if poller_workflow.exists():
+            poller_text = poller_workflow.read_text(encoding='utf-8')
+
+            if marker_token not in poller_text:
+              raise SystemExit('Poller workflow marker contract is missing expected token: pr-workflow-failure:${workflowSlug}')
+
+            poller_match = re.search(
+              r'const\s+watchedWorkflows\s*=\s*\[(?P<items>.*?)\];',
+              poller_text,
+              re.DOTALL,
+            )
+
+            if not poller_match:
+              raise SystemExit('Unable to parse watchedWorkflows list from pr-workflow-failure-comments-poller.yml')
+
+            poller_watched = set(
+              name.strip()
+              for name in re.findall(r'"([^"]+)"|\'([^\']+)\'', poller_match.group('items'))
+              for name in name
+              if name.strip()
+            )
+
+            primary_watched_for_poller = set(watched_set)
+            primary_watched_for_poller.discard('PR Workflow Failure Comments')
+
+            poller_missing = sorted(primary_watched_for_poller - poller_watched)
+            poller_stale = sorted(poller_watched - primary_watched_for_poller)
+
+            if poller_missing or poller_stale:
+              print('Poller watched workflow list is out of sync with primary watch list.')
+              if poller_missing:
+                print('\nMissing from poller watchedWorkflows:')
+                for item in poller_missing:
+                  print(f'  - {item}')
+              if poller_stale:
+                print('\nStale poller watchedWorkflows entries:')
+                for item in poller_stale:
+                  print(f'  - {item}')
+              raise SystemExit(1)
+
           print('Watch list is up to date for all pull_request-triggered workflows.')
           PY
 
   report-workflow-failures:
     if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
+    concurrency:
+      group: pr-workflow-failure-${{ github.repository }}-${{ github.event.workflow_run.name }}-${{ github.event.workflow_run.head_sha }}
+      cancel-in-progress: true
 
     steps:
       - name: Upsert or remove PR failure summary comment
@@ -155,6 +203,20 @@ jobs:
             const workflowName = workflowRun.name || 'Unknown Workflow';
             const workflowSlug = workflowName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
             const marker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
+            const expectedMarker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
+
+            if (marker !== expectedMarker || !marker.includes('pr-workflow-failure:')) {
+              throw new Error('Marker consistency self-check failed.');
+            }
+
+            const metrics = {
+              commentsCreated: 0,
+              commentsUpdated: 0,
+              commentsDeleted: 0,
+              staleShaSkipped: 0,
+              logFallbacks: 0,
+              prsWithoutAssociation: 0,
+            };
 
             const actionableConclusions = new Set([
               'failure',
@@ -220,19 +282,23 @@ jobs:
 
                 const downloadUrl = logMeta.headers?.location || logMeta.url;
                 if (!downloadUrl) {
-                  return [];
+                  return { lines: [], reason: 'no_log_download_url' };
                 }
 
                 const logResponse = await fetch(downloadUrl);
                 if (!logResponse.ok) {
-                  return [];
+                  return { lines: [], reason: `log_download_http_${logResponse.status}` };
                 }
 
                 const logText = await logResponse.text();
-                return findFailExcerpt(logText);
+                const lines = findFailExcerpt(logText);
+                if (lines.length === 0) {
+                  return { lines: [], reason: 'no_matching_failure_lines' };
+                }
+                return { lines, reason: null };
               } catch (error) {
                 core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
-                return [];
+                return { lines: [], reason: 'log_api_exception' };
               }
             };
 
@@ -267,6 +333,11 @@ jobs:
             const targetPrs = await getTargetPrs();
             if (targetPrs.length === 0) {
               core.info('No pull request is associated with this workflow run. Nothing to do.');
+              metrics.prsWithoutAssociation += 1;
+              await core.summary
+                .addHeading('PR Workflow Failure Observability')
+                .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+                .write();
               return;
             }
 
@@ -287,19 +358,36 @@ jobs:
                 .slice(0, 3)
                 .map((step) => `${step.name} (${step.conclusion || 'unknown'})`);
 
-              const logExcerpt = await readJobLogExcerpt(job.id);
+              const logResult = await readJobLogExcerpt(job.id);
+              if (logResult.reason) {
+                metrics.logFallbacks += 1;
+              }
 
               failedJobDetails.push({
                 name: job.name,
                 url: job.html_url,
                 conclusion: formatConclusion(job.conclusion),
                 badSteps,
-                logExcerpt,
+                logExcerpt: logResult.lines,
+                logFallbackReason: logResult.reason,
               });
             }
 
             for (const pr of targetPrs) {
               const issue_number = pr.number;
+
+              const prHead = await github.rest.pulls.get({
+                owner,
+                repo,
+                pull_number: issue_number,
+              });
+
+              if ((prHead.data.head?.sha || '') !== (workflowRun.head_sha || '')) {
+                metrics.staleShaSkipped += 1;
+                core.info(`Skipping stale workflow run for PR #${issue_number}: run sha ${workflowRun.head_sha} != current sha ${prHead.data.head?.sha}`);
+                continue;
+              }
+
               const comments = await github.paginate(github.rest.issues.listComments, {
                 owner,
                 repo,
@@ -318,6 +406,7 @@ jobs:
                     repo,
                     comment_id: existing.id,
                   });
+                  metrics.commentsDeleted += 1;
                   core.info(`Removed stale failure summary for workflow '${workflowName}' on PR #${issue_number}.`);
                 } else {
                   core.info(`Workflow '${workflowName}' is healthy and no stale comment exists on PR #${issue_number}.`);
@@ -354,6 +443,8 @@ jobs:
                     for (const line of job.logExcerpt) {
                       lines.push(`    - ${line}`);
                     }
+                  } else if (job.logFallbackReason) {
+                    lines.push(`  - Log excerpt unavailable: ${job.logFallbackReason}`);
                   }
                 }
 
@@ -379,6 +470,7 @@ jobs:
                   comment_id: existing.id,
                   body,
                 });
+                metrics.commentsUpdated += 1;
                 core.info(`Updated failure summary for workflow '${workflowName}' on PR #${issue_number}.`);
               } else {
                 await github.rest.issues.createComment({
@@ -387,6 +479,12 @@ jobs:
                   issue_number,
                   body,
                 });
+                metrics.commentsCreated += 1;
                 core.info(`Posted failure summary for workflow '${workflowName}' on PR #${issue_number}.`);
               }
             }
+
+            await core.summary
+              .addHeading('PR Workflow Failure Observability')
+              .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+              .write();
