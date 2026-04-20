@@ -77,15 +77,15 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
 
         try {
             conn = DriverManager.getConnection(URL);
+            conn.setAutoCommit(false);
             log.debug("Database connection established for creating session id={}", sessionId);
 
-            if (exists(sessionId, conn)) {
+            if (sessionId > 0 && exists(sessionId, conn)) {
                 log.warn("Session already exists with id={}", sessionId);
                 throw new IllegalArgException("Session already exists with id " + sessionId);
             }
 
-            String[] keyCol = {"SessionId"};
-            stmt = conn.prepareStatement(sql, keyCol);
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, session.getSecurityToken());
             stmt.setString(2, session.getUserId());
             stmt.setInt(3, session.getCourse().getId());
@@ -99,10 +99,29 @@ public class SessionDAO extends MySqlDAO implements SessionSvc {
                     8, (session.getMode() == null ? Mode.SEE_ONE : session.getMode()).name());
 
             int rows = stmt.executeUpdate();
+
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                sessionId = generatedKeys.getInt(1);
+                session.setId(sessionId);
+            } else if (sessionId <= 0) {
+                conn.rollback();
+                throw new NonRecoverableException(
+                        "Create Session Error: missing generated SessionId");
+            }
+
             log.debug("Session created successfully id={}, rows affected={}", sessionId, rows);
 
             persistPendingProgress(session, conn);
+            conn.commit();
         } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException rollbackEx) {
+                log.warn("Rollback failed while creating session id={}", sessionId, rollbackEx);
+            }
             log.error("SQLException creating session id={}", sessionId, e);
             throw new NonRecoverableException("Create Session Error", e);
         } finally {
