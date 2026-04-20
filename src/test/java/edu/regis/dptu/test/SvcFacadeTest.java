@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +69,7 @@ public class SvcFacadeTest {
                         });
 
         serverThread.start();
-        serverReady.await();
+        assertTrue(serverReady.await(10, TimeUnit.SECONDS), "Server did not start within timeout");
         try {
             SvcFacade facade = SvcFacade.instance();
             ClientRequest request = new ClientRequest(ServerRequestType.REQUEST_HINT);
