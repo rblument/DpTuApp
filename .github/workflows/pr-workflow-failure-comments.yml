@@ -654,7 +654,7 @@ jobs:
               lines.push('### Next Steps');
               lines.push('');
               if (hasTransientJob) {
-                lines.push('1. **Re-run the failed jobs** — these failures look transient (network or infrastructure errors). Use the \'Re-run failed jobs\' button on the run linked above.');
+                lines.push(`1. **[Re-run the failed jobs](${workflowRun.html_url})** — these failures look transient (network or infrastructure errors). On that page, click the **Re-run failed jobs** button in the top-right corner.`);
                 lines.push('2. If the failure persists after re-running, open each failed job and expand the first failing step.');
                 lines.push('3. Push a fix if needed and this comment will update automatically.');
               } else {
@@ -1284,7 +1284,7 @@ jobs:
             lines.push('### Next Steps');
             lines.push('');
             if (hasTransientJob) {
-              lines.push('1. **Re-run the failed jobs** — these failures look transient (network or infrastructure errors). Use the \'Re-run failed jobs\' button on the run linked above.');
+              lines.push(`1. **[Re-run the failed jobs](${run.html_url})** — these failures look transient (network or infrastructure errors). On that page, click the **Re-run failed jobs** button in the top-right corner.`);
               lines.push('2. If the failure persists after re-running, open each failed job and expand the first failing step.');
               lines.push('3. Push a fix if needed and this comment will update automatically.');
             } else {
