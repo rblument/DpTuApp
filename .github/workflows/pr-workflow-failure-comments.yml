@@ -36,6 +36,37 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+# This workflow contains two independent jobs that share the same file but run
+# under different trigger conditions.
+#
+# Job 1 – validate-watchlist-drift (triggers: pull_request, push, workflow_dispatch)
+#   Runs whenever a workflow YAML file changes. Parses the workflow_run.workflows
+#   watch list defined in this file, then scans every other workflow file for a
+#   pull_request: trigger. Fails if:
+#     - Any pull_request-triggered workflow is missing from the watch list
+#       (drift: new workflow added but not watched).
+#     - Any entry in the watch list no longer matches a known workflow name
+#       (stale: workflow renamed or removed).
+#   To exclude a workflow from the watch requirement, add this comment anywhere
+#   in that workflow file:
+#     # pr-workflow-failure-comments: ignore
+#
+# Job 2 – report-workflow-failures (trigger: workflow_run completed)
+#   Fires when any watched workflow finishes. For each PR associated with that
+#   run it either posts, updates, or deletes one sticky comment:
+#     - Non-success conclusions (failure, timed_out, cancelled, etc.):
+#       Upsert a comment listing failed jobs, their failing steps, and up to
+#       three first-matching error log lines from the job logs.
+#     - Success / other healthy conclusions:
+#       Delete any existing failure comment for that workflow so the PR stays
+#       clean once the problem is resolved.
+#   Each comment is identified by a unique HTML marker:
+#     <!-- pr-workflow-failure:{workflow-slug} -->
+#   so comments for different workflows never overwrite each other.
+#   PR association is resolved from workflow_run.pull_requests; if that list is
+#   empty (common for cross-fork runs), the workflow falls back to searching
+#   open PRs by head branch name.
+
 jobs:
   validate-watchlist-drift:
     if: github.event_name != 'workflow_run'
