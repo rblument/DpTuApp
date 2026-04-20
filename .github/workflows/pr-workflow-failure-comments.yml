@@ -326,7 +326,7 @@ jobs:
                   request: { redirect: 'manual' },
                 });
 
-                const downloadUrl = logMeta.headers?.location || logMeta.url;
+                const downloadUrl = logMeta.headers?.location;
                 if (!downloadUrl) {
                   return { lines: [], reason: 'no_log_download_url' };
                 }
@@ -746,7 +746,7 @@ jobs:
                   request: { redirect: 'manual' },
                 });
 
-                const downloadUrl = logMeta.headers?.location || logMeta.url;
+                const downloadUrl = logMeta.headers?.location;
                 if (!downloadUrl) {
                   return { lines: [], reason: 'no_log_download_url' };
                 }
@@ -768,44 +768,87 @@ jobs:
               }
             };
 
-            const getLatestWatchedRuns = async () => {
-              const allRuns = [];
+            const resolveWatchedWorkflowIds = async () => {
+              const watched = new Set(watchedWorkflows);
+              const resolvedByName = new Map();
+
               for (let page = 1; page <= apiBudget.maxRunsPages; page++) {
-                const response = await github.rest.actions.listWorkflowRunsForRepo({
+                const response = await github.rest.actions.listRepoWorkflows({
                   owner,
                   repo,
-                  head_sha: headSha,
-                  event: 'pull_request',
                   per_page: 100,
                   page,
                 });
 
-                allRuns.push(...(response.data?.workflow_runs || []));
+                for (const workflow of response.data?.workflows || []) {
+                  if (watched.has(workflow.name) && !resolvedByName.has(workflow.name)) {
+                    resolvedByName.set(workflow.name, workflow.id);
+                  }
+                }
 
-                if ((response.data?.workflow_runs || []).length < 100) {
+                if (resolvedByName.size === watched.size) {
+                  break;
+                }
+
+                if ((response.data?.workflows || []).length < 100) {
                   break;
                 }
 
                 if (page === apiBudget.maxRunsPages) {
                   metrics.apiBudgetStops += 1;
-                  core.info('API budget reached while listing workflow runs. Results may be truncated.');
+                  core.info('API budget reached while listing workflows. Results may be truncated.');
                 }
               }
 
-              const latestByName = new Map();
-              const watched = new Set(watchedWorkflows);
-
-              for (const run of allRuns) {
-                if (!watched.has(run.name) || run.head_sha !== headSha) {
-                  continue;
+              for (const workflowName of watched) {
+                if (!resolvedByName.has(workflowName)) {
+                  core.info(`Unable to resolve watched workflow '${workflowName}' to a workflow id.`);
                 }
+              }
 
-                const existingRun = latestByName.get(run.name);
-                const existingTime = existingRun ? Date.parse(existingRun.created_at || '') : -1;
-                const currentTime = Date.parse(run.created_at || '');
+              return resolvedByName;
+            };
 
-                if (!existingRun || currentTime > existingTime) {
-                  latestByName.set(run.name, run);
+            const getLatestWatchedRuns = async () => {
+              const latestByName = new Map();
+              const watchedWorkflowIds = await resolveWatchedWorkflowIds();
+
+              for (const [workflowName, workflowId] of watchedWorkflowIds.entries()) {
+                for (let page = 1; page <= apiBudget.maxRunsPages; page++) {
+                  const response = await github.rest.actions.listWorkflowRunsForWorkflow({
+                    owner,
+                    repo,
+                    workflow_id: workflowId,
+                    head_sha: headSha,
+                    event: 'pull_request',
+                    per_page: 100,
+                    page,
+                  });
+
+                  const runs = response.data?.workflow_runs || [];
+
+                  for (const run of runs) {
+                    if (run.head_sha !== headSha) {
+                      continue;
+                    }
+
+                    const existingRun = latestByName.get(workflowName);
+                    const existingTime = existingRun ? Date.parse(existingRun.created_at || '') : -1;
+                    const currentTime = Date.parse(run.created_at || '');
+
+                    if (!existingRun || currentTime > existingTime) {
+                      latestByName.set(workflowName, run);
+                    }
+                  }
+
+                  if (runs.length < 100) {
+                    break;
+                  }
+
+                  if (page === apiBudget.maxRunsPages) {
+                    metrics.apiBudgetStops += 1;
+                    core.info(`API budget reached while listing workflow runs for '${workflowName}'. Results may be truncated.`);
+                  }
                 }
               }
 
