@@ -289,7 +289,6 @@ Findings appear in the GitHub Browser UI at: `Security → Code scanning alerts`
 ### Developer Responsibilities
 
 If CodeQL reports an issue:
-
 1. Read the alert description
 2. Fix the vulnerable pattern
 3. Commit and push
@@ -455,6 +454,14 @@ The poller is a secondary safety net for the same comment markers used by the pr
    * If healthy, deletes any existing marker comment for that workflow.
 4. Uses the same failure payload format (failed jobs, failing steps, first matching log lines) so PR comments stay consistent regardless of which path produced them.
 
+Additional hardening in the poller:
+
+* **Per-PR/per-workflow dedupe lock:** Runs each watched workflow as a matrix item with concurrency keyed by PR number + workflow name.
+* **Freshness guard:** Skips comment updates when the latest run SHA differs from the current PR head SHA.
+* **Early-exit policy:** Stops polling after repeated no-progress cycles instead of waiting the full timeout every time.
+* **Observability output:** Emits per-workflow JSON counters (poll iterations, early-exit state, comment operations, fallback counts).
+* **Marker consistency self-check:** Verifies marker construction before comment operations.
+
 **Important maintenance notes:**
 
 * The poller includes `# pr-workflow-failure-comments: ignore` so drift validation does not require poller self-registration.
@@ -497,6 +504,14 @@ Fires when a watched workflow completes on a pull request run. For each associat
 * **Success:** Deletes any existing failure comment for that workflow from the PR.
 
 Each workflow has its own comment identified by a unique HTML marker (`<!-- pr-workflow-failure:{workflow-slug} -->`), so comments for different workflows never overwrite each other.
+
+Hardening behaviors in this job:
+
+* **Dedupe lock:** Uses job-level concurrency keyed by repository, watched workflow name, and head SHA to avoid duplicate overlapping updates.
+* **Freshness guard:** Before writing comments, verifies each target PR still points to the same head SHA as the workflow run. Stale runs are skipped.
+* **Hardened log fallback:** If job logs cannot be downloaded or no matching failure lines are found, the comment includes an explicit fallback reason.
+* **Observability output:** Writes a lightweight JSON summary (create/update/delete counts, stale-SHA skips, fallback counts) to the run summary.
+* **Marker consistency self-check:** Enforces the `<!-- pr-workflow-failure:{workflow-slug} -->` marker contract in the workflow logic.
 
 ### Watched Workflows
 
