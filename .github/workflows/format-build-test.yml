@@ -5,6 +5,7 @@ on:
     branches: [ main, development ]
   pull_request:
     branches: [ main, development ]
+    types: [ opened, synchronize, reopened, labeled, unlabeled ]
   workflow_dispatch: #allow manual runs
 
 permissions:
@@ -27,6 +28,14 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
+    - name: Intentional failure hook (Format Build Test)
+      if: github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'ci:test-fail-format-build-test')
+      shell: bash
+      run: |
+        echo "Intentional failure enabled by PR label: ci:test-fail-format-build-test"
+        echo "Remove the label to disable this test hook."
+        exit 1
 
     - name: Set up JDK 17 (with Maven cache)
       uses: actions/setup-java@v4

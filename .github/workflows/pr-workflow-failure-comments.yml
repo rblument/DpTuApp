@@ -1,0 +1,270 @@
+name: PR Workflow Failure Comments
+
+on:
+  workflow_run:
+    workflows:
+      - Format Build Test
+      - Standards Check
+      - CodeQL Advanced
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  report-workflow-failures:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Upsert or remove PR failure summary comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowRun = context.payload.workflow_run;
+            const { owner, repo } = context.repo;
+            const workflowName = workflowRun.name || 'Unknown Workflow';
+            const workflowSlug = workflowName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            const marker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
+
+            const actionableConclusions = new Set([
+              'failure',
+              'timed_out',
+              'cancelled',
+              'action_required',
+              'startup_failure',
+              'stale',
+            ]);
+
+            const toOneLine = (value) => String(value || '').replace(/\s+/g, ' ').trim();
+            const formatConclusion = (value) => String(value || 'unknown').replace(/_/g, ' ');
+
+            const findFailExcerpt = (text) => {
+              if (!text) {
+                return [];
+              }
+
+              const lines = text.split(/\r?\n/);
+              const maxScanLines = 3000;
+              const scanned = lines.slice(Math.max(0, lines.length - maxScanLines));
+
+              const failPatterns = [
+                /##\[error\]/i,
+                /\berror\b/i,
+                /\bexception\b/i,
+                /\bfailed\b/i,
+                /\bfailure\b/i,
+                /\bfatal\b/i,
+              ];
+
+              let idx = -1;
+              for (let i = 0; i < scanned.length; i++) {
+                const line = scanned[i];
+                if (failPatterns.some((pattern) => pattern.test(line))) {
+                  idx = i;
+                  break;
+                }
+              }
+
+              if (idx === -1) {
+                return [];
+              }
+
+              const excerpt = [];
+              for (let i = idx; i < scanned.length && excerpt.length < 3; i++) {
+                const candidate = toOneLine(scanned[i]);
+                if (candidate.length > 0) {
+                  excerpt.push(candidate.slice(0, 220));
+                }
+              }
+              return excerpt;
+            };
+
+            const readJobLogExcerpt = async (jobId) => {
+              try {
+                const logMeta = await github.request('GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs', {
+                  owner,
+                  repo,
+                  job_id: jobId,
+                  request: { redirect: 'manual' },
+                });
+
+                const downloadUrl = logMeta.headers?.location || logMeta.url;
+                if (!downloadUrl) {
+                  return [];
+                }
+
+                const logResponse = await fetch(downloadUrl);
+                if (!logResponse.ok) {
+                  return [];
+                }
+
+                const logText = await logResponse.text();
+                return findFailExcerpt(logText);
+              } catch (error) {
+                core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
+                return [];
+              }
+            };
+
+            const getTargetPrs = async () => {
+              if (Array.isArray(workflowRun.pull_requests) && workflowRun.pull_requests.length > 0) {
+                return workflowRun.pull_requests;
+              }
+
+              try {
+                const headRepo = workflowRun.head_repository?.full_name;
+                if (headRepo !== `${owner}/${repo}`) {
+                  return [];
+                }
+
+                const head = `${owner}:${workflowRun.head_branch}`;
+                const pulls = await github.paginate(github.rest.pulls.list, {
+                  owner,
+                  repo,
+                  state: 'open',
+                  head,
+                  per_page: 100,
+                });
+                return pulls;
+              } catch (error) {
+                core.info(`Unable to resolve PRs from head branch fallback: ${error.message}`);
+                return [];
+              }
+            };
+
+            const runConclusion = (workflowRun.conclusion || 'unknown').toLowerCase();
+
+            const targetPrs = await getTargetPrs();
+            if (targetPrs.length === 0) {
+              core.info('No pull request is associated with this workflow run. Nothing to do.');
+              return;
+            }
+
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner,
+              repo,
+              run_id: workflowRun.id,
+              per_page: 100,
+            });
+
+            const failingJobConclusions = new Set(['failure', 'timed_out', 'cancelled', 'action_required', 'startup_failure']);
+            const failedJobs = jobs.filter((job) => failingJobConclusions.has((job.conclusion || '').toLowerCase()));
+
+            const failedJobDetails = [];
+            for (const job of failedJobs.slice(0, 10)) {
+              const badSteps = (job.steps || [])
+                .filter((step) => ['failure', 'timed_out', 'cancelled', 'action_required'].includes((step.conclusion || '').toLowerCase()))
+                .slice(0, 3)
+                .map((step) => `${step.name} (${step.conclusion || 'unknown'})`);
+
+              const logExcerpt = await readJobLogExcerpt(job.id);
+
+              failedJobDetails.push({
+                name: job.name,
+                url: job.html_url,
+                conclusion: formatConclusion(job.conclusion),
+                badSteps,
+                logExcerpt,
+              });
+            }
+
+            for (const pr of targetPrs) {
+              const issue_number = pr.number;
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number,
+                per_page: 100,
+              });
+
+              const existing = comments.find(
+                (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker),
+              );
+
+              if (!actionableConclusions.has(runConclusion)) {
+                if (existing) {
+                  await github.rest.issues.deleteComment({
+                    owner,
+                    repo,
+                    comment_id: existing.id,
+                  });
+                  core.info(`Removed stale failure summary for workflow '${workflowName}' on PR #${issue_number}.`);
+                } else {
+                  core.info(`Workflow '${workflowName}' is healthy and no stale comment exists on PR #${issue_number}.`);
+                }
+                continue;
+              }
+
+              const lines = [];
+              lines.push(marker);
+              lines.push(`## Workflow Failure: ${workflowName}`);
+              lines.push('');
+              lines.push('_This comment is sticky (updated on new runs) and ephemeral (deleted when this workflow is no longer failing)._');
+              lines.push('');
+              lines.push(`- Workflow conclusion: **${formatConclusion(runConclusion)}**`);
+              lines.push(`- Failed jobs: **${failedJobs.length}**`);
+              lines.push(`- Run: [#${workflowRun.run_number}.${workflowRun.run_attempt}](${workflowRun.html_url})`);
+              lines.push('');
+
+              if (failedJobDetails.length === 0) {
+                lines.push('No job-level failure details were returned by the Actions API. Open the run link above for full logs.');
+              } else {
+                lines.push('### Failed Jobs');
+                lines.push('');
+
+                for (const job of failedJobDetails) {
+                  lines.push(`- [${job.name}](${job.url}) (**${job.conclusion}**)`);
+
+                  if (job.badSteps.length > 0) {
+                    lines.push(`  - Failing steps: ${job.badSteps.join(', ')}`);
+                  }
+
+                  if (job.logExcerpt.length > 0) {
+                    lines.push('  - First failing log lines:');
+                    for (const line of job.logExcerpt) {
+                      lines.push(`    - ${line}`);
+                    }
+                  }
+                }
+
+                if (failedJobs.length > 10) {
+                  lines.push('');
+                  lines.push(`_Showing first 10 failed jobs out of ${failedJobs.length}._`);
+                }
+              }
+
+              lines.push('');
+              lines.push('### Next Steps');
+              lines.push('');
+              lines.push('1. Open the run link above.');
+              lines.push('2. Open each failed job and expand the first failing step.');
+              lines.push('3. Push a fix and this comment will update automatically.');
+
+              const body = lines.join('\n').slice(0, 64000);
+
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                  body,
+                });
+                core.info(`Updated failure summary for workflow '${workflowName}' on PR #${issue_number}.`);
+              } else {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number,
+                  body,
+                });
+                core.info(`Posted failure summary for workflow '${workflowName}' on PR #${issue_number}.`);
+              }
+            }

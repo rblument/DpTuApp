@@ -19,6 +19,7 @@ on:
     branches: [ "development", "main" ]
   pull_request:
     branches: [ "development", "main" ]
+    types: [ opened, synchronize, reopened, labeled, unlabeled ]
   workflow_dispatch: # allow manual runs
 
 jobs:
@@ -60,6 +61,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Intentional failure hook (CodeQL Advanced)
+      if: github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'ci:test-fail-codeql-advanced')
+      shell: bash
+      run: |
+        echo "Intentional failure enabled by PR label: ci:test-fail-codeql-advanced"
+        echo "Remove the label to disable this test hook."
+        exit 1
 
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
