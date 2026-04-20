@@ -92,7 +92,7 @@ public class SignInAction extends DpTuGuiAction {
                                         "Login succeeded but session data was incomplete");
                         return;
                     }
-                        TutoringSession signedInSession =
+                    TutoringSession signedInSession =
                             gson.fromJson(reply.getData(), TutoringSession.class);
                     int sessionId = signedInSession.getId();
                     String securityToken = signedInSession.getSecurityToken();
