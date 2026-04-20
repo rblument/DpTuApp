@@ -32,6 +32,19 @@ env:
 #   - Only *new* violations (relative to the development baseline) block the
 #     build, so pre-existing issues never prevent ongoing work
 #   - Add accepted project-specific terms to .cspell/project-words.txt
+#
+# Sticky PR comments:
+#   Both jobs post, update, or delete their own sticky PR comment identified
+#   by an HTML marker in the body. When all violations are resolved the
+#   corresponding comment is automatically removed.
+#     logging-standards  → <!-- logging-violations-delta -->
+#     spelling-check     → <!-- cspell-violations-delta -->
+#
+# Intentional failure hook (testing only):
+#   Apply the `ci:test-fail-standards-check` label to a PR to force the
+#   logging-standards job to fail. Remove the label to restore normal behavior.
+#   The `labeled` and `unlabeled` event types in `on:` ensure the label
+#   triggers a new run immediately.
 
 on:
   pull_request:
