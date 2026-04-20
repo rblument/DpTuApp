@@ -347,21 +347,29 @@ jobs:
                   `job-${jobId}-logs-${Date.now()}-${Math.random().toString(16).slice(2)}.zip`
                 );
 
-                let logContent = '';
+                let matchedLines = [];
                 try {
                   fs.writeFileSync(tempZipPath, Buffer.from(archiveBuffer));
 
                   const entryListOutput = execFileSync('unzip', ['-Z1', tempZipPath], { encoding: 'utf8' });
-                  const entryName = entryListOutput
+                  const fileEntries = entryListOutput
                     .split(/\r?\n/)
                     .map((entry) => entry.trim())
-                    .find((entry) => entry && !entry.endsWith('/'));
+                    .filter((entry) => entry && !entry.endsWith('/'));
 
-                  if (!entryName) {
+                  if (fileEntries.length === 0) {
                     return { lines: [], reason: 'log_archive_empty' };
                   }
 
-                  logContent = execFileSync('unzip', ['-p', tempZipPath, entryName], { encoding: 'utf8' });
+                  // Iterate entries in reverse so later (more likely failing) steps are checked first.
+                  for (const entryName of [...fileEntries].reverse()) {
+                    const content = execFileSync('unzip', ['-p', tempZipPath, entryName], { encoding: 'utf8' });
+                    const lines = findFailExcerpt(content);
+                    if (lines.length > 0) {
+                      matchedLines = lines;
+                      break;
+                    }
+                  }
                 } finally {
                   try {
                     fs.unlinkSync(tempZipPath);
@@ -370,11 +378,10 @@ jobs:
                   }
                 }
 
-                const lines = findFailExcerpt(logContent);
-                if (lines.length === 0) {
+                if (matchedLines.length === 0) {
                   return { lines: [], reason: 'no_matching_failure_lines' };
                 }
-                return { lines, reason: null };
+                return { lines: matchedLines, reason: null };
               } catch (error) {
                 core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
                 return { lines: [], reason: 'log_api_exception' };
@@ -800,21 +807,29 @@ jobs:
                   `job-${jobId}-logs-${Date.now()}-${Math.random().toString(16).slice(2)}.zip`
                 );
 
-                let logContent = '';
+                let matchedLines = [];
                 try {
                   fs.writeFileSync(tempZipPath, Buffer.from(archiveBuffer));
 
                   const archiveEntriesOutput = execFileSync('unzip', ['-Z1', tempZipPath], { encoding: 'utf8' });
-                  const firstFileEntry = archiveEntriesOutput
+                  const fileEntries = archiveEntriesOutput
                     .split(/\r?\n/)
                     .map((entry) => entry.trim())
-                    .find((entry) => entry && !entry.endsWith('/'));
+                    .filter((entry) => entry && !entry.endsWith('/'));
 
-                  if (!firstFileEntry) {
+                  if (fileEntries.length === 0) {
                     return { lines: [], reason: 'log_archive_empty' };
                   }
 
-                  logContent = execFileSync('unzip', ['-p', tempZipPath, firstFileEntry], { encoding: 'utf8' });
+                  // Iterate entries in reverse so later (more likely failing) steps are checked first.
+                  for (const entryName of [...fileEntries].reverse()) {
+                    const content = execFileSync('unzip', ['-p', tempZipPath, entryName], { encoding: 'utf8' });
+                    const lines = findFailExcerpt(content);
+                    if (lines.length > 0) {
+                      matchedLines = lines;
+                      break;
+                    }
+                  }
                 } finally {
                   try {
                     fs.unlinkSync(tempZipPath);
@@ -823,11 +838,10 @@ jobs:
                   }
                 }
 
-                const lines = findFailExcerpt(logContent);
-                if (lines.length === 0) {
+                if (matchedLines.length === 0) {
                   return { lines: [], reason: 'no_matching_failure_lines' };
                 }
-                return { lines, reason: null };
+                return { lines: matchedLines, reason: null };
               } catch (error) {
                 core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
                 return { lines: [], reason: 'log_api_exception' };
