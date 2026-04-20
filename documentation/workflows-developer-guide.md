@@ -375,6 +375,7 @@ This is useful for:
 | CodeQL alerts               | Fix security issue                                      |
 | Dependabot PR tests fail    | Dependency compatibility                                |
 | PR Workflow Failure comment | See comment on PR; link to the failing run is included  |
+| Poller workflow fails       | Inspect poller run logs and workflow/run association API calls |
 
 Never merge failing checks.
 
@@ -435,6 +436,32 @@ This keeps PRs clean and informative without requiring developers to navigate to
 GitHub only evaluates `workflow_run.workflows` from the **default branch** (`development`) at dispatch time. This means a pull request that introduces or modifies watch-list entries cannot activate those changes until merged.
 
 To keep PR failure comments available before merge, DpTu also uses a backup polling workflow (`pr-workflow-failure-comments-poller.yml`) that runs directly from pull request events and polls watched workflow runs for the PR head SHA.
+
+### Backup Poller Workflow (`pr-workflow-failure-comments-poller.yml`)
+
+The poller is a secondary safety net for the same comment markers used by the primary workflow. It keeps failure comments working on PR branches before `workflow_run` watch-list changes are active on `development`.
+
+**When the poller runs:**
+
+* Pull request events: `opened`, `synchronize`, `reopened`, `labeled`, `unlabeled`, `ready_for_review`
+* Manual trigger
+
+**How the poller behaves:**
+
+1. Resolves the current PR number and head SHA.
+2. Polls watched workflows for that head SHA until completion (bounded wait window).
+3. For each watched workflow:
+   * If failing (`failure`, `timed_out`, `cancelled`, etc.), posts or updates the same sticky marker comment used by the primary workflow.
+   * If healthy, deletes any existing marker comment for that workflow.
+4. Uses the same failure payload format (failed jobs, failing steps, first matching log lines) so PR comments stay consistent regardless of which path produced them.
+
+**Important maintenance notes:**
+
+* The poller includes `# pr-workflow-failure-comments: ignore` so drift validation does not require poller self-registration.
+* Keep watched workflow names and marker formats aligned between:
+  * `pr-workflow-failure-comments.yml`
+  * `pr-workflow-failure-comments-poller.yml`
+* If you add a new PR-triggered workflow, update both files so primary and backup behavior stay in sync.
 
 ### When It Runs
 
