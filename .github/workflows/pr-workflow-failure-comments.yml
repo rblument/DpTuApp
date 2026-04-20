@@ -1,5 +1,11 @@
 name: PR Workflow Failure Comments
 
+# NOTE: GitHub reads the `workflow_run.workflows` list from the DEFAULT BRANCH at dispatch time,
+# not from the branch where the triggering event originated. This means:
+#   - Changes to the watch list below only take effect after this file is merged to development.
+#   - The `validate-watchlist-drift` job (which runs from the PR branch) catches drift early,
+#     but the actual watch behavior activates only post-merge.
+# There is no GitHub-supported workaround for this constraint.
 on:
   workflow_run:
     workflows:
