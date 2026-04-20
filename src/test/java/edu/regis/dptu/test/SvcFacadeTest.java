@@ -50,7 +50,7 @@ public class SvcFacadeTest {
         Thread serverThread =
                 new Thread(
                         () -> {
-                            try (ServerSocket serverSocket = new ServerSocket(53637); ) {
+                            try (ServerSocket serverSocket = new ServerSocket(53637)) {
                                 serverReady.countDown();
                                 try (Socket socket = serverSocket.accept();
                                         BufferedReader in =
@@ -71,8 +71,7 @@ public class SvcFacadeTest {
         serverThread.start();
         try {
             assertTrue(
-                    serverReady.await(10, TimeUnit.SECONDS),
-                    "Server did not start within timeout");
+                    serverReady.await(10, TimeUnit.SECONDS), "Server did not start within timeout");
             SvcFacade facade = SvcFacade.instance();
             ClientRequest request = new ClientRequest(ServerRequestType.REQUEST_HINT);
             request.setData("{}");
