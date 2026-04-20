@@ -36,7 +36,7 @@ It covers:
 - `src/main/java/edu/regis/dptu/view/act/SeeOneAction.java`
 - `src/main/java/edu/regis/dptu/view/act/DoOneAction.java`
 - `src/main/java/edu/regis/dptu/view/act/TeachOneAction.java`
-  - Prefer resuming saved session state when it matches selected mode/problem type and includes pending task data.
+  - Prefer resuming saved session state when it matches the selected mode and exact problem identity (problem id + type) and includes pending task data.
 
 - `src/main/java/edu/regis/dptu/view/act/SignInAction.java`
   - Deserializes full session JSON from server into `TutoringSession` and stores it in `SplashFrame`.
