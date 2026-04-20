@@ -1,4 +1,4 @@
-name: PR Workflow Failure Comments
+name: PR Failure Comments
 
 # NOTE: GitHub reads the `workflow_run.workflows` list from the DEFAULT BRANCH at dispatch time,
 # not from the branch where the triggering event originated. This means:
@@ -12,7 +12,7 @@ on:
       - Format Build Test
       - Standards Check
       - CodeQL Advanced
-      - PR Workflow Failure Comments
+      - PR Failure Comments
     types:
       - completed
   pull_request:
@@ -21,8 +21,6 @@ on:
       - opened
       - synchronize
       - reopened
-      - labeled
-      - unlabeled
       - ready_for_review
     paths:
       - .github/workflows/*.yml
@@ -81,6 +79,7 @@ env:
 
 jobs:
   validate-watchlist-drift:
+    name: Validate Watchlist Drift
     if: github.event_name != 'workflow_run'
     runs-on: ubuntu-latest
 
@@ -171,7 +170,7 @@ jobs:
           )
 
           primary_watched_for_poller = set(watched_set)
-          primary_watched_for_poller.discard('PR Workflow Failure Comments')
+          primary_watched_for_poller.discard('PR Failure Comments')
 
           poller_missing = sorted(primary_watched_for_poller - poller_watched)
           poller_stale = sorted(poller_watched - primary_watched_for_poller)
@@ -192,6 +191,7 @@ jobs:
           PY
 
   report-workflow-failures:
+    name: Report Workflow Failures
     if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
     concurrency:
@@ -578,6 +578,7 @@ jobs:
               .write();
 
   poll-and-report-workflow-failures:
+    name: Poll Workflow Failures
     if: github.event_name == 'pull_request'
 
     strategy:

@@ -40,25 +40,13 @@ env:
 #     logging-standards  → <!-- logging-violations-delta -->
 #     spelling-check     → <!-- cspell-violations-delta -->
 #
-# Intentional failure hook (testing only):
-#   Apply the `ci:test-fail-standards-check` label to a PR to force the
-#   logging-standards job to fail. Remove the label to restore normal behavior.
-#   The `labeled` and `unlabeled` event types in `on:` ensure the label
-#   triggers a new run immediately.
-
 on:
   pull_request:
     branches: [ main, development ]
-    types: [ opened, synchronize, reopened, labeled, unlabeled ]
+    types: [ opened, synchronize, reopened ]
   push:
     branches: [ main, development ]
   workflow_dispatch: # allow manual runs
-    inputs:
-      inject_real_logging_failure:
-        description: 'Inject a real logging standards violation (for failure-comment testing)'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
   logging-standards:
@@ -68,36 +56,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Intentional failure hook (Standards Check)
-        if: github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'ci:test-fail-standards-check')
-        shell: bash
-        run: |
-          echo "Intentional failure enabled by PR label: ci:test-fail-standards-check"
-          echo "Remove the label to disable this test hook."
-          exit 1
-
       - name: Checkout development baseline
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
         with:
           ref: development
           path: baseline
-
-      - name: Inject real logging standards violation (workflow_dispatch)
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.inject_real_logging_failure == 'true'
-        shell: bash
-        run: |
-          mkdir -p src/main/java/edu/regis/dptu/ci
-          cat > src/main/java/edu/regis/dptu/ci/InjectedLoggingViolation.java <<'EOF'
-          package edu.regis.dptu.ci;
-
-          public final class InjectedLoggingViolation {
-
-            public void forceViolation() {
-              System.out.println("Injected real logging standards failure for workflow validation");
-            }
-          }
-          EOF
 
       # ------------------------------------------------------------------
       # STEP 1: Fail-fast checks for forbidden patterns

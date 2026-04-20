@@ -89,7 +89,7 @@ Consolidates pull request and branch validation into a single ordered workflow w
 ### When It Runs
 
 * Push to `development` or `main`
-* Pull requests targeting `development` or `main` (including when labels are applied or removed)
+* Pull requests targeting `development` or `main`
 * Manual trigger
 
 ### What It Does
@@ -115,8 +115,6 @@ Consolidates pull request and branch validation into a single ordered workflow w
     ```shell
     mvn -B compile
     ```
-
-   > **Note:** When the `ci:test-fail-format-build-test` label is applied the format job fails intentionally, but the build and test jobs still run so that unit test coverage metrics are always produced during PR testing.
 
 6. Runs a `test` job after build succeeds:
 
@@ -153,20 +151,6 @@ mvn test jacoco:report
 
 Resolve formatting, compile, or test failures, commit, and push again.
 
-### Intentional Failure Label
-
-Apply the `ci:test-fail-format-build-test` label to a PR to force the format job to fail.
-This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
-Remove the label to restore normal behavior.
-
-### Real Failure Injection (Workflow Dispatch)
-
-For higher-fidelity failure-path testing without labels, manual runs support:
-
-* `inject_real_test_failure=true`
-
-This creates a temporary failing JUnit test class on the runner and executes it, producing a real test failure signal.
-
 ---
 
 ## 2. Standards Check (`standards-check.yml`)
@@ -183,7 +167,7 @@ All developers should follow both guides.
 ### When It Runs
 
 * Push to: `development` or `main` branches
-* Pull requests (including when labels are applied or removed)
+* Pull requests (`opened`, `synchronize`, `reopened`)
 * Manual trigger
 
 ### What It Enforces
@@ -258,20 +242,6 @@ Follow the logging developer guide:
 * Replace console output
 * Use parameterized logging
 
-### Intentional Failure Label
-
-Apply the `ci:test-fail-standards-check` label to a PR to force the logging-standards job to fail.
-This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
-Remove the label to restore normal behavior.
-
-### Real Failure Injection (Workflow Dispatch)
-
-For higher-fidelity failure-path testing without labels, manual runs support:
-
-* `inject_real_logging_failure=true`
-
-This creates a temporary Java class with a forbidden pattern (`System.out.println`), causing the real standards enforcement checks to fail.
-
 ---
 
 ## 3. CodeQL Security Analysis (`codeql.yml`)
@@ -290,7 +260,7 @@ This identifies:
 ### When It Runs
 
 * Push to: `development` or `main` branches.
-* Pull requests (including when labels are applied or removed)
+* Pull requests (`opened`, `synchronize`, `reopened`)
 * Manual trigger
 
 ### Languages Analyzed
@@ -311,20 +281,6 @@ If CodeQL reports an issue:
 4. Confirm alert is resolved
 
 Do not ignore alerts without review.
-
-### Intentional Failure Label
-
-Apply the `ci:test-fail-codeql-advanced` label to a PR to force the analyze job to fail.
-This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
-Remove the label to restore normal behavior.
-
-### Real Failure Injection (Workflow Dispatch)
-
-For higher-fidelity failure-path testing without labels, manual runs support:
-
-* `inject_real_codeql_failure=true`
-
-This intentionally configures CodeQL with a non-existent query path so initialization fails through a real CodeQL error path.
 
 ---
 
@@ -444,7 +400,7 @@ Together they create a stable, secure, production-ready development environment.
 
 ---
 
-## 5. PR Workflow Failure Comments (`pr-workflow-failure-comments.yml`)
+## 5. PR Failure Comments (`pr-workflow-failure-comments.yml`)
 
 ### Purpose
 
@@ -466,7 +422,7 @@ The poller is a secondary safety net for the same comment markers used by the pr
 
 **When the embedded poller runs:**
 
-* Pull request events: `opened`, `synchronize`, `reopened`, `labeled`, `unlabeled`, `ready_for_review`
+* Pull request events: `opened`, `synchronize`, `reopened`, `ready_for_review`
 * Manual trigger
 
 **How the poller behaves:**
@@ -539,22 +495,22 @@ Hardening behaviors in this job:
 
 ### Watched Workflows
 
-| Workflow Name                 | Failure Label (testing)          |
-| ----------------------------- | -------------------------------- |
-| Format Build Test             | `ci:test-fail-format-build-test` |
-| Standards Check               | `ci:test-fail-standards-check`   |
-| CodeQL Advanced               | `ci:test-fail-codeql-advanced`   |
-| PR Workflow Failure Comments  | _(self-watch; validates the watch list drift job)_ |
+| Workflow Name         | Notes |
+| --------------------- | ----- |
+| Format Build Test     | watched |
+| Standards Check       | watched |
+| CodeQL Advanced       | watched |
+| PR Failure Comments   | self-watch for drift validation |
 
 ### Testing the Failure Comments
 
-Each watched workflow has an intentional failure hook. To test the end-to-end comment flow:
+Test end-to-end behavior by introducing and then fixing a real failing change in one watched workflow:
 
-1. Apply the corresponding `ci:test-fail-*` label to a PR.
-2. Wait for the workflow run to complete (the label triggers a new run).
+1. Push a commit that causes a deterministic failure.
+2. Wait for the workflow run to complete.
 3. Verify that a failure summary comment appears on the PR.
-4. Remove the label.
-5. Wait for the workflow run to complete again (healthy).
+4. Push a fix commit.
+5. Wait for the healthy workflow run to complete.
 6. Verify that the failure comment is deleted from the PR.
 
 ### Developer Responsibilities
