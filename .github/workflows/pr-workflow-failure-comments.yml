@@ -815,7 +815,7 @@ jobs:
 
               for (const [workflowName, workflowId] of watchedWorkflowIds.entries()) {
                 for (let page = 1; page <= apiBudget.maxRunsPages; page++) {
-                  const response = await github.rest.actions.listWorkflowRunsForWorkflow({
+                  const response = await github.rest.actions.listWorkflowRuns({
                     owner,
                     repo,
                     workflow_id: workflowId,
