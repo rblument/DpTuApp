@@ -263,7 +263,7 @@ jobs:
 
         def unavailable_reason() -> str:
           if run_tests_outcome == 'failure':
-            return 'one or more unit tests failed, preventing JaCoCo from completing the report'
+            return 'the Maven test/coverage step failed before coverage could be generated (for example due to unit test failures, JaCoCo report generation failure, or another Maven error)'
           if run_tests_outcome == 'cancelled':
             return 'the test run was cancelled'
           if generate_snapshot_outcome in ('failure', 'skipped', 'cancelled', ''):

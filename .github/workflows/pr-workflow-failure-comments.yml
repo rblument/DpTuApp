@@ -926,7 +926,7 @@ jobs:
               return latestByName;
             };
 
-            const maxWaitMs = 8 * 60 * 1000;
+            const maxWaitMs = 20 * 60 * 1000;
             const pollIntervalMs = 20 * 1000;
             const deadline = Date.now() + maxWaitMs;
             const noProgressLimit = 3;
