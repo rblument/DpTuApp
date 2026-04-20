@@ -50,7 +50,7 @@ public class SvcFacadeTest {
         Thread serverThread =
                 new Thread(
                         () -> {
-                            try (ServerSocket serverSocket = new ServerSocket(53637); ) {
+                            try (ServerSocket serverSocket = new ServerSocket(53637)) {
                                 serverReady.countDown();
                                 try (Socket socket = serverSocket.accept();
                                         BufferedReader in =
