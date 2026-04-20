@@ -167,6 +167,7 @@ jobs:
         cache: maven
 
     - name: Run tests and generate coverage report
+      id: run_tests
       timeout-minutes: 15
       env:
         MAVEN_OPTS: >-
@@ -177,6 +178,8 @@ jobs:
       run: mvn -B --no-transfer-progress test jacoco:report
 
     - name: Generate coverage summary snapshot
+      id: generate_snapshot
+      if: steps.run_tests.outcome == 'success'
       shell: bash
       run: |
         python - <<'PY'
@@ -236,6 +239,9 @@ jobs:
     - name: Load coverage summary metrics
       if: always() && github.event_name == 'pull_request'
       id: coverage_metrics
+      env:
+        RUN_TESTS_OUTCOME: ${{ steps.run_tests.outcome }}
+        GENERATE_SNAPSHOT_OUTCOME: ${{ steps.generate_snapshot.outcome }}
       shell: bash
       run: |
         python - <<'PY'
@@ -244,12 +250,27 @@ jobs:
         from pathlib import Path
 
         summary_path = Path('.github/badges/coverage-summary.json')
-
         output_path = Path(os.environ['GITHUB_OUTPUT'])
 
+        run_tests_outcome = os.environ.get('RUN_TESTS_OUTCOME', '')
+        generate_snapshot_outcome = os.environ.get('GENERATE_SNAPSHOT_OUTCOME', '')
+
+        def unavailable_reason() -> str:
+          if run_tests_outcome == 'failure':
+            return 'one or more unit tests failed, preventing JaCoCo from completing the report'
+          if run_tests_outcome == 'cancelled':
+            return 'the test run was cancelled'
+          if run_tests_outcome == 'skipped' or not run_tests_outcome:
+            return 'the test step was skipped because a preceding job (build or format) failed'
+          if generate_snapshot_outcome in ('failure', 'skipped', 'cancelled', ''):
+            return 'JaCoCo produced no output (the test step may have partially failed or timed out)'
+          return 'JaCoCo output was not found at the expected path'
+
         if not summary_path.exists():
+          reason = unavailable_reason()
           with output_path.open('a', encoding='utf-8') as out:
             out.write('available=false\n')
+            out.write(f'reason={reason}\n')
             out.write('all_covered=0\n')
             out.write('all_missed=0\n')
             out.write('all_percent=0.000\n')
@@ -261,7 +282,7 @@ jobs:
           if step_summary_path:
             with open(step_summary_path, 'a', encoding='utf-8') as summary:
               summary.write('\n## Unit Test Coverage Summary\n')
-              summary.write('Coverage summary is unavailable because JaCoCo output was not generated for this run.\n')
+              summary.write(f'Coverage summary is unavailable: {reason}.\n')
           raise SystemExit(0)
 
         with summary_path.open(encoding='utf-8') as f:
@@ -302,6 +323,7 @@ jobs:
       uses: actions/github-script@v7
       env:
         COVERAGE_AVAILABLE: ${{ steps.coverage_metrics.outputs.available }}
+        COVERAGE_REASON: ${{ steps.coverage_metrics.outputs.reason }}
         ALL_COVERED_LINES: ${{ steps.coverage_metrics.outputs.all_covered }}
         ALL_MISSED_LINES: ${{ steps.coverage_metrics.outputs.all_missed }}
         ALL_COVERAGE_PCT: ${{ steps.coverage_metrics.outputs.all_percent }}
@@ -314,6 +336,7 @@ jobs:
           const issue_number = context.issue.number;
 
           const available = (process.env.COVERAGE_AVAILABLE || '').toLowerCase() === 'true';
+          const reason = process.env.COVERAGE_REASON || 'JaCoCo output was not generated';
           const allCovered = Number(process.env.ALL_COVERED_LINES || '0');
           const allMissed = Number(process.env.ALL_MISSED_LINES || '0');
           const allCoveragePct = Number(process.env.ALL_COVERAGE_PCT || '0');
@@ -339,7 +362,8 @@ jobs:
                 '',
                 '_This comment updates with future commits to this branch._',
                 '',
-                'Coverage summary for all classes and non-Swing UI classes is unavailable for this run because JaCoCo output was not generated.',
+                `> [!WARNING]`,
+                `> Coverage summary is unavailable: ${reason}.`,
               ].join('\n');
 
           const { owner, repo } = context.repo;
