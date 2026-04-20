@@ -318,8 +318,50 @@ jobs:
             };
 
             const readJobLogExcerpt = async (jobId) => {
-              core.info(`Skipping log excerpt for job ${jobId}: job logs endpoint returns a redirected archive, not plain text.`);
-              return { lines: [], reason: 'log_excerpt_unsupported_archive' };
+              try {
+                const logMeta = await github.request('GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs', {
+                  owner,
+                  repo,
+                  job_id: jobId,
+                  request: { redirect: 'manual' },
+                });
+
+                const downloadUrl = logMeta.headers?.location;
+                if (!downloadUrl) {
+                  return { lines: [], reason: 'no_log_download_url' };
+                }
+
+                const logArchiveResponse = await fetch(downloadUrl);
+                if (!logArchiveResponse.ok) {
+                  return { lines: [], reason: `log_download_http_${logArchiveResponse.status}` };
+                }
+
+                const archiveBuffer = await logArchiveResponse.arrayBuffer();
+                const AdmZip = require('adm-zip');
+                const zip = new AdmZip(Buffer.from(archiveBuffer));
+                const zipEntries = zip.getEntries();
+
+                let logContent = '';
+                for (const entry of zipEntries) {
+                  if (!entry.isDirectory) {
+                    logContent = entry.getData().toString('utf8');
+                    break;
+                  }
+                }
+
+                if (!logContent) {
+                  return { lines: [], reason: 'log_archive_empty' };
+                }
+
+                const lines = findFailExcerpt(logContent);
+                if (lines.length === 0) {
+                  return { lines: [], reason: 'no_matching_failure_lines' };
+                }
+                return { lines, reason: null };
+              } catch (error) {
+                core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
+                return { lines: [], reason: 'log_api_exception' };
+              }
             };
 
             const getTargetPrs = async () => {
@@ -712,10 +754,50 @@ jobs:
             };
 
             const readJobLogExcerpt = async (jobId) => {
-              core.info(
-                `Skipping log excerpt extraction for job ${jobId}: the Actions job-log download endpoint returns an archive payload in this poller path, so treating it as plain text is unreliable.`
-              );
-              return { lines: [], reason: 'job_log_excerpt_unavailable' };
+              try {
+                const logMeta = await github.request('GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs', {
+                  owner,
+                  repo,
+                  job_id: jobId,
+                  request: { redirect: 'manual' },
+                });
+
+                const downloadUrl = logMeta.headers?.location;
+                if (!downloadUrl) {
+                  return { lines: [], reason: 'no_log_download_url' };
+                }
+
+                const logArchiveResponse = await fetch(downloadUrl);
+                if (!logArchiveResponse.ok) {
+                  return { lines: [], reason: `log_download_http_${logArchiveResponse.status}` };
+                }
+
+                const archiveBuffer = await logArchiveResponse.arrayBuffer();
+                const AdmZip = require('adm-zip');
+                const zip = new AdmZip(Buffer.from(archiveBuffer));
+                const zipEntries = zip.getEntries();
+
+                let logContent = '';
+                for (const entry of zipEntries) {
+                  if (!entry.isDirectory) {
+                    logContent = entry.getData().toString('utf8');
+                    break;
+                  }
+                }
+
+                if (!logContent) {
+                  return { lines: [], reason: 'log_archive_empty' };
+                }
+
+                const lines = findFailExcerpt(logContent);
+                if (lines.length === 0) {
+                  return { lines: [], reason: 'no_matching_failure_lines' };
+                }
+                return { lines, reason: null };
+              } catch (error) {
+                core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
+                return { lines: [], reason: 'log_api_exception' };
+              }
             };
 
             const resolveWatchedWorkflowIds = async () => {

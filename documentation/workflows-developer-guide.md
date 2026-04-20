@@ -139,6 +139,7 @@ Consolidates pull request and branch validation into a single ordered workflow w
 * Syntax errors
 * Failing tests
 * Runtime exceptions in tests
+* Coverage processing/report generation errors (for example, missing JaCoCo output such as `target/site/jacoco/jacoco.csv`)
 
 ### How to Fix Failures
 
@@ -432,7 +433,7 @@ The poller is a secondary safety net for the same comment markers used by the pr
 3. For each watched workflow:
    * If failing (`failure`, `timed_out`, `cancelled`, etc.), posts or updates the same sticky marker comment used by the primary workflow.
    * If healthy, deletes any existing marker comment for that workflow.
-4. Uses the same failure payload format (failed jobs, failing steps, first matching log lines) so PR comments stay consistent regardless of which path produced them.
+4. Uses the same failure payload format (failed jobs, failing steps, up to three first-matching error log lines) so PR comments stay consistent regardless of which path produced them.
 
 Additional hardening in the poller:
 
