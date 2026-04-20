@@ -102,7 +102,7 @@ public class SaveSessionActionIntegrationTest {
         SaveSessionAction.DialogRequest dialog = shownDialog.get();
         assertNotNull(dialog);
         assertEquals(
-            ResourceMgr.instance().string("save.session.error.noActive"), dialog.message());
+                ResourceMgr.instance().string("save.session.error.noActive"), dialog.message());
         assertEquals(ResourceMgr.instance().string("dialog.title.information"), dialog.title());
     }
 
@@ -114,8 +114,8 @@ public class SaveSessionActionIntegrationTest {
         session.setId(99);
 
         doThrow(new NonRecoverableException("database unavailable"))
-            .when(mockSessionSvc)
-            .update(session);
+                .when(mockSessionSvc)
+                .update(session);
 
         AtomicReference<SaveSessionAction.DialogRequest> shownDialog = new AtomicReference<>();
 
