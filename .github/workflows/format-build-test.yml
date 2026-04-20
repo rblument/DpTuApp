@@ -247,6 +247,7 @@ jobs:
           -Daether.transport.http.requestTimeout=30000
           -Dmaven.wagon.http.retryHandler.count=2
           -Dmaven.wagon.rto=30000
+      # cspell:ignore Dtest
       run: mvn -B --no-transfer-progress -Dtest=InjectedIntentionalFailureTest test
 
     - name: Generate coverage summary snapshot
