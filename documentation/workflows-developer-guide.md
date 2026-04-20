@@ -499,7 +499,6 @@ Hardening behaviors in this job:
 | Format Build Test     | watched |
 | Standards Check       | watched |
 | CodeQL Advanced       | watched |
-| PR Failure Comments   | self-watch for drift validation |
 
 ### Testing the Failure Comments
 
