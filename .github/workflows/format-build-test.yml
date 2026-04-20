@@ -1,5 +1,39 @@
 name: Format Build Test
 
+# This workflow runs in three sequential jobs: format → build → test.
+#
+# Job 1 – format
+#   Enforces consistent code style using Spotless.
+#   - On same-repository PRs: runs `spotless:apply`, commits any changes back to
+#     the PR branch, and exits. A new run triggered by that commit then
+#     validates the reformatted branch.
+#   - On fork PRs: runs `spotless:check` and fails if Spotless would make
+#     changes; the contributor must run `mvn spotless:apply` locally.
+#   - On push / manual runs: runs `spotless:check` (read-only, no commits).
+#
+# Job 2 – build (needs: format)
+#   Runs `mvn compile` to confirm the project compiles.
+#   When the `ci:test-fail-format-build-test` label is present the format job
+#   intentionally fails; this job and the test job still run in that case so
+#   that unit test coverage metrics are always produced during PR testing.
+#
+# Job 3 – test (needs: build)
+#   Runs `mvn test jacoco:report`.
+#   - Tracks each step outcome so that, when JaCoCo output is unavailable, the
+#     coverage PR comment contains the specific diagnostic reason (e.g., "tests
+#     failed", "step was skipped due to upstream failure") rather than a generic
+#     message.
+#   - On pull requests: generates a coverage summary JSON and posts/updates a
+#     sticky PR comment with covered/missed line counts for all classes and
+#     non-Swing UI classes separately. The comment is deleted if the test job no
+#     longer runs (handled by pr-workflow-failure-comments.yml).
+#
+# Intentional failure hook (testing only):
+#   Apply the `ci:test-fail-format-build-test` label to a PR to force the
+#   format job to fail. Build and test still proceed so the PR Workflow Failure
+#   Comments workflow can be exercised end-to-end. Remove the label to restore
+#   normal behavior.
+
 on:
   push:
     branches: [ main, development ]
