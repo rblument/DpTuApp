@@ -101,8 +101,7 @@ public class SessionDAOTest {
         ResultSet keyRs = mock(ResultSet.class);
 
         when(mockConnection.prepareStatement(contains("SELECT SessionId"))).thenReturn(existsStmt);
-        when(mockConnection.prepareStatement(
-                        startsWith("INSERT INTO TutoringSession"), anyInt()))
+        when(mockConnection.prepareStatement(startsWith("INSERT INTO TutoringSession"), anyInt()))
                 .thenReturn(insertStmt);
         when(mockConnection.prepareStatement(startsWith("DELETE FROM PendingTask")))
                 .thenReturn(clearPendingTaskStmt);
