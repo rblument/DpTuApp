@@ -88,6 +88,28 @@ public class TeachOneAction extends DpTuGuiAction {
             TutoringSession ts = new TutoringSession(account, problem);
             ts.setMode(Mode.TEACH_ONE);
 
+            TutoringSession signedInSession = SplashFrame.instance().getSignedInSession();
+            if (signedInSession != null) {
+                ts.setId(signedInSession.getId());
+                ts.setSecurityToken(signedInSession.getSecurityToken());
+                ts.setUserId(signedInSession.getUserId());
+                ts.setCourse(signedInSession.getCourse());
+                ts.setUnit(signedInSession.getUnit());
+                ts.setIsActive(signedInSession.isIsActive());
+                ts.setStartDate(signedInSession.getStartDate());
+                log.info(
+                        "Initialized TEACH_ONE session with existing sessionId={}, tokenPresent={}, userId={}, hasCourse={}, hasUnit={}",
+                        ts.getId(),
+                        ts.getSecurityToken() != null,
+                        ts.getUserId(),
+                        ts.getCourse() != null,
+                        ts.getUnit() != null);
+            } else {
+                log.warn(
+                        "No signed-in session found in SplashFrame; "
+                                + "TEACH_ONE session has no authorization context (sessionId or securityToken)");
+            }
+
             /**
              * for future students, in order to initialize a tutoring session, you need to populate
              * the task list for that session none of our constructors (there are three), do this
