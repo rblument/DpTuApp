@@ -35,6 +35,12 @@ on:
     branches: [ "development", "main" ]
     types: [ opened, synchronize, reopened, labeled, unlabeled ]
   workflow_dispatch: # allow manual runs
+    inputs:
+      inject_real_codeql_failure:
+        description: 'Inject a real CodeQL initialization failure (for failure-comment testing)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   analyze:
@@ -92,6 +98,7 @@ jobs:
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
+      if: github.event_name != 'workflow_dispatch' || github.event.inputs.inject_real_codeql_failure != 'true'
       uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
@@ -102,6 +109,16 @@ jobs:
 
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
+
+    - name: Initialize CodeQL (inject real failure)
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.inject_real_codeql_failure == 'true'
+      uses: github/codeql-action/init@v4
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        # This path intentionally does not exist and causes init to fail,
+        # exercising the real CodeQL failure path without labels.
+        queries: ./codeql/does-not-exist
 
     # If the analyze step fails for one of the languages you are analyzing with
     # "We were unable to automatically build your code", modify the matrix above

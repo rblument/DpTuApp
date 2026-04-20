@@ -41,6 +41,12 @@ on:
     branches: [ main, development ]
     types: [ opened, synchronize, reopened, labeled, unlabeled ]
   workflow_dispatch: #allow manual runs
+    inputs:
+      inject_real_test_failure:
+        description: 'Inject a real unit-test failure (for failure-comment testing)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -210,6 +216,38 @@ jobs:
           -Dmaven.wagon.http.retryHandler.count=2
           -Dmaven.wagon.rto=30000
       run: mvn -B --no-transfer-progress test jacoco:report
+
+    - name: Inject real failing unit test (workflow_dispatch)
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.inject_real_test_failure == 'true'
+      shell: bash
+      run: |
+        mkdir -p src/test/java/edu/regis/dptu/test
+        cat > src/test/java/edu/regis/dptu/test/InjectedIntentionalFailureTest.java <<'EOF'
+        package edu.regis.dptu.test;
+
+        import org.junit.jupiter.api.Test;
+
+        import static org.junit.jupiter.api.Assertions.assertTrue;
+
+        class InjectedIntentionalFailureTest {
+
+          @Test
+          void intentionallyFailForWorkflowValidation() {
+            assertTrue(false, "Injected real test failure for workflow validation");
+          }
+        }
+        EOF
+
+    - name: Run intentionally failing test suite (workflow_dispatch)
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.inject_real_test_failure == 'true'
+      timeout-minutes: 10
+      env:
+        MAVEN_OPTS: >-
+          -Daether.transport.http.connectTimeout=10000
+          -Daether.transport.http.requestTimeout=30000
+          -Dmaven.wagon.http.retryHandler.count=2
+          -Dmaven.wagon.rto=30000
+      run: mvn -B --no-transfer-progress -Dtest=InjectedIntentionalFailureTest test
 
     - name: Generate coverage summary snapshot
       id: generate_snapshot

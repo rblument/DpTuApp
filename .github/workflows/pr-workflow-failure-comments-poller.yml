@@ -99,6 +99,13 @@ jobs:
               earlyExitTriggered: false,
               earlyExitReason: null,
               missingRun: 0,
+              apiBudgetStops: 0,
+            };
+
+            const apiBudget = {
+              maxRunsPages: 2,
+              maxJobsPages: 2,
+              maxCommentsPages: 1,
             };
 
             const findFailExcerpt = (text) => {
@@ -173,13 +180,28 @@ jobs:
             };
 
             const getLatestWatchedRuns = async () => {
-              const allRuns = await github.paginate(github.rest.actions.listWorkflowRunsForRepo, {
-                owner,
-                repo,
-                head_sha: headSha,
-                event: 'pull_request',
-                per_page: 100,
-              });
+              const allRuns = [];
+              for (let page = 1; page <= apiBudget.maxRunsPages; page++) {
+                const response = await github.rest.actions.listWorkflowRunsForRepo({
+                  owner,
+                  repo,
+                  head_sha: headSha,
+                  event: 'pull_request',
+                  per_page: 100,
+                  page,
+                });
+
+                allRuns.push(...(response.data?.workflow_runs || []));
+
+                if ((response.data?.workflow_runs || []).length < 100) {
+                  break;
+                }
+
+                if (page === apiBudget.maxRunsPages) {
+                  metrics.apiBudgetStops += 1;
+                  core.info('API budget reached while listing workflow runs. Results may be truncated.');
+                }
+              }
 
               const latestByName = new Map();
               const watched = new Set(watchedWorkflows);
@@ -237,12 +259,57 @@ jobs:
               latestByName = await getLatestWatchedRuns();
             }
 
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number: prNumber,
-              per_page: 100,
-            });
+            const listIssueCommentsLimited = async (issueNumber) => {
+              const results = [];
+              for (let page = 1; page <= apiBudget.maxCommentsPages; page++) {
+                const response = await github.rest.issues.listComments({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  per_page: 100,
+                  page,
+                });
+
+                results.push(...(response.data || []));
+
+                if ((response.data || []).length < 100) {
+                  break;
+                }
+
+                if (page === apiBudget.maxCommentsPages) {
+                  metrics.apiBudgetStops += 1;
+                  core.info(`API budget reached while listing comments on PR #${issueNumber}. Results may be truncated.`);
+                }
+              }
+              return results;
+            };
+
+            const listJobsForRunLimited = async (runId) => {
+              const results = [];
+              for (let page = 1; page <= apiBudget.maxJobsPages; page++) {
+                const response = await github.rest.actions.listJobsForWorkflowRun({
+                  owner,
+                  repo,
+                  run_id: runId,
+                  per_page: 100,
+                  page,
+                });
+
+                results.push(...(response.data?.jobs || []));
+
+                if ((response.data?.jobs || []).length < 100) {
+                  break;
+                }
+
+                if (page === apiBudget.maxJobsPages) {
+                  metrics.apiBudgetStops += 1;
+                  core.info('API budget reached while listing jobs for workflow run. Results may be truncated.');
+                }
+              }
+              return results;
+            };
+
+            const comments = await listIssueCommentsLimited(prNumber);
 
             const workflowSlug = slugify(targetWorkflowName);
             const marker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
@@ -307,12 +374,7 @@ jobs:
               return;
             }
 
-            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
-                owner,
-                repo,
-                run_id: run.id,
-                per_page: 100,
-            });
+            const jobs = await listJobsForRunLimited(run.id);
 
             const failedJobs = jobs.filter((job) => failingJobConclusions.has((job.conclusion || '').toLowerCase()));
 

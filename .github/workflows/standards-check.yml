@@ -53,6 +53,12 @@ on:
   push:
     branches: [ main, development ]
   workflow_dispatch: # allow manual runs
+    inputs:
+      inject_real_logging_failure:
+        description: 'Inject a real logging standards violation (for failure-comment testing)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   logging-standards:
@@ -76,6 +82,22 @@ jobs:
         with:
           ref: development
           path: baseline
+
+      - name: Inject real logging standards violation (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.inject_real_logging_failure == 'true'
+        shell: bash
+        run: |
+          mkdir -p src/main/java/edu/regis/dptu/ci
+          cat > src/main/java/edu/regis/dptu/ci/InjectedLoggingViolation.java <<'EOF'
+          package edu.regis.dptu.ci;
+
+          public final class InjectedLoggingViolation {
+
+            public void forceViolation() {
+              System.out.println("Injected real logging standards failure for workflow validation");
+            }
+          }
+          EOF
 
       # ------------------------------------------------------------------
       # STEP 1: Fail-fast checks for forbidden patterns

@@ -159,6 +159,14 @@ Apply the `ci:test-fail-format-build-test` label to a PR to force the format job
 This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
 Remove the label to restore normal behavior.
 
+### Real Failure Injection (Workflow Dispatch)
+
+For higher-fidelity failure-path testing without labels, manual runs support:
+
+* `inject_real_test_failure=true`
+
+This creates a temporary failing JUnit test class on the runner and executes it, producing a real test failure signal.
+
 ---
 
 ## 2. Standards Check (`standards-check.yml`)
@@ -256,6 +264,14 @@ Apply the `ci:test-fail-standards-check` label to a PR to force the logging-stan
 This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
 Remove the label to restore normal behavior.
 
+### Real Failure Injection (Workflow Dispatch)
+
+For higher-fidelity failure-path testing without labels, manual runs support:
+
+* `inject_real_logging_failure=true`
+
+This creates a temporary Java class with a forbidden pattern (`System.out.println`), causing the real standards enforcement checks to fail.
+
 ---
 
 ## 3. CodeQL Security Analysis (`codeql.yml`)
@@ -301,6 +317,14 @@ Do not ignore alerts without review.
 Apply the `ci:test-fail-codeql-advanced` label to a PR to force the analyze job to fail.
 This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
 Remove the label to restore normal behavior.
+
+### Real Failure Injection (Workflow Dispatch)
+
+For higher-fidelity failure-path testing without labels, manual runs support:
+
+* `inject_real_codeql_failure=true`
+
+This intentionally configures CodeQL with a non-existent query path so initialization fails through a real CodeQL error path.
 
 ---
 
@@ -461,6 +485,7 @@ Additional hardening in the poller:
 * **Early-exit policy:** Stops polling after repeated no-progress cycles instead of waiting the full timeout every time.
 * **Observability output:** Emits per-workflow JSON counters (poll iterations, early-exit state, comment operations, fallback counts).
 * **Marker consistency self-check:** Verifies marker construction before comment operations.
+* **API budget protection:** Caps workflow-run, job, and comment list pagination so polling remains bounded under heavy load.
 
 **Important maintenance notes:**
 
@@ -512,6 +537,7 @@ Hardening behaviors in this job:
 * **Hardened log fallback:** If job logs cannot be downloaded or no matching failure lines are found, the comment includes an explicit fallback reason.
 * **Observability output:** Writes a lightweight JSON summary (create/update/delete counts, stale-SHA skips, fallback counts) to the run summary.
 * **Marker consistency self-check:** Enforces the `<!-- pr-workflow-failure:{workflow-slug} -->` marker contract in the workflow logic.
+* **API budget protection:** Caps high-volume PR/job/comment listing pages and logs truncation events in observability metrics.
 
 ### Watched Workflows
 
