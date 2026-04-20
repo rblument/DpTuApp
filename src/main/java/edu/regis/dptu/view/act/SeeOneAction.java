@@ -94,7 +94,8 @@ public class SeeOneAction extends DpTuGuiAction {
                     signedInSession != null && signedInSession.getSecurityToken() != null);
 
             if (signedInSession != null) {
-                if (canResumeSavedSession(signedInSession, Mode.SEE_ONE, problem)) {
+                if (SessionResumeMatcher.canResumeSavedSession(
+                        signedInSession, Mode.SEE_ONE, problem)) {
                     log.info(
                             "Resuming previously saved SEE_ONE sessionId={} for userId={}",
                             signedInSession.getId(),
@@ -154,22 +155,5 @@ public class SeeOneAction extends DpTuGuiAction {
                             ResourceMgr.instance().string("dialog.title.error"),
                             ResourceMgr.instance().string("error.failedToLoadProblem"));
         }
-    }
-
-    private boolean canResumeSavedSession(
-            TutoringSession signedInSession, Mode expectedMode, Problem selectedProblem) {
-        if (signedInSession.getMode() != expectedMode) {
-            return false;
-        }
-
-        if (signedInSession.getProblem() == null || selectedProblem == null) {
-            return false;
-        }
-
-        if (signedInSession.getProblem().getType() != selectedProblem.getType()) {
-            return false;
-        }
-
-        return signedInSession.getTasks() != null && !signedInSession.getTasks().isEmpty();
     }
 }
