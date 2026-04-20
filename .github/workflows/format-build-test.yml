@@ -266,8 +266,6 @@ jobs:
             return 'one or more unit tests failed, preventing JaCoCo from completing the report'
           if run_tests_outcome == 'cancelled':
             return 'the test run was cancelled'
-          if run_tests_outcome == 'skipped' or not run_tests_outcome:
-            return 'the test step was skipped because a preceding job (build or format) failed'
           if generate_snapshot_outcome in ('failure', 'skipped', 'cancelled', ''):
             return 'JaCoCo produced no output (the test step may have partially failed or timed out)'
           return 'JaCoCo output was not found at the expected path'

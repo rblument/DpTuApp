@@ -125,7 +125,8 @@ Consolidates pull request and branch validation into a single ordered workflow w
 7. Generates a coverage summary JSON snapshot and, on pull requests, posts or updates a sticky PR comment showing covered and missed line counts for:
    * **All classes** — the full project
    * **Non-Swing UI classes** — all packages except `edu.regis.dptu.view.*`
-8. If JaCoCo output is unavailable the PR comment includes a specific diagnostic reason (for example: tests failed, test step was skipped, test run was cancelled) rather than a generic message.
+8. If the `test` job runs but JaCoCo output is unavailable, the PR comment includes a specific diagnostic reason (for example: tests failed or the test run was cancelled) rather than a generic message.
+   If an upstream `format` or `build` job fails and the `test` job is skipped entirely, the coverage comment is not posted.
 9. Publishes a step summary with the coverage table.
 
 ### What Causes Failure
