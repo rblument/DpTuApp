@@ -526,6 +526,27 @@ jobs:
             const failingJobConclusions = new Set(['failure', 'timed_out', 'cancelled', 'action_required', 'startup_failure']);
             const failedJobs = jobs.filter((job) => failingJobConclusions.has((job.conclusion || '').toLowerCase()));
 
+            const transientPatterns = [
+              /\bECONNRESET\b/,
+              /\bECONNREFUSED\b/,
+              /\bETIMEDOUT\b/,
+              /\bENOTFOUND\b/,
+              /\bENETUNREACH\b/,
+              /npm error network/i,
+              /network connectivity/i,
+              /could not resolve host/i,
+              /temporary failure in name resolution/i,
+              /failed to fetch/i,
+              /fetch failed/i,
+              /ssl.*handshake/i,
+              /502 bad gateway/i,
+              /503 service unavailable/i,
+              /connection timed out/i,
+              /connection reset/i,
+            ];
+            const classifyTransient = (logLines) =>
+              logLines.some((line) => transientPatterns.some((p) => p.test(line)));
+
             const failedJobDetails = [];
             for (const job of failedJobs.slice(0, 10)) {
               const badSteps = (job.steps || [])
@@ -545,6 +566,7 @@ jobs:
                 badSteps,
                 logExcerpt: logResult.lines,
                 logFallbackReason: logResult.reason,
+                isLikelyTransient: classifyTransient(logResult.lines),
               });
             }
 
@@ -581,6 +603,7 @@ jobs:
                 continue;
               }
 
+              const hasTransientJob = failedJobDetails.some((j) => j.isLikelyTransient);
               const lines = [];
               lines.push(marker);
               lines.push(`## Workflow Failure: ${workflowName}`);
@@ -591,6 +614,12 @@ jobs:
               lines.push(`- Failed jobs: **${failedJobs.length}**`);
               lines.push(`- Run: [#${workflowRun.run_number}.${workflowRun.run_attempt}](${workflowRun.html_url})`);
               lines.push('');
+
+              if (hasTransientJob) {
+                lines.push('> [!NOTE]');
+                lines.push('> One or more failures appear to be transient (network or infrastructure errors). Consider re-running the workflow before investigating code changes.');
+                lines.push('');
+              }
 
               if (failedJobDetails.length === 0) {
                 lines.push('No job-level failure details were returned by the Actions API. Open the run link above for full logs.');
@@ -624,9 +653,15 @@ jobs:
               lines.push('');
               lines.push('### Next Steps');
               lines.push('');
-              lines.push('1. Open the run link above.');
-              lines.push('2. Open each failed job and expand the first failing step.');
-              lines.push('3. Push a fix and this comment will update automatically.');
+              if (hasTransientJob) {
+                lines.push('1. **Re-run the failed jobs** — these failures look transient (network or infrastructure errors). Use the \'Re-run failed jobs\' button on the run linked above.');
+                lines.push('2. If the failure persists after re-running, open each failed job and expand the first failing step.');
+                lines.push('3. Push a fix if needed and this comment will update automatically.');
+              } else {
+                lines.push('1. Open the run link above.');
+                lines.push('2. Open each failed job and expand the first failing step.');
+                lines.push('3. Push a fix and this comment will update automatically.');
+              }
 
               const body = lines.join('\n').slice(0, 64000);
 
@@ -1154,6 +1189,27 @@ jobs:
 
             const failedJobs = jobs.filter((job) => failingJobConclusions.has((job.conclusion || '').toLowerCase()));
 
+            const transientPatterns = [
+              /\bECONNRESET\b/,
+              /\bECONNREFUSED\b/,
+              /\bETIMEDOUT\b/,
+              /\bENOTFOUND\b/,
+              /\bENETUNREACH\b/,
+              /npm error network/i,
+              /network connectivity/i,
+              /could not resolve host/i,
+              /temporary failure in name resolution/i,
+              /failed to fetch/i,
+              /fetch failed/i,
+              /ssl.*handshake/i,
+              /502 bad gateway/i,
+              /503 service unavailable/i,
+              /connection timed out/i,
+              /connection reset/i,
+            ];
+            const classifyTransient = (logLines) =>
+              logLines.some((line) => transientPatterns.some((p) => p.test(line)));
+
             const failedJobDetails = [];
             for (const job of failedJobs.slice(0, 10)) {
               const badSteps = (job.steps || [])
@@ -1173,9 +1229,11 @@ jobs:
                 badSteps,
                 logExcerpt: logResult.lines,
                 logFallbackReason: logResult.reason,
+                isLikelyTransient: classifyTransient(logResult.lines),
               });
             }
 
+            const hasTransientJob = failedJobDetails.some((j) => j.isLikelyTransient);
             const lines = [];
             lines.push(marker);
             lines.push(`## Workflow Failure: ${targetWorkflowName}`);
@@ -1186,6 +1244,12 @@ jobs:
             lines.push(`- Failed jobs: **${failedJobs.length}**`);
             lines.push(`- Run: [#${run.run_number}.${run.run_attempt}](${run.html_url})`);
             lines.push('');
+
+            if (hasTransientJob) {
+              lines.push('> [!NOTE]');
+              lines.push('> One or more failures appear to be transient (network or infrastructure errors). Consider re-running the workflow before investigating code changes.');
+              lines.push('');
+            }
 
             if (failedJobDetails.length === 0) {
               lines.push('No job-level failure details were returned by the Actions API. Open the run link above for full logs.');
@@ -1219,9 +1283,15 @@ jobs:
             lines.push('');
             lines.push('### Next Steps');
             lines.push('');
-            lines.push('1. Open the run link above.');
-            lines.push('2. Open each failed job and expand the first failing step.');
-            lines.push('3. Push a fix and this comment will update automatically.');
+            if (hasTransientJob) {
+              lines.push('1. **Re-run the failed jobs** — these failures look transient (network or infrastructure errors). Use the \'Re-run failed jobs\' button on the run linked above.');
+              lines.push('2. If the failure persists after re-running, open each failed job and expand the first failing step.');
+              lines.push('3. Push a fix if needed and this comment will update automatically.');
+            } else {
+              lines.push('1. Open the run link above.');
+              lines.push('2. Open each failed job and expand the first failing step.');
+              lines.push('3. Push a fix and this comment will update automatically.');
+            }
 
             const body = lines.join('\n').slice(0, 64000);
 
