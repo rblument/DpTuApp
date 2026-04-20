@@ -353,8 +353,8 @@ This is useful for:
 | Standards Check fails       | Logging violations, spelling errors                     |
 | CodeQL alerts               | Fix security issue                                      |
 | Dependabot PR tests fail    | Dependency compatibility                                |
-| PR Workflow Failure comment | See comment on PR; link to the failing run is included  |
-| Poller workflow fails       | Inspect poller run logs and workflow/run association API calls |
+| PR Failure Comments         | See comment on PR; link to the failing run is included  |
+| Poller job fails            | Inspect poller run logs and workflow/run association API calls |
 
 Never merge failing checks.
 
