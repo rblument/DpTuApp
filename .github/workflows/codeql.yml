@@ -9,6 +9,20 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
+# DpTu notes:
+#   - Analyzes two language targets: `actions` (GitHub Actions YAML) and
+#     `java-kotlin` (Java source code).
+#   - The `labeled` and `unlabeled` pull_request event types are included so
+#     that the intentional failure hook responds immediately when its label is
+#     applied or removed, triggering a fresh run each time.
+#   - Security alerts appear in the GitHub UI under Security → Code scanning.
+#
+# Intentional failure hook (testing only):
+#   Apply the `ci:test-fail-codeql-advanced` label to a PR to force the
+#   analyze job to fail. Remove the label to restore normal behavior. This is
+#   used to verify that pr-workflow-failure-comments.yml correctly surfaces
+#   CodeQL failures as sticky PR comments.
+#
 name: "CodeQL Advanced"
 
 env:
