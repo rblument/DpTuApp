@@ -37,7 +37,7 @@ permissions:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
-# This workflow contains two independent jobs that share the same file but run
+# This workflow contains three jobs that share the same file but run
 # under different trigger conditions.
 #
 # Job 1 – validate-watchlist-drift (triggers: pull_request, push, workflow_dispatch)
@@ -929,7 +929,11 @@ jobs:
             const maxWaitMs = 20 * 60 * 1000;
             const pollIntervalMs = 20 * 1000;
             const deadline = Date.now() + maxWaitMs;
+            // Exit early if the run never appears after this many consecutive polls
+            // (~100 seconds), indicating the workflow was not triggered for this SHA.
+            const noRunLimit = 5;
 
+            let noRunCount = 0;
             let latestByName = await getLatestWatchedRuns();
             while (Date.now() < deadline) {
               metrics.pollIterations += 1;
@@ -939,8 +943,16 @@ jobs:
               }
 
               if (!run) {
-                core.info(`Polling for '${targetWorkflowName}' to appear.`);
+                noRunCount += 1;
+                if (noRunCount >= noRunLimit) {
+                  metrics.earlyExitTriggered = true;
+                  metrics.earlyExitReason = `no_run_found_after_${noRunLimit}_polls`;
+                  core.info(`Early exit for '${targetWorkflowName}': no run found after ${noRunLimit} polls.`);
+                  break;
+                }
+                core.info(`Polling for '${targetWorkflowName}' to appear (attempt ${noRunCount}/${noRunLimit}).`);
               } else {
+                noRunCount = 0;
                 core.info(`Polling for '${targetWorkflowName}' completion (status: ${run.status}).`);
               }
               await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));

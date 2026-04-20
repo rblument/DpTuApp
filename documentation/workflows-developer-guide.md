@@ -439,8 +439,8 @@ Additional hardening in the poller:
 
 * **Per-PR/per-workflow dedupe lock:** Runs each watched workflow as a matrix item with concurrency keyed by PR number + workflow name.
 * **Freshness guard:** Skips comment updates when the latest run SHA differs from the current PR head SHA.
-* **Early-exit policy:** Stops polling after repeated no-progress cycles instead of waiting the full timeout every time.
-* **Observability output:** Emits per-workflow JSON counters (poll iterations, early-exit state, comment operations, fallback counts).
+* **Bounded polling window:** Continues polling until the watched workflow completes or the fixed wait deadline is reached, preventing unbounded waits while keeping behavior predictable. Exits early if the run never appears after several consecutive polls (indicating the workflow was not triggered for that SHA).
+* **Observability output:** Emits per-workflow JSON counters (poll iterations, timeout status, comment operations, fallback counts).
 * **Marker consistency self-check:** Verifies marker construction before comment operations.
 * **API budget protection:** Caps workflow-run, job, and comment list pagination so polling remains bounded under heavy load.
 
