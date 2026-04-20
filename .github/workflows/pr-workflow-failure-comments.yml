@@ -12,7 +12,6 @@ on:
       - Format Build Test
       - Standards Check
       - CodeQL Advanced
-      - PR Failure Comments
     types:
       - completed
   pull_request:
