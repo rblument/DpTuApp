@@ -107,6 +107,11 @@ CREATE TABLE TutoringSession (
     'KNAPSACK_0_1'
    ),
    ProblemId INT NOT NULL,
+  Mode ENUM(
+    'SEE_ONE',
+    'DO_ONE',
+    'TEACH_ONE'
+  ) DEFAULT 'SEE_ONE',
 
    PRIMARY KEY (SessionId),
    FOREIGN KEY (UserId)
