@@ -89,7 +89,7 @@ Consolidates pull request and branch validation into a single ordered workflow w
 ### When It Runs
 
 * Push to `development` or `main`
-* Pull requests targeting `development` or `main`
+* Pull requests targeting `development` or `main` (including when labels are applied or removed)
 * Manual trigger
 
 ### What It Does
@@ -116,16 +116,19 @@ Consolidates pull request and branch validation into a single ordered workflow w
     mvn -B compile
     ```
 
+   > **Note:** When the `ci:test-fail-format-build-test` label is applied the format job fails intentionally, but the build and test jobs still run so that unit test coverage metrics are always produced during PR testing.
+
 6. Runs a `test` job after build succeeds:
 
     ```shell
     mvn -B test jacoco:report
     ```
 
-7. Generates a coverage summary snapshot and compares PR coverage against stored `development` baseline.
-8. Updates coverage summary comments and run summaries.
-9. Generates and, on `development` pushes, commits updated coverage badges.
-10. Publishes JUnit test reports.
+7. Generates a coverage summary JSON snapshot and, on pull requests, posts or updates a sticky PR comment showing covered and missed line counts for:
+   * **All classes** — the full project
+   * **Non-Swing UI classes** — all packages except `edu.regis.dptu.view.*`
+8. If JaCoCo output is unavailable the PR comment includes a specific diagnostic reason (for example: tests failed, test step was skipped, test run was cancelled) rather than a generic message.
+9. Publishes a step summary with the coverage table.
 
 ### What Causes Failure
 
@@ -137,7 +140,6 @@ Consolidates pull request and branch validation into a single ordered workflow w
 * Syntax errors
 * Failing tests
 * Runtime exceptions in tests
-* Coverage processing/report generation errors
 
 ### How to Fix Failures
 
@@ -150,6 +152,12 @@ mvn test jacoco:report
 ```
 
 Resolve formatting, compile, or test failures, commit, and push again.
+
+### Intentional Failure Label
+
+Apply the `ci:test-fail-format-build-test` label to a PR to force the format job to fail.
+This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
+Remove the label to restore normal behavior.
 
 ---
 
@@ -167,7 +175,7 @@ All developers should follow both guides.
 ### When It Runs
 
 * Push to: `development` or `main` branches
-* Pull requests
+* Pull requests (including when labels are applied or removed)
 * Manual trigger
 
 ### What It Enforces
@@ -242,6 +250,12 @@ Follow the logging developer guide:
 * Replace console output
 * Use parameterized logging
 
+### Intentional Failure Label
+
+Apply the `ci:test-fail-standards-check` label to a PR to force the logging-standards job to fail.
+This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
+Remove the label to restore normal behavior.
+
 ---
 
 ## 3. CodeQL Security Analysis (`codeql.yml`)
@@ -260,7 +274,7 @@ This identifies:
 ### When It Runs
 
 * Push to: `development` or `main` branches.
-* Pull requests
+* Pull requests (including when labels are applied or removed)
 * Manual trigger
 
 ### Languages Analyzed
@@ -282,6 +296,12 @@ If CodeQL reports an issue:
 4. Confirm alert is resolved
 
 Do not ignore alerts without review.
+
+### Intentional Failure Label
+
+Apply the `ci:test-fail-codeql-advanced` label to a PR to force the analyze job to fail.
+This is used to verify that the PR Workflow Failure Comments workflow correctly detects and reports the failure.
+Remove the label to restore normal behavior.
 
 ---
 
@@ -348,13 +368,13 @@ This is useful for:
 
 ## Failure Handling Strategy
 
-| Workflow                 | Fix Location               |
-| ------------------------ | -------------------------- |
-| Format/Build/Test fails  | Formatting, compile, tests |
-| Build fails              | Compilation errors         |
-| Logging enforcement      | Update logging usage       |
-| CodeQL alerts            | Fix security issue         |
-| Dependabot PR tests fail | Dependency compatibility   |
+| Workflow                    | Fix Location                                            |
+| --------------------------- | ------------------------------------------------------- |
+| Format / Build / Test fails | Formatting, compile errors, failing tests               |
+| Standards Check fails       | Logging violations, spelling errors                     |
+| CodeQL alerts               | Fix security issue                                      |
+| Dependabot PR tests fail    | Dependency compatibility                                |
+| PR Workflow Failure comment | See comment on PR; link to the failing run is included  |
 
 Never merge failing checks.
 
@@ -400,6 +420,82 @@ Together they create a stable, secure, production-ready development environment.
 
 ---
 
+## 5. PR Workflow Failure Comments (`pr-workflow-failure-comments.yml`)
+
+### Purpose
+
+Provides **centralized, sticky, and ephemeral failure comments** on pull requests.
+
+When any watched workflow fails on a PR, this workflow automatically posts a comment on that PR summarizing what failed and how to investigate. When the same workflow later passes, the comment is automatically deleted.
+
+This keeps PRs clean and informative without requiring developers to navigate to the Actions tab for every failure.
+
+### When It Runs
+
+* After any watched workflow completes (via `workflow_run` event)
+* When a workflow YAML file changes on push or pull request (for drift validation)
+* Manual trigger
+
+### What It Does
+
+#### Job 1: `validate-watchlist-drift`
+
+Runs whenever a `.github/workflows/*.yml` file changes. Verifies that the watch list in this workflow's `workflow_run.workflows` section covers every workflow that has a `pull_request:` trigger.
+
+* **Missing entries** (new PR workflows not in the watch list) cause the job to fail.
+* **Stale entries** (watch list names that no longer match any workflow) cause the job to fail.
+
+To exclude a workflow from the watch requirement, add this comment anywhere in that workflow file:
+
+```yaml
+# pr-workflow-failure-comments: ignore
+```
+
+> **Note:** GitHub reads the `workflow_run.workflows` list from the **default branch** at dispatch time. Changes to the watch list on a PR branch only take full effect after that PR is merged to `development`. The drift validation job (which runs from the PR branch) catches problems early, but the watch behavior activates post-merge.
+
+#### Job 2: `report-workflow-failures`
+
+Fires when a watched workflow completes on a pull request run. For each associated PR:
+
+* **Failure / timed out / cancelled / etc.:** Posts or updates a sticky comment containing:
+  * Workflow name, conclusion, and a link to the run
+  * Each failing job name and its first failing steps
+  * Up to three first-matching error log lines from the job's raw logs
+* **Success:** Deletes any existing failure comment for that workflow from the PR.
+
+Each workflow has its own comment identified by a unique HTML marker (`<!-- pr-workflow-failure:{workflow-slug} -->`), so comments for different workflows never overwrite each other.
+
+### Watched Workflows
+
+| Workflow Name                 | Failure Label (testing)          |
+| ----------------------------- | -------------------------------- |
+| Format Build Test             | `ci:test-fail-format-build-test` |
+| Standards Check               | `ci:test-fail-standards-check`   |
+| CodeQL Advanced               | `ci:test-fail-codeql-advanced`   |
+| PR Workflow Failure Comments  | _(self-watch; validates the watch list drift job)_ |
+
+### Testing the Failure Comments
+
+Each watched workflow has an intentional failure hook. To test the end-to-end comment flow:
+
+1. Apply the corresponding `ci:test-fail-*` label to a PR.
+2. Wait for the workflow run to complete (the label triggers a new run).
+3. Verify that a failure summary comment appears on the PR.
+4. Remove the label.
+5. Wait for the workflow run to complete again (healthy).
+6. Verify that the failure comment is deleted from the PR.
+
+### Developer Responsibilities
+
+When a failure comment appears on your PR:
+
+1. Read the failing job and step names in the comment.
+2. Click the run link to view full logs.
+3. Push a fix — the comment will update automatically on the next run.
+4. If all failures are resolved the comment disappears automatically.
+
+---
+
 ## Maintenance Notes
 
 When adding new workflows:
@@ -412,4 +508,4 @@ This guide should always reflect the current CI/CD configuration.
 
 ---
 
-**Last reviewed:** 12 April 2026 by Harrison Sherwin
+**Last reviewed:** 20 April 2026 by Harrison Sherwin
