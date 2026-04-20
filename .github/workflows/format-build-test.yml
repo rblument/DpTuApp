@@ -22,8 +22,7 @@ name: Format Build Test
 #     message.
 #   - On pull requests: generates a coverage summary JSON and posts/updates a
 #     sticky PR comment with covered/missed line counts for all classes and
-#     non-Swing UI classes separately. The comment is deleted if the test job no
-#     longer runs (handled by pr-workflow-failure-comments.yml).
+#     non-Swing UI classes separately when this job runs.
 #
 on:
   push:

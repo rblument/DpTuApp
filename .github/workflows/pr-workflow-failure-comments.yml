@@ -22,9 +22,6 @@ on:
       - synchronize
       - reopened
       - ready_for_review
-    paths:
-      - .github/workflows/*.yml
-      - .github/workflows/*.yaml
   push:
     branches: [ main, development ]
     paths:
@@ -86,8 +83,37 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect workflow file changes
+        id: workflow-file-changes
+        if: github.event_name != 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base_sha="${{ github.event.pull_request.base.sha }}"
+            head_sha="${{ github.event.pull_request.head.sha }}"
+          else
+            base_sha="${{ github.event.before }}"
+            head_sha="${{ github.sha }}"
+          fi
+
+          if [ -z "${base_sha}" ] || [ "${base_sha}" = "0000000000000000000000000000000000000000" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git diff --name-only "${base_sha}" "${head_sha}" | grep -Eq '^\.github/workflows/.*\.ya?ml$'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Validate watched workflow list covers pull_request workflows
+        if: github.event_name == 'workflow_dispatch' || steps.workflow-file-changes.outputs.changed == 'true'
         shell: bash
         run: |
           python - <<'PY'
@@ -190,6 +216,11 @@ jobs:
           print('Watch list is up to date for all pull_request-triggered workflows.')
           PY
 
+      - name: Skip drift validation when workflow files are unchanged
+        if: github.event_name != 'workflow_dispatch' && steps.workflow-file-changes.outputs.changed != 'true'
+        shell: bash
+        run: echo "No workflow file changes detected; skipping drift validation."
+
   report-workflow-failures:
     name: Report Workflow Failures
     if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
@@ -226,7 +257,7 @@ jobs:
 
             const apiBudget = {
               maxJobsPages: 2,
-              maxCommentsPages: 1,
+              maxCommentsPages: 10,
               maxPullsPages: 2,
               pullsPerPage: 50,
             };
@@ -660,7 +691,7 @@ jobs:
             const apiBudget = {
               maxRunsPages: 2,
               maxJobsPages: 2,
-              maxCommentsPages: 1,
+              maxCommentsPages: 10,
             };
 
             const findFailExcerpt = (text) => {
@@ -794,7 +825,7 @@ jobs:
                 break;
               }
 
-              const runKey = run ? `${run.id}:${run.status}:${run.conclusion || 'null'}` : 'none';
+              const runKey = run ? `${run.id}:${run.status}:${run.conclusion || 'null'}:${run.updated_at || run.run_started_at || ''}` : 'none';
               if (runKey === lastObservedRunKey) {
                 noProgressCount += 1;
               } else {
@@ -887,8 +918,6 @@ jobs:
               return results;
             };
 
-            const comments = await listIssueCommentsLimited(prNumber);
-
             const workflowSlug = slugify(targetWorkflowName);
             const marker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
             const expectedMarker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
@@ -896,7 +925,12 @@ jobs:
               throw new Error('Marker consistency self-check failed.');
             }
 
-            let existing = await collapseDuplicateMarkerComments(prNumber, comments, marker, targetWorkflowName);
+            let existing = await collapseDuplicateMarkerComments(
+              prNumber,
+              await listIssueCommentsLimited(prNumber),
+              marker,
+              targetWorkflowName,
+            );
 
             let run = latestByName.get(targetWorkflowName);
             if (!run) {
@@ -938,7 +972,12 @@ jobs:
               }
 
               core.info(`Backstop recheck found completed run for '${targetWorkflowName}'. Continuing comment reconciliation.`);
-              existing = await collapseDuplicateMarkerComments(prNumber, comments, marker, targetWorkflowName);
+              existing = await collapseDuplicateMarkerComments(
+                prNumber,
+                await listIssueCommentsLimited(prNumber),
+                marker,
+                targetWorkflowName,
+              );
             }
 
             if ((run.head_sha || '') !== headSha) {
@@ -952,6 +991,13 @@ jobs:
             }
 
             const runConclusion = (run.conclusion || 'unknown').toLowerCase();
+
+            existing = await collapseDuplicateMarkerComments(
+              prNumber,
+              await listIssueCommentsLimited(prNumber),
+              marker,
+              targetWorkflowName,
+            );
 
             if (!actionableConclusions.has(runConclusion)) {
               if (existing) {
