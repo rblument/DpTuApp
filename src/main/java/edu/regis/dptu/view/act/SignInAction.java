@@ -92,13 +92,12 @@ public class SignInAction extends DpTuGuiAction {
                                         "Login succeeded but session data was incomplete");
                         return;
                     }
-                    int sessionId = sessionJson.get("id").getAsInt();
-                    String securityToken = sessionJson.get("securityToken").getAsString();
-                    TutoringSession signedInSession = new TutoringSession(user.getUserId());
-                    signedInSession.setId(sessionId);
-                    signedInSession.setSecurityToken(securityToken);
+                        TutoringSession signedInSession =
+                            gson.fromJson(reply.getData(), TutoringSession.class);
+                    int sessionId = signedInSession.getId();
+                    String securityToken = signedInSession.getSecurityToken();
                     SplashFrame.instance().setSignedInSession(signedInSession);
-                    signedInSession.setUserId(frame.getUserId());
+                    signedInSession.setUserId(user.getUserId());
                     log.info(
                             "sessionId={} securityTokenPresent={} stored in SplashFrame for userId={}",
                             sessionId,
