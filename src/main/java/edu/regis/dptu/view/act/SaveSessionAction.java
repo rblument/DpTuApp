@@ -84,6 +84,7 @@ public class SaveSessionAction extends DpTuGuiAction {
      *
      * @param evt
      */
+    @Override
     public void actionPerformed(ActionEvent evt) {
         TutoringSession session = activeSessionSupplier.get();
 
