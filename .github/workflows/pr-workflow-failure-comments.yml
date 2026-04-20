@@ -929,10 +929,6 @@ jobs:
             const maxWaitMs = 20 * 60 * 1000;
             const pollIntervalMs = 20 * 1000;
             const deadline = Date.now() + maxWaitMs;
-            const noProgressLimit = 3;
-
-            let noProgressCount = 0;
-            let lastObservedRunKey = '';
 
             let latestByName = await getLatestWatchedRuns();
             while (Date.now() < deadline) {
@@ -943,25 +939,9 @@ jobs:
               }
 
               if (!run) {
-                noProgressCount = 0;
                 core.info(`Polling for '${targetWorkflowName}' to appear.`);
               } else {
-                const runKey = `${run.id}:${run.status}:${run.conclusion || 'null'}:${run.updated_at || run.run_started_at || ''}`;
-                if (runKey === lastObservedRunKey) {
-                  noProgressCount += 1;
-                } else {
-                  noProgressCount = 0;
-                  lastObservedRunKey = runKey;
-                }
-
-                if (noProgressCount >= noProgressLimit) {
-                  metrics.earlyExitTriggered = true;
-                  metrics.earlyExitReason = `no_progress_after_${noProgressLimit}_polls`;
-                  core.info(`Early exit for '${targetWorkflowName}' due to no polling progress.`);
-                  break;
-                }
-
-                core.info(`Polling for '${targetWorkflowName}' completion.`);
+                core.info(`Polling for '${targetWorkflowName}' completion (status: ${run.status}).`);
               }
               await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
               latestByName = await getLatestWatchedRuns();
