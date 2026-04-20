@@ -26,16 +26,31 @@ env:
 
 jobs:
   poll-and-report-workflow-failures:
+    strategy:
+      fail-fast: false
+      matrix:
+        workflowName:
+          - Format Build Test
+          - Standards Check
+          - CodeQL Advanced
+
+    concurrency:
+      group: pr-workflow-poller-${{ github.repository }}-${{ github.event.pull_request.number }}-${{ matrix.workflowName }}
+      cancel-in-progress: true
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Poll watched workflows and upsert or remove PR failure comments
         uses: actions/github-script@v7
+        env:
+          TARGET_WORKFLOW_NAME: ${{ matrix.workflowName }}
         with:
           script: |
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request?.number;
             const headSha = context.payload.pull_request?.head?.sha;
+            const targetWorkflowName = process.env.TARGET_WORKFLOW_NAME;
 
             if (!prNumber || !headSha) {
               core.info('No pull_request payload found. Nothing to do.');
@@ -47,6 +62,10 @@ jobs:
               'Standards Check',
               'CodeQL Advanced',
             ];
+
+            if (!watchedWorkflows.includes(targetWorkflowName)) {
+              throw new Error(`Target workflow '${targetWorkflowName}' is not in watchedWorkflows.`);
+            }
 
             const actionableConclusions = new Set([
               'failure',
@@ -68,6 +87,19 @@ jobs:
             const toOneLine = (value) => String(value || '').replace(/\s+/g, ' ').trim();
             const formatConclusion = (value) => String(value || 'unknown').replace(/_/g, ' ');
             const slugify = (value) => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+            const metrics = {
+              workflow: targetWorkflowName,
+              commentsCreated: 0,
+              commentsUpdated: 0,
+              commentsDeleted: 0,
+              staleShaSkipped: 0,
+              logFallbacks: 0,
+              pollIterations: 0,
+              earlyExitTriggered: false,
+              earlyExitReason: null,
+              missingRun: 0,
+            };
 
             const findFailExcerpt = (text) => {
               if (!text) {
@@ -120,19 +152,23 @@ jobs:
 
                 const downloadUrl = logMeta.headers?.location || logMeta.url;
                 if (!downloadUrl) {
-                  return [];
+                  return { lines: [], reason: 'no_log_download_url' };
                 }
 
                 const logResponse = await fetch(downloadUrl);
                 if (!logResponse.ok) {
-                  return [];
+                  return { lines: [], reason: `log_download_http_${logResponse.status}` };
                 }
 
                 const logText = await logResponse.text();
-                return findFailExcerpt(logText);
+                const lines = findFailExcerpt(logText);
+                if (lines.length === 0) {
+                  return { lines: [], reason: 'no_matching_failure_lines' };
+                }
+                return { lines, reason: null };
               } catch (error) {
                 core.info(`Unable to read logs for job ${jobId}: ${error.message}`);
-                return [];
+                return { lines: [], reason: 'log_api_exception' };
               }
             };
 
@@ -165,23 +201,38 @@ jobs:
               return latestByName;
             };
 
-            const maxWaitMs = 12 * 60 * 1000;
+            const maxWaitMs = 8 * 60 * 1000;
             const pollIntervalMs = 20 * 1000;
             const deadline = Date.now() + maxWaitMs;
+            const noProgressLimit = 3;
+
+            let noProgressCount = 0;
+            let lastObservedRunKey = '';
 
             let latestByName = await getLatestWatchedRuns();
-
             while (Date.now() < deadline) {
-              const unresolved = watchedWorkflows.filter((name) => {
-                const run = latestByName.get(name);
-                return !run || run.status !== 'completed';
-              });
-
-              if (unresolved.length === 0) {
+              metrics.pollIterations += 1;
+              const run = latestByName.get(targetWorkflowName);
+              if (run && run.status === 'completed') {
                 break;
               }
 
-              core.info(`Polling for watched workflow completion: ${unresolved.join(', ')}`);
+              const runKey = run ? `${run.id}:${run.status}:${run.conclusion || 'null'}` : 'none';
+              if (runKey === lastObservedRunKey) {
+                noProgressCount += 1;
+              } else {
+                noProgressCount = 0;
+                lastObservedRunKey = runKey;
+              }
+
+              if (noProgressCount >= noProgressLimit) {
+                metrics.earlyExitTriggered = true;
+                metrics.earlyExitReason = `no_progress_after_${noProgressLimit}_polls`;
+                core.info(`Early exit for '${targetWorkflowName}' due to no polling progress.`);
+                break;
+              }
+
+              core.info(`Polling for '${targetWorkflowName}' completion.`);
               await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
               latestByName = await getLatestWatchedRuns();
             }
@@ -193,127 +244,170 @@ jobs:
               per_page: 100,
             });
 
-            for (const workflowName of watchedWorkflows) {
-              const workflowSlug = slugify(workflowName);
-              const marker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
-              const existing = comments.find(
-                (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker),
-              );
+            const workflowSlug = slugify(targetWorkflowName);
+            const marker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
+            const expectedMarker = `<!-- pr-workflow-failure:${workflowSlug} -->`;
+            if (marker !== expectedMarker || !marker.includes('pr-workflow-failure:')) {
+              throw new Error('Marker consistency self-check failed.');
+            }
 
-              const run = latestByName.get(workflowName);
-              if (!run) {
-                core.info(`No run found yet for watched workflow '${workflowName}' on PR #${prNumber}.`);
-                continue;
+            const existing = comments.find(
+              (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker),
+            );
+
+            const run = latestByName.get(targetWorkflowName);
+            if (!run) {
+              metrics.missingRun += 1;
+              core.info(`No run found yet for watched workflow '${targetWorkflowName}' on PR #${prNumber}.`);
+              await core.summary
+                .addHeading(`Poller Observability: ${targetWorkflowName}`)
+                .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+                .write();
+              return;
+            }
+
+            if (run.status !== 'completed') {
+              metrics.earlyExitTriggered = true;
+              metrics.earlyExitReason = metrics.earlyExitReason || `run_status_${run.status}`;
+              core.info(`Latest run for '${targetWorkflowName}' is still '${run.status}'. Skipping comment update for now.`);
+              await core.summary
+                .addHeading(`Poller Observability: ${targetWorkflowName}`)
+                .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+                .write();
+              return;
+            }
+
+            if ((run.head_sha || '') !== headSha) {
+              metrics.staleShaSkipped += 1;
+              core.info(`Skipping stale run for '${targetWorkflowName}': run sha ${run.head_sha} != current pr sha ${headSha}`);
+              await core.summary
+                .addHeading(`Poller Observability: ${targetWorkflowName}`)
+                .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+                .write();
+              return;
+            }
+
+            const runConclusion = (run.conclusion || 'unknown').toLowerCase();
+
+            if (!actionableConclusions.has(runConclusion)) {
+              if (existing) {
+                await github.rest.issues.deleteComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                });
+                metrics.commentsDeleted += 1;
+                core.info(`Removed stale failure summary for workflow '${targetWorkflowName}' on PR #${prNumber}.`);
               }
 
-              if (run.status !== 'completed') {
-                core.info(`Latest run for '${workflowName}' is still '${run.status}'. Skipping comment update for now.`);
-                continue;
-              }
+              await core.summary
+                .addHeading(`Poller Observability: ${targetWorkflowName}`)
+                .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+                .write();
+              return;
+            }
 
-              const runConclusion = (run.conclusion || 'unknown').toLowerCase();
-
-              if (!actionableConclusions.has(runConclusion)) {
-                if (existing) {
-                  await github.rest.issues.deleteComment({
-                    owner,
-                    repo,
-                    comment_id: existing.id,
-                  });
-                  core.info(`Removed stale failure summary for workflow '${workflowName}' on PR #${prNumber}.`);
-                }
-                continue;
-              }
-
-              const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
                 owner,
                 repo,
                 run_id: run.id,
                 per_page: 100,
+            });
+
+            const failedJobs = jobs.filter((job) => failingJobConclusions.has((job.conclusion || '').toLowerCase()));
+
+            const failedJobDetails = [];
+            for (const job of failedJobs.slice(0, 10)) {
+              const badSteps = (job.steps || [])
+                .filter((step) => ['failure', 'timed_out', 'cancelled', 'action_required'].includes((step.conclusion || '').toLowerCase()))
+                .slice(0, 3)
+                .map((step) => `${step.name} (${step.conclusion || 'unknown'})`);
+
+              const logResult = await readJobLogExcerpt(job.id);
+              if (logResult.reason) {
+                metrics.logFallbacks += 1;
+              }
+
+              failedJobDetails.push({
+                name: job.name,
+                url: job.html_url,
+                conclusion: formatConclusion(job.conclusion),
+                badSteps,
+                logExcerpt: logResult.lines,
+                logFallbackReason: logResult.reason,
               });
+            }
 
-              const failedJobs = jobs.filter((job) => failingJobConclusions.has((job.conclusion || '').toLowerCase()));
+            const lines = [];
+            lines.push(marker);
+            lines.push(`## Workflow Failure: ${targetWorkflowName}`);
+            lines.push('');
+            lines.push('_This comment is sticky (updated on new runs) and ephemeral (deleted when this workflow is no longer failing)._');
+            lines.push('');
+            lines.push(`- Workflow conclusion: **${formatConclusion(runConclusion)}**`);
+            lines.push(`- Failed jobs: **${failedJobs.length}**`);
+            lines.push(`- Run: [#${run.run_number}.${run.run_attempt}](${run.html_url})`);
+            lines.push('');
 
-              const failedJobDetails = [];
-              for (const job of failedJobs.slice(0, 10)) {
-                const badSteps = (job.steps || [])
-                  .filter((step) => ['failure', 'timed_out', 'cancelled', 'action_required'].includes((step.conclusion || '').toLowerCase()))
-                  .slice(0, 3)
-                  .map((step) => `${step.name} (${step.conclusion || 'unknown'})`);
+            if (failedJobDetails.length === 0) {
+              lines.push('No job-level failure details were returned by the Actions API. Open the run link above for full logs.');
+            } else {
+              lines.push('### Failed Jobs');
+              lines.push('');
 
-                const logExcerpt = await readJobLogExcerpt(job.id);
+              for (const job of failedJobDetails) {
+                lines.push(`- [${job.name}](${job.url}) (**${job.conclusion}**)`);
 
-                failedJobDetails.push({
-                  name: job.name,
-                  url: job.html_url,
-                  conclusion: formatConclusion(job.conclusion),
-                  badSteps,
-                  logExcerpt,
-                });
+                if (job.badSteps.length > 0) {
+                  lines.push(`  - Failing steps: ${job.badSteps.join(', ')}`);
+                }
+
+                if (job.logExcerpt.length > 0) {
+                  lines.push('  - First failing log lines:');
+                  for (const line of job.logExcerpt) {
+                    lines.push(`    - ${line}`);
+                  }
+                } else if (job.logFallbackReason) {
+                  lines.push(`  - Log excerpt unavailable: ${job.logFallbackReason}`);
+                }
               }
 
-              const lines = [];
-              lines.push(marker);
-              lines.push(`## Workflow Failure: ${workflowName}`);
-              lines.push('');
-              lines.push('_This comment is sticky (updated on new runs) and ephemeral (deleted when this workflow is no longer failing)._');
-              lines.push('');
-              lines.push(`- Workflow conclusion: **${formatConclusion(runConclusion)}**`);
-              lines.push(`- Failed jobs: **${failedJobs.length}**`);
-              lines.push(`- Run: [#${run.run_number}.${run.run_attempt}](${run.html_url})`);
-              lines.push('');
-
-              if (failedJobDetails.length === 0) {
-                lines.push('No job-level failure details were returned by the Actions API. Open the run link above for full logs.');
-              } else {
-                lines.push('### Failed Jobs');
+              if (failedJobs.length > 10) {
                 lines.push('');
-
-                for (const job of failedJobDetails) {
-                  lines.push(`- [${job.name}](${job.url}) (**${job.conclusion}**)`);
-
-                  if (job.badSteps.length > 0) {
-                    lines.push(`  - Failing steps: ${job.badSteps.join(', ')}`);
-                  }
-
-                  if (job.logExcerpt.length > 0) {
-                    lines.push('  - First failing log lines:');
-                    for (const line of job.logExcerpt) {
-                      lines.push(`    - ${line}`);
-                    }
-                  }
-                }
-
-                if (failedJobs.length > 10) {
-                  lines.push('');
-                  lines.push(`_Showing first 10 failed jobs out of ${failedJobs.length}._`);
-                }
-              }
-
-              lines.push('');
-              lines.push('### Next Steps');
-              lines.push('');
-              lines.push('1. Open the run link above.');
-              lines.push('2. Open each failed job and expand the first failing step.');
-              lines.push('3. Push a fix and this comment will update automatically.');
-
-              const body = lines.join('\n').slice(0, 64000);
-
-              if (existing) {
-                await github.rest.issues.updateComment({
-                  owner,
-                  repo,
-                  comment_id: existing.id,
-                  body,
-                });
-                core.info(`Updated failure summary for workflow '${workflowName}' on PR #${prNumber}.`);
-              } else {
-                await github.rest.issues.createComment({
-                  owner,
-                  repo,
-                  issue_number: prNumber,
-                  body,
-                });
-                core.info(`Posted failure summary for workflow '${workflowName}' on PR #${prNumber}.`);
+                lines.push(`_Showing first 10 failed jobs out of ${failedJobs.length}._`);
               }
             }
+
+            lines.push('');
+            lines.push('### Next Steps');
+            lines.push('');
+            lines.push('1. Open the run link above.');
+            lines.push('2. Open each failed job and expand the first failing step.');
+            lines.push('3. Push a fix and this comment will update automatically.');
+
+            const body = lines.join('\n').slice(0, 64000);
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+              metrics.commentsUpdated += 1;
+              core.info(`Updated failure summary for workflow '${targetWorkflowName}' on PR #${prNumber}.`);
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body,
+              });
+              metrics.commentsCreated += 1;
+              core.info(`Posted failure summary for workflow '${targetWorkflowName}' on PR #${prNumber}.`);
+            }
+
+            await core.summary
+              .addHeading(`Poller Observability: ${targetWorkflowName}`)
+              .addCodeBlock(JSON.stringify(metrics, null, 2), 'json')
+              .write();
