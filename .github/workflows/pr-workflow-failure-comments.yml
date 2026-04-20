@@ -8,6 +8,17 @@ on:
       - CodeQL Advanced
     types:
       - completed
+  pull_request:
+    branches: [ main, development ]
+    paths:
+      - .github/workflows/*.yml
+      - .github/workflows/*.yaml
+  push:
+    branches: [ main, development ]
+    paths:
+      - .github/workflows/*.yml
+      - .github/workflows/*.yaml
+  workflow_dispatch:
 
 permissions:
   actions: read
@@ -19,8 +30,84 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  validate-watchlist-drift:
+    if: github.event_name != 'workflow_run'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate watched workflow list covers pull_request workflows
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          current_workflow = Path('.github/workflows/pr-workflow-failure-comments.yml')
+          all_workflow_files = sorted(Path('.github/workflows').glob('*.y*ml'))
+
+          own_text = current_workflow.read_text(encoding='utf-8')
+
+          block_match = re.search(
+            r'workflow_run:\s*\n(?:\s{2,}.*\n)*?\s{4}workflows:\s*\n(?P<items>(?:\s{6}-\s.*\n)+)',
+            own_text,
+          )
+          if not block_match:
+            raise SystemExit('Unable to parse workflow_run.workflows list from pr-workflow-failure-comments.yml')
+
+          watched = []
+          for line in block_match.group('items').splitlines():
+            item = line.strip()[2:].strip()
+            item = item.strip('"').strip("'")
+            if item:
+              watched.append(item)
+
+          watched_set = set(watched)
+
+          expected = set()
+          known_names = set()
+
+          for wf in all_workflow_files:
+            if wf == current_workflow:
+              continue
+
+            text = wf.read_text(encoding='utf-8')
+
+            if 'pr-workflow-failure-comments: ignore' in text:
+              continue
+
+            name_match = re.search(r'^\s*name:\s*["\']?(.+?)["\']?\s*$', text, re.MULTILINE)
+            if not name_match:
+              continue
+
+            workflow_name = name_match.group(1).strip()
+            known_names.add(workflow_name)
+
+            if re.search(r'^\s*pull_request\s*:', text, re.MULTILINE):
+              expected.add(workflow_name)
+
+          missing = sorted(expected - watched_set)
+          stale = sorted(watched_set - known_names)
+
+          if missing or stale:
+            print('Watch list drift detected in .github/workflows/pr-workflow-failure-comments.yml')
+            if missing:
+              print('\nMissing from workflow_run.workflows (add these names):')
+              for item in missing:
+                print(f'  - {item}')
+            if stale:
+              print('\nStale entries in workflow_run.workflows (remove or rename these):')
+              for item in stale:
+                print(f'  - {item}')
+            raise SystemExit(1)
+
+          print('Watch list is up to date for all pull_request-triggered workflows.')
+          PY
+
   report-workflow-failures:
-    if: github.event.workflow_run.event == 'pull_request'
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
