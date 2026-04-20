@@ -423,7 +423,6 @@ The poller is a secondary safety net for the same comment markers used by the pr
 **When the embedded poller runs:**
 
 * Pull request events: `opened`, `synchronize`, `reopened`, `ready_for_review`
-* Manual trigger
 
 **How the poller behaves:**
 
