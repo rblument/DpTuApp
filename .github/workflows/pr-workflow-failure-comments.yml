@@ -351,12 +351,13 @@ jobs:
               }
 
               try {
-                const headRepo = workflowRun.head_repository?.full_name;
-                if (headRepo !== `${owner}/${repo}`) {
+                const headOwner = workflowRun.head_repository?.owner?.login || workflowRun.head_repository?.owner?.name;
+                const headBranch = workflowRun.head_branch;
+                if (!headOwner || !headBranch) {
                   return [];
                 }
 
-                const head = `${owner}:${workflowRun.head_branch}`;
+                const head = `${headOwner}:${headBranch}`;
                 const pulls = [];
                 for (let page = 1; page <= apiBudget.maxPullsPages; page++) {
                   const response = await github.rest.pulls.list({
@@ -792,7 +793,7 @@ jobs:
               const watched = new Set(watchedWorkflows);
 
               for (const run of allRuns) {
-                if (!watched.has(run.name)) {
+                if (!watched.has(run.name) || run.head_sha !== headSha) {
                   continue;
                 }
 
@@ -824,22 +825,27 @@ jobs:
                 break;
               }
 
-              const runKey = run ? `${run.id}:${run.status}:${run.conclusion || 'null'}:${run.updated_at || run.run_started_at || ''}` : 'none';
-              if (runKey === lastObservedRunKey) {
-                noProgressCount += 1;
-              } else {
+              if (!run) {
                 noProgressCount = 0;
-                lastObservedRunKey = runKey;
-              }
+                core.info(`Polling for '${targetWorkflowName}' to appear.`);
+              } else {
+                const runKey = `${run.id}:${run.status}:${run.conclusion || 'null'}:${run.updated_at || run.run_started_at || ''}`;
+                if (runKey === lastObservedRunKey) {
+                  noProgressCount += 1;
+                } else {
+                  noProgressCount = 0;
+                  lastObservedRunKey = runKey;
+                }
 
-              if (noProgressCount >= noProgressLimit) {
-                metrics.earlyExitTriggered = true;
-                metrics.earlyExitReason = `no_progress_after_${noProgressLimit}_polls`;
-                core.info(`Early exit for '${targetWorkflowName}' due to no polling progress.`);
-                break;
-              }
+                if (noProgressCount >= noProgressLimit) {
+                  metrics.earlyExitTriggered = true;
+                  metrics.earlyExitReason = `no_progress_after_${noProgressLimit}_polls`;
+                  core.info(`Early exit for '${targetWorkflowName}' due to no polling progress.`);
+                  break;
+                }
 
-              core.info(`Polling for '${targetWorkflowName}' completion.`);
+                core.info(`Polling for '${targetWorkflowName}' completion.`);
+              }
               await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
               latestByName = await getLatestWatchedRuns();
             }
