@@ -150,6 +150,11 @@ jobs:
             text = wf.read_text(encoding='utf-8')
 
             if 'pr-workflow-failure-comments: ignore' in text:
+              # Still record the name so it isn't treated as a stale watchlist entry;
+              # just exclude it from the set of workflows expected to be watched.
+              name_match = re.search(r'^\s*name:\s*["\']?(.+?)["\']?\s*$', text, re.MULTILINE)
+              if name_match:
+                known_names.add(name_match.group(1).strip())
               continue
 
             name_match = re.search(r'^\s*name:\s*["\']?(.+?)["\']?\s*$', text, re.MULTILINE)
