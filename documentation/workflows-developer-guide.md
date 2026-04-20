@@ -430,6 +430,12 @@ When any watched workflow fails on a PR, this workflow automatically posts a com
 
 This keeps PRs clean and informative without requiring developers to navigate to the Actions tab for every failure.
 
+### Default-Branch Limitation and Backup Path
+
+GitHub only evaluates `workflow_run.workflows` from the **default branch** (`development`) at dispatch time. This means a pull request that introduces or modifies watch-list entries cannot activate those changes until merged.
+
+To keep PR failure comments available before merge, DpTu also uses a backup polling workflow (`pr-workflow-failure-comments-poller.yml`) that runs directly from pull request events and polls watched workflow runs for the PR head SHA.
+
 ### When It Runs
 
 * After any watched workflow completes (via `workflow_run` event)
