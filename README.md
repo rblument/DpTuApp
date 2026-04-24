@@ -148,7 +148,7 @@ When contributing, be mindful to format the code before pushing it to GitHub. Yo
 
 If you forget to format the code, be mindful that the consolidated CI workflow [`.github/workflows/format-build-test.yml`](./.github/workflows/format-build-test.yml) applies formatting on same-repository pull requests and may push an auto-format commit.
 
-A future contribution could be how to configure NetBeans to run this automatically in a pre-commit hook (but as of Sept 2025, NetBeans does not support pre-commit hooks). 
+A future contribution could be how to configure NetBeans to run this automatically in a pre-commit hook (but as of Sept 2025, NetBeans does not support pre-commit hooks).
 
 ## Known Issues
 
