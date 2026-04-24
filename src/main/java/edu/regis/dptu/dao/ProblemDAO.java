@@ -208,7 +208,7 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
         try {
             stmt =
                     conn.prepareStatement(
-                            sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                            sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, subTypeId);
 
             ResultSet rs = stmt.executeQuery();
@@ -227,7 +227,6 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                     sizes[i][1] = rs.getInt(3);
                     i++;
                 }
-                log.debug("Matrix Sizes Array={}", Arrays.toString(sizes));
                 for (int[] size : sizes) log.debug("Size={}", Arrays.toString(size));
 
                 MatrixChainProblem prob = new MatrixChainProblem(id, sizes);
@@ -240,7 +239,11 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 return prob;
             } else {
                 log.warn("MatrixChainProblem not found id={}, subTypeId={}", id, subTypeId);
-                throw new NonRecoverableException("Inconsistent DB MatrixChainProblem: " + id);
+                throw new NonRecoverableException(
+                        "Inconsistent DB MatrixChainProblem: id="
+                                + id
+                                + ", subTypeId="
+                                + subTypeId);
             }
         } catch (SQLException e) {
             log.error(

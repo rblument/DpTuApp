@@ -170,7 +170,7 @@ public class MatrixChainProblem extends Problem {
     @Override
     public void reset() {
         log.debug(
-                "Reset requested: state {} -> PRE; histories cleared (exec={}, mHist={}, sHist={}, btStack={})",
+                "Reset requested: state {} -> PRE; histories cleared (exec={}, lHist={}, sHist={}, btStack={})",
                 executionState,
                 executionHistory.size(),
                 lHistory.size(),
@@ -220,7 +220,7 @@ public class MatrixChainProblem extends Problem {
                 "<html><pre>            cost = l[i][k] + l[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>"); // Line 7
         codeStatements.add(
                 "<html><pre>            if cost < l[i][j]: l[i][j] = cost</pre></html>"); // Line 8
-        codeStatements.add("<html><pre>return m</pre></html>"); // Line 9
+        codeStatements.add("<html><pre>return l</pre></html>"); // Line 9
     }
 
     @Override
@@ -261,7 +261,7 @@ public class MatrixChainProblem extends Problem {
         lHistory.push(new int[] {i, i, l[i][i]});
         l[i][i] = 0;
 
-        log.debug("executeLine1: set m[{}][{}]=0; n={}, i={}", i, i, n, i);
+        log.debug("executeLine1: set l[{}][{}]=0; n={}, i={}", i, i, n, i);
 
         if (i + 1 == n) {
             variables.put("c", 1);
@@ -338,7 +338,7 @@ public class MatrixChainProblem extends Problem {
         nextLineNumber = 6;
 
         log.debug(
-                "executeLine5: init m[{}][{}]=INF; k=i -> {}; nextLineNumber={}",
+                "executeLine5: init l[{}][{}]=INF; k=i -> {}; nextLineNumber={}",
                 i,
                 j,
                 i,
@@ -400,7 +400,7 @@ public class MatrixChainProblem extends Problem {
             s[i][j] = kVal;
 
             log.debug(
-                    "executeLine8: improved m[{}][{}]: {} -> {}; set s[{}][{}]={}",
+                    "executeLine8: improved l[{}][{}]: {} -> {}; set s[{}][{}]={}",
                     i,
                     j,
                     prev,
@@ -553,7 +553,7 @@ public class MatrixChainProblem extends Problem {
             int[][] l = (int[][]) variables.get("l");
             l[change[0]][change[1]] = change[2];
 
-            log.debug("undoLine1: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
+            log.debug("undoLine1: restore l[{}][{}] -> {}", change[0], change[1], change[2]);
         }
 
         int i = (int) variables.get("i") - 1;
@@ -586,7 +586,7 @@ public class MatrixChainProblem extends Problem {
             int[][] l = (int[][]) variables.get("l");
             l[change[0]][change[1]] = change[2];
 
-            log.debug("undoLine5: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
+            log.debug("undoLine5: restore l[{}][{}] -> {}", change[0], change[1], change[2]);
         }
     }
 
@@ -608,7 +608,7 @@ public class MatrixChainProblem extends Problem {
             int[][] l = (int[][]) variables.get("l");
             l[change[0]][change[1]] = change[2];
 
-            log.debug("undoLine8: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
+            log.debug("undoLine8: restore l[{}][{}] -> {}", change[0], change[1], change[2]);
         }
 
         if (!sHistory.isEmpty()) {

@@ -256,7 +256,7 @@ CREATE TABLE MatrixSizes (
   ProblemId INT NOT NULL,
   Width INT,
   Height INT,
-  PRIMARY KEY (SizeId),
+  PRIMARY KEY (ProblemId, SizeId),
   FOREIGN KEY (ProblemId) REFERENCES MatrixChainProblem(Id)
     ON UPDATE CASCADE ON DELETE CASCADE
 );
