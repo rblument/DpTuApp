@@ -152,6 +152,6 @@ public class SvcFacade {
         }
 
         // Return this as a JSON encoded TutorReply object string.
-        return "{'status':':ERR','data':'A non-recoverable error occurred in the socket connection (see logs)'}";
+        return "{\"status\":\":ERR\",\"data\":\"A non-recoverable error occurred in the socket connection (see logs)\"}";
     }
 }
