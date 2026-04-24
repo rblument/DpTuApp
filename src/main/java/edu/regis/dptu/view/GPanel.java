@@ -42,8 +42,8 @@ public class GPanel extends JPanel {
      * @param c the child component
      * @param gridX the column in which the child component is anchored
      * @param gridY the row in which the child component is anchored
-    * @param gridWidth the columns spanned by the child component in the bag
-    * @param gridHeight the rows spanned by the child component in the bag
+     * @param gridWidth the columns spanned by the child component in the bag
+     * @param gridHeight the rows spanned by the child component in the bag
      * @param weightx the amount of width scaling during panel expansion
      * @param weighty the amount of height scaling during panel expansion
      * @param anchor a GridBagConstraints anchor, e.g. NORTHWEST

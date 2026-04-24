@@ -83,7 +83,7 @@ public class SvcFacade {
     private SvcFacade() {}
 
     /**
-        * Encodes the given client request as a JSON object and sends it to the tutor returning the
+     * Encodes the given client request as a JSON object and sends it to the tutor returning the
      * tutor's reply.
      *
      * @param request the ClientRequest being sent to the tutor.
@@ -106,8 +106,8 @@ public class SvcFacade {
      *
      * <p>Communication with the SERVER occurs via the socket connection on port PORT.
      *
-    * @param request a JSON encoded ClientRequest object
-    * @return a JSON encoded TutorReply from the tutor
+     * @param request a JSON encoded ClientRequest object
+     * @return a JSON encoded TutorReply from the tutor
      */
     private String send(String request) {
         Socket client = null;

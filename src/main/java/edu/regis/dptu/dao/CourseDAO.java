@@ -316,7 +316,7 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
     /**
      * Extract and return the tasks in the given &lt;Unit> element
      *
-        * @param unit the unit whose tasks are being retrieved
+     * @param unit the unit whose tasks are being retrieved
      * @return a Task list.
      */
     private ArrayList<Task> retrieveTasks(Course course, Unit unit, Connection conn)
