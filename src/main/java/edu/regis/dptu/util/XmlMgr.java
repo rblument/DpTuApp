@@ -169,7 +169,7 @@ public class XmlMgr {
      * <p>Scans the existing FileName_n.xml files until a file with 'n' doesn't exists and then 'n'
      * is returned.
      *
-     * @param fileName a file name with and ending underscore preceding the id, but without the id.
+    * @param fileName a file name with an ending underscore preceding the id, but without the id.
      * @return an int for the next available id.
      */
     public int nextId(String fileName) {

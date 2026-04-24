@@ -26,14 +26,14 @@ import com.google.gson.Gson;
 
 /**
  * A Facade that standardizes requests from the GUI Client to the DpTu tutor server via a socket
- * connection with requests and replies encoded as JSon encoded object strings
+ * connection with requests and replies encoded as JSON object strings
  *
  * <p>Conceptually, this facade is part of the Swing-based GUI client.
  *
  * <p>This facade exists to facilitate a subsequent port from the Swing-based GUI to a Restful HTML
  * client. As such, it is currently a logical part of the Swing-based GUI client, but for a
  * Web-Browser client, it would be implemented as part of the Server Socket Connection, which would
- * forward the HTTML JSon HttpReqeust to the tutor using POJO message passing (i.e. method
+ * forward the HTML JSON HttpRequest to the tutor using POJO message passing (i.e. method
  * invocation).
  *
  * <p>Currently, the following request types are supported: {"request": "CreateStudentAccount",
@@ -83,7 +83,7 @@ public class SvcFacade {
     private SvcFacade() {}
 
     /**
-     * Encodes the given client request as a JSon object and sends it to the tutor returning the
+        * Encodes the given client request as a JSON object and sends it to the tutor returning the
      * tutor's reply.
      *
      * @param request the ClientRequest being sent to the tutor.
@@ -91,13 +91,12 @@ public class SvcFacade {
      */
     public TutorReply tutorRequest(ClientRequest request) {
         Gson gson = new Gson();
-        // ToDo: remove debugging stmt.
         String jsonRequest = gson.toJson(request);
-        log.info("*** jasonRequest *" + jsonRequest + "*");
+        log.debug("jsonRequest={}", jsonRequest);
 
         String jsonReply = send(jsonRequest);
 
-        log.info("*** jsonReply: " + jsonReply);
+        log.debug("jsonReply={}", jsonReply);
 
         return gson.fromJson(jsonReply, TutorReply.class);
     }
@@ -107,8 +106,8 @@ public class SvcFacade {
      *
      * <p>Communication with the SERVER occurs via the socket connection on port PORT.
      *
-     * @param request a JSon encoded ClientRequest object
-     * @return a JSon encoded TutorReply from the tutor
+    * @param request a JSON encoded ClientRequest object
+    * @return a JSON encoded TutorReply from the tutor
      */
     private String send(String request) {
         Socket client = null;
@@ -152,7 +151,7 @@ public class SvcFacade {
             }
         }
 
-        // Return this as a JSon encoded TutorReply object string.
+        // Return this as a JSON encoded TutorReply object string.
         return "{'status':':ERR','data':'A non-recoverable error occurred in the socket connection (see logs)'}";
     }
 }

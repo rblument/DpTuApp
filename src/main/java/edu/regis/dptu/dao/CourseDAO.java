@@ -249,7 +249,9 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 // Link the exercising locations in this outcome to those in the course.
                 ArrayList<ExercisingLocation> locations = new ArrayList<>();
                 String[] ids = rs.getString(7).split(",");
-                for (int i = 0; i < ids.length; i++) locations.add(course.findLocation(i));
+                for (int i = 0; i < ids.length; i++) {
+                    locations.add(course.findLocation(Integer.parseInt(ids[i].trim())));
+                }
 
                 comp.setExercisingLocations(locations);
 
@@ -314,7 +316,7 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
     /**
      * Extract and return the tasks in the given &lt;Unit> element
      *
-     * @param parent &lt;Unit> // ToDo is this always true?
+        * @param unit the unit whose tasks are being retrieved
      * @return a Task list.
      */
     private ArrayList<Task> retrieveTasks(Course course, Unit unit, Connection conn)
@@ -494,7 +496,7 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
                 log.debug("Timeout retrieved id={}", timeoutId);
                 return timeout;
             } else {
-                // ToDo: throw a dabase inconsistency error
+                // ToDo: throw a database inconsistency error
                 String errMsg = "Timeout not found, id: " + timeoutId;
                 log.warn(errMsg);
                 throw new NonRecoverableException(errMsg, new InconsistentDBException(errMsg));
