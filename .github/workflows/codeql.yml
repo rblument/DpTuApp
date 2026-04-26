@@ -9,6 +9,11 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
+# DpTu notes:
+#   - Analyzes two language targets: `actions` (GitHub Actions YAML) and
+#     `java-kotlin` (Java source code).
+#   - Security alerts appear in the GitHub UI under Security → Code scanning.
+#
 name: "CodeQL Advanced"
 
 env:
@@ -19,6 +24,7 @@ on:
     branches: [ "development", "main" ]
   pull_request:
     branches: [ "development", "main" ]
+    types: [ opened, synchronize, reopened ]
   workflow_dispatch: # allow manual runs
 
 jobs:

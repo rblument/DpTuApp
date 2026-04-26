@@ -32,10 +32,18 @@ env:
 #   - Only *new* violations (relative to the development baseline) block the
 #     build, so pre-existing issues never prevent ongoing work
 #   - Add accepted project-specific terms to .cspell/project-words.txt
-
+#
+# Sticky PR comments:
+#   Both jobs post, update, or delete their own sticky PR comment identified
+#   by an HTML marker in the body. When all violations are resolved the
+#   corresponding comment is automatically removed.
+#     logging-standards  → <!-- logging-violations-delta -->
+#     spelling-check     → <!-- cspell-violations-delta -->
+#
 on:
   pull_request:
     branches: [ main, development ]
+    types: [ opened, synchronize, reopened ]
   push:
     branches: [ main, development ]
   workflow_dispatch: # allow manual runs
