@@ -90,9 +90,22 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             switch (pKind) {
                 case MATRIX_CHAIN:
                     // TODO
+                    int n = (int) model.getVariableObject("n");
+
+                    // build string of n characters to use as axis labels (A, B, C,...
+
+                    StringBuilder matrixLabels = new StringBuilder();
+                    for (int idx = 0; idx < n; idx++) {
+                        matrixLabels.append((char) ('A' + idx));
+                    }
+                    String labelStr = matrixLabels.toString();
+                    updateStrings(labelStr, labelStr);
                     break;
                 case KNAPSACK_0_1:
                     // TODO
+                    // knapsackproblem class not implemented yet
+                    log.warn("SubproblemTableView: KNAPSACK_0_1 is not yet" + "supported.");
+                    setVisible(false);
                     break;
                 default: // i.e. LCS_PROBLEM
                     String s1 = ((LCSProblem) model).getX();
@@ -192,6 +205,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 };
 
         table.setAutoCreateRowSorter(false);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // Set custom header renderer to center-align header text
         final JTableHeader header = table.getTableHeader();
@@ -234,6 +248,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
 
         // Wrap table in scroll pane for overflow
         sp = new JScrollPane(table);
+        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
 
     /** Adds components to this panel using GridBagLayout constraints. */
@@ -244,10 +260,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 0,
                 1,
                 1,
-                0.0,
-                0.0,
+                1.0,
+                1.0,
                 GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
+                GridBagConstraints.BOTH,
                 5,
                 5,
                 5,
