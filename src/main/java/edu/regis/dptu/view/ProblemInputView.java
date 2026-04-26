@@ -15,9 +15,9 @@ import edu.regis.dptu.model.ProblemListener;
 /**
  * Displays the appropriate input view depending on the selected problem type.
  *
- * <p>Updated April 30, 2025: - Dynamically loads the correct input panel based on the Problem's
- * TaskKind. - Supports LCSInputView and MatrixInputView. - KnapsackInputView is scaffolded for
- * future use. - Added null model fallback to avoid initialization errors when model not yet set.
+ * <p>Updated April 30, 2025: - Dynamically loads the correct input panel based on the ProblemKind.
+ * - Supports LCSInputView and MatrixInputView. - KnapsackInputView is scaffolded for future use. -
+ * Added null model fallback to avoid initialization errors when model not yet set.
  *
  * @author EverettCV
  */
@@ -48,7 +48,7 @@ public class ProblemInputView extends JPanel {
                 LCSProblem lcsProblem = (LCSProblem) problem;
                 LCSInputView lcsInputView = new LCSInputView(submitListener);
                 lcsInputView.setDefaultStrings(lcsProblem.getX(), lcsProblem.getY());
-                currentPanel = new LCSInputView(submitListener);
+                currentPanel = lcsInputView;
                 break;
             case MATRIX_CHAIN:
                 ProblemInputView.log.info("Setting currentPanel to MatrixInputView");

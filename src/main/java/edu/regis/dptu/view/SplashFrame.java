@@ -241,7 +241,7 @@ public class SplashFrame extends JFrame {
     /**
      * Initialize and show dashboard for the given session.
      *
-     * @param firstName - The name of this user.
+     * @param firstName the user's first name shown in the dashboard.
      */
     public void initializeDashboard(String firstName) {
 
