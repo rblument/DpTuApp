@@ -283,6 +283,10 @@ public class SplashFrame extends JFrame {
 
     /** Handle user logout */
     public void logout() {
+            
+        //clear the signed-in session context to prevent stale data use
+        SIGNED_IN_SESSION = null;
+        
         log.info("User logged out, returning to splash screen");
         selectSplash();
     }
