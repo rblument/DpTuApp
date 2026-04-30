@@ -53,7 +53,13 @@ public enum ServerRequestType {
      * <p>The TutorReply status will be: "Hint" The TutorReply data is a JSon Hint object "NoHints"
      * "NoneLeft" "ERR" data is error message
      */
-    REQUEST_HINT(":RequestHint");
+    REQUEST_HINT(":RequestHint"),
+    
+    
+    /**
+     * The student has requested to save the current tutoring session so it can be resumed later.
+     */
+    SAVE_SESSION(":SaveSession");
 
     /** The name used by the server to identify this request. */
     private final String requestName;
