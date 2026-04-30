@@ -11,6 +11,7 @@ import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.model.KnapsackProblem;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
@@ -56,13 +57,21 @@ public class ProblemInputView extends JPanel {
                 break;
             case KNAPSACK_0_1:
                 ProblemInputView.log.info("Setting currentPanel to KnapsackInputView");
+                
+                KnapsackProblem knapsackProblem = (KnapsackProblem) problem;
+                KnapsackInputView knapsackInputView = new KnapsackInputView(submitListener);
+                knapsackInputView.setDefaultItems(
+                        knapsackProblem.getNames(),
+                        knapsackProblem.getWeights(),
+                        knapsackProblem.getValues(),
+                        knapsackProblem.getCapacity());
+                
+                
                 currentPanel = new KnapsackInputView();
-                // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are
-                // implemented:
-                // KnapsackInputView knapsackInputView = new KnapsackInputView();
-                // add(knapsackInputView, BorderLayout.CENTER);
-                ProblemInputView.log.error(
-                        "Knapsack input view not yet implemented.", (Throwable) null);
+                
+                
+                
+                
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -74,6 +83,12 @@ public class ProblemInputView extends JPanel {
 
     public LCSInputView getLcsInputView() {
         return (activeInputPanel instanceof LCSInputView) ? (LCSInputView) activeInputPanel : null;
+    }
+    
+    public KnapsackInputView getKnapsackInputView(){
+        return (activeInputPanel instanceof KnapsackInputView)
+                ? (KnapsackInputView) activeInputPanel
+                : null;
     }
 
     private void swapView(JPanel currentView) {
