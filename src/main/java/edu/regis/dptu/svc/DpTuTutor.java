@@ -309,12 +309,12 @@ public class DpTuTutor implements TutorSvc {
 
         return reply;
     }
-    
-    /**
-     * Persist the student's current tutoring session to the database.
-     */
-    public TutorReply saveSession(String jsonSession){
-        log.debug("saveSession invoked, payload length={}", jsonSession == null ? 0 : jsonSession.length());
+
+    /** Persist the student's current tutoring session to the database. */
+    public TutorReply saveSession(String jsonSession) {
+        log.debug(
+                "saveSession invoked, payload length={}",
+                jsonSession == null ? 0 : jsonSession.length());
 
         try {
             TutoringSession session = gson.fromJson(jsonSession, TutoringSession.class);

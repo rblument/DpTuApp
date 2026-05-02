@@ -54,8 +54,7 @@ public enum ServerRequestType {
      * "NoneLeft" "ERR" data is error message
      */
     REQUEST_HINT(":RequestHint"),
-    
-    
+
     /**
      * The student has requested to save the current tutoring session so it can be resumed later.
      */
