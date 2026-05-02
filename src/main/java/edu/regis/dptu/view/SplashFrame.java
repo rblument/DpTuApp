@@ -25,11 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
 import edu.regis.dptu.util.ResourceMgr;
-import edu.regis.dptu.model.Mode;
 
 /**
  * The first window displayed to a student user, which contains a splash panel and associated panels
@@ -280,22 +280,21 @@ public class SplashFrame extends JFrame {
     /** Select the practice screen panel */
     public void selectPracticeScreen() {
         // TODO: Implement practice screen selection
-        
+
         log.info("Navigating to practice screen");
-        
+
         TutoringSession session = getSignedInSession();
-        if(session == null){
+        if (session == null) {
             log.error("selectPracticeScreen called with no signed-in session");
             showError(
-                ResourceMgr.instance().string("dialog.title.error"),
-                ResourceMgr.instance().string("error.failedToLoadProblem"));
+                    ResourceMgr.instance().string("dialog.title.error"),
+                    ResourceMgr.instance().string("error.failedToLoadProblem"));
             return;
         }
         session.setMode(Mode.DO_ONE);
-        
+
         MainFrame.instance().getView().setModel(session);
         MainFrame.instance().setVisible(true);
-        
     }
 
     /** Handle user logout */
