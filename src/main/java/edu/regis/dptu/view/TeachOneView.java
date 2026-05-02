@@ -55,7 +55,6 @@ public class TeachOneView extends GPanel implements ModeView {
         layoutComponents();
     }
 
- 
     /**
      * Binds a {@link Problem} to every child view so they all reflect the same problem state.
      *
@@ -90,9 +89,11 @@ public class TeachOneView extends GPanel implements ModeView {
      */
     @Override
     public void showBacktrackingPanel(boolean backtrackingOn) {
-        log.debug("TeachOneView.showBacktrackingPanel called (no-op): backtrackingOn={}", backtrackingOn);
+        log.debug(
+                "TeachOneView.showBacktrackingPanel called (no-op): backtrackingOn={}",
+                backtrackingOn);
     }
-    
+
     private void initializeComponents() {
         log.info("TeachOneView initializing components");
 
@@ -111,19 +112,67 @@ public class TeachOneView extends GPanel implements ModeView {
 
     private void layoutComponents() {
         // Row 0: problem input spans the full width
-        addc(problemInputView, 0, 0, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(
+                problemInputView,
+                0,
+                0,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
 
         // Row 1 left: DP table for reference
-        addc(tableView, 0, 1, 1, 1, 0.5, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, 5, 5, 5, 5);
+        addc(
+                tableView,
+                0,
+                1,
+                1,
+                1,
+                0.5,
+                1.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.BOTH,
+                5,
+                5,
+                5,
+                5);
 
         // Row 1 right: explanation prompt
-        addc(explanationPromptLabel, 1, 1, 1, 1, 0.5, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(
+                explanationPromptLabel,
+                1,
+                1,
+                1,
+                1,
+                0.5,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
 
         // Row 2: step panel spans the full width
-        addc(stepViewPanel, 0, 2, 2, 1, 1.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(
+                stepViewPanel,
+                0,
+                2,
+                2,
+                1,
+                1.0,
+                0.0,
+                GridBagConstraints.NORTHWEST,
+                GridBagConstraints.HORIZONTAL,
+                5,
+                5,
+                5,
+                5);
     }
 }
