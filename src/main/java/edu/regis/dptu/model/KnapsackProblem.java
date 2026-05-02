@@ -18,10 +18,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a 0/1 Knapsack Dynamic Programming problem.
  *
- * Given a knapsack with a weight capacity W and a list of n items, each with a weight and value,
+ * <p>Given a knapsack with a weight capacity W and a list of n items, each with a weight and value,
  * the algorithm fills a DP table dp[i][w] = maximum value achievable using the first i items with
  * capacity w. Backtracking then identifies which items are included in the optimal solution.
- *
  *
  * @author Cormac Moss
  */
@@ -45,7 +44,6 @@ public class KnapsackProblem extends Problem {
     private final int capacity;
     private EXECUTION_STATE executionState;
 
-
     public KnapsackProblem(String[] names, int[] weights, int[] values, int capacity) {
         this(Model.DEFAULT_ID, names, weights, values, capacity);
     }
@@ -54,31 +52,33 @@ public class KnapsackProblem extends Problem {
         super(id);
 
         if (names == null || weights == null || values == null)
-            throw new IllegalArgumentException("KnapsackProblem: names, weights, and values must not be null");
+            throw new IllegalArgumentException(
+                    "KnapsackProblem: names, weights, and values must not be null");
         if (names.length != weights.length || names.length != values.length)
-            throw new IllegalArgumentException("KnapsackProblem: names, weights, and values arrays must have equal length");
+            throw new IllegalArgumentException(
+                    "KnapsackProblem: names, weights, and values arrays must have equal length");
         if (capacity <= 0)
             throw new IllegalArgumentException("KnapsackProblem: capacity must be positive");
 
         int n = names.length;
-        this.names    = names.clone();
-        this.weights  = weights.clone();
-        this.values   = values.clone();
+        this.names = names.clone();
+        this.weights = weights.clone();
+        this.values = values.clone();
         this.capacity = capacity;
 
-        variables.put("n",       n);
-        variables.put("W",       capacity);
+        variables.put("n", n);
+        variables.put("W", capacity);
         variables.put("weights", this.weights);
-        variables.put("values",  this.values);
-        variables.put("names",   this.names);
-        variables.put("i",       0);
-        variables.put("w",       0);
-        variables.put("dp",      new int[n + 1][capacity + 1]);
-        variables.put("bt",      new int[n + 1][capacity + 1]);
+        variables.put("values", this.values);
+        variables.put("names", this.names);
+        variables.put("i", 0);
+        variables.put("w", 0);
+        variables.put("dp", new int[n + 1][capacity + 1]);
+        variables.put("bt", new int[n + 1][capacity + 1]);
 
-        tableVariable             = "dp";
+        tableVariable = "dp";
         backtrackingTableVariable = "bt";
-        executionState            = EXECUTION_STATE.PRE;
+        executionState = EXECUTION_STATE.PRE;
 
         loadCodeStatements();
         loadBacktrackingCodeStatements();
@@ -87,9 +87,10 @@ public class KnapsackProblem extends Problem {
         log.debug("KnapsackProblem created: id={}, n={}, W={}", id, n, capacity);
     }
 
-    
     @Override
-    public ProblemKind getType() { return ProblemKind.KNAPSACK_0_1; }
+    public ProblemKind getType() {
+        return ProblemKind.KNAPSACK_0_1;
+    }
 
     @Override
     public boolean hasFinished() {
@@ -106,15 +107,22 @@ public class KnapsackProblem extends Problem {
     }
 
     @Override
-    public boolean canStepBack() { return !executionHistory.isEmpty(); }
+    public boolean canStepBack() {
+        return !executionHistory.isEmpty();
+    }
 
     @Override
-    public boolean undoingBacktrackButton() { return false; }
+    public boolean undoingBacktrackButton() {
+        return false;
+    }
 
     @Override
     public void backtrackingOn() {
-        log.debug("Backtracking enabled: priorState={}, nextLineNumber={} -> {}",
-                executionState, nextLineNumber, BACKTRACKING_START_NUM);
+        log.debug(
+                "Backtracking enabled: priorState={}, nextLineNumber={} -> {}",
+                executionState,
+                nextLineNumber,
+                BACKTRACKING_START_NUM);
 
         nextLineNumber = BACKTRACKING_START_NUM;
         executionState = EXECUTION_STATE.BACKTRACK_PRE;
@@ -122,17 +130,17 @@ public class KnapsackProblem extends Problem {
         int n = (int) variables.get("n");
         int W = (int) variables.get("W");
         int[][] bt = (int[][]) variables.get("bt");
-        for (int i = 0; i <= n; i++)
-            for (int w = 0; w <= W; w++)
-                bt[i][w] = UNVISITED;
+        for (int i = 0; i <= n; i++) for (int w = 0; w <= W; w++) bt[i][w] = UNVISITED;
 
         notifyProblemListeners();
     }
 
     @Override
     public void reset() {
-        log.debug("Reset requested: state {} -> PRE; histories cleared (exec={})",
-                executionState, executionHistory.size());
+        log.debug(
+                "Reset requested: state {} -> PRE; histories cleared (exec={})",
+                executionState,
+                executionHistory.size());
 
         executionState = EXECUTION_STATE.PRE;
         nextLineNumber = 0;
@@ -160,7 +168,8 @@ public class KnapsackProblem extends Problem {
         codeStatements.add("<html><pre>for i = 1 to n</pre></html>");
         codeStatements.add("<html><pre>    for w = 0 to W</pre></html>");
         codeStatements.add("<html><pre>        if weight[i] &lt;= w</pre></html>");
-        codeStatements.add("<html><pre>            dp[i][w] = max(dp[i-1][w], value[i] + dp[i-1][w-weight[i]])</pre></html>");
+        codeStatements.add(
+                "<html><pre>            dp[i][w] = max(dp[i-1][w], value[i] + dp[i-1][w-weight[i]])</pre></html>");
         codeStatements.add("<html><pre>        else</pre></html>");
         codeStatements.add("<html><pre>            dp[i][w] = dp[i-1][w]</pre></html>");
         codeStatements.add("<html><pre>return dp[n][W]</pre></html>");
@@ -173,20 +182,39 @@ public class KnapsackProblem extends Problem {
         backtrackingCodeStatements.add("<html><pre>while i &gt; 0 and w &gt; 0</pre></html>");
         backtrackingCodeStatements.add("<html><pre>    if dp[i][w] != dp[i-1][w]</pre></html>");
         backtrackingCodeStatements.add("<html><pre>        include item i</pre></html>");
-        backtrackingCodeStatements.add("<html><pre>        w = w - weight[i]; i = i - 1</pre></html>");
+        backtrackingCodeStatements.add(
+                "<html><pre>        w = w - weight[i]; i = i - 1</pre></html>");
         backtrackingCodeStatements.add("<html><pre>    else</pre></html>");
         backtrackingCodeStatements.add("<html><pre>        i = i - 1</pre></html>");
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
 
-    public int       getCapacity()  { return capacity; }
-    public int       getN()         { return (int) variables.get("n"); }
-    public int[]     getWeights()   { return weights.clone(); }
-    public int[]     getValues()    { return values.clone(); }
-    public String[]  getNames()     { return names.clone(); }
-    public int[][]   getDpTable()   { return (int[][]) variables.get("dp"); }
-    public EXECUTION_STATE getExecutionState() { return executionState; }
+    public int getN() {
+        return (int) variables.get("n");
+    }
 
+    public int[] getWeights() {
+        return weights.clone();
+    }
+
+    public int[] getValues() {
+        return values.clone();
+    }
+
+    public String[] getNames() {
+        return names.clone();
+    }
+
+    public int[][] getDpTable() {
+        return (int[][]) variables.get("dp");
+    }
+
+    public EXECUTION_STATE getExecutionState() {
+        return executionState;
+    }
 
     public void executeLine0() {
         variables.put("i", 1);
@@ -221,12 +249,17 @@ public class KnapsackProblem extends Problem {
             return;
         }
         nextLineNumber = (weights[i - 1] <= w) ? 3 : 5;
-        log.debug("executeLine2: i={}, w={}, weight[i-1]={} -> line {}", i, w, weights[i - 1], nextLineNumber);
+        log.debug(
+                "executeLine2: i={}, w={}, weight[i-1]={} -> line {}",
+                i,
+                w,
+                weights[i - 1],
+                nextLineNumber);
     }
 
     public void executeLine3() {
-        int i  = (int) variables.get("i");
-        int w  = (int) variables.get("w");
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w");
         int[][] dp = (int[][]) variables.get("dp");
         int skip = dp[i - 1][w];
         int take = values[i - 1] + dp[i - 1][w - weights[i - 1]];
@@ -237,8 +270,8 @@ public class KnapsackProblem extends Problem {
     }
 
     public void executeLine5() {
-        int i  = (int) variables.get("i");
-        int w  = (int) variables.get("w");
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w");
         int[][] dp = (int[][]) variables.get("dp");
         dp[i][w] = dp[i - 1][w];
         log.debug("executeLine5: dp[{}][{}] = dp[{}][{}] = {}", i, w, i - 1, w, dp[i][w]);
@@ -250,7 +283,6 @@ public class KnapsackProblem extends Problem {
         executionState = EXECUTION_STATE.POST;
         log.debug("executeLine6: state -> POST");
     }
-
 
     public void executeLine100() {
         int n = (int) variables.get("n");
@@ -276,8 +308,8 @@ public class KnapsackProblem extends Problem {
     }
 
     public void executeLine102() {
-        int i    = (int) variables.get("i");
-        int w    = (int) variables.get("w");
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w");
         int[][] dp = (int[][]) variables.get("dp");
         int[][] bt = (int[][]) variables.get("bt");
         bt[i][w] = HIT;
@@ -286,8 +318,8 @@ public class KnapsackProblem extends Problem {
     }
 
     public void executeLine103() {
-        int i    = (int) variables.get("i");
-        int w    = (int) variables.get("w");
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w");
         int[][] bt = (int[][]) variables.get("bt");
         bt[i][w] = ADD_TO_SOLUTION;
         nextLineNumber = 104;
@@ -335,8 +367,8 @@ public class KnapsackProblem extends Problem {
     }
 
     public void undoLine3() {
-        int i    = (int) variables.get("i");
-        int w    = (int) variables.get("w") - 1;
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w") - 1;
         variables.put("w", w);
         int[][] dp = (int[][]) variables.get("dp");
         dp[i][w] = 0;
@@ -344,8 +376,8 @@ public class KnapsackProblem extends Problem {
     }
 
     public void undoLine5() {
-        int i    = (int) variables.get("i");
-        int w    = (int) variables.get("w") - 1;
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w") - 1;
         variables.put("w", w);
         int[][] dp = (int[][]) variables.get("dp");
         dp[i][w] = 0;
@@ -365,15 +397,15 @@ public class KnapsackProblem extends Problem {
     public void undoLine101() {}
 
     public void undoLine102() {
-        int i    = (int) variables.get("i");
-        int w    = (int) variables.get("w");
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w");
         int[][] bt = (int[][]) variables.get("bt");
         bt[i][w] = UNVISITED;
     }
 
     public void undoLine103() {
-        int i    = (int) variables.get("i");
-        int w    = (int) variables.get("w");
+        int i = (int) variables.get("i");
+        int w = (int) variables.get("w");
         int[][] bt = (int[][]) variables.get("bt");
         bt[i][w] = HIT;
         nextLineNumber = 102;
@@ -383,7 +415,8 @@ public class KnapsackProblem extends Problem {
         int i = (int) variables.get("i");
         int w = (int) variables.get("w");
         variables.put("i", i + 1);
-        variables.put("w", w + weights[i]); // i is already decremented, so weights[i] = weights[(i+1)-1]
+        variables.put(
+                "w", w + weights[i]); // i is already decremented, so weights[i] = weights[(i+1)-1]
         nextLineNumber = 103;
     }
 

@@ -29,10 +29,10 @@ import edu.regis.dptu.model.ProblemListener;
 import edu.regis.dptu.util.ResourceMgr;
 
 /**
- * KnapsackInputView lets the user specify a list of items (name, weight, value)
- * and a knapsack capacity, then submit them as a {@link KnapsackProblem}.
+ * KnapsackInputView lets the user specify a list of items (name, weight, value) and a knapsack
+ * capacity, then submit them as a {@link KnapsackProblem}.
  *
- * Follows the same pattern as MatrixInputView and LCSInputView.
+ * <p>Follows the same pattern as MatrixInputView and LCSInputView.
  *
  * @author Cormac
  */
@@ -42,17 +42,17 @@ public class KnapsackInputView extends JPanel {
 
     private final ProblemListener submitListener;
 
-    private final JTextField nameField     = new JTextField(10);
-    private final JTextField weightField   = new JTextField(6);
-    private final JTextField valueField    = new JTextField(6);
+    private final JTextField nameField = new JTextField(10);
+    private final JTextField weightField = new JTextField(6);
+    private final JTextField valueField = new JTextField(6);
     private final JTextField capacityField = new JTextField(6);
 
     private final DefaultListModel<String> listModel = new DefaultListModel<>();
-    private final JList<String>            itemList  = new JList<>(listModel);
+    private final JList<String> itemList = new JList<>(listModel);
 
-    private final List<String>  itemNames   = new ArrayList<>();
+    private final List<String> itemNames = new ArrayList<>();
     private final List<Integer> itemWeights = new ArrayList<>();
-    private final List<Integer> itemValues  = new ArrayList<>();
+    private final List<Integer> itemValues = new ArrayList<>();
 
     public KnapsackInputView() {
         this(null);
@@ -69,7 +69,8 @@ public class KnapsackInputView extends JPanel {
         int row = 0;
 
         // Column headers
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         add(new JLabel(ResourceMgr.instance().string("knapsackInput.label.name")), gbc);
         gbc.gridx = 1;
         add(new JLabel(ResourceMgr.instance().string("knapsackInput.label.weight")), gbc);
@@ -78,36 +79,55 @@ public class KnapsackInputView extends JPanel {
         row++;
 
         // Entry fields + Add button
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         add(nameField, gbc);
-        gbc.gridx = 1; add(weightField, gbc);
-        gbc.gridx = 2; add(valueField, gbc);
-        JButton addButton = new JButton(ResourceMgr.instance().string("knapsackInput.button.addItem"));
-        gbc.gridx = 3; add(addButton, gbc);
+        gbc.gridx = 1;
+        add(weightField, gbc);
+        gbc.gridx = 2;
+        add(valueField, gbc);
+        JButton addButton =
+                new JButton(ResourceMgr.instance().string("knapsackInput.button.addItem"));
+        gbc.gridx = 3;
+        add(addButton, gbc);
         row++;
 
         // Remove button
-        JButton removeButton = new JButton(ResourceMgr.instance().string("knapsackInput.button.removeItem"));
-        gbc.gridx = 0; gbc.gridy = row; add(removeButton, gbc);
+        JButton removeButton =
+                new JButton(ResourceMgr.instance().string("knapsackInput.button.removeItem"));
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        add(removeButton, gbc);
         row++;
 
         // Scrollable item list
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 4;
-        gbc.fill = GridBagConstraints.BOTH; gbc.weightx = 1.0; gbc.weighty = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 4;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         add(new JScrollPane(itemList), gbc);
-        gbc.gridwidth = 1; gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0; gbc.weighty = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
         row++;
 
         // Capacity
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         add(new JLabel(ResourceMgr.instance().string("knapsackInput.label.capacity")), gbc);
-        gbc.gridx = 1; add(capacityField, gbc);
+        gbc.gridx = 1;
+        add(capacityField, gbc);
         row++;
 
         // Submit button
-        JButton submitButton = new JButton(ResourceMgr.instance().string("knapsackInput.button.submit"));
-        gbc.gridx = 3; gbc.gridy = row; gbc.anchor = GridBagConstraints.EAST;
+        JButton submitButton =
+                new JButton(ResourceMgr.instance().string("knapsackInput.button.submit"));
+        gbc.gridx = 3;
+        gbc.gridy = row;
+        gbc.anchor = GridBagConstraints.EAST;
         add(submitButton, gbc);
 
         addButton.addActionListener(e -> handleAddItem());
@@ -135,7 +155,9 @@ public class KnapsackInputView extends JPanel {
             itemWeights.add(w);
             itemValues.add(v);
             listModel.addElement(String.format("%s  (w=%d, v=%d)", name, w, v));
-            nameField.setText(""); weightField.setText(""); valueField.setText("");
+            nameField.setText("");
+            weightField.setText("");
+            valueField.setText("");
             log.debug("Added item: {} w={} v={}", name, w, v);
         } catch (NumberFormatException ex) {
             showError(ResourceMgr.instance().string("knapsackInput.error.notInteger"));
@@ -174,9 +196,9 @@ public class KnapsackInputView extends JPanel {
             return;
         }
 
-        String[] names   = itemNames.toArray(new String[0]);
-        int[]    weights = itemWeights.stream().mapToInt(Integer::intValue).toArray();
-        int[]    values  = itemValues.stream().mapToInt(Integer::intValue).toArray();
+        String[] names = itemNames.toArray(new String[0]);
+        int[] weights = itemWeights.stream().mapToInt(Integer::intValue).toArray();
+        int[] values = itemValues.stream().mapToInt(Integer::intValue).toArray();
         KnapsackProblem problem = new KnapsackProblem(names, weights, values, capacity);
 
         if (submitListener != null) {
@@ -188,8 +210,8 @@ public class KnapsackInputView extends JPanel {
     }
 
     /**
-     * Pre-populate the view from an existing KnapsackProblem (e.g. loaded from the DB).
-     * Called by ProblemInputView.setModel().
+     * Pre-populate the view from an existing KnapsackProblem (e.g. loaded from the DB). Called by
+     * ProblemInputView.setModel().
      */
     public void setDefaultItems(String[] names, int[] weights, int[] values, int capacity) {
         clearAll();
@@ -197,27 +219,42 @@ public class KnapsackInputView extends JPanel {
             itemNames.add(names[i]);
             itemWeights.add(weights[i]);
             itemValues.add(values[i]);
-            listModel.addElement(String.format("%s  (w=%d, v=%d)", names[i], weights[i], values[i]));
+            listModel.addElement(
+                    String.format("%s  (w=%d, v=%d)", names[i], weights[i], values[i]));
         }
         capacityField.setText(String.valueOf(capacity));
         log.debug("setDefaultItems: {} items, W={}", names.length, capacity);
     }
 
     public void clearAll() {
-        itemNames.clear(); itemWeights.clear(); itemValues.clear();
+        itemNames.clear();
+        itemWeights.clear();
+        itemValues.clear();
         listModel.clear();
-        nameField.setText(""); weightField.setText(""); valueField.setText("");
+        nameField.setText("");
+        weightField.setText("");
+        valueField.setText("");
         capacityField.setText("");
     }
 
     private void showError(String message) {
-        JOptionPane.showMessageDialog(this, message,
+        JOptionPane.showMessageDialog(
+                this,
+                message,
                 ResourceMgr.instance().string("knapsackInput.error.title"),
                 JOptionPane.ERROR_MESSAGE);
     }
 
     // Accessors for testing
-    public List<String>  getItemNames()   { return new ArrayList<>(itemNames);   }
-    public List<Integer> getItemWeights() { return new ArrayList<>(itemWeights); }
-    public List<Integer> getItemValues()  { return new ArrayList<>(itemValues);  }
+    public List<String> getItemNames() {
+        return new ArrayList<>(itemNames);
+    }
+
+    public List<Integer> getItemWeights() {
+        return new ArrayList<>(itemWeights);
+    }
+
+    public List<Integer> getItemValues() {
+        return new ArrayList<>(itemValues);
+    }
 }
