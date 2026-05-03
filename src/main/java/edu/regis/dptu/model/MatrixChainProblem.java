@@ -46,8 +46,8 @@ public class MatrixChainProblem extends Problem {
     // Current execution state
     private EXECUTION_STATE executionState;
 
-    // Stack to record changes to m[i][j]
-    private final Stack<int[]> mHistory = new Stack<>();
+    // Stack to record changes to l[i][j]
+    private final Stack<int[]> lHistory = new Stack<>();
 
     // For storing split table changes
     private final Stack<int[]> sHistory = new Stack<>();
@@ -70,46 +70,53 @@ public class MatrixChainProblem extends Problem {
     public MatrixChainProblem(int id, int[][] sizes) {
         super(id);
 
-        int n = sizes.length;
+        int n = sizes.length; // Number of rows (i.e. number of matrices)
+        int m = n; // Number of columns (equal to rows)
         ArrayList<Integer> d = new ArrayList<>();
 
         d.add(sizes[0][0]);
         for (int[] size : sizes) d.add(size[1]);
 
         variables.put("n", n);
+        variables.put("m", m);
         variables.put("c", 1);
         variables.put("i", 0);
         variables.put("j", 0);
         variables.put("k", 0);
         variables.put("d", d);
-        variables.put("m", new int[n][n]);
-        variables.put("s", new int[n][n]);
-        variables.put("b", new int[n][n]);
+        /* used "l" for table variable to be consistent with LCSProblem
+        and because this previously using "m" caused issues in
+        SubproblemTableView since it expected n=rows m=columns l=table */
+        variables.put("l", new int[n + 1][m + 1]);
+        variables.put("s", new int[n + 1][m + 1]);
+        variables.put("b", new int[n + 1][m + 1]);
         bTable = (int[][]) variables.get("b");
 
-        int[][] m = (int[][]) variables.get("m");
+        int[][] l = (int[][]) variables.get("l");
         int[][] s = (int[][]) variables.get("s");
         int[][] b = (int[][]) variables.get("b");
 
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++) {
-                m[i][j] = -1;
+        for (int i = 0; i <= n; i++)
+            for (int j = 0; j <= m; j++) {
+                l[i][j] = -1;
                 s[i][j] = -1;
                 b[i][j] = UNVISITED;
             }
 
-        tableVariable = "m";
+        tableVariable = "l";
         executionState = EXECUTION_STATE.PRE;
 
         log.debug(
-                "MatrixChainProblem created: id={}, n={}, d.size={}, sizes[0]={}x{}",
+                "MatrixChainProblem created: id={}, n={}, m={}, d.size={}, sizes[0]={}x{}",
                 id,
                 n,
+                m,
                 d.size(),
                 sizes[0][0],
                 sizes[0][1]);
 
         loadCodeStatements();
+        loadBacktrackingCodeStatements();
     }
 
     @Override
@@ -163,10 +170,10 @@ public class MatrixChainProblem extends Problem {
     @Override
     public void reset() {
         log.debug(
-                "Reset requested: state {} -> PRE; histories cleared (exec={}, mHist={}, sHist={}, btStack={})",
+                "Reset requested: state {} -> PRE; histories cleared (exec={}, lHist={}, sHist={}, btStack={})",
                 executionState,
                 executionHistory.size(),
-                mHistory.size(),
+                lHistory.size(),
                 sHistory.size(),
                 btStack.size());
 
@@ -174,19 +181,20 @@ public class MatrixChainProblem extends Problem {
         nextLineNumber = 0;
 
         executionHistory.clear();
-        mHistory.clear();
+        lHistory.clear();
         sHistory.clear();
         btStack.clear();
         currentParens = "";
 
-        int[][] m = (int[][]) variables.get("m");
+        int[][] l = (int[][]) variables.get("l");
         int[][] s = (int[][]) variables.get("s");
         int[][] b = (int[][]) variables.get("b");
         int n = (int) variables.get("n");
+        int m = (int) variables.get("m");
 
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++) {
-                m[i][j] = -1;
+        for (int i = 0; i <= n; i++)
+            for (int j = 0; j <= m; j++) {
+                l[i][j] = -1;
                 s[i][j] = -1;
                 b[i][j] = UNVISITED;
             }
@@ -201,17 +209,18 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     protected void loadCodeStatements() {
-        codeStatements.add("<html><pre>for i = 0 to n-1</pre></html>");
-        codeStatements.add("<html><pre>    m[i][i] = 0</pre></html>");
-        codeStatements.add("<html><pre>for c = 1 to n-1</pre></html>");
-        codeStatements.add("<html><pre>    for i = 0 to n - c</pre></html>");
-        codeStatements.add("<html><pre>        j = i + c</pre></html>");
-        codeStatements.add("<html><pre>        m[i][j] = ∞</pre></html>");
-        codeStatements.add("<html><pre>        for k = i to j-1</pre></html>");
+        codeStatements.add("<html><pre>for i = 0 to n-1</pre></html>"); // Line 0
+        codeStatements.add("<html><pre>    l[i][i] = 0</pre></html>"); // Line 1
+        codeStatements.add("<html><pre>for c = 1 to n-1</pre></html>"); // Line 2
+        codeStatements.add("<html><pre>    for i = 0 to n - c</pre></html>"); // Line 3
+        codeStatements.add("<html><pre>        j = i + c</pre></html>"); // Line 4
+        codeStatements.add("<html><pre>        l[i][j] = ∞</pre></html>"); // Line 5
+        codeStatements.add("<html><pre>        for k = i to j-1</pre></html>"); // Line 6
         codeStatements.add(
-                "<html><pre>            cost = m[i][k] + m[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>");
-        codeStatements.add("<html><pre>            if cost < m[i][j]: m[i][j] = cost</pre></html>");
-        codeStatements.add("<html><pre>return m</pre></html>");
+                "<html><pre>            cost = l[i][k] + l[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>"); // Line 7
+        codeStatements.add(
+                "<html><pre>            if cost < l[i][j]: l[i][j] = cost</pre></html>"); // Line 8
+        codeStatements.add("<html><pre>return l</pre></html>"); // Line 9
     }
 
     @Override
@@ -247,12 +256,12 @@ public class MatrixChainProblem extends Problem {
     public void executeLine1() {
         int i = (int) variables.get("i");
         int n = (int) variables.get("n");
-        int[][] m = (int[][]) variables.get("m");
+        int[][] l = (int[][]) variables.get("l");
 
-        mHistory.push(new int[] {i, i, m[i][i]});
-        m[i][i] = 0;
+        lHistory.push(new int[] {i, i, l[i][i]});
+        l[i][i] = 0;
 
-        log.debug("executeLine1: set m[{}][{}]=0; n={}, i={}", i, i, n, i);
+        log.debug("executeLine1: set l[{}][{}]=0; n={}, i={}", i, i, n, i);
 
         if (i + 1 == n) {
             variables.put("c", 1);
@@ -320,16 +329,16 @@ public class MatrixChainProblem extends Problem {
     public void executeLine5() {
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
-        int[][] m = (int[][]) variables.get("m");
+        int[][] l = (int[][]) variables.get("l");
 
-        mHistory.push(new int[] {i, j, m[i][j]});
-        m[i][j] = Integer.MAX_VALUE;
+        lHistory.push(new int[] {i, j, l[i][j]});
+        l[i][j] = Integer.MAX_VALUE;
         variables.put("k", i);
 
         nextLineNumber = 6;
 
         log.debug(
-                "executeLine5: init m[{}][{}]=INF; k=i -> {}; nextLineNumber={}",
+                "executeLine5: init l[{}][{}]=INF; k=i -> {}; nextLineNumber={}",
                 i,
                 j,
                 i,
@@ -358,13 +367,13 @@ public class MatrixChainProblem extends Problem {
 
     @SuppressWarnings("unchecked")
     public void executeLine7() {
-        int[][] m = (int[][]) variables.get("m");
+        int[][] l = (int[][]) variables.get("l");
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
         int k = (int) variables.get("k");
         ArrayList<Integer> d = (ArrayList<Integer>) variables.get("d");
 
-        int cost = m[i][k] + m[k + 1][j] + d.get(i) * d.get(k + 1) * d.get(j + 1);
+        int cost = l[i][k] + l[k + 1][j] + d.get(i) * d.get(k + 1) * d.get(j + 1);
 
         variables.put("cost", cost);
         nextLineNumber = 8;
@@ -376,13 +385,13 @@ public class MatrixChainProblem extends Problem {
         int cost = (int) variables.get("cost");
         int i = (int) variables.get("i");
         int j = (int) variables.get("j");
-        int[][] m = (int[][]) variables.get("m");
+        int[][] l = (int[][]) variables.get("l");
 
-        if (cost < m[i][j]) {
-            int prev = m[i][j];
+        if (cost < l[i][j]) {
+            int prev = l[i][j];
 
-            mHistory.push(new int[] {i, j, prev});
-            m[i][j] = cost;
+            lHistory.push(new int[] {i, j, prev});
+            l[i][j] = cost;
 
             int[][] s = (int[][]) variables.get("s");
             int kVal = (int) variables.get("k");
@@ -391,7 +400,7 @@ public class MatrixChainProblem extends Problem {
             s[i][j] = kVal;
 
             log.debug(
-                    "executeLine8: improved m[{}][{}]: {} -> {}; set s[{}][{}]={}",
+                    "executeLine8: improved l[{}][{}]: {} -> {}; set s[{}][{}]={}",
                     i,
                     j,
                     prev,
@@ -539,12 +548,12 @@ public class MatrixChainProblem extends Problem {
     }
 
     public void undoLine1() {
-        if (!mHistory.isEmpty()) {
-            int[] change = mHistory.pop();
-            int[][] m = (int[][]) variables.get("m");
-            m[change[0]][change[1]] = change[2];
+        if (!lHistory.isEmpty()) {
+            int[] change = lHistory.pop();
+            int[][] l = (int[][]) variables.get("l");
+            l[change[0]][change[1]] = change[2];
 
-            log.debug("undoLine1: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
+            log.debug("undoLine1: restore l[{}][{}] -> {}", change[0], change[1], change[2]);
         }
 
         int i = (int) variables.get("i") - 1;
@@ -572,12 +581,12 @@ public class MatrixChainProblem extends Problem {
     }
 
     public void undoLine5() {
-        if (!mHistory.isEmpty()) {
-            int[] change = mHistory.pop();
-            int[][] m = (int[][]) variables.get("m");
-            m[change[0]][change[1]] = change[2];
+        if (!lHistory.isEmpty()) {
+            int[] change = lHistory.pop();
+            int[][] l = (int[][]) variables.get("l");
+            l[change[0]][change[1]] = change[2];
 
-            log.debug("undoLine5: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
+            log.debug("undoLine5: restore l[{}][{}] -> {}", change[0], change[1], change[2]);
         }
     }
 
@@ -594,12 +603,12 @@ public class MatrixChainProblem extends Problem {
     }
 
     public void undoLine8() {
-        if (!mHistory.isEmpty()) {
-            int[] change = mHistory.pop();
-            int[][] m = (int[][]) variables.get("m");
-            m[change[0]][change[1]] = change[2];
+        if (!lHistory.isEmpty()) {
+            int[] change = lHistory.pop();
+            int[][] l = (int[][]) variables.get("l");
+            l[change[0]][change[1]] = change[2];
 
-            log.debug("undoLine8: restore m[{}][{}] -> {}", change[0], change[1], change[2]);
+            log.debug("undoLine8: restore l[{}][{}] -> {}", change[0], change[1], change[2]);
         }
 
         if (!sHistory.isEmpty()) {
@@ -663,8 +672,7 @@ public class MatrixChainProblem extends Problem {
     }
 
     public EXECUTION_STATE getExecutionState() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExecutionState'");
+        return executionState;
     }
 
     public void prettyPrint() {

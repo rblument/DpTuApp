@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
+import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
@@ -87,17 +88,39 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             this.model.addProblemListener(this);
             // When the Problem changes, we should updateStrings() to match
             ProblemKind pKind = model.getType();
+            ArrayList<String> rowHeaders = new ArrayList<>();
+            ArrayList<String> colHeaders = new ArrayList<>();
             switch (pKind) {
                 case MATRIX_CHAIN:
-                    // TODO
+                    int[][] tableVariable =
+                            (int[][])
+                                    ((MatrixChainProblem) model)
+                                            .getVariableObject(model.getTableVariable());
+                    int rows = tableVariable.length;
+                    int cols = tableVariable[0].length;
+                    log.debug("Updating Matrix Chain Table with (rows={}, cols={})", rows, cols);
+                    for (int i = 0; i < rows - 1; i++) rowHeaders.add(String.valueOf(i));
+                    for (int i = 0; i < cols - 1; i++) colHeaders.add(String.valueOf(i));
+                    updateStrings(rowHeaders, colHeaders);
                     break;
                 case KNAPSACK_0_1:
                     // TODO
                     break;
                 default: // i.e. LCS_PROBLEM
-                    String s1 = ((LCSProblem) model).getX();
-                    String s2 = ((LCSProblem) model).getY();
-                    updateStrings(s1, s2);
+                    String rowStr = ((LCSProblem) model).getX();
+                    String colStr = ((LCSProblem) model).getY();
+                    for (int i = 0; i < rowStr.length(); i++) {
+                        rowHeaders.add(Character.toUpperCase(rowStr.charAt(i)) + " (" + i + ")");
+                    }
+                    for (int i = 0; i < colStr.length(); i++) {
+                        colHeaders.add(
+                                "<html><center>"
+                                        + Character.toUpperCase(colStr.charAt(i))
+                                        + "<br>("
+                                        + i
+                                        + ")</center></html>");
+                    }
+                    updateStrings(rowHeaders, colHeaders);
             }
             TableColumnModel columnModel = table.getColumnModel();
             columnModel.getColumn(0).setPreferredWidth(150);
@@ -255,33 +278,34 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     }
 
     /**
-     * Constructs the table's column header labels based on input characters.
+     * Constructs the table's column header labels based on input strings.
      *
-     * @param string String whose characters become column labels
+     * @param strings ArrayList of Strings that become column labels
      */
-    private void buildColumnHeaders(String string) {
+    private void buildColumnHeaders(ArrayList<String> strings) {
+        ProblemKind pKind = model.getType();
         List<String> headers = new ArrayList<String>();
+
         headers.add("table"); // Top-left corner label
-        headers.add("-1"); // Base case column
-        for (int i = 0; i < string.length(); i++) {
-            // HTML formatting to center label and index
-            headers.add("<html><center>" + string.charAt(i) + "<br>(" + i + ")</center></html>");
-        }
+        if (pKind == ProblemKind.LCS_PROBLEM) headers.add("-1"); // Base case column
+        headers.addAll(strings);
+
         columnHeaders = headers.toArray(new String[headers.size()]);
     }
 
     /**
      * Builds the initial table data array with row labels and empty/default cells.
      *
-     * @param string String whose characters become row labels
+     * @param strings ArrayList of Strings that become row labels
      */
-    private void buildTableData(String string) {
+    private void buildTableData(ArrayList<String> strings) {
+        ProblemKind pKind = model.getType();
         List<Object[]> rows = new ArrayList<>();
         List<String> rowHeaders = new ArrayList<String>();
-        rowHeaders.add("-1"); // Base case row label
-        for (int i = 0; i < string.length(); i++) {
-            rowHeaders.add(String.valueOf(string.charAt(i)));
-        }
+
+        if (pKind == ProblemKind.LCS_PROBLEM) rowHeaders.add("-1"); // Base case row label
+        rowHeaders.addAll(strings);
+
         if (columnHeaders == null) {
             tableData = new Object[0][0];
             return;
@@ -289,12 +313,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         // Create each row's data array
         for (int i = 0; i < rowHeaders.size(); i++) {
             Object[] toadd = new Object[columnHeaders.length];
-            if (i > 0) {
-                // Format row label with index
-                toadd[0] = rowHeaders.get(i) + "  (" + (i - 1) + ")";
-            } else {
-                toadd[0] = rowHeaders.get(i);
-            }
+            toadd[0] = rowHeaders.get(i);
             rows.add(toadd);
         }
         tableData = rows.toArray(new Object[0][]);
@@ -318,9 +337,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 || model.getVariableObject("m") == null) {
             return;
         }
+        ProblemKind pKind = model.getType();
         Object tableObj = model.getVariableObject(model.getTableVariable());
-        Object nObj = model.getVariableObject("n");
-        Object mObj = model.getVariableObject("m");
+        Object nObj = model.getVariableObject("n"); // Number of rows
+        Object mObj = model.getVariableObject("m"); // Number of columns
         // Type check for DP table and indices
         if (!(tableObj instanceof int[][])
                 || !(nObj instanceof Integer)
@@ -332,6 +352,11 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         int n = (int) nObj;
         int m = (int) mObj;
         DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        // Since Matrix Chain doesn't use the extra "-1" rows and columns
+        if (pKind == ProblemKind.MATRIX_CHAIN) {
+            n--;
+            m--;
+        }
         // Ensure table has sufficient size
         if (dtm.getRowCount() < n + 1 || dtm.getColumnCount() < m + 2) {
             log.error("SubproblemTableView: Table dimensions too small.", (Throwable) null);
@@ -417,18 +442,15 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
     }
 
     /**
-     * Rebuilds table headers and data when input strings change. Dynamically reapplies renderers
+     * Rebuilds table headers and data when input headers change. Dynamically reapplies renderers
      * and refreshes the view.
      *
-     * @param string1 The new first input String (x-axis labels)
-     * @param string2 The new second input String (y-axis labels)
+     * @param rowHeaders ArrayList of row headers
+     * @param colHeaders ArrayList of column headers
      */
-    public void updateStrings(String string1, String string2) {
-        string1 = string1.toUpperCase();
-        string2 = string2.toUpperCase();
-
-        buildColumnHeaders(string2);
-        buildTableData(string1);
+    public void updateStrings(ArrayList<String> rowHeaders, ArrayList<String> colHeaders) {
+        buildColumnHeaders(colHeaders);
+        buildTableData(rowHeaders);
 
         // Replace model with new data
         table.setModel(new DefaultTableModel(tableData, columnHeaders));
