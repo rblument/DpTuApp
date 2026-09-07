@@ -28,6 +28,7 @@ import edu.regis.dptu.view.SplashFrame;
  */
 /**
  * Comment For the Initial Sprint
+ *
  * @author lindytatum
  */
 public class DpTuApp {
