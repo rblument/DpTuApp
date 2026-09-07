@@ -26,6 +26,11 @@ import edu.regis.dptu.view.SplashFrame;
  *
  * @author rickb
  */
+/**
+ * Comment For the Initial Sprint
+ *
+ * @author lindytatum
+ */
 public class DpTuApp {
     private static final Logger log = LoggerFactory.getLogger(DpTuApp.class);
 
