@@ -21,6 +21,8 @@ import edu.regis.dptu.util.ResourceMgr;
 import edu.regis.dptu.view.MainFrame;
 import edu.regis.dptu.view.SplashFrame;
 
+/** This me editing the code in NetBeans, making a simple change, like this comment cpford3 */
+
 /**
  * A standalone implementation of the Dynamic Programming intelligent tutoring (DpTu) application.
  *
