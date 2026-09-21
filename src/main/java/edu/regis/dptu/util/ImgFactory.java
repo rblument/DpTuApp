@@ -38,16 +38,20 @@ public class ImgFactory {
      *
      * @param fileName The file name of the image to load.
      * @param altText Alternative text for the ImageIcon.
-     * @return ImageIcon with the corresponding image, or null if not found.
+     * @return ImageIcon with the corresponding image, or an empty icon with the given alternative
+     *     text if the image is not found.
      */
     public static ImageIcon createIcon(String fileName, String altText) {
         BufferedImage img = createImage(fileName);
         if (img != null) {
             log.debug("Successfully created ImageIcon for file '{}'", fileName);
+            return new ImageIcon(img, altText);
         } else {
             log.warn("Failed to create ImageIcon for file '{}'", fileName);
+            ImageIcon icon = new ImageIcon();
+            icon.setDescription(altText);
+            return icon;
         }
-        return new ImageIcon(img, altText);
     }
 
     /**

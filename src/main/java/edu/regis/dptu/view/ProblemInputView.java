@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.KnapsackProblem;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
@@ -15,9 +16,9 @@ import edu.regis.dptu.model.ProblemListener;
 /**
  * Displays the appropriate input view depending on the selected problem type.
  *
- * <p>Updated April 30, 2025: - Dynamically loads the correct input panel based on the Problem's
- * TaskKind. - Supports LCSInputView and MatrixInputView. - KnapsackInputView is scaffolded for
- * future use. - Added null model fallback to avoid initialization errors when model not yet set.
+ * <p>Updated April 30, 2025: - Dynamically loads the correct input panel based on the ProblemKind.
+ * - Supports LCSInputView and MatrixInputView. - KnapsackInputView is scaffolded for future use. -
+ * Added null model fallback to avoid initialization errors when model not yet set.
  *
  * @author EverettCV
  */
@@ -48,7 +49,7 @@ public class ProblemInputView extends JPanel {
                 LCSProblem lcsProblem = (LCSProblem) problem;
                 LCSInputView lcsInputView = new LCSInputView(submitListener);
                 lcsInputView.setDefaultStrings(lcsProblem.getX(), lcsProblem.getY());
-                currentPanel = new LCSInputView(submitListener);
+                currentPanel = lcsInputView;
                 break;
             case MATRIX_CHAIN:
                 ProblemInputView.log.info("Setting currentPanel to MatrixInputView");
@@ -56,13 +57,17 @@ public class ProblemInputView extends JPanel {
                 break;
             case KNAPSACK_0_1:
                 ProblemInputView.log.info("Setting currentPanel to KnapsackInputView");
+
+                KnapsackProblem knapsackProblem = (KnapsackProblem) problem;
+                KnapsackInputView knapsackInputView = new KnapsackInputView(submitListener);
+                knapsackInputView.setDefaultItems(
+                        knapsackProblem.getNames(),
+                        knapsackProblem.getWeights(),
+                        knapsackProblem.getValues(),
+                        knapsackProblem.getCapacity());
+
                 currentPanel = new KnapsackInputView();
-                // TODO: Uncomment and load KnapsackInputView once KnapsackProblem and its view are
-                // implemented:
-                // KnapsackInputView knapsackInputView = new KnapsackInputView();
-                // add(knapsackInputView, BorderLayout.CENTER);
-                ProblemInputView.log.error(
-                        "Knapsack input view not yet implemented.", (Throwable) null);
+
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -74,6 +79,12 @@ public class ProblemInputView extends JPanel {
 
     public LCSInputView getLcsInputView() {
         return (activeInputPanel instanceof LCSInputView) ? (LCSInputView) activeInputPanel : null;
+    }
+
+    public KnapsackInputView getKnapsackInputView() {
+        return (activeInputPanel instanceof KnapsackInputView)
+                ? (KnapsackInputView) activeInputPanel
+                : null;
     }
 
     private void swapView(JPanel currentView) {

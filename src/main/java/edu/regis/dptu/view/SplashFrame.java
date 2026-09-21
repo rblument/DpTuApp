@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.Account;
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Student;
 import edu.regis.dptu.model.TutoringSession;
 import edu.regis.dptu.model.User;
@@ -241,7 +242,7 @@ public class SplashFrame extends JFrame {
     /**
      * Initialize and show dashboard for the given session.
      *
-     * @param firstName - The name of this user.
+     * @param firstName the user's first name shown in the dashboard.
      */
     public void initializeDashboard(String firstName) {
 
@@ -279,6 +280,42 @@ public class SplashFrame extends JFrame {
     /** Select the practice screen panel */
     public void selectPracticeScreen() {
         // TODO: Implement practice screen selection
+
+        log.info("Navigating to practice screen");
+
+        TutoringSession session = getSignedInSession();
+        if (session == null) {
+            log.error("selectPracticeScreen called with no signed-in session");
+            showError(
+                    ResourceMgr.instance().string("dialog.title.signInError"),
+                    ResourceMgr.instance().string("splash.overview.loginMsg"));
+            return;
+        }
+        session.setMode(Mode.DO_ONE);
+
+        if (!hasDisplayableProblem(session)) {
+            log.error(
+                    "Cannot open practice screen with an incomplete tutoring session for user {}",
+                    session.getUserId());
+            showError(
+                    ResourceMgr.instance().string("dialog.title.error"),
+                    ResourceMgr.instance().string("error.failedToLoadProblem"));
+            return;
+        }
+
+        MainFrame.instance().getView().setModel(session);
+        MainFrame.instance().setVisible(true);
+    }
+
+    /**
+     * Returns whether the tutoring session is complete enough to be displayed by the
+     * lesson/practice view.
+     *
+     * @param session TutoringSession to validate
+     * @return true when the session contains a problem for the tutoring view to render
+     */
+    private boolean hasDisplayableProblem(TutoringSession session) {
+        return session != null && session.getProblem() != null;
     }
 
     /** Handle user logout */
