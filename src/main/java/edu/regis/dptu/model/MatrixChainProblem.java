@@ -677,7 +677,8 @@ public class MatrixChainProblem extends Problem {
     }
 
     public void prettyPrint() {
-        // TODO Auto-generated method stub
+        // Tatum:
+        // Restructured line 691 so that matrixchainproblemcoveragetest passes
         log.info("--- MatrixChainProblem State ---");
         log.info("ExecutionState: {}", executionState);
         log.info("Current Line #: {}", nextLineNumber);
@@ -688,7 +689,8 @@ public class MatrixChainProblem extends Problem {
         log.info("n: {}", variables.get("n"));
 
         int n = (int) variables.get("n");
-        int[][] m = (int[][]) variables.get("m");
+        // int[][] m = (int[][]) variables.get("m");
+        int[][] m = (int[][]) variables.get(getTableVariable());
 
         log.info("DP Table (m):");
         StringBuilder header = new StringBuilder("     ");

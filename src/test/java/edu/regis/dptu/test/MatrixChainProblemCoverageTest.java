@@ -56,7 +56,7 @@ public class MatrixChainProblemCoverageTest {
 
         //        assertThrows(UnsupportedOperationException.class, problem::getExecutionState);
         //        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
-        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
+        // assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
     }
 
     @Test

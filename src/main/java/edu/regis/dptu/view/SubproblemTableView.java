@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
-import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
@@ -92,26 +91,23 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             ArrayList<String> colHeaders = new ArrayList<>();
             switch (pKind) {
                 case MATRIX_CHAIN:
-                    // TODO
-                    int n = (int) model.getVariableObject("n");
+                    // Lindy Tatum: Label rows and columns with numbers sized to the
+                    // DP table
+                    int[][] tableVariable =
+                            (int[][]) model.getVariableObject(model.getTableVariable());
 
                     // build string of n characters to use as axis labels (A, B, C,...
-
-                    StringBuilder matrixLabels = new StringBuilder();
-                    for (int idx = 0; idx < n; idx++) {
-                        matrixLabels.append((char) ('A' + idx));
-                    }
-                    String labelStr = matrixLabels.toString();
-                    updateStrings(labelStr, labelStr);
-                    int[][] tableVariable =
-                            (int[][])
-                                    ((MatrixChainProblem) model)
-                                            .getVariableObject(model.getTableVariable());
                     int rows = tableVariable.length;
                     int cols = tableVariable[0].length;
                     log.debug("Updating Matrix Chain Table with (rows={}, cols={})", rows, cols);
-                    for (int i = 0; i < rows - 1; i++) rowHeaders.add(String.valueOf(i));
-                    for (int i = 0; i < cols - 1; i++) colHeaders.add(String.valueOf(i));
+
+                    for (int idx = 0; idx < rows; idx++) {
+                        rowHeaders.add(String.valueOf((char) ('A' + idx)));
+                    }
+                    for (int idx = 0; idx < cols - 1; idx++) {
+                        colHeaders.add(String.valueOf((char) ('A' + idx)));
+                    }
+
                     updateStrings(rowHeaders, colHeaders);
                     break;
                 case KNAPSACK_0_1:
