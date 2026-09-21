@@ -287,8 +287,8 @@ public class SplashFrame extends JFrame {
         if (session == null) {
             log.error("selectPracticeScreen called with no signed-in session");
             showError(
-                    ResourceMgr.instance().string("dialog.title.error"),
-                    ResourceMgr.instance().string("error.failedToLoadProblem"));
+                    ResourceMgr.instance().string("dialog.title.signInError"),
+                    ResourceMgr.instance().string("splash.overview.loginMsg"));
             return;
         }
         session.setMode(Mode.DO_ONE);
