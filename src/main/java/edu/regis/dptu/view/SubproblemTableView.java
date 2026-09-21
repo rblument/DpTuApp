@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.model.LCSProblem;
-import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
@@ -92,19 +91,30 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
             ArrayList<String> colHeaders = new ArrayList<>();
             switch (pKind) {
                 case MATRIX_CHAIN:
+                    // Lindy Tatum: Label rows and columns with numbers sized to the
+                    // DP table
                     int[][] tableVariable =
-                            (int[][])
-                                    ((MatrixChainProblem) model)
-                                            .getVariableObject(model.getTableVariable());
+                            (int[][]) model.getVariableObject(model.getTableVariable());
+
+                    // build string of n characters to use as axis labels (A, B, C,...
                     int rows = tableVariable.length;
                     int cols = tableVariable[0].length;
                     log.debug("Updating Matrix Chain Table with (rows={}, cols={})", rows, cols);
-                    for (int i = 0; i < rows - 1; i++) rowHeaders.add(String.valueOf(i));
-                    for (int i = 0; i < cols - 1; i++) colHeaders.add(String.valueOf(i));
+
+                    for (int idx = 0; idx < rows; idx++) {
+                        rowHeaders.add(String.valueOf((char) ('A' + idx)));
+                    }
+                    for (int idx = 0; idx < cols - 1; idx++) {
+                        colHeaders.add(String.valueOf((char) ('A' + idx)));
+                    }
+
                     updateStrings(rowHeaders, colHeaders);
                     break;
                 case KNAPSACK_0_1:
                     // TODO
+                    // knapsackproblem class not implemented yet
+                    log.warn("SubproblemTableView: KNAPSACK_0_1 is not yet" + "supported.");
+                    setVisible(false);
                     break;
                 default: // i.e. LCS_PROBLEM
                     String rowStr = ((LCSProblem) model).getX();
@@ -215,6 +225,7 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 };
 
         table.setAutoCreateRowSorter(false);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // Set custom header renderer to center-align header text
         final JTableHeader header = table.getTableHeader();
@@ -257,6 +268,8 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
 
         // Wrap table in scroll pane for overflow
         sp = new JScrollPane(table);
+        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
 
     /** Adds components to this panel using GridBagLayout constraints. */
@@ -267,10 +280,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                 0,
                 1,
                 1,
-                0.0,
-                0.0,
+                1.0,
+                1.0,
                 GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
+                GridBagConstraints.BOTH,
                 5,
                 5,
                 5,
