@@ -294,7 +294,8 @@ public class SplashFrame extends JFrame {
         session.setMode(Mode.DO_ONE);
 
         if (!hasDisplayableProblem(session)) {
-            log.error("Cannot open practice screen with an incomplete tutoring session for user {}",
+            log.error(
+                    "Cannot open practice screen with an incomplete tutoring session for user {}",
                     session.getUserId());
             showError(
                     ResourceMgr.instance().string("dialog.title.error"),
@@ -307,8 +308,8 @@ public class SplashFrame extends JFrame {
     }
 
     /**
-     * Returns whether the tutoring session is complete enough to be displayed by the lesson/practice
-     * view.
+     * Returns whether the tutoring session is complete enough to be displayed by the
+     * lesson/practice view.
      *
      * @param session TutoringSession to validate
      * @return true when the session contains a problem for the tutoring view to render
