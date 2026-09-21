@@ -46,6 +46,7 @@ public class TutoringSessionView extends GPanel {
                 {
                     put(Mode.SEE_ONE, new SeeOneView());
                     put(Mode.DO_ONE, new DoOneView());
+                    put(Mode.TEACH_ONE, new TeachOneView());
                 }
             };
 
