@@ -97,6 +97,7 @@ public class DpTuTutor implements TutorSvc {
             case "completedTask":
             case "newExample":
             case "requestHint":
+            case "saveSession":
                 String userId = request.getUserId();
                 try {
                     if (verifySession(userId, request.getSecurityToken())) {
@@ -307,6 +308,37 @@ public class DpTuTutor implements TutorSvc {
         reply.setData("This is a hint from the tutor.");
 
         return reply;
+    }
+
+    /** Persist the student's current tutoring session to the database. */
+    public TutorReply saveSession(String jsonSession) {
+        log.debug(
+                "saveSession invoked, payload length={}",
+                jsonSession == null ? 0 : jsonSession.length());
+
+        try {
+            TutoringSession session = gson.fromJson(jsonSession, TutoringSession.class);
+
+            if (session == null || session.getUserId() == null || session.getUserId().isEmpty()) {
+                log.warn("saveSession: received null or incomplete session payload");
+                TutorReply err = new TutorReply(":ERR");
+                err.setData("Session data is missing or incomplete");
+                return err;
+            }
+
+            SessionSvc svc = ServiceFactory.findSessionSvc();
+            svc.update(session);
+
+            log.info("saveSession: session persisted for userId={}", session.getUserId());
+            return new TutorReply("SessionSaved");
+
+        } catch (ObjNotFoundException ex) {
+            return createError("saveSession: no existing session found to update", ex);
+        } catch (NonRecoverableException ex) {
+            return createError("saveSession: database error while saving session", ex);
+        } catch (Exception ex) {
+            return createError("saveSession: unexpected error", ex);
+        }
     }
 
     /**
