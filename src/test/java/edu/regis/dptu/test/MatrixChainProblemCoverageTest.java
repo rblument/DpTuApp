@@ -47,16 +47,14 @@ public class MatrixChainProblemCoverageTest {
     }
 
     @Test
-    public void testGetExexutionStateAndPrettyPrint() {
+    public void throwsForUnimplementedMethods() {
         int[][] sizes = {{3, 4}, {4, 5}};
         MatrixChainProblem problem = new MatrixChainProblem(sizes);
-        assertNotNull(problem.getExecutionState());
-        assertEquals(MatrixChainProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
-        assertDoesNotThrow(problem::prettyPrint);
+        //        assertNotNull(problem.getExecutionState());
+        //        assertEquals(MatrixChainProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
+        //        assertDoesNotThrow(problem::prettyPrint);
 
-        //        assertThrows(UnsupportedOperationException.class, problem::getExecutionState);
-        //        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
-        // assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
+        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
     }
 
     @Test

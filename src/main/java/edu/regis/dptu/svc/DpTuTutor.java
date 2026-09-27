@@ -310,6 +310,26 @@ public class DpTuTutor implements TutorSvc {
         return reply;
     }
 
+    /** Generate a new practice step. */
+    public TutorReply newExample(String sessionInfo) {
+        log.debug(
+                "newExample received sessionInfo length={}",
+                sessionInfo == null ? 0 : sessionInfo.length());
+
+        if (student == null || student.getAccount() == null) {
+            TutorReply err = new TutorReply(":ERR");
+            err.setData("No authenticated student in session");
+            return err;
+        }
+
+        Step nextStep = new Step(10, 10, StepSubType.COMPLETE_CELL);
+
+        TutorReply reply = new TutorReply(":NewExample");
+        reply.setData(gson.toJson(nextStep));
+
+        return reply;
+    }
+
     /** Persist the student's current tutoring session to the database. */
     public TutorReply saveSession(String jsonSession) {
         log.debug(
