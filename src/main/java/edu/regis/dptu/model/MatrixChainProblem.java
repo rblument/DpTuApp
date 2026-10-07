@@ -145,9 +145,13 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public boolean backtrackReady() {
-        // (As written, this is effectively always true unless POST? Keeping behavior unchanged.)
-        return executionState == EXECUTION_STATE.POST
-                || executionState != EXECUTION_STATE.BACKTRACK_DONE;
+        // Only after the table is complete (POST), or to restart while backtracking
+        switch (executionState) {
+            case PRE, R_LOOP, C_LOOP, I_LOOP, J_LOOP:
+                return false;
+            default:
+                return true;
+        }
     }
 
     @Override
@@ -313,7 +317,8 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add(
                 "<html><pre>            cost = l[i][k] + l[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>"); // Line 7
         codeStatements.add(
-                "<html><pre>            if cost < l[i][j]: l[i][j] = cost</pre></html>"); // Line 8
+                "<html><pre>            if cost &lt; l[i][j]: l[i][j] = "
+                        + "cost</pre></html>"); // Line 8
         codeStatements.add("<html><pre>return l</pre></html>"); // Line 9
     }
 
