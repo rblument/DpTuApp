@@ -87,4 +87,23 @@ public class MatrixChainProblemCoverageTest {
         problem.undoLine104();
         problem.undoLine118();
     }
+
+    @Test
+    public void backtrackNotReadyUntilTableFilled() {
+        int[][] sizes = {{10, 30}, {30, 5}, {5, 60}};
+        MatrixChainProblem problem = new MatrixChainProblem(sizes);
+
+        assertFalse(problem.backtrackReady());
+
+        for (int i = 0; i < 5; i++) {
+            problem.step();
+        }
+        assertFalse(problem.backtrackReady());
+
+        int guard = 0;
+        while (!problem.hasFinished() && guard++ < 2000) {
+            problem.step();
+        }
+        assertTrue(problem.backtrackReady());
+    }
 }

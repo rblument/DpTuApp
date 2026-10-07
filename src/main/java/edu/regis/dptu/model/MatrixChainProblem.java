@@ -13,6 +13,9 @@
 package edu.regis.dptu.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.slf4j.Logger;
@@ -62,6 +65,22 @@ public class MatrixChainProblem extends Problem {
     private final Stack<Object> btStack = new Stack<>();
 
     private static final String CLOSE_PAREN = ")";
+
+    // Scalar variables that a step may change
+    private static final String[] SCALAR_VARIABLES = {"i", "j", "k", "c", "cost"};
+
+    /** Everything a single step can change, saved so undo() can restore it exactly. */
+    private record Snapshot(
+            Map<String, Object> scalars,
+            int[][] l,
+            int[][] s,
+            int[][] b,
+            EXECUTION_STATE state,
+            String parens,
+            List<Object> stack) {}
+
+    // One snapshot per entry in executionHistory
+    private final Stack<Snapshot> snapshots = new Stack<>();
 
     public MatrixChainProblem(int[][] sizes) {
         this(Model.DEFAULT_ID, sizes);
@@ -126,9 +145,13 @@ public class MatrixChainProblem extends Problem {
 
     @Override
     public boolean backtrackReady() {
-        // (As written, this is effectively always true unless POST? Keeping behavior unchanged.)
-        return executionState == EXECUTION_STATE.POST
-                || executionState != EXECUTION_STATE.BACKTRACK_DONE;
+        // Only after the table is complete (POST), or to restart while backtracking
+        switch (executionState) {
+            case PRE, R_LOOP, C_LOOP, I_LOOP, J_LOOP:
+                return false;
+            default:
+                return true;
+        }
     }
 
     @Override
@@ -184,6 +207,7 @@ public class MatrixChainProblem extends Problem {
         lHistory.clear();
         sHistory.clear();
         btStack.clear();
+        snapshots.clear();
         currentParens = "";
 
         int[][] l = (int[][]) variables.get("l");
@@ -207,6 +231,80 @@ public class MatrixChainProblem extends Problem {
         notifyProblemListeners();
     }
 
+    /** Save the current state, then execute the next line. */
+    @Override
+    public void step() {
+        snapshots.push(takeSnapshot());
+        super.step();
+    }
+
+    /** Restore the state saved before the most recent step. */
+    @Override
+    public void undo() {
+        if (executionHistory.isEmpty() || snapshots.isEmpty()) {
+            super.undo(); // logs "Cannot undo past Line 0"
+            return;
+        }
+
+        restoreSnapshot(snapshots.pop());
+        nextLineNumber = executionHistory.remove(executionHistory.size() - 1);
+
+        log.debug("undo: restored state before line {}", nextLineNumber);
+        notifyProblemListeners();
+    }
+
+    private Snapshot takeSnapshot() {
+        Map<String, Object> scalars = new HashMap<>();
+        for (String name : SCALAR_VARIABLES) {
+            scalars.put(name, variables.get(name));
+        }
+
+        return new Snapshot(
+                scalars,
+                copyTable("l"),
+                copyTable("s"),
+                copyTable("b"),
+                executionState,
+                currentParens,
+                new ArrayList<>(btStack));
+    }
+
+    private void restoreSnapshot(Snapshot snapshot) {
+        for (Map.Entry<String, Object> entry : snapshot.scalars().entrySet()) {
+            if (entry.getValue() == null) {
+                variables.remove(entry.getKey());
+            } else {
+                variables.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        restoreTable("l", snapshot.l());
+        restoreTable("s", snapshot.s());
+        restoreTable("b", snapshot.b());
+
+        executionState = snapshot.state();
+        currentParens = snapshot.parens();
+        btStack.clear();
+        btStack.addAll(snapshot.stack());
+    }
+
+    private int[][] copyTable(String name) {
+        int[][] table = (int[][]) variables.get(name);
+        int[][] copy = new int[table.length][];
+        for (int row = 0; row < table.length; row++) {
+            copy[row] = table[row].clone();
+        }
+        return copy;
+    }
+
+    // Copy into the existing array, since views and bTable hold references to it
+    private void restoreTable(String name, int[][] saved) {
+        int[][] table = (int[][]) variables.get(name);
+        for (int row = 0; row < saved.length; row++) {
+            System.arraycopy(saved[row], 0, table[row], 0, saved[row].length);
+        }
+    }
+
     @Override
     protected void loadCodeStatements() {
         codeStatements.add("<html><pre>for i = 0 to n-1</pre></html>"); // Line 0
@@ -219,7 +317,8 @@ public class MatrixChainProblem extends Problem {
         codeStatements.add(
                 "<html><pre>            cost = l[i][k] + l[k+1][j] + d[i]d[k+1]d[j+1]</pre></html>"); // Line 7
         codeStatements.add(
-                "<html><pre>            if cost < l[i][j]: l[i][j] = cost</pre></html>"); // Line 8
+                "<html><pre>            if cost &lt; l[i][j]: l[i][j] = "
+                        + "cost</pre></html>"); // Line 8
         codeStatements.add("<html><pre>return l</pre></html>"); // Line 9
     }
 
