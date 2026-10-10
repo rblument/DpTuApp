@@ -115,7 +115,7 @@ public class KnowledgeComponent extends TitledModel {
     /**
      * Set the pedagogy with the given pedagogy.
      *
-     * @param pedagogy an TaskSelectionKind data type.
+     * @param pegadody an TaskSelectionKind data type.
      */
     public void setPedagogy(TaskSelectionKind pedagogy) {
         this.pedagogy = pedagogy;
