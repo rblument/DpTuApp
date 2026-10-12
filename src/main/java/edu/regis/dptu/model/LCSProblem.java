@@ -136,10 +136,10 @@ public class LCSProblem extends Problem {
         int m = y.length();
 
         // Initialize variables map
-        variables.put("x", x);
-        variables.put("y", y);
-        variables.put("n", n);
-        variables.put("m", m);
+        variables.put("x", x); //input 1
+        variables.put("y", y); //input 2
+        variables.put("n", n); //length of input 1
+        variables.put("m", m); //length of input 2
         variables.put("r", -1);
         variables.put("c", -1);
         // The DP table
@@ -155,7 +155,7 @@ public class LCSProblem extends Problem {
 
         loadCodeStatements(); // Load the pseudocode lines
         loadBacktrackingCodeStatements();
-
+        
         reset(); // Call reset to ensure consistent initial state including table values
     }
 
