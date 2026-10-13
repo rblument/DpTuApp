@@ -370,15 +370,11 @@ public abstract class Problem extends TitledModel {
             method.setAccessible(true);
             method.invoke(this);
 
-        } catch (NoSuchMethodException ex) {
-            Problem.log.error(null, ex);
-        } catch (SecurityException ex) {
-            Problem.log.error(null, ex);
-        } catch (IllegalAccessException ex) {
-            Problem.log.error(null, ex);
-        } catch (IllegalArgumentException ex) {
-            Problem.log.error(null, ex);
-        } catch (InvocationTargetException ex) {
+        } catch (NoSuchMethodException
+                | SecurityException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException ex) {
             Problem.log.error(null, ex);
         }
     }
@@ -400,6 +396,7 @@ public abstract class Problem extends TitledModel {
         int correspondingLineNumber = -1;
         // Next steps are creating the LCS problem decoder, letting codeView
         // use that to decode the line number from the row and column.
+
         return correspondingLineNumber;
     }
 
