@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.KnapsackProblem;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
@@ -16,8 +17,11 @@ import edu.regis.dptu.model.ProblemListener;
  * Displays the appropriate input view depending on the selected problem type.
  *
  * <p>Updated April 30, 2025: - Dynamically loads the correct input panel based on the ProblemKind.
- * - Supports LCSInputView, MatrixInputView and KnapsackInputView. - Added null model fallback to
- * avoid initialization errors when model not yet set.
+ * - Supports LCSInputView and MatrixInputView. - KnapsackInputView is scaffolded for future use. -
+ * Added null model fallback to avoid initialization errors when model not yet set.
+ *
+ * <p>Updated 10/24/26: knapsack case now constructs view, set defaults and actives panel. Scaffold
+ * removed. CP
  *
  * @author EverettCV
  */
@@ -56,9 +60,10 @@ public class ProblemInputView extends JPanel {
                 break;
             case KNAPSACK_0_1:
                 ProblemInputView.log.info("Setting currentPanel to KnapsackInputView");
-                currentPanel = new KnapsackInputView();
-                ProblemInputView.log.error(
-                        "Knapsack input view not yet implemented.", (Throwable) null);
+                KnapsackProblem knapsackProblem = (KnapsackProblem) problem;
+                KnapsackInputView knapsackInputView = new KnapsackInputView(submitListener);
+                knapsackInputView.setDefaults(knapsackProblem);
+                currentPanel = knapsackInputView;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -70,18 +75,6 @@ public class ProblemInputView extends JPanel {
 
     public LCSInputView getLcsInputView() {
         return (activeInputPanel instanceof LCSInputView) ? (LCSInputView) activeInputPanel : null;
-    }
-
-    public MatrixInputView getMatrixInputView() {
-        return (activeInputPanel instanceof MatrixInputView)
-                ? (MatrixInputView) activeInputPanel
-                : null;
-    }
-
-    public KnapsackInputView getKnapsackInputView() {
-        return (activeInputPanel instanceof KnapsackInputView)
-                ? (KnapsackInputView) activeInputPanel
-                : null;
     }
 
     private void swapView(JPanel currentView) {
