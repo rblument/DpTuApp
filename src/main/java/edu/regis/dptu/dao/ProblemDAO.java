@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.KnapsackProblem;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
@@ -136,8 +137,9 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
                 return retrieveMatrixChainProblem(id, subTypeId, conn);
 
             case KNAPSACK_0_1:
-                log.warn("KNAPSACK_0_1 retrieval not implemented for id={}", id);
-                return null;
+                // log.warn("KNAPSACK_0_1 retrieval not implemented for id={}", id);
+                // return null;
+                return retrieveKnapsackProblem(id, subTypeId, conn);
 
             default:
                 log.warn("Unknown problem type={} for id={}", type, id);
@@ -254,6 +256,90 @@ public class ProblemDAO extends MySqlDAO implements ProblemSvc {
             throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
         } finally {
             close(stmt); // Don't close the connection, retrieve(courseId) will
+        }
+    }
+
+    /**
+     * Load and return a KnapsackProblem from the KnapsackProblem and KnapsackItem tables in the DB
+     * using the given subTypeId.
+     *
+     * @param id the id of the returned Knapsack problem
+     * @param subTypeId the id of the specific Knapsack problem in the KnapsackProblem table
+     * @param conn an open connection to the DB, which isn't closed.
+     * @return a KnapsackProblem with the given id and subTypeId
+     * @throws NonRecoverableException possible see getCause()
+     */
+    private KnapsackProblem retrieveKnapsackProblem(int id, int subTypeId, Connection conn)
+            throws NonRecoverableException {
+        final String capacitySql = "SELECT Capacity FROM KnapsackProblem WHERE Id = ?";
+        final String itemsSql =
+                "SELECT ItemId, Name, Weight, Value FROM KnapsackItem WHERE ProblemId = ? ORDER BY ItemId";
+
+        PreparedStatement capacityStmt = null;
+        PreparedStatement itemsStmt = null;
+
+        log.debug("Retrieving KnapsackProblem id={}, subTypeId={}", id, subTypeId);
+
+        try {
+            capacityStmt = conn.prepareStatement(capacitySql);
+            capacityStmt.setInt(1, subTypeId);
+
+            ResultSet capacityRs = capacityStmt.executeQuery();
+            if (!capacityRs.next()) {
+                log.warn("KnapsackProblem not found id={}, subTypeId={}", id, subTypeId);
+                throw new NonRecoverableException(
+                        "Inconsistent DB KnapsackProblem: id=" + id + ", subTypeId=" + subTypeId);
+            }
+            int capacity = capacityRs.getInt(1);
+
+            itemsStmt =
+                    conn.prepareStatement(
+                            itemsSql,
+                            ResultSet.TYPE_SCROLL_INSENSITIVE,
+                            ResultSet.CONCUR_READ_ONLY);
+            itemsStmt.setInt(1, subTypeId);
+
+            ResultSet itemsRs = itemsStmt.executeQuery();
+
+            // determine size of the item array from the row count. load names, weights, and values.
+            if (!itemsRs.last()) {
+                log.warn("KnapsackProblem has no items id={}, subTypeId={}", id, subTypeId);
+                throw new NonRecoverableException(
+                        "Inconsistent DB KnapsackProblem items: id="
+                                + id
+                                + ", subTypeId="
+                                + subTypeId);
+            }
+
+            int n = itemsRs.getRow();
+            String[] names = new String[n];
+            int[] weights = new int[n];
+            int[] values = new int[n];
+
+            itemsRs.beforeFirst();
+            int i = 0;
+            while (itemsRs.next()) {
+                names[i] = itemsRs.getString(2);
+                weights[i] = itemsRs.getInt(3);
+                values[i] = itemsRs.getInt(4);
+                i++;
+            }
+
+            KnapsackProblem prob = new KnapsackProblem(id, names, weights, values, capacity);
+            prob.setSubTypeId(subTypeId);
+
+            log.debug("KnapsackProblem retrieved successfully id={}, subTypeId={}", id, subTypeId);
+            return prob;
+        } catch (SQLException e) {
+            log.error(
+                    "SQLException retrieving KnapsackProblem id={}, subTypeId={}",
+                    id,
+                    subTypeId,
+                    e);
+            throw new NonRecoverableException("ProblemDAO-ERR-2 " + e.toString(), e);
+        } finally {
+            close(itemsStmt); // Don't close the connection, retrieve(courseId) will
+            close(capacityStmt);
         }
     }
 

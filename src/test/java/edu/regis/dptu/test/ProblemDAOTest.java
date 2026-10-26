@@ -23,9 +23,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
@@ -36,6 +38,7 @@ import static org.mockito.Mockito.when;
 import edu.regis.dptu.dao.ProblemDAO;
 import edu.regis.dptu.err.NonRecoverableException;
 import edu.regis.dptu.err.ObjNotFoundException;
+import edu.regis.dptu.model.KnapsackProblem;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
@@ -178,6 +181,98 @@ public class ProblemDAOTest {
         Problem result = dao.retrieveByKind(ProblemKind.LCS_PROBLEM);
 
         assertEquals(-1, result.getTaskId());
+    }
+
+    @Test
+    public void retrieveByKindReturnsKnapsackProblem() throws Exception {
+        PreparedStatement mainStmt = mock(PreparedStatement.class);
+        PreparedStatement capacityStmt = mock(PreparedStatement.class);
+        PreparedStatement itemsStmt = mock(PreparedStatement.class);
+        PreparedStatement taskStmt = mock(PreparedStatement.class);
+        ResultSet mainRs = mock(ResultSet.class);
+        ResultSet capacityRs = mock(ResultSet.class);
+        ResultSet itemsRs = mock(ResultSet.class);
+        ResultSet taskRs = mock(ResultSet.class);
+
+        when(mockConnection.prepareStatement(startsWith("SELECT Id, SubTypeId")))
+                .thenReturn(mainStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT Capacity")))
+                .thenReturn(capacityStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT ItemId"), anyInt(), anyInt()))
+                .thenReturn(itemsStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT TaskId"))).thenReturn(taskStmt);
+
+        when(mainStmt.executeQuery()).thenReturn(mainRs);
+        when(capacityStmt.executeQuery()).thenReturn(capacityRs);
+        when(itemsStmt.executeQuery()).thenReturn(itemsRs);
+        when(taskStmt.executeQuery()).thenReturn(taskRs);
+
+        when(mainRs.next()).thenReturn(true);
+        when(mainRs.getInt(1)).thenReturn(2); // problem id
+        when(mainRs.getInt(2)).thenReturn(0); // subTypeId
+        when(mainRs.getString(3)).thenReturn("Knapsack title");
+        when(mainRs.getString(4)).thenReturn("Knapsack description");
+
+        when(capacityRs.next()).thenReturn(true);
+        when(capacityRs.getInt(1)).thenReturn(10);
+
+        when(itemsRs.last()).thenReturn(true);
+        when(itemsRs.getRow()).thenReturn(2);
+        when(itemsRs.next()).thenReturn(true, true, false);
+        when(itemsRs.getString(2)).thenReturn("Guitar", "Stereo");
+        when(itemsRs.getInt(3)).thenReturn(1, 4);
+        when(itemsRs.getInt(4)).thenReturn(15, 30);
+
+        when(taskRs.next()).thenReturn(true);
+        when(taskRs.getInt(1)).thenReturn(50);
+
+        Problem result = dao.retrieveByKind(ProblemKind.KNAPSACK_0_1);
+
+        assertTrue(result instanceof KnapsackProblem);
+        KnapsackProblem knap = (KnapsackProblem) result;
+        assertEquals(2, result.getId());
+        assertEquals(0, result.getSubTypeId());
+        assertEquals("Knapsack title", result.getTitle());
+        assertEquals(50, result.getTaskId());
+        assertEquals(10, knap.getCapacity());
+        assertEquals(2, knap.getN());
+        assertArrayEquals(new int[] {1, 4}, knap.getWeights());
+        assertArrayEquals(new int[] {15, 30}, knap.getValues());
+    }
+
+    @Test
+    public void retrieveByKindThrowsWhenKnapsackHasNoItems() throws Exception {
+        PreparedStatement mainStmt = mock(PreparedStatement.class);
+        PreparedStatement capacityStmt = mock(PreparedStatement.class);
+        PreparedStatement itemsStmt = mock(PreparedStatement.class);
+        ResultSet mainRs = mock(ResultSet.class);
+        ResultSet capacityRs = mock(ResultSet.class);
+        ResultSet itemsRs = mock(ResultSet.class);
+
+        when(mockConnection.prepareStatement(startsWith("SELECT Id, SubTypeId")))
+                .thenReturn(mainStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT Capacity")))
+                .thenReturn(capacityStmt);
+        when(mockConnection.prepareStatement(startsWith("SELECT ItemId"), anyInt(), anyInt()))
+                .thenReturn(itemsStmt);
+
+        when(mainStmt.executeQuery()).thenReturn(mainRs);
+        when(capacityStmt.executeQuery()).thenReturn(capacityRs);
+        when(itemsStmt.executeQuery()).thenReturn(itemsRs);
+
+        when(mainRs.next()).thenReturn(true);
+        when(mainRs.getInt(1)).thenReturn(2);
+        when(mainRs.getInt(2)).thenReturn(0);
+        when(mainRs.getString(3)).thenReturn("Knapsack title");
+        when(mainRs.getString(4)).thenReturn("Knapsack description");
+
+        when(capacityRs.next()).thenReturn(true);
+        when(capacityRs.getInt(1)).thenReturn(10);
+
+        when(itemsRs.last()).thenReturn(false);
+
+        assertThrows(
+                NonRecoverableException.class, () -> dao.retrieveByKind(ProblemKind.KNAPSACK_0_1));
     }
 
     @Test

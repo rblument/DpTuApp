@@ -260,6 +260,27 @@ CREATE TABLE MatrixSizes (
   FOREIGN KEY (ProblemId) REFERENCES MatrixChainProblem(Id)
     ON UPDATE CASCADE ON DELETE CASCADE
 );
+-- 10/24/26 - CP
+-- New table stores given knapsack weight capacity
+CREATE TABLE KnapsackProblem (
+  Id INT NOT NULL,
+  Capacity INT NOT NULL,
+  PRIMARY KEY (Id)
+);
+
+-- 10/24/26 - CP
+-- new item attribute table for items weight and value
+-- follows MatrixSizes pattern
+CREATE TABLE KnapsackItem (
+  ItemId INT NOT NULL,
+  ProblemId INT NOT NULL,
+  Name VARCHAR(256),
+  Weight INT,
+  Value INT,
+  PRIMARY KEY (ProblemId, ItemId),
+  FOREIGN KEY (ProblemId) REFERENCES KnapsackProblem(Id)
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
 
 #records when a student completes a Task, per student
 # used to persist progress across sessions
@@ -338,13 +359,17 @@ VALUES
  'Student has appropriately demonstrated acknowleding they understand the current problem.',
  'Application', 0, 'Other', '0', 'Knowledge Component');
 
+-- 10/24/26 - CP
+-- added seed value for Knapsack problem
 INSERT INTO Problem
  (Id, ProblemType, SubTypeId, Title, Description)
 VALUES
  (0, 'LCS_PROBLEM', 0, 'Longest Common Subsequence Problem 1',
   'Determine the longest common subsequence for the given sequences/strings.'),
  (1, 'MATRIX_CHAIN', 0, 'Matrix Chaining Problem 1',
-  'Determine the optimal number of operations in an optimal parenthesization of the matrix sequence.');
+  'Determine the optimal number of operations in an optimal parenthesization of the matrix sequence.'),
+ (2, 'KNAPSACK_0_1', 0, '0/1 Knapsack Problem 1',
+  'Determine the maximum value of items that fit within the knapsack weight capacity.');
 
 INSERT INTO LCSProblem
  (Id, Sequence1, Sequence2)
@@ -366,6 +391,20 @@ INSERT INTO MatrixSizes
  (3, 0, 20, 12),
  (4, 0, 12, 4 ),
  (5, 0, 4,  60);
+
+INSERT INTO KnapsackProblem
+ (Id, Capacity)
+ VALUES
+ (0, 10);
+
+INSERT INTO KnapsackItem
+ (ItemId, ProblemId, Name, Weight, Value)
+ VALUES
+ -- ProblemId = 0, Capacity = 10; optimal value = 95 (Guitar + Stereo + Necklace, weight 10)
+ (0, 0, 'Guitar',   1, 15),
+ (1, 0, 'Stereo',   4, 30),
+ (2, 0, 'Laptop',   3, 20),
+ (3, 0, 'Necklace', 5, 50);
 
 /*********************************************************************************
 * Foreign Indexes
