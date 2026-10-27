@@ -7,11 +7,19 @@ import javax.swing.JLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.regis.dptu.model.Mode;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.util.ResourceMgr;
 
-public class SeeOneView extends GPanel implements ModeView {
-    private static final Logger log = LoggerFactory.getLogger(SeeOneView.class);
+/**
+ * The single tutoring view for See One and Do One. The mode controls which features are enabled.
+ * Replaces SeeOneView and DoOneView. Teach One keeps its own view (TeachOneView).
+ */
+public class TutoringView extends GPanel implements ModeView {
+    private static final Logger log = LoggerFactory.getLogger(TutoringView.class);
+
+    /** SEE_ONE or DO_ONE. */
+    private Mode mode;
 
     private VariablesView variablesView;
     private JLabel subproblemView;
@@ -26,10 +34,33 @@ public class SeeOneView extends GPanel implements ModeView {
 
     private Runnable onCompletedTaskSend;
 
-    public SeeOneView() {
-        SeeOneView.log.info("Initializing SeeOneView");
+    public TutoringView(Mode mode) {
+        TutoringView.log.info("Initializing TutoringView for mode {}", mode);
         initializeComponents();
         layoutComponents();
+        applyMode(mode);
+    }
+
+    /**
+     * Sets this view's mode. This is the one place to enable or disable controls per mode.
+     *
+     * <p>No per-mode rules yet: See One and Do One show the same controls. Deciding which controls
+     * Do One enables or disables is a follow-up.
+     *
+     * @param mode SEE_ONE or DO_ONE
+     */
+    public void applyMode(Mode mode) {
+        this.mode = mode;
+        TutoringView.log.debug("TutoringView mode set to {}", mode);
+    }
+
+    /**
+     * Returns this view's mode.
+     *
+     * @return SEE_ONE or DO_ONE
+     */
+    public Mode getMode() {
+        return mode;
     }
 
     public void setModel(Problem currentProblem) {
@@ -44,7 +75,7 @@ public class SeeOneView extends GPanel implements ModeView {
     }
 
     public void updateView(Problem currentProblem) {
-        SeeOneView.log.info("SeeOneView updating view");
+        TutoringView.log.info("TutoringView updating view");
 
         revalidate();
         repaint();
@@ -64,7 +95,7 @@ public class SeeOneView extends GPanel implements ModeView {
     }
 
     private void initializeComponents() {
-        SeeOneView.log.info("SeeOneView initializing components");
+        TutoringView.log.info("TutoringView initializing components");
         variablesView = new VariablesView();
         subproblemView = new JLabel(ResourceMgr.instance().string("seeOne.subproblemView.title"));
 

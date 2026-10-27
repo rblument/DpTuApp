@@ -29,7 +29,7 @@ import edu.regis.dptu.util.ResourceMgr;
  * the problem statement and a step-by-step explanation panel so the student can walk through the
  * solution and receive feedback on each step.
  *
- * <p>The layout mirrors {@link SeeOneView} (problem input + step panel), but interaction is
+ * <p>The layout mirrors {@link TutoringView} (problem input + step panel), but interaction is
  * student-driven: the student narrates each step rather than observing the tutor's narration.
  *
  * @author Cormac Moss
