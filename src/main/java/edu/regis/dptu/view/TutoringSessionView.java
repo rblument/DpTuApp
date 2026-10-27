@@ -44,8 +44,8 @@ public class TutoringSessionView extends GPanel {
     private static final Map<Mode, ModeView> modeViewStrategies =
             new HashMap<>() {
                 {
-                    put(Mode.SEE_ONE, new SeeOneView());
-                    put(Mode.DO_ONE, new DoOneView());
+                    put(Mode.SEE_ONE, new TutoringView(Mode.SEE_ONE));
+                    put(Mode.DO_ONE, new TutoringView(Mode.DO_ONE));
                     put(Mode.TEACH_ONE, new TeachOneView());
                 }
             };
@@ -96,8 +96,7 @@ public class TutoringSessionView extends GPanel {
 
         // TEMP: wire task completion persistence for SEE_ONE mode through CodeView
         // NOTE: This should eventually be moved to a controller/service layer.
-        if (currentModeView instanceof SeeOneView) {
-            SeeOneView seeOne = (SeeOneView) currentModeView;
+        if (currentModeView instanceof TutoringView seeOne && seeOne.getMode() == Mode.SEE_ONE) {
 
             seeOne.setOnCompletedTaskSend(
                     () -> {
