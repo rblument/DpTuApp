@@ -187,7 +187,7 @@ public class KnapsackProblem extends Problem {
         backtrackingCodeStatements.add("<html><pre>    else</pre></html>");
         backtrackingCodeStatements.add("<html><pre>        i = i - 1</pre></html>");
     }
-    
+
     /**
      * Logs the current state (of the algorithm variables). Intended for debugging and diagnostics.
      * TODO: Ensure this uses the correct variables

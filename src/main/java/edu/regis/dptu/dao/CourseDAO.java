@@ -478,7 +478,7 @@ public class CourseDAO extends MySqlDAO implements CourseSvc {
         }
     }
 
-    private Timeout retrieveTimeout(int timeoutId, Connection conn) 
+    private Timeout retrieveTimeout(int timeoutId, Connection conn)
             throws NonRecoverableException, InconsistentDBException {
         log.debug("Retrieving Timeout id={}", timeoutId);
         final String sql = "SELECT TimeoutType,Seconds,Event,Msg FROM Timeout WHERE Id = ?";

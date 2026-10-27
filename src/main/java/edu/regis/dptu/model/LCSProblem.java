@@ -273,7 +273,7 @@ public class LCSProblem extends Problem {
             default -> false;
         };
     }
-    
+
     /**
      * Resets this problem (algorithm) back to its initial state before execution of the first
      * statement. Includes re-initializing the DP table.
@@ -803,7 +803,7 @@ public class LCSProblem extends Problem {
         int r = (int) variables.get("r");
         switch (r) {
             case 0 -> // First iteration returns to initial flag value
-                r = -1;
+                    r = -1;
             case -1 -> {
                 // Last iteration goes back to the middle
                 executionState = EXECUTION_STATE.R_LOOP;
@@ -812,7 +812,7 @@ public class LCSProblem extends Problem {
                 r--;
             }
             default -> // Middle iterations just decrement r
-                r--;
+                    r--;
         }
         variables.put("r", r);
     }
@@ -829,7 +829,7 @@ public class LCSProblem extends Problem {
         int c = (int) variables.get("c");
         switch (c) {
             case 1 -> // First iteration returns to initial flag value
-                c = -1;
+                    c = -1;
             case -1 -> {
                 // Last iteration goes back to the middle
                 executionState = EXECUTION_STATE.C_LOOP;
@@ -837,7 +837,7 @@ public class LCSProblem extends Problem {
                 c = m;
             }
             default -> // Middle iterations just decrement c
-                c--;
+                    c--;
         }
         variables.put("c", c);
     }
