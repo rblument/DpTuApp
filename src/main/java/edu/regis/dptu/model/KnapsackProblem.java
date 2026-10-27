@@ -188,6 +188,47 @@ public class KnapsackProblem extends Problem {
         backtrackingCodeStatements.add("<html><pre>        i = i - 1</pre></html>");
     }
 
+    /**
+     * Logs the current state (of the algorithm variables). Intended for debugging and diagnostics.
+     * TODO: Ensure this uses the correct variables
+     */
+    public void prettyPrint() {
+        log.info("--- KnapsackProblem State ---");
+        log.info("ExecutionState: {}", executionState);
+        log.info("Current Line #: {}", nextLineNumber);
+        log.info("r (array idx): {}", variables.get("r"));
+        log.info("c (array idx): {}", variables.get("c"));
+
+        int n = (int) variables.get("n");
+        int m = (int) variables.get("m");
+        int[][] subproblemL = (int[][]) variables.get("l");
+
+        log.info("DP Table (l):");
+
+        // Header row
+        StringBuilder header = new StringBuilder("       ");
+        for (int q = 0; q <= m; q++) {
+            header.append(String.format("%4d ", q - 1));
+        }
+        log.info(header.toString());
+
+        // Table rows
+        for (int p = 0; p <= n; p++) {
+            StringBuilder row = new StringBuilder();
+            row.append(String.format("%4d | ", p - 1));
+
+            for (int q = 0; q <= m; q++) {
+                int val = subproblemL[p][q];
+                row.append(String.format("%4s ", val == -1 ? "." : val));
+            }
+
+            row.append("|");
+            log.info(row.toString());
+        }
+
+        log.info("------------------------");
+    }
+
     public int getCapacity() {
         return capacity;
     }
