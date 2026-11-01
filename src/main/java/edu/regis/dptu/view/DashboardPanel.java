@@ -293,7 +293,8 @@ public class DashboardPanel extends GPanel {
     private void statsButtonActionPerformed(String title) {
         if (!isStatsOpen) {
             try {
-                StatsWindow statsWindow = new StatsWindow(title);
+                StatsWindow statsWindow =
+                        new StatsWindow(title, SplashFrame.instance().getUserId());
                 log.info("{} window opened", title);
                 isStatsOpen = true;
                 statsWindow.addWindowListener(
