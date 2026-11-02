@@ -217,19 +217,10 @@ public class LCSProblem extends Problem {
      */
     @Override
     public boolean backtrackReady() {
-        switch (executionState) {
-            case POST:
-            case B_PRE:
-            case B_WHILE:
-            case B_IF:
-            case B_ELIF:
-            case B_ELSE:
-            case B_RETRN:
-            case B_POST:
-                return true;
-            default:
-                return false;
-        }
+        return switch (executionState) {
+            case POST, B_PRE, B_WHILE, B_IF, B_ELIF, B_ELSE, B_RETRN, B_POST -> true;
+            default -> false;
+        };
     }
 
     /** {@inheritDoc} */
@@ -256,7 +247,7 @@ public class LCSProblem extends Problem {
      */
     @Override
     public boolean undoingBacktrackButton() {
-        boolean satisfied = nextLineNumber == BACKTRACKING_START_NUM;
+        boolean satisfied = (nextLineNumber == BACKTRACKING_START_NUM);
         if (satisfied) {
             executionState = EXECUTION_STATE.POST;
             nextLineNumber = 12;
@@ -271,23 +262,16 @@ public class LCSProblem extends Problem {
      */
     @Override
     public boolean canStepBack() {
-        if (executionState == EXECUTION_STATE.PRE) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(executionState == EXECUTION_STATE.PRE);
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean hasFinished() {
-        switch (executionState) {
-            case POST:
-            case B_POST:
-                return true;
-            default:
-                return false;
-        }
+        return switch (executionState) {
+            case POST, B_POST -> true;
+            default -> false;
+        };
     }
 
     /**
@@ -817,15 +801,18 @@ public class LCSProblem extends Problem {
     /** Undoes executeLine1: for r = -1 to n-1 do */
     public void undoLine1() {
         int r = (int) variables.get("r");
-        if (r == 0) { // First iteration returns to initial flag value
-            r = -1;
-        } else if (r == -1) { // Last iteration goes back to the middle
-            executionState = EXECUTION_STATE.R_LOOP;
-            int n = (int) variables.get("n");
-            r = n + 1;
-            r--;
-        } else { // Middle iterations just decrement r
-            r--;
+        switch (r) {
+            case 0 -> // First iteration returns to initial flag value
+                    r = -1;
+            case -1 -> {
+                // Last iteration goes back to the middle
+                executionState = EXECUTION_STATE.R_LOOP;
+                int n = (int) variables.get("n");
+                r = n + 1;
+                r--;
+            }
+            default -> // Middle iterations just decrement r
+                    r--;
         }
         variables.put("r", r);
     }
@@ -840,14 +827,17 @@ public class LCSProblem extends Problem {
     /** Undoes executeLine3: for c = 0 to m-1 do */
     public void undoLine3() {
         int c = (int) variables.get("c");
-        if (c == 1) { // First iteration returns to initial flag value
-            c = -1;
-        } else if (c == -1) { // Last iteration goes back to the middle
-            executionState = EXECUTION_STATE.C_LOOP;
-            int m = (int) variables.get("m");
-            c = m;
-        } else { // Middle iterations just decrement c
-            c--;
+        switch (c) {
+            case 1 -> // First iteration returns to initial flag value
+                    c = -1;
+            case -1 -> {
+                // Last iteration goes back to the middle
+                executionState = EXECUTION_STATE.C_LOOP;
+                int m = (int) variables.get("m");
+                c = m;
+            }
+            default -> // Middle iterations just decrement c
+                    c--;
         }
         variables.put("c", c);
     }
