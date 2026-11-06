@@ -75,7 +75,7 @@ public class TutoringView extends GPanel implements ModeView {
     public Mode getMode() {
         return mode;
     }
-    
+
     public void setModel(Problem currentProblem) {
         problemInputView.setModel(currentProblem);
         applyInputRules();
@@ -88,7 +88,7 @@ public class TutoringView extends GPanel implements ModeView {
 
         updateView(currentProblem);
     }
-    
+
     public void updateView(Problem currentProblem) {
         TutoringView.log.info("TutoringView updating view");
 

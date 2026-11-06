@@ -147,6 +147,7 @@ public class LCSInputView extends JPanel {
         log.debug("DEBUG: LCSObject is " + this);
         submitButton.setEnabled(false);
     }
+
     /**
      * Enables or disables the two input fields and the Submit button.
      *
@@ -157,6 +158,7 @@ public class LCSInputView extends JPanel {
         inputField2.setEnabled(enabled);
         submitButton.setEnabled(enabled);
     }
+
     // Getters for future use if needed
     public String getString1() {
         return string1;
