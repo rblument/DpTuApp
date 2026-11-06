@@ -44,14 +44,27 @@ public class TutoringView extends GPanel implements ModeView {
     /**
      * Sets this view's mode. This is the one place to enable or disable controls per mode.
      *
-     * <p>No per-mode rules yet: See One and Do One show the same controls. Deciding which controls
-     * Do One enables or disables is a follow-up.
+     * <p>LCS: the two input strings show in every mode but can't be edited. Other Do One rules are
+     * a follow-up.
      *
      * @param mode SEE_ONE or DO_ONE
      */
     public void applyMode(Mode mode) {
         this.mode = mode;
         TutoringView.log.debug("TutoringView mode set to {}", mode);
+        applyInputRules();
+    }
+
+    /**
+     * LCS: shows the two sequences in every mode, but the student can't edit them.
+     *
+     * <p>Runs after setModel because ProblemInputView builds a new LCSInputView each time.
+     */
+    private void applyInputRules() {
+        LCSInputView lcsInputView = problemInputView.getLcsInputView();
+        if (lcsInputView != null) {
+            lcsInputView.setInputEnabled(false);
+        }
     }
 
     /**
@@ -62,8 +75,10 @@ public class TutoringView extends GPanel implements ModeView {
     public Mode getMode() {
         return mode;
     }
-
+    
     public void setModel(Problem currentProblem) {
+        problemInputView.setModel(currentProblem);
+        applyInputRules();
         subSeqView.setModel(currentProblem);
         stepViewPanel.setModel(currentProblem);
         codeView.setModel(currentProblem);
@@ -73,7 +88,7 @@ public class TutoringView extends GPanel implements ModeView {
 
         updateView(currentProblem);
     }
-
+    
     public void updateView(Problem currentProblem) {
         TutoringView.log.info("TutoringView updating view");
 
