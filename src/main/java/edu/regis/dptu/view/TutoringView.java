@@ -115,15 +115,14 @@ public class TutoringView extends GPanel implements ModeView {
         subproblemView = new JLabel(ResourceMgr.instance().string("seeOne.subproblemView.title"));
 
         problemInputView =
-                new ProblemInputView(
-                        problem -> {
-                            tableView.setModel(problem);
-                            subSeqView.setModel(problem);
-                            stepViewPanel.setModel(problem);
-                            codeView.setModel(problem);
-                            backtrackingCodeView.setModel(problem);
-                            variablesView.setModel(problem);
-                        });
+                new ProblemInputView(problem -> {
+                    tableView.setModel(problem);
+                    subSeqView.setModel(problem);
+                    stepViewPanel.setModel(problem);
+                    codeView.setModel(problem);
+                    backtrackingCodeView.setModel(problem);
+                    variablesView.setModel(problem);
+                });
 
         subSeqView = new SubSequenceView(); // Original init
         tableView = new SubproblemTableView();
@@ -131,7 +130,6 @@ public class TutoringView extends GPanel implements ModeView {
         backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
     }
-    ;
 
     public void layoutComponents() {
         addc(
@@ -251,7 +249,6 @@ public class TutoringView extends GPanel implements ModeView {
                 5,
                 5); // Original
     }
-    ;
 
     public void showBacktrackingPanel(boolean backtrackingOn) {
         if (backtrackingOn) {
@@ -262,5 +259,4 @@ public class TutoringView extends GPanel implements ModeView {
             codeView.setVisible(true);
         }
     }
-    ;
 }

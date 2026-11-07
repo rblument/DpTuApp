@@ -161,25 +161,22 @@ public class DashboardPanel extends GPanel {
         seeOneStatsButton =
                 new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         seeOneStatsButton.setFocusPainted(false);
-        seeOneStatsButton.addActionListener(
-                e ->
-                        statsButtonActionPerformed(
-                                ResourceMgr.instance().string("dashboard.stats.seeOne.title")));
+        seeOneStatsButton.addActionListener(e ->
+                statsButtonActionPerformed(
+                        ResourceMgr.instance().string("dashboard.stats.seeOne.title")));
 
         doOneStatsButton = new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         doOneStatsButton.setFocusPainted(false);
-        doOneStatsButton.addActionListener(
-                e ->
-                        statsButtonActionPerformed(
-                                ResourceMgr.instance().string("dashboard.stats.doOne.title")));
+        doOneStatsButton.addActionListener(e ->
+                statsButtonActionPerformed(
+                        ResourceMgr.instance().string("dashboard.stats.doOne.title")));
 
         teachOneStatsButton =
                 new JButton(ResourceMgr.instance().string("dashboard.button.viewStats"));
         teachOneStatsButton.setFocusPainted(false);
-        teachOneStatsButton.addActionListener(
-                e ->
-                        statsButtonActionPerformed(
-                                ResourceMgr.instance().string("dashboard.stats.teachOne.title")));
+        teachOneStatsButton.addActionListener(e ->
+                statsButtonActionPerformed(
+                        ResourceMgr.instance().string("dashboard.stats.teachOne.title")));
 
         // Apply scaffold level rules for which buttons are visible.
         applyScaffoldLevelRules();
