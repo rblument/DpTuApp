@@ -148,6 +148,17 @@ public class LCSInputView extends JPanel {
         submitButton.setEnabled(false);
     }
 
+    /**
+     * Enables or disables the two input fields and the Submit button.
+     *
+     * @param enabled true to let the student edit the strings, false to show them read-only
+     */
+    public void setInputEnabled(boolean enabled) {
+        inputField1.setEnabled(enabled);
+        inputField2.setEnabled(enabled);
+        submitButton.setEnabled(enabled);
+    }
+
     // Getters for future use if needed
     public String getString1() {
         return string1;
