@@ -50,11 +50,8 @@ public class MatrixChainProblemCoverageTest {
     public void throwsForUnimplementedMethods() {
         int[][] sizes = {{3, 4}, {4, 5}};
         MatrixChainProblem problem = new MatrixChainProblem(sizes);
-        //        assertNotNull(problem.getExecutionState());
-        //        assertEquals(MatrixChainProblem.EXECUTION_STATE.PRE, problem.getExecutionState());
-        //        assertDoesNotThrow(problem::prettyPrint);
 
-        assertThrows(UnsupportedOperationException.class, problem::prettyPrint);
+        assertDoesNotThrow(problem::prettyPrint);
     }
 
     @Test

@@ -57,7 +57,7 @@ public class LCSProblem extends Problem {
         B_ELIF,
         B_ELSE,
         B_POST
-    };
+    }
 
     /** Input sequence 1. (Stored in variables map) */
     private final String x; // Keep original field if needed, though data is in map
