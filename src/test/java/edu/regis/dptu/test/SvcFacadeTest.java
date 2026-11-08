@@ -48,21 +48,25 @@ public class SvcFacadeTest {
         CountDownLatch serverReady = new CountDownLatch(1);
 
         Thread serverThread =
-                new Thread(() -> {
-                    try (ServerSocket serverSocket = new ServerSocket(53637)) {
-                        serverReady.countDown();
-                        try (Socket socket = serverSocket.accept();
-                                BufferedReader in =
-                                        new BufferedReader(
-                                                new InputStreamReader(socket.getInputStream()));
-                                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-                            in.readLine();
-                            out.println("{\"status\":\"Hint\",\"data\":\"from-test-server\"}");
-                        }
-                    } catch (Exception ignored) {
-                        // Test asserts on client side response.
-                    }
-                });
+                new Thread(
+                        () -> {
+                            try (ServerSocket serverSocket = new ServerSocket(53637)) {
+                                serverReady.countDown();
+                                try (Socket socket = serverSocket.accept();
+                                        BufferedReader in =
+                                                new BufferedReader(
+                                                        new InputStreamReader(
+                                                                socket.getInputStream()));
+                                        PrintWriter out =
+                                                new PrintWriter(socket.getOutputStream(), true)) {
+                                    in.readLine();
+                                    out.println(
+                                            "{\"status\":\"Hint\",\"data\":\"from-test-server\"}");
+                                }
+                            } catch (Exception ignored) {
+                                // Test asserts on client side response.
+                            }
+                        });
 
         serverThread.start();
         try {
