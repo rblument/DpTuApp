@@ -25,9 +25,8 @@ public class TreeProblem extends Problem {
     private static final Logger log = LoggerFactory.getLogger(TreeProblem.class);
 
     /**
-     * TODO: continue implementation
-     * Unified execution states, including both forward execution and backtracking. This matches the
-     * design of LCSProblem.
+     * TODO: continue implementation Unified execution states, including both forward execution and
+     * backtracking. This matches the design of LCSProblem.
      */
     public enum EXECUTION_STATE {
         PRE,
@@ -200,11 +199,7 @@ public class TreeProblem extends Problem {
             scalars.put(name, variables.get(name));
         }
 
-        return new Snapshot(
-                scalars,
-                executionState,
-                currentParens,
-                new ArrayList<>(btStack));
+        return new Snapshot(scalars, executionState, currentParens, new ArrayList<>(btStack));
     }
 
     private void restoreSnapshot(Snapshot snapshot) {
@@ -215,7 +210,6 @@ public class TreeProblem extends Problem {
                 variables.put(entry.getKey(), entry.getValue());
             }
         }
-
 
         executionState = snapshot.state();
         currentParens = snapshot.parens();
@@ -275,6 +269,6 @@ public class TreeProblem extends Problem {
     // =========================================================================
     // FORWARD EXECUTION LINES 0–9
     // =========================================================================
-    
-    //TODO: Add steps implementation for tree problems.
+
+    // TODO: Add steps implementation for tree problems.
 }
