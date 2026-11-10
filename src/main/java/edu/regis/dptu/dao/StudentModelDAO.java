@@ -320,11 +320,11 @@ public class StudentModelDAO extends Transactionable implements StudentModelSvc 
         // SQL Query: Retrieve all lessons and their assessment levels
         final String sql =
                 """
-           SELECT kc.Title, a.AssessmentLevel
-           FROM Assessment a
-           JOIN KnowledgeComponent kc ON a.KnowledgeComponentId = kc.Id
-           WHERE a.UserId = ?
-       """;
+                    SELECT kc.Title, a.AssessmentLevel
+                    FROM Assessment a
+                    JOIN KnowledgeComponent kc ON a.KnowledgeComponentId = kc.Id
+                    WHERE a.UserId = ?
+                """;
 
         try (Connection conn = DriverManager.getConnection(URL);
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -26,7 +26,10 @@ public enum ProblemKind {
     MATRIX_CHAIN("Matrix Chaining"),
 
     /** A 0-1 Knapsack Dynamic Programming problem. */
-    KNAPSACK_0_1("0/1 Knapsack");
+    KNAPSACK_0_1("0/1 Knapsack"),
+
+    /** A Transitive Closure Dynamic Programming problem. */
+    TRANSITIVE_CLOSURE("Transitive Closure");
 
     /** A GUI displayable pretty print string identifying this problem kind. */
     private final String title;

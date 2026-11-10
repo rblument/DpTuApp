@@ -104,7 +104,8 @@ CREATE TABLE TutoringSession (
    ProblemType ENUM (
     'LCS_PROBLEM',
     'MATRIX_CHAIN',
-    'KNAPSACK_0_1'
+    'KNAPSACK_0_1',
+    'TRANSITIVE_CLOSURE'
    ),
    ProblemId INT NOT NULL,
 
@@ -230,7 +231,8 @@ CREATE TABLE Problem (
   ProblemType ENUM (
     'LCS_PROBLEM',
     'MATRIX_CHAIN',
-    'KNAPSACK_0_1'
+    'KNAPSACK_0_1',
+    'TRANSITIVE_CLOSURE'
   ),
   SubTypeId INT NOT NULL,
   Title VARCHAR(256),
@@ -279,6 +281,25 @@ CREATE TABLE KnapsackItem (
   Value INT,
   PRIMARY KEY (ProblemId, ItemId),
   FOREIGN KEY (ProblemId) REFERENCES KnapsackProblem(Id)
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+-- 11/07/26 - CP
+-- attribute table for graph size
+CREATE TABLE TransitiveClosureProblem (
+  Id INT NOT NULL,
+  VertexCount INT NOT NULL,
+  PRIMARY KEY (Id)
+);
+
+-- 11/07/26 - CP
+CREATE TABLE TransitiveClosureEdge (
+  EdgeId INT NOT NULL,
+  ProblemId INT NOT NULL,
+  FromVertex INT NOT NULL,
+  ToVertex INT NOT NULL,
+  PRIMARY KEY (ProblemId, EdgeId),
+  FOREIGN KEY (ProblemId) REFERENCES TransitiveClosureProblem(Id)
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -361,6 +382,8 @@ VALUES
 
 -- 10/24/26 - CP
 -- added seed value for Knapsack problem
+-- 11/7/26
+-- added seed value for Transitive Closure Problem
 INSERT INTO Problem
  (Id, ProblemType, SubTypeId, Title, Description)
 VALUES
@@ -369,7 +392,9 @@ VALUES
  (1, 'MATRIX_CHAIN', 0, 'Matrix Chaining Problem 1',
   'Determine the optimal number of operations in an optimal parenthesization of the matrix sequence.'),
  (2, 'KNAPSACK_0_1', 0, '0/1 Knapsack Problem 1',
-  'Determine the maximum value of items that fit within the knapsack weight capacity.');
+  'Determine the maximum value of items that fit within the knapsack weight capacity.'),
+ (3, 'TRANSITIVE_CLOSURE', 0, 'Transitive Closure Problem 1',
+  'Determine which vertices are reachable from each vertex using Warshall''s algorithm.');
 
 INSERT INTO LCSProblem
  (Id, Sequence1, Sequence2)
@@ -405,6 +430,21 @@ INSERT INTO KnapsackItem
  (1, 0, 'Stereo',   4, 30),
  (2, 0, 'Laptop',   3, 20),
  (3, 0, 'Necklace', 5, 50);
+
+INSERT INTO TransitiveClosureProblem
+ (Id, VertexCount)
+ VALUES
+ (0, 4);
+
+INSERT INTO TransitiveClosureEdge
+ (EdgeId, ProblemId, FromVertex, ToVertex)
+ VALUES
+ -- ProblemId = 0: 4-vertex DAG with edges 0->1, 0->2, 1->3, 2->3
+ -- Transitive closure: 0 reaches {1,2,3}; 1 reaches {3}; 2 reaches {3}; 3 reaches {}
+ (0, 0, 0, 1),
+ (1, 0, 0, 2),
+ (2, 0, 1, 3),
+ (3, 0, 2, 3);
 
 /*********************************************************************************
 * Foreign Indexes

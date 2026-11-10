@@ -131,7 +131,6 @@ public class TutoringView extends GPanel implements ModeView {
         backtrackingCodeView = new BacktrackingCodeView();
         stepViewPanel = new StepViewPanel();
     }
-    ;
 
     public void layoutComponents() {
         addc(
@@ -251,7 +250,6 @@ public class TutoringView extends GPanel implements ModeView {
                 5,
                 5); // Original
     }
-    ;
 
     public void showBacktrackingPanel(boolean backtrackingOn) {
         if (backtrackingOn) {
@@ -262,5 +260,4 @@ public class TutoringView extends GPanel implements ModeView {
             codeView.setVisible(true);
         }
     }
-    ;
 }
