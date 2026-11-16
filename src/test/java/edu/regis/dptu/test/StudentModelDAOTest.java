@@ -247,10 +247,8 @@ public class StudentModelDAOTest {
         when(mockConnection.prepareStatement(startsWith("UPDATE Assessment SET Hints")))
                 .thenReturn(hintsStmt);
 
-        assertDoesNotThrow(
-                () ->
-                        dao.updateAssessment(
-                                model, assessment, StudentModelFieldKind.ASSESSMENT_LEVEL));
+        assertDoesNotThrow(() ->
+                dao.updateAssessment(model, assessment, StudentModelFieldKind.ASSESSMENT_LEVEL));
         assertDoesNotThrow(
                 () -> dao.updateAssessment(model, assessment, StudentModelFieldKind.ATTEMPTS));
         assertDoesNotThrow(
