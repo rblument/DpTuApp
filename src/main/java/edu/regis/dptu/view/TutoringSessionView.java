@@ -98,61 +98,65 @@ public class TutoringSessionView extends GPanel {
         // NOTE: This should eventually be moved to a controller/service layer.
         if (currentModeView instanceof TutoringView seeOne && seeOne.getMode() == Mode.SEE_ONE) {
 
-            seeOne.setOnCompletedTaskSend(() -> {
-                try {
+            seeOne.setOnCompletedTaskSend(
+                    () -> {
+                        try {
 
-                    // Session identity/security info is stored in the TutoringSession model
-                    String userId = model.getUserId();
-                    String token = model.getSecurityToken();
+                            // Session identity/security info is stored in the TutoringSession model
+                            String userId = model.getUserId();
+                            String token = model.getSecurityToken();
 
-                    // TaskId comes from the current task in session
-                    PendingTask currentTask = model.getCurrentTask();
-                    if (currentTask == null || currentTask.getTask() == null) {
-                        log.debug(
-                                "No current task available in session; cannot send CompletedTask");
-                        return;
-                    }
+                            // TaskId comes from the current task in session
+                            PendingTask currentTask = model.getCurrentTask();
+                            if (currentTask == null || currentTask.getTask() == null) {
+                                log.debug(
+                                        "No current task available in session; cannot send CompletedTask");
+                                return;
+                            }
 
-                    int taskId = model.getProblem().getTaskId();
-                    if (taskId < 0) {
-                        log.debug(
-                                "Problem.taskId not set (taskId={}); cannot send CompletedTask",
-                                taskId);
-                        return;
-                    }
+                            int taskId = model.getProblem().getTaskId();
+                            if (taskId < 0) {
+                                log.debug(
+                                        "Problem.taskId not set (taskId={}); cannot send CompletedTask",
+                                        taskId);
+                                return;
+                            }
 
-                    // Build and send the CompletedTask request
-                    ClientRequest req = new ClientRequest(ServerRequestType.COMPLETED_TASK);
-                    req.setUserId(userId);
-                    req.setSecurityToken(token);
-                    req.setSessionId(String.valueOf(model.getId()));
-                    req.setData(String.valueOf(taskId));
-                    log.info(
-                            "Sending COMPLETED_TASK userId={} sessionId={} tokenPresent={} taskId={}",
-                            userId,
-                            model.getId(),
-                            token != null && !token.isBlank(),
-                            taskId);
+                            // Build and send the CompletedTask request
+                            ClientRequest req = new ClientRequest(ServerRequestType.COMPLETED_TASK);
+                            req.setUserId(userId);
+                            req.setSecurityToken(token);
+                            req.setSessionId(String.valueOf(model.getId()));
+                            req.setData(String.valueOf(taskId));
+                            log.info(
+                                    "Sending COMPLETED_TASK userId={} sessionId={} tokenPresent={} taskId={}",
+                                    userId,
+                                    model.getId(),
+                                    token != null && !token.isBlank(),
+                                    taskId);
 
-                    TutorReply reply = SvcFacade.instance().tutorRequest(req);
-                    log.info(
-                            "COMPLETED_TASK reply status={} data={}",
-                            reply.getStatus(),
-                            reply.getData());
+                            TutorReply reply = SvcFacade.instance().tutorRequest(req);
+                            log.info(
+                                    "COMPLETED_TASK reply status={} data={}",
+                                    reply.getStatus(),
+                                    reply.getData());
 
-                    if (!":OK".equals(reply.getStatus())) {
-                        log.warn(
-                                "CompletedTask failed: status={} data={}",
-                                reply.getStatus(),
-                                reply.getData());
-                    } else {
-                        log.info("CompletedTask persisted userId={} taskId={}", userId, taskId);
-                    }
+                            if (!":OK".equals(reply.getStatus())) {
+                                log.warn(
+                                        "CompletedTask failed: status={} data={}",
+                                        reply.getStatus(),
+                                        reply.getData());
+                            } else {
+                                log.info(
+                                        "CompletedTask persisted userId={} taskId={}",
+                                        userId,
+                                        taskId);
+                            }
 
-                } catch (Exception ex) {
-                    log.error("Error sending CompletedTask", ex);
-                }
-            });
+                        } catch (Exception ex) {
+                            log.error("Error sending CompletedTask", ex);
+                        }
+                    });
         }
 
         currentModeView.setModel(model.getProblem());

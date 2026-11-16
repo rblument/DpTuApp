@@ -98,10 +98,11 @@ public class TeachOneView extends GPanel implements ModeView {
         log.info("TeachOneView initializing components");
 
         problemInputView =
-                new ProblemInputView(problem -> {
-                    tableView.setModel(problem);
-                    stepViewPanel.setModel(problem);
-                });
+                new ProblemInputView(
+                        problem -> {
+                            tableView.setModel(problem);
+                            stepViewPanel.setModel(problem);
+                        });
 
         tableView = new SubproblemTableView();
         stepViewPanel = new StepViewPanel();
