@@ -264,7 +264,7 @@ public class TreeNode {
                 // we need to rebalance these three with a rotation.
 
                 // we will make the one child node the parent, but first capture it.
-                TreeNode newParent = children.getFirst();
+                TreeNode newParent = children.get(0);
 
                 // remove children from this node as it will become a leaf.
                 children.clear();
