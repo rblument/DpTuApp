@@ -104,19 +104,6 @@ public class TeachOneAction extends DpTuGuiAction {
             } else {
                 Task task = new Task(taskId);
                 task.setProblem(problem);
-                try {
-                    task.getCurrentStep();
-                } catch (IndexOutOfBoundsException e) {
-                    log.error(
-                            "TEACH_ONE task scaffold is incomplete: taskId={} has no steps/current step",
-                            taskId,
-                            e);
-                    SplashFrame.instance()
-                            .showError(
-                                    ResourceMgr.instance().string("dialog.title.error"),
-                                    ResourceMgr.instance().string("error.failedToLoadProblem"));
-                    return;
-                }
 
                 PendingTask pendingTask = new PendingTask(task);
                 ts.addTask(pendingTask);
@@ -130,11 +117,11 @@ public class TeachOneAction extends DpTuGuiAction {
 
             SplashFrame.instance().selectLessonScreen(ts);
 
-            log.debug("DO_ONE session started successfully");
+            log.debug("TEACH_ONE session started successfully");
 
         } catch (ObjNotFoundException | NonRecoverableException e) {
             log.error(
-                    "Failed to start DO_ONE session (kind={}, accountId={})",
+                    "Failed to start TEACH_ONE session (kind={}, accountId={})",
                     kind,
                     account != null ? account.getUserId() : null,
                     e);
