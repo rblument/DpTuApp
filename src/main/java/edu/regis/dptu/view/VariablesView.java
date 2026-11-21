@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.model.TransitiveClosureProblem;
 import edu.regis.dptu.util.ResourceMgr;
 
 /**
@@ -307,6 +308,7 @@ public class VariablesView extends GPanel implements ProblemListener {
 
         switch (problem.getType()) {
             case LCS_PROBLEM:
+                setLcsLabelNames();
                 int r = problem.getVariableValue("r");
                 int c = problem.getVariableValue("c");
                 int lineNum = problem.getNextLineNumber();
@@ -377,10 +379,61 @@ public class VariablesView extends GPanel implements ProblemListener {
                         ((LCSProblem) problem).getCurrentLcs());
 
                 break;
+            case TRANSITIVE_CLOSURE:
+                updateTransitiveClosureView((TransitiveClosureProblem) problem);
+                break;
             default:
                 // Other problem types coming... soon?
                 log.warn("updateView called for unsupported problem type: {}", problem.getType());
         }
+    }
+
+    private void setLcsLabelNames() {
+        ResourceMgr res = ResourceMgr.instance();
+        rName.setText(res.string("variables.label.row"));
+        cName.setText(res.string("variables.label.col"));
+        nName.setText(res.string("variables.label.n"));
+        mName.setText(res.string("variables.label.m"));
+        xrName.setText(res.string("variables.label.xRow"));
+        ycName.setText(res.string("variables.label.yCol"));
+        lcsName.setText(res.string("variables.label.lcs"));
+    }
+
+    // Reuses the LCS label slots
+    private void updateTransitiveClosureView(TransitiveClosureProblem tc) {
+        ResourceMgr res = ResourceMgr.instance();
+        rName.setText(res.string("variables.label.k"));
+        cName.setText(res.string("variables.label.i"));
+        nName.setText(res.string("variables.label.n"));
+        mName.setText(res.string("variables.label.j"));
+        xrName.setText(res.string("variables.label.reachIK"));
+        ycName.setText(res.string("variables.label.reachKJ"));
+        lcsName.setText(res.string("variables.label.reachIJ"));
+
+        TransitiveClosureProblem.EXECUTION_STATE state = tc.getExecutionState();
+        boolean running =
+                state != TransitiveClosureProblem.EXECUTION_STATE.PRE
+                        && state != TransitiveClosureProblem.EXECUTION_STATE.POST;
+        boolean inILoop = running && state != TransitiveClosureProblem.EXECUTION_STATE.K_LOOP;
+        boolean inJLoop = state == TransitiveClosureProblem.EXECUTION_STATE.J_LOOP;
+
+        int n = tc.getN();
+        int k = tc.getVariableValue("k");
+        int i = tc.getVariableValue("i");
+        int j = tc.getVariableValue("j");
+        int[][] reach = tc.getReachMatrix();
+
+        rValue.setText(running ? String.valueOf(k) : "");
+        cValue.setText(inILoop ? String.valueOf(i) : "");
+        nValue.setText(String.valueOf(n));
+        mValue.setText(inJLoop ? String.valueOf(j) : "");
+
+        boolean cellInRange = inJLoop && k < n && i < n && j < n;
+        xrValue.setText(cellInRange ? String.valueOf(reach[i][k]) : "");
+        ycValue.setText(cellInRange ? String.valueOf(reach[k][j]) : "");
+        lcsValue.setText(cellInRange ? String.valueOf(reach[i][j]) : "");
+
+        log.debug("TC variables updated: state={}, k={}, i={}, j={}, n={}", state, k, i, j, n);
     }
 
     @Override
