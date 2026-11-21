@@ -12,6 +12,7 @@ import edu.regis.dptu.model.LCSProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.model.TransitiveClosureProblem;
 
 /**
  * Displays the appropriate input view depending on the selected problem type.
@@ -64,6 +65,14 @@ public class ProblemInputView extends JPanel {
                 KnapsackInputView knapsackInputView = new KnapsackInputView(submitListener);
                 knapsackInputView.setDefaults(knapsackProblem);
                 currentPanel = knapsackInputView;
+                break;
+            case TRANSITIVE_CLOSURE:
+                ProblemInputView.log.info("Setting currentPanel to TransitiveClosureInputView");
+                TransitiveClosureProblem tcProblem = (TransitiveClosureProblem) problem;
+                TransitiveClosureInputView tcInputView =
+                        new TransitiveClosureInputView(submitListener);
+                tcInputView.setDefaults(tcProblem);
+                currentPanel = tcInputView;
                 break;
             default:
                 throw new IllegalArgumentException(
