@@ -42,6 +42,7 @@ import edu.regis.dptu.model.MatrixChainProblem;
 import edu.regis.dptu.model.Problem;
 import edu.regis.dptu.model.ProblemKind;
 import edu.regis.dptu.model.ProblemListener;
+import edu.regis.dptu.model.TransitiveClosureProblem;
 
 /**
  * Creates Subproblem Table to view as student works through algorithm. Retains original appearance
@@ -52,6 +53,10 @@ import edu.regis.dptu.model.ProblemListener;
  */
 public class SubproblemTableView extends GPanel implements ProblemListener {
     private static final Logger log = LoggerFactory.getLogger(SubproblemTableView.class);
+
+    private static final Color PIVOT_COLOR = new Color(204, 229, 255);
+    private static final Color ACTIVE_CELL_COLOR = Color.YELLOW;
+    private static final Color SET_CELL_COLOR = Color.GREEN;
 
     // Model representing the dynamic programming problem
     private Problem model;
@@ -111,6 +116,15 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                     //                    log.warn("SubproblemTableView: KNAPSACK_0_1 is not yet" +
                     // "supported.");
                     //                    setVisible(false);
+                    break;
+                case TRANSITIVE_CLOSURE:
+                    String[] labels = ((TransitiveClosureProblem) model).getLabels();
+                    log.debug("Updating Transitive Closure Table with n={}", labels.length);
+                    for (String label : labels) {
+                        rowHeaders.add(label);
+                        colHeaders.add(label);
+                    }
+                    updateStrings(rowHeaders, colHeaders);
                     break;
                 default: // i.e. LCS_PROBLEM
                     String rowStr = ((LCSProblem) model).getX();
@@ -197,6 +211,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
                                             false,
                                             row,
                                             col);
+                        }
+                        if (model instanceof TransitiveClosureProblem tc) {
+                            component.setBackground(transitiveClosureCellColor(tc, row, col - 1));
+                            return component;
                         }
                         // For highlighting during backtracking phase
                         int[][] bTable = (int[][]) model.getVariableObject("b");
@@ -339,6 +357,10 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
      * updated and fires a table data change event.
      */
     private void updateView() {
+        if (model instanceof TransitiveClosureProblem tc) {
+            updateTransitiveClosureView(tc);
+            return;
+        }
         // Validate model and required variables
         if (model == null
                 || model.getTableVariable() == null
@@ -392,6 +414,40 @@ public class SubproblemTableView extends GPanel implements ProblemListener {
         }
         // Notify JTable that data has changed
         dtm.fireTableDataChanged();
+    }
+
+    private void updateTransitiveClosureView(TransitiveClosureProblem tc) {
+        int[][] reach = tc.getReachMatrix();
+        int n = tc.getN();
+        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        if (dtm.getRowCount() < n || dtm.getColumnCount() < n + 1) {
+            log.error("SubproblemTableView: Transitive Closure table dimensions too small.");
+            return;
+        }
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) dtm.setValueAt(String.valueOf(reach[i][j]), i, j + 1);
+        dtm.fireTableDataChanged();
+    }
+
+    private static Color transitiveClosureCellColor(TransitiveClosureProblem tc, int row, int col) {
+        TransitiveClosureProblem.EXECUTION_STATE state = tc.getExecutionState();
+        if (state == TransitiveClosureProblem.EXECUTION_STATE.PRE
+                || state == TransitiveClosureProblem.EXECUTION_STATE.POST) return Color.WHITE;
+
+        int n = tc.getN();
+        int k = tc.getVariableValue("k");
+        int i = tc.getVariableValue("i");
+        int j = tc.getVariableValue("j");
+
+        if (state == TransitiveClosureProblem.EXECUTION_STATE.J_LOOP
+                && row == i
+                && col == j
+                && i < n
+                && j < n) {
+            return (tc.getNextLineNumber() == 4) ? SET_CELL_COLOR : ACTIVE_CELL_COLOR;
+        }
+        if (k < n && (row == k || col == k)) return PIVOT_COLOR;
+        return Color.WHITE;
     }
 
     /** Custom cell renderer to draw grid lines and center-align text. */
